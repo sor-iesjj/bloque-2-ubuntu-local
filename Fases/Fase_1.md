@@ -1,0 +1,283 @@
+## 🏗️ Fase 1: Infraestructura Virtual Local (VirtualBox)
+
+### Infraestructura de Servidores en tu propio ordenador
+
+> **[Módulo: SOR — Sistemas Operativos en Red]**
+> **[U.T. 1, 2 y 3: Instalación de Sistemas Operativos en Red]**
+> **[RA.01]** Instala sistemas operativos en red describiendo sus características e interpretando la documentación técnica.
+>
+> **Profesor:** Pedro Navarro Miralles
+> **Correo:** p.navarromiralles2@edu.gva.es
+> **Centro:** IES Jorge Juan (ALICANTE)
+>
+> **⏱️ Tiempo estimado:** ~1,5 - 2 horas (descarga de la ISO incluida, teoría + práctica + troubleshooting)
+> **Requisitos:** VirtualBox instalado en el equipo · ~2 GB de RAM libres · ~20 GB de disco libres · ISO de Ubuntu Server 24.04 LTS
+
+---
+
+### 🎯 Objetivos de la fase
+
+Al terminar esta fase serás capaz de:
+
+- [ ] Explicar la diferencia entre virtualizar en la nube (BoochanV2/V3) y virtualizar en local con VirtualBox.
+- [ ] Instalar o verificar VirtualBox en tu equipo del aula.
+- [ ] Crear una máquina virtual dimensionada de forma realista para un portátil compartido.
+- [ ] Configurar **dos adaptadores de red** distintos en la VM y explicar para qué sirve cada uno.
+- [ ] Instalar Ubuntu Server 24.04 LTS desde cero, incluyendo una **IP estática** en la red interna.
+- [ ] Conocer el nombre de dominio (`BOOCHANLAB.LOCAL`) que usará todo el proyecto BoochanV1.
+- [ ] Verificar que la VM arranca, tiene red y responde a `ping` desde tu propio ordenador (el host).
+
+---
+
+### 🎯 ¿Dónde Estamos?
+
+> [!info] El Punto de Partida
+> No vienes de una fase anterior — esta es la base. En BoochanV2 y BoochanV3 alquilabas un servidor en la nube (Azure/AWS). En **BoochanV1** vas a construir el mismo servidor, pero **dentro de tu propio ordenador**, usando un programa llamado VirtualBox que crea "ordenadores dentro del ordenador".
+
+> [!warning] El Problema
+> No siempre hay presupuesto (ni conexión a Internet fiable en el aula) para tener una cuenta cloud por alumno. Además, entender cómo funciona la virtualización *local* — la que corre en tu propio hardware — es la base sobre la que luego se entiende la virtualización *en la nube*. Antes de "alquilar" un ordenador virtual a Microsoft o Amazon, tienes que entender cómo se crea uno tú mismo.
+
+> [!success] Objetivo de esta Fase
+> Crear una **máquina virtual en VirtualBox** que aloje Ubuntu Server 24.04 LTS, con dos tarjetas de red (una para salir a Internet, otra para hablar con la futura VM cliente de Windows 11) y una dirección IP fija en `10.10.10.10`. Este servidor será, en las próximas fases, tu controlador de dominio Active Directory.
+
+> [!tip] Hoja de Ruta
+> 1. Verificar o instalar VirtualBox en tu equipo
+> 2. Descargar la ISO de Ubuntu Server 24.04 LTS
+> 3. Crear la máquina virtual con RAM, CPU y disco dimensionados para un portátil de aula
+> 4. Configurar dos adaptadores de red: NAT (Internet) + Red Solo-Anfitrión (red aislada servidor↔cliente↔host)
+> 5. Instalar Ubuntu Server desde la ISO, con IP estática `10.10.10.10/24`
+> 6. Conocer el nombre de dominio de todo el proyecto: `BOOCHANLAB.LOCAL`
+> 7. Verificar que la VM arranca, tiene red, y responde a `ping` desde tu ordenador
+>
+> **Resultado Final:** Un servidor virtual local, listo, accesible desde tu equipo, y aislado de la red del instituto.
+> **Siguiente:** Fase 2 (Purga y Preparación del Entorno) — limpiaremos el servidor de software innecesario y le daremos su identidad de dominio dentro de `/etc/hosts`.
+
+---
+
+### 📚 Fundamento Teórico Avanzado
+
+> [!info] ¿Por qué ahora en local, si BoochanV2/V3 usaban la nube?
+> En la nube "alquilas" una porción de un superordenador de Microsoft o Amazon. En local, **tú eres el superordenador**: tu portátil ejecuta un programa (VirtualBox) que reparte su propia CPU, RAM y disco entre tu sistema operativo normal (el **host**, anfitrión) y uno o varios ordenadores virtuales (los **guest**, invitados). El concepto de "servidor" es exactamente el mismo — solo cambia dónde vive físicamente.
+
+> [!abstract] 1. VirtualBox: un Hipervisor de Tipo 2
+> Ya conoces el concepto de **Hipervisor** de las fases cloud: el software que reparte los recursos físicos entre varias máquinas virtuales. Existen dos tipos:
+> - **Tipo 1 ("bare metal"):** se instala directamente sobre el hardware, sin sistema operativo por debajo. Es lo que usan Azure y AWS en sus centros de datos — máximo rendimiento.
+> - **Tipo 2 ("hosted"):** se instala **como un programa más** dentro de un sistema operativo ya existente (Windows, macOS, Linux). **VirtualBox es de Tipo 2.** Por eso puedes abrirlo y cerrarlo como cualquier otra aplicación, y por eso consume RAM y CPU de tu equipo mientras está encendida la VM.
+
+> [!warning] 2. Tu Responsabilidad como "Administrador de tu propio Datacenter"
+> En la nube, el proveedor (Azure/AWS) garantiza la electricidad, la refrigeración y que el hardware físico no falle. **En local, ese proveedor eres tú.** Si tu portátil se queda sin batería, se cuelga, o cierras la tapa, tu "datacenter" se apaga por completo. Es una buena lección: entender que detrás de cada nube hay, en el fondo, hardware físico real que alguien mantiene encendido.
+
+> [!important] 3. Dimensionado Realista: no es tu portátil personal, es un equipo de aula
+> A diferencia de un servidor cloud dedicado, esta VM va a compartir RAM y CPU con **el resto de programas abiertos en un portátil de aula** (que puede tener solo 8 GB de RAM total, usado también por otros alumnos en turnos distintos). Hay que ser realista:
+> - No asumas que tienes 16 GB libres solo para la práctica.
+> - Ten en cuenta que en la **Fase 4** instalarás Samba AD DC, que por sí solo necesita entre 2 y 4 GB de RAM para funcionar con soltura.
+> - Es mejor una VM modesta que arranca sin problemas, que una VM "de lujo" que deja el portátil congelado y no puedes ni escribir el siguiente comando.
+
+> [!note] 4. Redes Virtuales de VirtualBox — la parte más nueva para ti
+> VirtualBox permite conectar cada tarjeta de red virtual de la VM a distintos "modos". Para este proyecto usamos dos, y es importante que entiendas la diferencia (nadie te lo ha explicado antes, así que vamos con un ejemplo sencillo):
+>
+> | Modo | ¿Qué hace? | Analogía |
+> | :--- | :--- | :--- |
+> | **NAT** | Le da a la VM salida a Internet, compartiendo la conexión de tu propio ordenador. La VM puede salir a "hablar" con Internet, pero nadie de fuera puede entrar directamente a la VM. | Es como si la VM llamara por teléfono desde tu casa usando tu línea: puede llamar hacia fuera, pero nadie puede llamarla directamente a ella, solo a tu número (el tuyo, el del host). |
+> | **Red Solo Anfitrión (Host-Only)** | Crea una red privada **entre tu ordenador (host) y las VMs**, totalmente aislada de Internet y de la red del instituto. Tu equipo y tus VMs se ven entre sí como si estuvieran conectados por un cable de red directo. | Es como tender un cable de red solo entre tu ordenador y tus máquinas virtuales, dentro de una habitación cerrada con llave: nadie del pasillo (la red del instituto) puede entrar, pero todos los que están dentro de la habitación (tu PC + tus VMs) se ven perfectamente. |
+> | *(Existe también "Red Interna"* | *conecta solo VMs entre sí, sin que el host participe. No la usamos aquí porque en el Paso 7 necesitamos que tu propio ordenador pueda hacer ping al servidor.)* | *(Sería como un cable que conecta dos máquinas invitadas, pero desconectado del ordenador anfitrión.)* |
+>
+> **Por qué usamos las dos a la vez:** la VM necesita **ambas** tarjetas de red simultáneamente. La NAT le da Internet (para hacer `apt update`, descargar paquetes...). La Solo-Anfitrión le da una red privada y estable donde, más adelante, también conectarás la VM cliente de Windows 11 — así servidor y cliente se ven entre sí, sin exponer nada a la red Wi-Fi del instituto.
+
+> [!important] 5. ¿Por qué un dominio `.LOCAL` y no un dominio real de Internet?
+> En BoochanV2/V3 usabais un dominio real (`BOOCHAN.SPACE`) porque el servidor tenía IP pública y, en teoría, podría ser accedido desde Internet. Aquí no: tu servidor **vive dentro de tu portátil**, en una red privada e invisible desde fuera. Un dominio de Active Directory privado **no necesita ser resoluble en Internet** — de hecho, usar terminaciones reservadas como `.LOCAL` es una práctica estándar en redes internas de empresa, precisamente para dejar claro que ese nombre nunca debe salir a Internet ni intentar registrarse como dominio público. Por eso, en todo el itinerario BoochanV1 usaremos:
+> - **Nombre NetBIOS:** `BOOCHANLAB`
+> - **Realm (dominio completo):** `BOOCHANLAB.LOCAL`
+>
+> Guarda estos dos nombres — los usarán todas las fases siguientes, especialmente la Fase 4 (Aprovisionamiento del Dominio).
+
+### 📖 Diccionario de Conceptos Clave
+
+> [!quote] Terminología Profesional VirtualBox
+> - **Hipervisor de Tipo 2:** Software de virtualización que corre como una aplicación más sobre un sistema operativo ya instalado (a diferencia del Tipo 1, que corre directamente sobre el hardware).
+> - **Host:** Tu ordenador físico, el que ejecuta VirtualBox.
+> - **Guest (invitado):** La máquina virtual que corre dentro de VirtualBox (en este caso, Ubuntu Server).
+> - **ISO:** Un archivo que contiene una copia exacta de un disco de instalación (como un DVD, pero en un solo archivo). Se usa para "meter" el instalador de Ubuntu en la unidad de CD/DVD virtual de la VM.
+> - **VDI (Virtual Disk Image):** El formato de disco duro virtual propio de VirtualBox — un archivo en tu disco que la VM ve como si fuera un disco duro físico.
+> - **Disco de asignación dinámica:** El fichero del disco virtual empieza pequeño y **crece según se necesita**, hasta un máximo fijado. Así no reservas de golpe todo el espacio si aún no lo usas.
+> - **Adaptador de Red Solo Anfitrión (Host-Only Adapter):** Una tarjeta de red virtual que crea una red privada entre el host y sus VMs, sin salida a Internet ni a la red física del instituto.
+> - **NetBIOS / Realm:** El "nombre corto" (NetBIOS, máx. 15 caracteres, en mayúsculas) y el "nombre completo" (Realm, tipo dominio de Internet) que identifican a un dominio Active Directory.
+
+---
+
+### 🛠️ Procedimiento Práctico (BoochanV1)
+
+> [!danger] ⚠️ LÉEME ANTES DE EMPEZAR: permisos de administrador en el equipo del aula
+> Los equipos del aula normalmente **no os dan permisos de administrador sobre Windows/macOS**. Instalar VirtualBox requiere permisos de administrador del sistema operativo anfitrión (no basta con ser "usuario" del equipo).
+> - **Si VirtualBox ya está instalado** en el equipo (pregunta al profesor o comprueba si aparece en el menú de aplicaciones): perfecto, salta directamente al Paso 2.
+> - **Si VirtualBox NO está instalado y no tienes permisos de administrador:** esta práctica **no es viable en ese equipo**. No intentes saltarte los permisos ni usar instaladores "portables" no autorizados. Avisa al profesor: la solución pasa por que el departamento de informática del centro lo instale de antemano en las imágenes de los equipos del aula, o que se use un equipo personal con permisos completos.
+
+> [!example] Paso 1: Descarga e instalación de VirtualBox (solo si NO está ya instalado)
+> 1. Desde el navegador, entra en la web oficial: `virtualbox.org` → apartado **Downloads**.
+> 2. Descarga el instalador correspondiente a tu sistema operativo (Windows, macOS o Linux).
+> 3. Ejecuta el instalador con permisos de administrador y sigue el asistente dejando las opciones por defecto (incluye la instalación del **Extension Pack** si el asistente lo ofrece — añade soporte USB 2.0/3.0 y otras extensiones, aunque no es imprescindible para este proyecto).
+> 4. Abre VirtualBox al terminar. Si ves la ventana del "VirtualBox Manager" (una lista vacía de máquinas virtuales), la instalación ha ido bien.
+>
+> > [!tip] 💡 ¿Qué versión descargar?
+> > Usa siempre la versión estable más reciente que ofrezca la web oficial (a fecha de escritura de este manual, la rama 7.x). No hace falta anotar el número de versión exacto para este proyecto.
+
+> [!example] Paso 2: Descarga de la ISO de Ubuntu Server 24.04 LTS
+> 1. Entra en `ubuntu.com/download/server`.
+> 2. Descarga la imagen **Ubuntu Server 24.04 LTS** (la versión "LTS" — *Long Term Support* — es la que se usa siempre en un entorno de producción o de prácticas serias, porque recibe actualizaciones de seguridad durante años).
+> 3. Guarda el archivo `.iso` descargado en una carpeta que recuerdes (por ejemplo, `Descargas` o una carpeta específica del proyecto). Pesa aproximadamente 2-3 GB — la descarga puede tardar según la conexión del aula.
+>
+> > [!warning] ⚠️ No confundas "Ubuntu Desktop" con "Ubuntu Server"
+> > Ubuntu Desktop trae interfaz gráfica y está pensado para uso personal. **Ubuntu Server** es la versión sin escritorio gráfico (headless), pensada para máquinas que dan servicio, como la nuestra. Asegúrate de descargar la palabra "Server" en el nombre del archivo.
+
+> [!example] Paso 3: Creación de la Máquina Virtual
+> Con VirtualBox abierto:
+> 1. Pulsa **`Nueva`** (o `Machine → New`).
+> 2. Rellena el asistente con estos valores:
+>
+> | Campo | Valor | Por qué |
+> | :--- | :--- | :--- |
+> | **Nombre** | `UbuntuServer` | Coherencia con V2/V3, facilita seguir el manual |
+> | **Carpeta de la máquina** | La que sugiera VirtualBox por defecto | Evita problemas de rutas con espacios o caracteres raros |
+> | **Tipo** | `Linux` | Familia de sistema operativo del guest |
+> | **Versión** | `Ubuntu (64-bit)` | Ubuntu Server 24.04 es de 64 bits |
+> | **Imagen ISO** | Selecciona el `.iso` descargado en el Paso 2 | Permite el "arranque asistido" (Guided Installation) de VirtualBox |
+> | **Memoria base (RAM)** | `2048 MB` (2 GB) | Ver nota de dimensionado abajo |
+> | **Procesadores (CPU)** | `2 vCPU` | Suficiente para instalación y prácticas; no bloquea al host |
+> | **Disco duro** | Crear un disco virtual nuevo, `20 GB`, **VDI**, **de asignación dinámica** | 20 GB da margen para el sistema, Samba y los ficheros de prácticas, sin reservar de golpe espacio que no se usa |
+>
+> 3. Antes de crear, revisa el resumen final y pulsa **`Finalizar`**.
+>
+> > [!important] 💡 Nota de dimensionado: por qué 2 GB de RAM y no más
+> > Elegimos **2048 MB** como punto de partida porque es el mínimo cómodo para instalar y usar Ubuntu Server sin servicios adicionales, y porque en un portátil de aula compartido (8 GB totales es habitual) reservar más de golpe puede dejar el equipo sin margen para el resto de aplicaciones del alumno (navegador, editor, la propia VirtualBox...).
+> > **Cuando llegues a la Fase 4** (Samba AD DC), es muy probable que necesites subir la RAM de esta VM a **3072-4096 MB**. Podrás hacerlo apagando la VM y editando su configuración (`Configuración → Sistema → Placa base`) — VirtualBox no permite cambiar la RAM base con la VM encendida. Si tu equipo tiene 8 GB de RAM totales o menos, cierra el resto de aplicaciones antes de encenderla en esa fase.
+
+> [!example] Paso 4: Configuración de Red — dos adaptadores
+> Con la VM creada pero **aún apagada**, entra en **`Configuración`** (rueda dentada) → pestaña **`Red`**.
+>
+> **Adaptador 1 (pestaña "Adaptador 1"):**
+> 1. Marca **`Habilitar adaptador de red`**.
+> 2. En **`Conectado a`**, selecciona **`NAT`**.
+> 3. Deja el resto de opciones por defecto.
+>
+> **Adaptador 2 (pestaña "Adaptador 2"):**
+> 1. Marca **`Habilitar adaptador de red`**.
+> 2. En **`Conectado a`**, selecciona **`Red Solo Anfitrión`** (*Host-only Adapter*).
+> 3. En el desplegable de nombre de red, selecciona la red host-only por defecto que trae VirtualBox (suele llamarse `vboxnet0`) o créala si no existe (ver nota siguiente).
+>
+> > [!warning] ⚠️ Configura la red Solo-Anfitrión con IP fija y sin DHCP
+> > Por defecto, VirtualBox suele crear la red host-only con un rango tipo `192.168.56.0/24` y un servidor DHCP activo. **Vamos a evitar ese rango a propósito**, para que no se confunda nunca con la red Wi-Fi de casa de ningún alumno (que suele ser `192.168.x.x`). Para cambiarlo:
+> > 1. Cierra la ventana de Configuración de la VM (o desde el menú principal: `Herramientas → Redes` / `Archivo → Herramientas → Administrador de red` según tu versión de VirtualBox).
+> > 2. Entra en **`Redes solo-anfitrión`** (Host-only Networks).
+> > 3. Edita la red `vboxnet0` (o créala con `+` si no existe).
+> > 4. En la pestaña **Adaptador**, pon:
+> >    - **Dirección IPv4:** `10.10.10.1`
+> >    - **Máscara de subred:** `255.255.255.0`
+> > 5. En la pestaña **Servidor DHCP**, **desmarca "Habilitar servidor"**. Vamos a poner la IP del servidor a mano en el Paso 6, no queremos que un DHCP se la cambie por sorpresa.
+> > 6. Guarda los cambios.
+> >
+> > Con esto, `10.10.10.1` pasa a ser la IP de tu propio ordenador (el host) dentro de esa red privada — la usarás en el Paso 7 para hacer ping al servidor.
+
+> [!example] Paso 5: Instalación de Ubuntu Server 24.04 desde la ISO
+> Enciende la VM (`Iniciar`). VirtualBox arrancará el instalador de Ubuntu Server desde la ISO.
+>
+> 1. **Idioma:** elige `English` o `Español` (el instalador en español a veces tiene menos opciones traducidas; `English` es más estable, pero cualquiera de los dos sirve).
+> 2. **Actualizar el instalador:** si te lo ofrece, acepta actualizar a la última versión del instalador.
+> 3. **Distribución del teclado:** selecciona `Spanish`.
+> 4. **Tipo de instalación:** `Ubuntu Server` (la opción normal, no la mínima "minimized").
+> 5. **Configuración de red — aquí está la parte importante:**
+>    - El instalador detectará **dos tarjetas de red** (`enp0s3` para el adaptador NAT y `enp0s8` para el Solo-Anfitrión, los nombres exactos pueden variar).
+>    - Deja la primera (**NAT**) en modo **automático (DHCP)** — no la toques, así el instalador ya puede descargar actualizaciones durante la instalación.
+>    - Entra en la segunda tarjeta (**Solo-Anfitrión**) y configúrala **manualmente**:
+>      - **Dirección IP (Subnet):** `10.10.10.10/24`
+>      - **Gateway (puerta de enlace):** déjalo **en blanco** (esta tarjeta no da salida a Internet, para eso ya está la NAT).
+>      - **Servidores de nombres (DNS):** déjalo en blanco por ahora (se configurará en la Fase 4 al instalar el propio DNS del dominio).
+> 6. **Proxy y espejo de Ubuntu:** deja los valores por defecto.
+> 7. **Configuración del disco:** elige `Use an entire disk` (usar todo el disco virtual de 20 GB) con la opción de LVM por defecto que propone el instalador.
+> 8. **Perfil del usuario:**
+>    - **Tu nombre:** el que quieras (ej. `Alumno`)
+>    - **Nombre del servidor (hostname):** `UbuntuServer`
+>    - **Nombre de usuario:** `boochan`
+>    - **Contraseña:** define una segura y **anótala** — la necesitarás en cada práctica.
+> 9. **OpenSSH Server:** marca la casilla **`Install OpenSSH server`**. Te permitirá conectarte por SSH a la VM desde tu propio ordenador en próximas fases, en lugar de trabajar siempre desde la ventana de VirtualBox.
+> 10. **Featured Server Snaps:** no instales ninguno (los instalaremos manualmente cuando toque en cada fase).
+> 11. Espera a que termine la instalación y pulsa **`Reboot Now`**. Cuando te pida quitar el medio de instalación, pulsa Enter (VirtualBox expulsa la ISO automáticamente).
+>
+> > [!tip] 💡 ¿Por qué configurar la IP durante la instalación y no después?
+> > El instalador de Ubuntu Server (Subiquity) escribe la configuración de red directamente en un fichero de sistema (`/etc/netplan/`). Hacerlo aquí te ahorra tener que editarlo a mano nada más arrancar. Aun así, en fases posteriores aprenderás a modificar este fichero manualmente si algo falla.
+
+> [!example] Paso 6: El dominio de todo el proyecto — `BOOCHANLAB.LOCAL`
+> No hace falta ejecutar ningún comando todavía: esta es solo información que debes **anotar y recordar**, porque la usarás en la Fase 2 (`/etc/hosts`) y sobre todo en la Fase 4 (creación real del dominio Active Directory).
+>
+> | Concepto | Valor en BoochanV1 |
+> | :--- | :--- |
+> | **Nombre NetBIOS** | `BOOCHANLAB` |
+> | **Realm (dominio completo)** | `BOOCHANLAB.LOCAL` |
+> | **IP del servidor (red interna)** | `10.10.10.10` |
+> | **IP de tu host en esa red** | `10.10.10.1` |
+> | **Rango reservado para la futura VM cliente Windows 11** | `10.10.10.20` (se confirmará en la fase correspondiente) |
+>
+> Recuerda por qué usamos `.LOCAL`: es una zona reservada para redes privadas que nunca debe intentar resolverse en Internet — perfecta para un laboratorio que vive dentro de tu propio ordenador.
+
+> [!example] Paso 7: Verificación Final de la Fase
+> Una vez reiniciada la VM tras la instalación:
+>
+> 1. **Inicia sesión** en la VM con el usuario y contraseña que creaste (directamente en la ventana de VirtualBox).
+> 2. **Comprueba las dos tarjetas de red:**
+>    ```bash
+>    ip a
+>    ```
+>    Deberías ver (al menos) tres interfaces: `lo` (loopback), una con IP asignada por DHCP (la NAT, algo tipo `10.0.2.15`) y otra con la IP fija que configuraste, `10.10.10.10`.
+> 3. **Comprueba la salida a Internet** (usa la tarjeta NAT):
+>    ```bash
+>    ping -c 4 google.com
+>    ```
+>    Deberías recibir 4 respuestas sin pérdida de paquetes.
+> 4. **Desde tu propio ordenador (el host, fuera de la VM)**, abre una terminal:
+>    - **Windows:** `Windows + R` → `cmd` → Enter.
+>    - **Mac/Linux:** abre la aplicación `Terminal`.
+>
+>    Y haz ping a la IP fija del servidor:
+>    ```bash
+>    ping 10.10.10.10
+>    ```
+>    Deberías recibir respuesta. Esto confirma que la red **Solo Anfitrión** funciona: tu ordenador y la VM se ven entre sí, de forma aislada de la red del instituto.
+>
+> > [!success] ✅ Si los tres pings responden, la Fase 1 está completa
+> > VM arrancada + IP correcta en las dos tarjetas + salida a Internet + ping desde el host. Ya tienes la base sobre la que se construirá el resto del proyecto BoochanV1.
+
+---
+
+### 🚩 Resolución de Problemas y Evaluación
+
+> [!bug] Tabla de Troubleshooting (¿Algo no funciona?)
+> | Problema | Causa Probable | Solución Sugerida |
+> | :--- | :--- | :--- |
+> | El instalador no arranca, VirtualBox muestra pantalla negra o error de arranque. | La ISO no se seleccionó correctamente, o la VM no tiene habilitada la virtualización por hardware en la BIOS del equipo anfitrión. | Revisa que en `Configuración → Almacenamiento` la ISO esté montada en la unidad óptica. Si persiste, consulta con el profesor si la BIOS del equipo tiene la virtualización (VT-x/AMD-V) activada — en equipos de aula puede estar bloqueada por gestión centralizada. |
+> | No puedo hacer ping a `10.10.10.10` desde mi ordenador. | La red host-only no se creó bien, o el firewall del sistema operativo anfitrión bloquea el ICMP. | Repasa el Paso 4: comprueba en `Redes solo-anfitrión` que la IP del adaptador es `10.10.10.1/24`. Si el ping sigue sin responder, revisa el firewall de Windows/macOS (puede bloquear ICMP entrante por defecto en redes "públicas"). |
+> | La VM no tiene Internet (`ping google.com` falla) pero sí tiene la IP `10.10.10.10`. | El problema está en el Adaptador 1 (NAT), no en el Adaptador 2. | Comprueba en `Configuración → Red → Adaptador 1` que está habilitado y en modo `NAT`. Reinicia la interfaz con `sudo netplan apply`. |
+> | VirtualBox va muy lento / el portátil se congela. | RAM insuficiente asignada al host, o demasiados programas abiertos a la vez que la VM. | Cierra aplicaciones innecesarias del anfitrión antes de encender la VM. Si el problema persiste, revisa que no hayas asignado más RAM de la recomendada (2048 MB) en el Paso 3. |
+> | El instalador solo me deja configurar una tarjeta de red. | El adaptador 2 no estaba habilitado antes de encender la VM por primera vez. | Apaga la VM, revisa el Paso 4, habilita el Adaptador 2 y vuelve a arrancar el instalador desde cero (o reinicia el proceso "Reconfigurar red" si el instalador lo permite). |
+
+> [!help] Preguntas Críticas (Autoevaluación del alumno)
+> 1. ¿Qué diferencia hay entre un hipervisor de Tipo 1 (como los que usan Azure/AWS) y uno de Tipo 2 (como VirtualBox)?
+> 2. ¿Por qué la VM necesita dos adaptadores de red en lugar de uno solo?
+> 3. Si conectaras el Adaptador 2 en modo "Red Interna" en lugar de "Solo Anfitrión", ¿podrías seguir haciendo `ping` desde tu ordenador a la VM? Razona la respuesta.
+> 4. ¿Por qué el dominio del proyecto termina en `.LOCAL` y no en un dominio real como `.COM` o `.ES`?
+> 5. 🔬 **Reto práctico:** Apaga la VM, entra en `Configuración → Sistema → Placa base` y comprueba cuánta RAM tiene asignada ahora mismo. Súbela a 3072 MB, enciende la VM y ejecuta `free -h`. Compara el resultado con el que tenías antes. Vuelve a bajarla a 2048 MB para las próximas fases (hasta que la Fase 4 lo requiera de verdad).
+
+---
+
+### ✅ Checklist Final de la Fase 1
+
+- [ ] VirtualBox instalado (o verificado ya instalado) en el equipo del aula.
+- [ ] ISO de Ubuntu Server 24.04 LTS descargada.
+- [ ] VM `UbuntuServer` creada con 2048 MB RAM, 2 vCPU, disco de 20 GB (VDI, dinámico).
+- [ ] Adaptador 1 en modo NAT (Internet) habilitado.
+- [ ] Adaptador 2 en modo Red Solo-Anfitrión, red `vboxnet0` con IP `10.10.10.1/24` y DHCP deshabilitado.
+- [ ] Ubuntu Server 24.04 instalado, con IP estática `10.10.10.10/24` en el adaptador Solo-Anfitrión.
+- [ ] OpenSSH Server instalado durante la instalación.
+- [ ] Nombre NetBIOS (`BOOCHANLAB`) y Realm (`BOOCHANLAB.LOCAL`) anotados para las próximas fases.
+- [ ] `ping google.com` funciona desde dentro de la VM.
+- [ ] `ping 10.10.10.10` funciona desde tu ordenador (host).
+
+> **Siguiente paso:** Fase 2 — Purga y Preparación del Entorno, donde limpiaremos Ubuntu de software preinstalado que entraría en conflicto con Samba, y registraremos el FQDN completo del servidor en `/etc/hosts`.

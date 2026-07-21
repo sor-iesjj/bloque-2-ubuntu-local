@@ -1,0 +1,263 @@
+## 🔒 Fase 3: Conectividad VPN (WireGuard)
+
+### Infraestructura de Servidor Local (VirtualBox)
+
+> **[Módulo: SOR — Sistemas Operativos en Red]**
+> **[U.T. 9: Gestión remota e Integración en Red]**
+> **[RA.05]** Realiza tareas de monitorización y uso del sistema operativo en red.
+>
+> **Profesor:** Pedro Navarro Miralles  
+> **Correo:** p.navarromiralles2@edu.gva.es  
+> **Centro:** IES Jorge Juan (ALICANTE)
+>
+> **⏱️ Tiempo estimado:** ~2 horas (teoría + práctica + retos + troubleshooting)  
+> **Requisitos:** VM VirtualBox con Red Solo Anfitrión operativa | Cliente WireGuard | SSH
+
+---
+
+### 🎯 ¿Dónde Estamos?
+
+> [!info] Vienes de Fase 2
+> Completaste la purga del servidor y le diste identidad de dominio (`UbuntuServer.BOOCHANLAB.LOCAL`). Ahora tienes un servidor limpio, profesional, con identidad, accesible por SSH en `10.10.10.10` a través de la Red Solo Anfitrión de VirtualBox.
+
+> [!warning] El Problema... ¿o no?
+> En las versiones cloud de este proyecto (Azure/AWS), esta fase resuelve un problema real: el servidor tiene una IP pública expuesta a todo internet, y sin VPN cualquier bot podría intentar entrar por fuerza bruta al puerto 22. **Aquí, en tu laboratorio local, ese problema físicamente no existe:** tu servidor vive dentro de una Red Solo Anfitrión de VirtualBox, aislada de internet y de la red del instituto por diseño — nadie fuera de tu propio PC puede ni siquiera verla, y mucho menos atacarla desde internet.
+
+> [!success] Objetivo de esta Fase (y por qué la hacemos igualmente)
+> Vamos a instalar **WireGuard** igualmente, aunque no exista una amenaza real de internet que blindar. ¿Por qué? Porque el objetivo pedagógico de esta fase no es "protegerte de internet" sino **aprender a construir y verificar un túnel VPN cifrado punto a punto** — una habilidad profesional que se necesita tanto si el otro extremo está a un clic (como aquí) como si está a miles de kilómetros (como en las versiones cloud). Cuando más adelante crees la VM cliente Windows 11 en la misma Red Solo Anfitrión, ese cliente se conectará al servidor **a través de este túnel WireGuard**, no directamente por `10.10.10.10` — replicando exactamente el mismo modelo de seguridad "Zero Trust" que usarías en un entorno real, aunque técnicamente pudieras saltártelo por estar en la misma red virtual.
+
+> [!tip] Hoja de Ruta
+> 1. Instalar WireGuard en el servidor
+> 2. Generar pares de llaves criptográficas (servidor + cliente)
+> 3. Crear archivo de configuración `wg0.conf` en el servidor, con el rango de túnel `10.20.20.0/24`
+> 4. Preparar la configuración del lado cliente (la usará la futura VM Windows 11, o un cliente de prueba mientras tanto)
+> 5. Activar el túnel y verificar con `ping 10.20.20.1` desde el cliente
+> 6. Cerrar el acceso SSH directo por `10.10.10.10` y aceptar solo conexiones por el túnel (`10.20.20.1`, puerto 2222)
+>
+> **Resultado Final:** Servidor accesible solo a través del túnel VPN cifrado. Modelo de seguridad profesional aplicado, aunque el "peligro" real de esta red aislada sea mínimo.
+> **Siguiente:** Fase 4 (Dominio) — provisionar el Active Directory. Ahora que hay conexión VPN cifrada, puedes instalar servicios críticos.
+
+---
+
+### 📚 Fundamento Teórico
+
+> [!abstract] 1. Seguridad en Profundidad, incluso cuando "no hace falta"
+> En una empresa real nunca confías en que una red sea segura solo por estar "dentro de las cuatro paredes". Este principio se llama **Defensa en Profundidad**: cada capa (red aislada, VPN, autenticación, cifrado) protege aunque las demás fallen. Aquí, la Red Solo Anfitrión de VirtualBox ya te da una capa de aislamiento; WireGuard añade una segunda capa de cifrado y autenticación mutua **por si acaso** — y, sobre todo, para que practiques la técnica que usarás en un despliegue real.
+
+> [!info] 2. ¿Qué es WireGuard?
+> A diferencia de protocolos antiguos (como OpenVPN), WireGuard funciona al nivel del **Kernel** de Linux. Esto lo hace invisible para los atacantes y extremadamente rápido. Utiliza **criptografía de curva elíptica**, asegurando que los datos viajen por un canal 100% blindado — sea ese canal un cable transatlántico o, como en tu caso, un conmutador virtual dentro de tu propio PC.
+
+> [!important] 3. Intercambio de Llaves
+> El servidor y el cliente se reconocen mediante un intercambio de llaves:
+> *   **Llave Pública:** Se puede compartir (es como la dirección de tu casa).
+> *   **Llave Privada:** Es el secreto absoluto. Solo quien posee la llave privada puede descifrar el tráfico que le llega.
+
+> [!note] 4. Dos redes, dos propósitos: no confundas `10.10.10.0/24` con `10.20.20.0/24`
+> En este proyecto conviven dos rangos de IP distintos y no deben mezclarse:
+> *   **`10.10.10.0/24`** — la Red Solo Anfitrión "física" de VirtualBox (servidor = `10.10.10.10`). Es el cable de red virtual.
+> *   **`10.20.20.0/24`** — la red virtual del **túnel WireGuard** (servidor = `10.20.20.1`, cliente = `10.20.20.2`). Es un cable dentro del cable: una capa de cifrado que viaja encapsulada dentro de la primera.
+> Usar rangos claramente distintos es una buena práctica profesional: cuando veas una IP `10.20.20.x` en un log, sabrás al instante que ese tráfico pasó por el túnel cifrado.
+
+### 📖 Diccionario de Conceptos Clave
+
+> [!quote] Terminología VPN
+> - **Cifrado Asimétrico:** Sistema que usa una llave para cerrar (pública) y otra distinta para abrir (privada).
+> - **wg0.conf:** El "cerebro" o archivo maestro que define la red virtual y quién puede entrar en ella.
+> - **Peer:** Cada uno de los extremos de la conexión (el servidor y la futura VM cliente Windows 11 son "Peers").
+> - **Endpoint:** La dirección donde un peer escucha conexiones. En cloud es una IP pública; aquí es la IP de la Red Solo Anfitrión del servidor (`10.10.10.10`).
+
+---
+
+### 🔓 Firewall Local: por qué aquí no hay "Security Group" que configurar
+
+> [!info] Sin NSG, sin Security Group... sin nada que abrir
+> En BoochanV2 (Azure) y BoochanV3 (AWS) esta sección se dedicaba a abrir el puerto 51820/UDP en el firewall del proveedor cloud (NSG o Security Group). **En tu laboratorio local no existe ese firewall perimetral**: la Red Solo Anfitrión de VirtualBox no filtra tráfico entre el host y las VMs que la comparten, así que el paquete UDP de WireGuard llega sin obstáculos de un extremo a otro. No tienes ningún portal que abrir.
+>
+> > [!tip] 💡 Verificación rápida: ¿tiene Ubuntu su propio firewall activo?
+> > Ubuntu Server incluye `ufw` (Uncomplicated Firewall), pero **viene desactivado por defecto** tras una instalación limpia. Compruébalo:
+> > ```bash
+> > sudo ufw status
+> > ```
+> > Si responde `Status: inactive`, no hay nada que hacer — el tráfico WireGuard pasará sin problema. Si en algún momento activas `ufw` (buena práctica en un servidor real), recuerda permitir el puerto `51820/udp` y el `2222/tcp` con `sudo ufw allow 51820/udp` y `sudo ufw allow 2222/tcp`.
+
+> [!example] Al terminar: cierra el 22 directo y activa el SSH seguro por el 2222 vía túnel
+> Una vez que el túnel VPN funcione y hayas comprobado el `ping 10.20.20.1`, aplica **Zero Trust**: cerramos el acceso SSH directo por la Red Solo Anfitrión y dejamos solo el acceso a través del túnel cifrado.
+>
+> **En el servidor:** cambia el puerto SSH de 22 a 2222 y haz que solo escuche en la interfaz del túnel:
+> ```bash
+> sudo nano /etc/ssh/sshd_config
+> ```
+> Busca la línea `#Port 22`, elimina el `#` y cámbiala a `Port 2222`. Añade también una línea `ListenAddress 10.20.20.1` para que SSH solo escuche a través del túnel WireGuard (no en `10.10.10.10`). Guarda (`Ctrl+O`, `Enter`, `Ctrl+X`) y reinicia el servicio:
+> ```bash
+> sudo systemctl restart ssh
+> ```
+>
+> > [!caution] ⚠️ No cierres tu única puerta antes de verificar
+> > No apliques este cambio hasta que hayas comprobado el `ping 10.20.20.1` funcionando desde el cliente. Si cierras el SSH de la Red Solo Anfitrión antes de que el túnel esté probado y operativo, te quedarás sin forma de administrar el servidor remotamente — tendrás que recuperar el acceso desde la propia consola de VirtualBox.
+>
+> A partir de este momento **todas tus conexiones SSH usarán este comando** (con la IP del túnel, no la de la Red Solo Anfitrión):
+> ```bash
+> ssh -p 2222 usuario@10.20.20.1
+> ```
+
+---
+
+### 🛠️ Procedimiento Práctico (BoochanV1)
+
+> [!example] Paso 1: Generación de Llaves Criptográficas del Servidor
+> Ejecuta estos comandos en el servidor para generar la identidad digital del servidor.
+> *El comando `umask 077` es vital: asegura que nadie más pueda leer tu llave.*
+>
+> > [!info] 📚 Diccionario de Comandos: Para entender la sintaxis exacta de `wg` y repasar otros comandos de Linux, consulta el [[Diccionario_Comandos_Sistema]].
+>
+> ```bash
+> sudo -i
+> cd /etc/wireguard
+> umask 077
+> wg genkey | tee privatekey | wg pubkey > publickey
+> ```
+> Ahora **lee y anota** la llave pública del servidor. La necesitarás cuando configures el cliente en el Paso 3:
+> ```bash
+> # Muestra la llave PÚBLICA del servidor (esta se comparte con el cliente)
+> cat /etc/wireguard/publickey
+> ```
+> Cuando hayas copiado el valor, vuelve al usuario normal:
+> ```bash
+> exit
+> ```
+>
+> > [!tip] 💡 ¿Qué hace este comando? (La tubería avanzada)
+> > - **El Pipe (`|`):** Imagina que es una tubería. La salida de un comando entra directamente al siguiente.
+> > - **El comando `tee`:** Es como una **"T"** en una tubería de agua. Permite que los datos sigan su camino por la tubería pero, al mismo tiempo, guarda una copia en un archivo (`privatekey`).
+> > - **`umask 077`:** Es como echar la llave a la habitación antes de escribir un secreto. Asegura que solo tú puedas leer las llaves que vas a generar.
+
+> [!example] Paso 2: Configuración del Túnel en el Servidor (`wg0.conf`)
+> Crea el archivo `/etc/wireguard/wg0.conf` con el editor `nano`.
+>
+> > [!info] 📚 Recurso: Si no recuerdas cómo usar este editor, repasa la [[Guía_Editor_Nano]].
+>
+> ```bash
+> sudo nano /etc/wireguard/wg0.conf
+> ```
+> Escribe este contenido. Sustituye `<CONTENIDO_DE_TU_PRIVATEKEY>` por el valor del archivo `privatekey`:
+> ```ini
+> [Interface]
+> PrivateKey = <CONTENIDO_DE_TU_PRIVATEKEY>
+> Address = 10.20.20.1/24
+> ListenPort = 51820
+>
+> [Peer]
+> PublicKey = <LLAVE_PÚBLICA_DEL_CLIENTE>
+> AllowedIPs = 10.20.20.2/32
+> ```
+> Guarda con `Ctrl + O`, `Enter`, `Ctrl + X`. Deja el campo `<LLAVE_PÚBLICA_DEL_CLIENTE>` como está por ahora; lo completarás en el Paso 4 una vez que generes las llaves del cliente.
+
+> [!example] Paso 3: Configuración del Lado Cliente
+> El túnel VPN necesita dos extremos configurados. En el proyecto final, el "cliente" será la **VM Windows 11** que crearás en una fase posterior de este itinerario. Como esa VM todavía no existe, tienes dos caminos válidos para completar y probar esta fase ahora mismo:
+>
+> > [!tip] 💡 Opción A (recomendada): usa tu propio PC físico como cliente de prueba
+> > Instala temporalmente la aplicación WireGuard en el PC donde corre VirtualBox. Como tu propio ordenador ya forma parte de la Red Solo Anfitrión `vboxnet0` (con IP `10.10.10.1`, configurada en la Fase 1), puedes usarlo directamente como cliente de prueba sin tocar nada más en VirtualBox. Esto te permite verificar el túnel de extremo a extremo *ahora*, sin esperar a tener la VM Windows 11 lista. Cuando más adelante crees esa VM, repetirás estos mismos pasos dentro de ella y usarás su llave pública en lugar de la de tu PC — el resto de la configuración del servidor no cambia.
+>
+> > [!tip] 💡 Opción B: deja el túnel preparado y sin probar
+> > Si prefieres no instalar WireGuard en tu PC físico, puedes completar el archivo `wg0.conf` del servidor con una llave de cliente "provisional" (generada con `wg genkey | wg pubkey`, sin instalarla en ningún sitio todavía) y posponer la verificación del `ping 10.20.20.1` hasta la fase en la que crees la VM Windows 11. Ten en cuenta que en ese caso no podrás completar el Punto de Control de esta fase hasta entonces.
+>
+> **1. Instala la aplicación WireGuard** (si eliges la Opción A, en tu PC físico; si eliges completarlo más adelante, dentro de la futura VM Windows 11):
+> - **Windows:** Ve a `wireguard.com/install`, descarga el instalador `.exe` y ejecútalo.
+> - **Mac:** Búscalo en la App Store buscando "WireGuard" o descárgalo desde `wireguard.com/install`.
+>
+> **2. Crea un nuevo túnel y obtén las llaves del cliente:**
+> - Abre la aplicación WireGuard.
+> - Haz clic en **"Agregar túnel"** → **"Crear nuevo túnel vacío"** (en Mac: icono `+`).
+> - WireGuard genera automáticamente las llaves del cliente. Verás la **Clave Pública** del cliente en la parte superior del cuadro de configuración.
+> - **Copia y anota esa Clave Pública**: la necesitarás en el servidor.
+>
+> **3. Completa el archivo de configuración del cliente** con este contenido:
+> ```ini
+> [Interface]
+> PrivateKey = <SE_RELLENA_AUTOMÁTICAMENTE_por_WireGuard>
+> Address = 10.20.20.2/32
+> DNS = 10.20.20.1
+>
+> [Peer]
+> PublicKey = <LLAVE_PÚBLICA_DEL_SERVIDOR_del_Paso_1>
+> AllowedIPs = 10.20.20.0/24
+> Endpoint = 10.10.10.10:51820
+> PersistentKeepalive = 25
+> ```
+>
+> > [!important] 💡 ¿Y el `Endpoint`? Aquí es distinto a la versión cloud
+> > En BoochanV2/V3 el `Endpoint` era la IP pública del servidor en internet. Aquí, como todo vive dentro de VirtualBox, el `Endpoint` es simplemente la IP de la **Red Solo Anfitrión** del servidor: `10.10.10.10:51820`. El `PersistentKeepalive` sigue siendo una buena práctica a mantener (evita que ciertos firewalls o el propio sistema operativo den por "muerta" una conexión inactiva), aunque en una red local su necesidad real sea menor que atravesando el NAT de un proveedor cloud.
+
+> [!example] Paso 4: Intercambio de Llaves y Activación
+> Vuelve a la sesión SSH del servidor y completa el archivo `wg0.conf` con la llave pública del cliente que anotaste en el Paso 3:
+> ```bash
+> sudo nano /etc/wireguard/wg0.conf
+> ```
+> Sustituye `<LLAVE_PÚBLICA_DEL_CLIENTE>` por la llave pública real. Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
+>
+> > [!caution] ⚠️ Atención al Portapapeles (Copia-Pega)
+> > Al borrar el texto de ejemplo `<LLAVE...>`, asegúrate de eliminar también los símbolos `<` y `>`. Un espacio extra, un salto de línea invisible o una letra comida arruinará la conexión VPN de forma silenciosa.
+> >
+> > **Antes de guardar**, verifica que la clave quedó bien pegada ejecutando:
+> > ```bash
+> > sudo grep PublicKey /etc/wireguard/wg0.conf
+> > ```
+> > La salida debe ser una sola línea limpia, sin espacios al principio ni al final, parecida a esto:
+> > ```
+> > PublicKey = aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890abcde=
+> > ```
+> > Si ves dos líneas, espacios raros o caracteres `<` o `>` sueltos, vuelve a editar el archivo antes de continuar.
+>
+> Ahora levanta el túnel en el servidor y hazlo persistente:
+> ```bash
+> # Levantar el túnel
+> sudo wg-quick up wg0
+> # Hacerlo persistente al reinicio
+> sudo systemctl enable wg-quick@wg0
+> ```
+>
+> **En el cliente (tu PC físico, si elegiste la Opción A):** Activa el túnel haciendo clic en el botón **"Activar"** de la aplicación WireGuard.
+>
+> Verifica que el túnel está activo. En el servidor:
+> ```bash
+> # Muestra el estado del túnel y los peers conectados
+> sudo wg show
+> ```
+> Y desde el cliente:
+> ```bash
+> # Si recibes respuestas, el túnel funciona correctamente
+> ping 10.20.20.1
+> ```
+>
+> > [!important] 🔒 VPN activa: momento de cerrar el acceso directo
+> > El túnel funciona. Ahora es el momento de ejecutar las acciones de seguridad descritas más arriba: cambiar el puerto SSH a 2222 y hacer que solo escuche en `10.20.20.1`.
+> >
+> > A partir de ese momento, **todas tus conexiones SSH usarán este comando** (con la IP del túnel, no la de la Red Solo Anfitrión):
+> > ```bash
+> > ssh -p 2222 usuario@10.20.20.1
+> > ```
+
+---
+
+### 🚩 Resolución de Problemas y Evaluación
+
+> [!bug] Troubleshooting (¿No hay conexión?)
+> | Problema | Causa Probable | Solución Sugerida |
+> | :--- | :--- | :--- |
+> | `Address already in use`. | Ya hay otra interfaz VPN activa con esa IP. | Ejecuta `sudo wg-quick down wg0` antes de volver a levantarla. |
+> | No hay ping entre `10.20.20.1` y `10.20.20.2`. | El cliente no está en la misma Red Solo Anfitrión que el servidor, o el adaptador de red del cliente está mal seleccionado en VirtualBox. | Comprueba en VirtualBox que el adaptador usado por el cliente apunta a la misma red Solo Anfitrión (`vboxnet0`, la que configuraste en la Fase 1). |
+> | WireGuard no conecta pero no hay firewall de por medio. | Las llaves públicas están intercambiadas incorrectamente. | Verifica que la llave pública del cliente en el servidor y la del servidor en el cliente son exactas. |
+> | El cliente no encuentra el `Endpoint`. | Escribiste mal la IP `10.10.10.10` o el servidor no tiene esa IP activa. | Ejecuta `hostname -I` en el servidor y confirma que `10.10.10.10` sigue asignada al adaptador de Red Solo Anfitrión. |
+
+> [!help] Preguntas Críticas (Autoevaluación)
+> 1. ¿Por qué la llave privada **NUNCA** debe salir de tu servidor ni enviarse por correo?
+> 2. ¿Qué ventaja tiene WireGuard sobre protocolos antiguos en términos de rendimiento?
+> 3. ¿Para qué sirve el parámetro `AllowedIPs` en la configuración del Peer?
+> 4. Si tu Red Solo Anfitrión de VirtualBox ya está aislada de internet por diseño, ¿qué aporta realmente montar una VPN encima? Argumenta con el concepto de "Defensa en Profundidad".
+> 5. 🔬 **Reto práctico:** Con el túnel activo, ejecuta `sudo wg show` en el servidor y localiza la línea `latest handshake`. ¿Hace cuántos segundos fue el último intercambio? Ahora desactiva el túnel desde el cliente y vuelve a ejecutar el comando 30 segundos después. ¿Qué cambió en esa línea? ¿Qué te dice eso sobre el estado de la conexión?
+> 6. 🔬 **Reto práctico:** Con el túnel WireGuard **desactivado**, intenta conectarte al servidor por SSH usando la IP `10.10.10.10` (no la `10.20.20.1`). ¿Puedes entrar? ¿Por qué sí o por qué no? Razona tu respuesta mirando la configuración `ListenAddress` de `sshd_config` que aplicaste en esta fase.
+
+---
+
+> [!caution] 🛑 Auditoría y Seguridad (RA.05)
+> Las llaves privadas son la **identidad** de tu servidor. Si alguien las copia, podrá entrar en tu red virtual como si fuera él. **Validación:** El alumno debe demostrar el `ping 10.20.20.1` desde el cliente y el `sudo wg show` en el servidor mostrando el peer conectado.
