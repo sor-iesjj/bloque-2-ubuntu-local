@@ -126,6 +126,14 @@ Al terminar esta fase serás capaz de:
 > - **Si VirtualBox ya está instalado** en el equipo (pregunta al profesor o comprueba si aparece en el menú de aplicaciones): perfecto, salta directamente al Paso 2.
 > - **Si VirtualBox NO está instalado y no tienes permisos de administrador:** esta práctica **no es viable en ese equipo**. No intentes saltarte los permisos ni usar instaladores "portables" no autorizados. Avisa al profesor: la solución pasa por que el departamento de informática del centro lo instale de antemano en las imágenes de los equipos del aula, o que se use un equipo personal con permisos completos.
 
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
+> 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-1-infraestructura-virtual-local-virtualbox.md`) con su estructura, vacía.
+> 2. **Léete los 7 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+>
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+
 > [!example] Paso 1: Descarga e instalación de VirtualBox (solo si NO está ya instalado)
 > 1. Desde el navegador, entra en la web oficial: `virtualbox.org` → apartado **Downloads**.
 > 2. Descarga el instalador correspondiente a tu sistema operativo (Windows, macOS o Linux).

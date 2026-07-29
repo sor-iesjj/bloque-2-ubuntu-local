@@ -83,6 +83,14 @@
 
 ### 🖥️ Creación de la VM Cliente (VirtualBox)
 
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
+> 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-8-integracion-del-cliente-windows-11.md`) con su estructura, vacía.
+> 2. **Léete los 6 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+>
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+
 > [!example] Paso 0: Crear la máquina virtual Windows 11
 > Antes de tocar nada de dominio, necesitas una segunda VM. Ábrela así:
 >

@@ -35,6 +35,14 @@ Para terminar el proyecto, debemos aplicar la filosofía **Zero Trust** (Confian
 
 ### 🛠️ Procedimiento Práctico de Hardening
 
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
+> 1. **Crea la entrada de apuntes** de esta fase (`v1-auditoria-final-hardening-y-cierre-de-seguridad.md`) con su estructura, vacía.
+> 2. **Léete los 4 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+>
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+
 > [!example] Paso 1: Revisión del adaptador NAT del servidor
 > Antes de tocar el firewall, comprueba en VirtualBox → tu VM de servidor → **Configuración → Red** qué reglas de reenvío de puertos (*Port Forwarding*) tiene configuradas el Adaptador NAT (si usaste alguna en fases anteriores para conectar por SSH desde el host, por ejemplo `127.0.0.1:2222 → 10.10.10.10:22`).
 >

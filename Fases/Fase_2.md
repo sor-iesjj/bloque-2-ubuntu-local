@@ -111,6 +111,14 @@
 > > [!tip] 💡 ¿Consola de VirtualBox o SSH?
 > > Ambas opciones son válidas y hacen exactamente lo mismo. La consola de VirtualBox (la ventana de la VM) siempre funciona, incluso si la red todavía no está bien configurada. El SSH es más cómodo (puedes copiar y pegar comandos largos) pero requiere que la Red Solo Anfitrión ya esté operativa. Si tienes dudas de cuál usar, empieza por la consola de VirtualBox.
 
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
+> 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-2-purga-y-preparacion-del-entorno.md`) con su estructura, vacía.
+> 2. **Léete los 3 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+>
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+
 > [!example] Paso 1: Limpieza Total del Entorno
 > Antes de construir, debemos demoler lo viejo. Ejecuta estos comandos para liberar los puertos y limpiar la caché:
 >

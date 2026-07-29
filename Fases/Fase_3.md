@@ -94,6 +94,14 @@
 > > ```
 > > Si responde `Status: inactive`, no hay nada que hacer — el tráfico WireGuard pasará sin problema. Si en algún momento activas `ufw` (buena práctica en un servidor real), recuerda permitir el puerto `51820/udp` y el `2222/tcp` con `sudo ufw allow 51820/udp` y `sudo ufw allow 2222/tcp`.
 
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
+> 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-3-conectividad-vpn-wireguard.md`) con su estructura, vacía.
+> 2. **Léete los 4 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+>
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+
 > [!example] Al terminar: cierra el 22 directo y activa el SSH seguro por el 2222 vía túnel
 > Una vez que el túnel VPN funcione y hayas comprobado el `ping 10.20.20.1`, aplica **Zero Trust**: cerramos el acceso SSH directo por la Red Solo Anfitrión y dejamos solo el acceso a través del túnel cifrado.
 >
