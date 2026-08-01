@@ -129,7 +129,7 @@ Al terminar esta fase serás capaz de:
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
 > 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-1-infraestructura-virtual-local-virtualbox.md`) con su estructura, vacía.
-> 2. **Léete los 7 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 2. **Léete los 8 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
 > 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
 >
 > Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
@@ -266,6 +266,46 @@ Al terminar esta fase serás capaz de:
 >
 > > [!success] ✅ Si los tres pings responden, la Fase 1 está completa
 > > VM arrancada + IP correcta en las dos tarjetas + salida a Internet + ping desde el host. Ya tienes la base sobre la que se construirá el resto del proyecto BoochanV1.
+
+---
+
+> [!example] 🔌 Paso 8 — EJERCICIO DE VERIFICACIÓN: comprueba tu red desde fuera
+> Hasta aquí has configurado la red **y has confiado en que el panel dice la verdad**. Ahora vas a comprobarlo con fuentes **externas e independientes**, que es como se hace de verdad.
+>
+> > [!info] ¿Qué es una API y por qué la usa un administrador?
+> > Una **API** es una web hecha para que la consulte un programa en vez de una persona: en vez de devolverte una página con colores, te devuelve **datos limpios** en formato JSON.
+> >
+> > ¿Y para qué la quiere un administrador de sistemas? Para **comprobar desde fuera lo que desde dentro no puede ver**. Tu servidor te dirá siempre lo que él cree de sí mismo; un servicio externo te dice **lo que se ve realmente**. Y esa diferencia, cuando aparece, es justo donde está el problema que llevas dos horas buscando.
+> >
+> > Se consultan con **`curl`**, que ya has usado y que viene instalado en todas partes. Sin programar y sin instalar nada.
+>
+> **a) Verifica tu cálculo de subred.** Tu red es **`10.10.10.0/24`** (la red Solo-Anfitrión que has creado).
+> Primero, **a mano y sin ayuda**, escribe en tu entrada de apuntes: máscara decimal, dirección de red, broadcast, número de hosts asignables, primero y último.
+> Ahora compruébalo:
+> ```bash
+> curl "https://networkcalc.com/api/ip/10.10.10.0/24"
+> ```
+> Si no coincide, **no borres tu respuesta**: déjala y explica en el vídeo dónde te equivocaste. Eso enseña más que acertar.
+>
+> **b) La IP pública: aquí cae el NAT.** Desde **dentro de la VM**:
+> ```bash
+> curl "https://api.ipify.org?format=json"
+> ```
+> Y ahora lo mismo **desde tu ordenador anfitrión**, en otra terminal.
+>
+> > [!danger] 🤔 Para y explícalo antes de seguir
+> > **Sale la MISMA IP en los dos sitios.** Tu VM y tu ordenador comparten la salida a Internet.
+> > ¿Por qué? Porque el adaptador **NAT** que configuraste en el Paso 4 hace exactamente eso: la VM sale **disfrazada de tu ordenador**. Para Internet, tu servidor no existe como máquina independiente.
+> > **Dilo en voz alta:** ¿podría alguien de fuera conectarse a tu servidor con esa IP? ¿Por qué no?
+>
+> > [!question] Lo que va a tu entrada de apuntes
+> > 1. ¿Coincidió tu cálculo de subred con el de la API? Si no, ¿en qué fallaste?
+> > 2. ¿Cuál es la IP privada de tu servidor y cuál la pública? ¿Por qué no son la misma?
+> > 3. ¿Por qué una comprobación hecha **desde el propio servidor** vale menos que una hecha desde fuera?
+>
+> > [!note] 📌 Para saber más
+> > La teoría completa de esto está en la práctica **B1.9b — Verificar tu red con APIs públicas** del Bloque 1. Aquí lo aplicas a tu servidor de verdad.
+> > Esto explica por qué en las versiones **en la nube** (V2 y V3) las cosas cambian: allí el servidor **sí** tiene IP pública propia y **sí** se puede alcanzar desde fuera. Con eso vienen las ventajas… y los problemas de seguridad.
 
 ---
 
