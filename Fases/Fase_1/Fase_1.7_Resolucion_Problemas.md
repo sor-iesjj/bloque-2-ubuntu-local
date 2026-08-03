@@ -1,16 +1,14 @@
-## 🆘 Fase 1.E: Cuando Algo Falla
+## Fase 1 · Apartado 7 — 🚩 Resolución de problemas
 
-### Catálogo de incidentes reales de la Fase 1
-
-> **[Módulo: SOR — Sistemas Operativos en Red]**
-> **Profesor:** Pedro Navarro Miralles · IES Jorge Juan (ALICANTE)
+> **[Módulo: SOR — Sistemas Operativos en Red]** · **Fase 1: Infraestructura Virtual Local (VirtualBox)**
+> 🧭 Índice de la fase: [[Fase_1]]
+>
+> **📍 Cuándo se lee:** **Cuando algo no salga.** Búscate por el síntoma. No hace falta leerlo antes.
 
 ---
 
-> [!warning] 📖 Cómo se usa este documento
-> **Esto NO es una sub-fase y NO se entrega.** No hay vídeo ni entrada propia. Es material de consulta.
->
-> **Búscate por el síntoma**, arregla, y **cuenta el incidente en la entrada de la sub-fase donde te ocurrió**: qué viste, qué pensaste que era, qué resultó ser y cómo lo resolviste.
+> [!warning] 📖 Cómo se usa este apartado
+> **Búscate por el síntoma**, arregla, y **cuenta el incidente en la entrada de la parte donde te ocurrió**: qué viste, qué pensaste que era, qué resultó ser y cómo lo resolviste.
 >
 > Todos los casos de aquí **han pasado de verdad**, montando esta práctica en un equipo real. No son problemas imaginados por si acaso.
 
@@ -50,13 +48,13 @@
 > [!bug] Síntoma
 > La máquina arrancó, estuvo un rato sola y apareció un `login:`. No elegiste teclado, ni red, ni usuario. Y el usuario **no es** `boochan`.
 
-**Hipótesis.** No marcaste `Omitir instalación desatendida` en la [[Fase_1.1_La_Maquina_Virtual]], así que VirtualBox instaló Ubuntu por su cuenta con sus propios valores.
+**Hipótesis.** No marcaste `Omitir instalación desatendida` en la [[Fase_1.6.a_Procedimiento_Maquina_Virtual]], así que VirtualBox instaló Ubuntu por su cuenta con sus propios valores.
 
 **Comprobación.** Intenta entrar con `boochan` / `P@ssw0rd`. Si te rechaza, está confirmado.
 
 **Arreglo.** No intentes salvarlo desde dentro: la red quedó en DHCP, el hostname no es el que toca y falta OpenSSH. Son más cosas mal que bien.
 
-Clic derecho sobre la VM → **`Eliminar`** → **`Borrar todos los archivos`**. Y repite desde la [[Fase_1.1_La_Maquina_Virtual]] **marcando la casilla**. Quince minutos, no una tarde.
+Clic derecho sobre la VM → **`Eliminar`** → **`Borrar todos los archivos`**. Y repite desde la [[Fase_1.6.a_Procedimiento_Maquina_Virtual]] **marcando la casilla**. Quince minutos, no una tarde.
 
 > [!summary] Qué aprendes
 > Que un solo *checkbox* sin marcar puede generar cuatro problemas distintos, que aparecen **por separado y mucho después**, cuando ya no los relacionas con su causa. Cuando algo automatiza decisiones que deberías tomar tú, no te está ahorrando trabajo: te lo está aplazando.
@@ -164,7 +162,7 @@ Comprueba con `AltGr+2`.
 
 **Comprobación.** Es directa: **si solo ves una tarjeta, es esto.**
 
-**Arreglo.** **No sigas con la instalación.** Aborta, apaga la VM y vuelve a la [[Fase_1.2_La_Red_del_Laboratorio]]:
+**Arreglo.** **No sigas con la instalación.** Aborta, apaga la VM y vuelve a la [[Fase_1.6.b_Procedimiento_Red_Laboratorio]]:
 1. `Configuración → Red → Adaptador 2` → ¿está marcado `Habilitar adaptador de red`?
 2. ¿`Conectado a` dice `Adaptador sólo-anfitrión`?
 3. ¿`Nombre` apunta a la red del `10.10.10.1`?
@@ -381,7 +379,7 @@ sudo setupcon
 > [!info] Fíjate: es el mismo `setupcon` del teclado
 > **`console-setup` gestiona teclado y fuente juntos.** Por eso el mismo comando aplica las dos cosas.
 
-**3. La buena: SSH.** En cuanto tengas red, conéctate desde tu propia terminal ([[Fase_1.4_Verificacion_y_Acceso_Remoto]], Paso 2). Tu fuente, tu tamaño, varias pestañas, copiar y pegar. La ventana de VirtualBox se queda para arrancar la VM y poco más.
+**3. La buena: SSH.** En cuanto tengas red, conéctate desde tu propia terminal ([[Fase_1.6.d_Procedimiento_Verificacion_SSH]], Paso 2). Tu fuente, tu tamaño, varias pestañas, copiar y pegar. La ventana de VirtualBox se queda para arrancar la VM y poco más.
 
 > [!summary] Qué aprendes
 > Que la consola de VirtualBox es una **pantalla de emergencia**, no un puesto de trabajo. Y que la solución a muchos problemas de comodidad no es pelearse con la herramienta, sino usar la herramienta adecuada.
@@ -433,4 +431,11 @@ ping -c2 archive.ubuntu.com
 > [!tip] 💾 La red de seguridad que evita la mitad de estos sustos
 > Varios de los casos de arriba se resuelven en treinta segundos si tienes un **punto de control** de la fase anterior: restauras y repites, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver **[[Fase_0.S_Instantaneas_Puntos_de_Control]]**.
 
-> **Volver:** [[Fase_1.1_La_Maquina_Virtual]] · [[Fase_1.2_La_Red_del_Laboratorio]] · [[Fase_1.3_Instalar_Ubuntu_Server]] · [[Fase_1.4_Verificacion_y_Acceso_Remoto]]
+> [!tip] 💾 La red de seguridad que evita la mitad de estos sustos
+> Varios de los casos se resuelven en treinta segundos si tienes un **punto de control**: restauras y repites, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver [[Fase_1.8_Punto_de_Control]].
+
+---
+
+| ← Anterior | 🧭 Índice | Siguiente → |
+| :--- | :---: | ---: |
+| [[Fase_1.6.d_Procedimiento_Verificacion_SSH]] | [[Fase_1]] | [[Fase_1.8_Punto_de_Control]] |

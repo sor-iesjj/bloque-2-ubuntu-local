@@ -228,7 +228,7 @@
 >
 > *(La respuesta a la 2 es bonita: al restaurar no se recupera nada. Simplemente **se tira el disco de diferencias** y el original vuelve a ser el estado actual. Por eso tarda lo mismo con 20 GB que con 200.)*
 >
-> Esto enlaza con el ejercicio de la **[[Fase_1.1_La_Maquina_Virtual]]**, donde comparaste lo que ocupa el `.vdi` con los 20 GB que dice tener. Es el mismo fichero contándote otra parte de la historia.
+> Esto enlaza con el ejercicio de la **[[Fase_1.6.a_Procedimiento_Maquina_Virtual]]**, donde comparaste lo que ocupa el `.vdi` con los 20 GB que dice tener. Es el mismo fichero contándote otra parte de la historia.
 
 ---
 
