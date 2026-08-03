@@ -139,19 +139,52 @@
 > > [!info] 📚 Diccionario de Comandos: Para entender la sintaxis exacta y ver ejemplos de `apt`, `systemctl` y `rm`, consulta el [[Diccionario_Comandos_Sistema]].
 >
 > ```bash
-> # Detiene los servicios actuales (si no existen, el aviso es normal e inofensivo)
+> # 1. Detiene los servicios actuales (si no existen, el aviso es normal e inofensivo)
 > sudo systemctl stop smbd nmbd winbind 2>/dev/null || true
-> # Elimina agresivamente Samba y sus restos
-> sudo apt-get purge samba* -y
-> sudo apt-get autoremove -y
-> # Borra carpetas manuales para evitar residuos configurados
+>
+> # 2. Elimina Samba, winbind y su configuración. Lista EXPLÍCITA, sin comodines
+> sudo apt purge -y samba samba-common samba-common-bin winbind libnss-winbind libpam-winbind
+> sudo apt autoremove -y
+>
+> # 3. Borra carpetas manuales para evitar residuos configurados
 > sudo rm -rf /etc/samba/ /var/lib/samba/ /var/cache/samba/ /run/samba/
 > ```
 >
-> > [!tip] 💡 ¿Qué hace este comando?
-> > - **El asterisco (`samba*`):** Es un "comodín". Le dice a Linux: "Borra todo lo que empiece por la palabra samba". Así nos aseguramos de no dejar herramientas sueltas.
-> > - **El comando `rm -rf`:** Es la "demolición total". Borra carpetas aunque no estén vacías. Lo usamos porque a veces el desinstalador se olvida de borrar las bases de datos antiguas que podrían dar errores después.
-> > - **El `2>/dev/null || true` en el `systemctl stop`:** Si Samba no estaba instalado todavía en esta instalación limpia de Ubuntu, el comando daría un error inofensivo. Esta parte le dice a Linux "si falla, ignóralo y continúa". Es completamente normal ver ese paso sin ningún mensaje.
+> > [!tip] 💡 ¿Qué hace cada cosa?
+> > - **`purge` y no `remove`:** `remove` borra los programas pero **deja los ficheros de configuración**. Y el que nos estorba es precisamente `/etc/samba/smb.conf`: si sobrevive, la Fase 4 se encuentra una configuración vieja mezclada con la del dominio. **Ésta es la diferencia que hay que entender de esta fase.**
+> > - **`winbind` va en la lista aparte:** no empieza por "samba", así que si solo borraras los paquetes `samba*` se te quedaría instalado. Viene de fábrica en Ubuntu Server igual que Samba.
+> > - **`rm -rf`:** la "demolición total". Borra carpetas aunque no estén vacías. A veces el desinstalador se deja bases de datos antiguas que darían errores después.
+> > - **`2>/dev/null || true`:** si el servicio no existiera, el comando daría un error inofensivo. Esto le dice a Linux "si falla, ignóralo y sigue".
+>
+> > [!danger] ⚠️ Por qué la lista va escrita entera y no `apt purge samba*`
+> > Versiones anteriores de este manual usaban `apt-get purge samba* -y`, y estaba mal por dos motivos:
+> > 1. **El asterisco sin comillas lo interpreta primero la shell**, no `apt`. Bash intenta expandirlo contra **los ficheros del directorio en el que estés**. Si por casualidad hubiera un fichero que empiece por `samba`, el comando acabaría haciendo algo distinto de lo que crees.
+> > 2. **Un comodín en un borrado es una mala costumbre.** Hoy caza lo que querías; el día que caza de más, ya lo has borrado. En un servidor se escribe lo que se quiere borrar, y se lee antes de pulsar Enter.
+> >
+> > Fíjate en que `apt` te muestra la lista de lo que va a eliminar **antes** de hacerlo. Léela. Es tu última oportunidad de ver que se lleva algo que no esperabas.
+
+> [!example] Paso 1b: Comprueba que la demolición ha funcionado
+> No des por hecho que un comando ha hecho su trabajo porque no dio error. Las tres comprobaciones:
+>
+> ```bash
+> systemctl status smbd
+> sudo ss -tlnp | grep -E ':(139|445)'
+> dpkg -l | grep -E '^ii\s+samba'
+> ```
+>
+> Lo correcto es:
+>
+> | Comando | Respuesta que buscas | Si sale otra cosa |
+> | :--- | :--- | :--- |
+> | `systemctl status smbd` | `Unit smbd.service could not be found` | Si dice `active (running)`, la purga **no se ha ejecutado**. Vuelve al Paso 1 |
+> | `ss` en 139/445 | **nada, ninguna línea** | Si aparece `smbd` escuchando, esos puertos siguen ocupados y **la Fase 4 fallará** |
+> | `dpkg -l \| grep '^ii samba'` | **nada** | Si hay líneas `ii`, los paquetes siguen instalados |
+>
+> > [!info] ℹ️ Es normal que queden bibliotecas
+> > Puede que veas `samba-libs`, `python3-samba`, `libtdb1` o `libtalloc2`. **Déjalas si el `autoremove` no se las llevó.** Son bibliotecas, no servicios: no escuchan en ningún puerto y la Fase 4 las necesitará. Lo que teníamos que quitar era el **servidor** y su configuración.
+>
+> > [!question] 🤔 Antes de seguir
+> > Los puertos **139** y **445** que acabas de liberar, ¿de quién eran y quién los va a querer en la Fase 4? Contéstalo en tu entrada.
 
 > [!example] Paso 2: Instalación de Dependencias Críticas
 > Instalamos las herramientas que permiten a Linux "disfrazarse" de servidor Windows. Este comando necesita el adaptador **NAT** funcionando, ya que descarga paquetes de internet:
@@ -228,6 +261,9 @@
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | `apt purge` no encuentra Samba. | Samba no estaba instalado o ya lo borraste. | No te preocupes, verifica con `dpkg -l \| grep samba`. Si está vacío, perfecto. |
+> | Purgué Samba pero `systemctl status smbd` sigue diciendo `active (running)`. | El servicio seguía arrancado, o la purga no incluyó todos los paquetes. | Ejecuta el Paso 1 **entero y en orden**: primero el `systemctl stop`, después el `purge` con la lista completa. Comprueba con el Paso 1b. |
+> | Purgué con `samba*` y `winbind` sigue instalado. | El comodín solo caza lo que empieza por "samba". | Usa la lista explícita del Paso 1, que incluye `winbind`, `libnss-winbind` y `libpam-winbind`. |
+> | `ss` sigue mostrando algo en el 445 después de purgar. | Un proceso quedó vivo aunque el paquete se borrara. | `sudo ss -tlnp \| grep :445` te dice **qué proceso** lo ocupa. Párelo con `sudo systemctl stop <servicio>` y vuelve a comprobar. |
 > | El nombre del servidor es incorrecto. | Error de escritura en `/etc/hostname` o `/etc/hosts`. | Ejecuta `hostname -f`. Debe devolver `UbuntuServer.BOOCHANLAB.LOCAL`. |
 > | La pantalla azul de Kerberos no aparece. | Ya está configurado de una instalación anterior. | Ejecuta `sudo dpkg-reconfigure krb5-config` para reconfigurarlo. |
 > | `apt update` no descarga nada / sin internet. | El adaptador NAT no está conectado o mal configurado. | En VirtualBox: `Configuración de la VM → Red → Adaptador 1` debe estar habilitado y en modo `NAT`. Reinicia la VM tras el cambio. |
@@ -249,6 +285,8 @@
 > [!success] 🏁 Punto de Control (Antes de seguir)
 > - [ ] ¿El comando `hostname -f` devuelve `UbuntuServer.BOOCHANLAB.LOCAL`?
 > - [ ] ¿Has verificado que no hay servicios de Samba antiguos corriendo (`systemctl status smbd`)?
+>       - ✅ **Correcto:** `Unit smbd.service could not be found`
+>       - ❌ **Si dice `active (running)`:** la purga no ha funcionado. **No sigas a la Fase 3** — los puertos 139 y 445 seguirían ocupados y la Fase 4 fallaría sin decirte por qué. Vuelve al **Paso 1** y repite la limpieza, comprobando después con el **Paso 1b**.
 > - [ ] ¿`hostname -I` muestra la IP estática `10.10.10.10` del adaptador de Red Solo Anfitrión?
 
 ---
