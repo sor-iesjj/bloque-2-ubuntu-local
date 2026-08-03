@@ -1,10 +1,18 @@
+---
+Práctica: V1.F6
+Bloque: 02_Ubuntu_Local
+Version: BoochanV1
+RA: RA.01, RA.04, RA.05
+CE: CE.01.d, CE.04.b, CE.05.b
+Playlist: B2_Ubuntu_Local
+Vídeo: V1 · Fase 6 — Almacenamiento Virtual (Cuotas con Loop Devices)
+---
 ## 💾 Fase 6: Almacenamiento Virtual (Cuotas con Loop Devices)
 
 ### Infraestructura de Servidor Virtual (VirtualBox)
 
 > **[Módulo: SOR — Sistemas Operativos en Red]**
 > **[U.T. 5: Administración en Linux - Cuotas de Discos]**
-> **[RA.04]** Gestiona los recursos compartidos del sistema determinando niveles de seguridad.
 >
 > **Profesor:** Pedro Navarro Miralles  
 > **Correo:** p.navarromiralles2@edu.gva.es  
@@ -12,6 +20,21 @@
 >
 > **⏱️ Tiempo estimado:** ~1,5 horas (teoría + práctica + retos + troubleshooting)  
 > **Requisitos:** 4 GB RAM | 11 GB disco libre | SSH (o consola de VirtualBox)
+
+---
+
+> [!abstract] 📋 Qué se te evalúa en esta fase
+> Poner cuotas de disco toca **tres** resultados de aprendizaje, porque es a la vez sistema de archivos, recurso compartido y rendimiento del almacenamiento:
+>
+> **`RA.01`** *(35 % del módulo · UD1-UD4)* — *Instala sistemas operativos en red describiendo sus características e interpretando la documentación técnica.*
+> **`RA.04`** *(12 % del módulo · UD7)* — *Gestiona los recursos compartidos del sistema, interpretando especificaciones y determinando niveles de seguridad.*
+> **`RA.05`** *(10 % del módulo · UD7)* — *Realiza tareas de monitorización y uso del sistema operativo en red, describiendo las herramientas utilizadas.*
+>
+> | Código | Criterio de evaluación | Dónde lo demuestras aquí |
+> | :--- | :--- | :--- |
+> | `CE.01.d` | Se han seleccionado y aplicado los sistemas de archivos. | Crear el sistema de archivos dentro del *loop device* y montarlo con las opciones de cuota |
+> | `CE.04.b` | Se han identificado los recursos del sistema que se van a compartir y en qué condiciones. | **"En qué condiciones" es literalmente la cuota**: cuánto espacio puede ocupar cada usuario |
+> | `CE.05.b` | Se han identificado problemas de rendimiento en los dispositivos de almacenamiento. | Comprobar el consumo con `repquota` y ver qué pasa cuando un usuario llega a su límite |
 
 ---
 

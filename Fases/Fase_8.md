@@ -1,10 +1,18 @@
+---
+Práctica: V1.F8
+Bloque: 02_Ubuntu_Local
+Version: BoochanV1
+RA: RA.02, RA.04, RA.06
+CE: CE.02.c, CE.04.e, CE.06.a, CE.06.b, CE.06.c, CE.06.d, CE.06.e, CE.06.i
+Playlist: B2_Ubuntu_Local
+Vídeo: V1 · Fase 8 — Integración del Cliente (Windows 11)
+---
 ## 💻 Fase 8: Integración del Cliente (Windows 11)
 
 ### Infraestructura de Laboratorio Local (VirtualBox)
 
 > **[Módulo: SOR — Sistemas Operativos en Red]**
 > **[U.T. 10: Linux como servidor de dominio / Linux como cliente de dominio]**
-> **[RA.06]** Realiza tareas de integración de sistemas operativos libres y propietarios.
 >
 > **Profesor:** Pedro Navarro Miralles  
 > **Correo:** p.navarromiralles2@edu.gva.es  
@@ -12,6 +20,27 @@
 >
 > **⏱️ Tiempo estimado:** ~2 horas (creación de VM + teoría + práctica + retos + troubleshooting)  
 > **Requisitos:** VirtualBox instalado en el equipo | ISO de Windows 11 | 4 GB RAM libres para la nueva VM | 40 GB de disco libres | Samba completo (Fases 1-7)
+
+---
+
+> [!abstract] 📋 Qué se te evalúa en esta fase
+> **Resultado de Aprendizaje — `RA.06`** *(pesa un **12 %** del módulo · UD7)*
+> *Realiza tareas de integración de sistemas operativos libres y propietarios, describiendo las ventajas de compartir recursos.*
+>
+> Esta es **la fase central del RA.06**, y la única de todo el itinerario donde un Windows y un Linux trabajan juntos de verdad. Toca **6 de los 9 criterios** del RA.06, y de paso cierra un criterio del `RA.02` y otro del `RA.04` que quedaban pendientes.
+>
+> | Código | Criterio de evaluación | Dónde lo demuestras aquí |
+> | :--- | :--- | :--- |
+> | `CE.06.a` | Se ha identificado la necesidad de compartir recursos en red entre diferentes sistemas operativos. | El caso de partida: por qué el cliente Windows necesita los datos que vive en el servidor Linux |
+> | `CE.06.b` | Se ha comprobado la conectividad de la red en un escenario heterogéneo. | `ping` Windows ↔ Ubuntu por la Red Solo Anfitrión antes de unir nada |
+> | `CE.06.c` | Se ha descrito la funcionalidad de los servicios que permiten compartir recursos en red. | Explicar qué hacen SMB, LDAP y Kerberos en esta unión |
+> | `CE.06.d` | Se han instalado y configurado servicios para compartir recursos en red. | Unir el Windows 11 al dominio y montar los recursos compartidos |
+> | `CE.06.e` | Se ha accedido a sistemas de archivos en red desde equipos con diferentes sistemas operativos. | Abrir desde el Explorador de Windows las carpetas que sirve el Samba de Ubuntu |
+> | `CE.06.i` | Se ha comprobado el funcionamiento de los servicios instalados. | Iniciar sesión como `user1` del dominio y comprobar que ve lo suyo y no lo ajeno |
+> | `CE.02.c` | Se han configurado y gestionado cuentas de equipo. | **Unir el PC al dominio crea una cuenta de equipo**, no de usuario. Es el único sitio del itinerario donde se ve |
+> | `CE.04.e` | Se ha utilizado el entorno gráfico para compartir recursos. | Toda la parte de Windows: el Explorador, no la consola |
+>
+> **Los 3 del RA.06 que NO se evalúan aquí:** `CE.06.f` (impresoras entre sistemas distintos) y `CE.06.g` (trabajo en grupo) no se trabajan en este itinerario; `CE.06.h` (niveles de seguridad de acceso) se demuestra en la **Fase 3** y en la **Auditoría Final**.
 
 ---
 

@@ -1,10 +1,10 @@
+
 ## 👑 Fase 4: Aprovisionamiento del Dominio (Samba AD DC)
 
 ### Infraestructura de Servidor Local (VirtualBox)
 
 > **[Módulo: SOR — Sistemas Operativos en Red]**
 > **[U.T. 10: Integración de Sistemas Operativos - Servidor de Dominio]**
-> **[RA.03]** Realiza tareas de gestión sobre dominios identificando necesidades y aplicando herramientas.
 >
 > **Profesor:** Pedro Navarro Miralles  
 > **Correo:** p.navarromiralles2@edu.gva.es  
@@ -12,6 +12,25 @@
 >
 > **⏱️ Tiempo estimado:** ~2,5 horas (teoría + práctica + retos + troubleshooting)  
 > **Requisitos:** VM con 3072-4096 MB RAM asignados en VirtualBox (según la nota de dimensionado de la Fase 1) | Git | Samba disponible
+
+---
+
+> [!abstract] 📋 Qué se te evalúa en esta fase
+> **Resultado de Aprendizaje — `RA.03`** *(pesa un **18 %** del módulo, el segundo más alto · UD6)*
+> *Realiza tareas de gestión sobre dominios identificando necesidades y aplicando herramientas de administración.*
+>
+> Esta es **la fase central del RA.03**: toca **6 de sus 8 criterios**.
+>
+> | Código | Criterio de evaluación | Dónde lo demuestras aquí |
+> | :--- | :--- | :--- |
+> | `CE.03.a` | Se ha identificado la función del servicio de directorio, sus elementos y nomenclatura. | El fundamento teórico: qué es un directorio, y el porqué de `BOOCHANLAB` / `BOOCHANLAB.LOCAL` (NetBIOS y Realm) |
+> | `CE.03.b` | Se ha reconocido el concepto de dominio y sus funciones. | Explicar en el vídeo qué gana el laboratorio al tener dominio frente a máquinas sueltas |
+> | `CE.03.d` | Se ha realizado la instalación del servicio de directorio. | El aprovisionamiento de Samba AD DC |
+> | `CE.03.e` | Se ha realizado la configuración básica del servicio de directorio. | `smb.conf`, el DNS interno y `resolv.conf` inmutable |
+> | `CE.03.g` | Se ha analizado la estructura del servicio de directorio. | Recorrer el árbol del dominio recién creado y reconocer sus contenedores |
+> | `CE.03.h` | Se han utilizado herramientas de administración de dominios. | `samba-tool` de principio a fin |
+>
+> **Los 2 que NO se evalúan aquí:** `CE.03.f` (agrupaciones para modelos administrativos) se trabaja en la **Fase 5** al crear las unidades organizativas; `CE.03.c` (relaciones de confianza entre dominios) **requiere dos dominios** y queda fuera del alcance de este laboratorio de un solo servidor.
 
 ---
 

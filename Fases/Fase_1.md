@@ -1,12 +1,3 @@
----
-Práctica: V1.F1
-Bloque: 02_Ubuntu_Local
-Version: BoochanV1
-RA: RA1
-CE: CE.01.a, CE.01.b, CE.01.c, CE.01.e, CE.01.g, CE.01.i
-Playlist: B2_Ubuntu_Local
-Vídeo: V1 · Fase 1 — Infraestructura Virtual Local (VirtualBox)
----
 
 ## 🏗️ Fase 1: Infraestructura Virtual Local (VirtualBox)
 
@@ -25,9 +16,10 @@ Vídeo: V1 · Fase 1 — Infraestructura Virtual Local (VirtualBox)
 ---
 
 > [!abstract] 📋 Qué se te evalúa en esta fase
-> **Resultado de Aprendizaje — `RA1`:** *Instala sistemas operativos en red, describiendo sus características e interpretando la documentación técnica.*
+> **Resultado de Aprendizaje — `RA.01`** *(pesa un **35 %** del módulo, el más alto de los seis · UD1-UD4)*
+> *Instala sistemas operativos en red describiendo sus características e interpretando la documentación técnica.*
 >
-> Esta fase toca **6 de los 9 criterios** del RA1. Estos son, y dónde se demuestra cada uno:
+> Esta fase toca **6 de los 9 criterios** del `RA.01`. Estos son, con su texto literal, y dónde se demuestra cada uno:
 >
 > | Código | Criterio de evaluación | Dónde lo demuestras aquí |
 > | :--- | :--- | :--- |
@@ -39,10 +31,6 @@ Vídeo: V1 · Fase 1 — Infraestructura Virtual Local (VirtualBox)
 > | `CE.01.i` | Se ha comprobado la conectividad del servidor con los equipos cliente. | Pasos 7 y 8: `ping` a Internet, `ping 10.10.10.10` desde tu host y verificación con APIs externas |
 >
 > **Los 3 que NO se evalúan aquí** (para que sepas que no se te han olvidado): `CE.01.d` sistemas de archivos y `CE.01.h` actualización del sistema se trabajan en la **Fase 2**; `CE.01.f` automatización de instalaciones tiene práctica propia en el **Bloque 1 (B1.12, autoinstall)**.
->
-> > [!note] 🎓 ¿Y esto para qué me lo cuentas?
-> > Porque tienes derecho a saber **por qué se te evalúa lo que se te evalúa**. Estos códigos no me los invento: salen de la programación didáctica del módulo, que a su vez desarrolla el **Real Decreto 1691/2007** y la **Orden de 29 de julio de 2009**. Un RA se aprueba demostrando **más del 50 % de sus criterios**, y todos pesan igual.
-> > Traducido: si haces la fase entera pero te saltas el `ping` del Paso 7, no es que "pierdas puntos" — es que hay un criterio concreto, con nombre y código, que no has demostrado.
 
 ---
 
