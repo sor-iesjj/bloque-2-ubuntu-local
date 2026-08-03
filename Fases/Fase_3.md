@@ -166,10 +166,20 @@
 > # Muestra la llave PÚBLICA del servidor (esta se comparte con el cliente)
 > cat /etc/wireguard/publickey
 > ```
-> Cuando hayas copiado el valor, vuelve al usuario normal:
+> **5.** Cuando hayas copiado el valor, vuelve al usuario normal:
 > ```bash
 > exit
 > ```
+>
+> > [!bug] 🆘 ¿El `cat` te dice `No such file or directory`?
+> > Las llaves se crearon en otro directorio, casi seguro en `/root`, porque el bloque se pegó de golpe. Compruébalo:
+> > ```bash
+> > ls -l /root/privatekey /root/publickey
+> > ```
+> > Si están ahí, **bórralas** (son llaves privadas sueltas donde no deben estar) y repite desde el punto 1, línea a línea:
+> > ```bash
+> > rm -f /root/privatekey /root/publickey
+> > ```
 >
 > > [!tip] 💡 ¿Qué hace este comando? (La tubería avanzada)
 > > - **El Pipe (`|`):** Imagina que es una tubería. La salida de un comando entra directamente al siguiente.
