@@ -137,10 +137,10 @@
 > Creamos dos usuarios: `user1` pertenecerá al grupo `policia` y `user2` al grupo `bomberos`. Esto nos permitirá demostrar en la Fase 7 que cada uno ve carpetas diferentes:
 > ```bash
 > # Creamos user1 asignando su UID y el GID del grupo policia
-> sudo samba-tool user create user1 'P@ssword2026!' --uid-number=10001 --gid-number=3001
+> sudo samba-tool user create user1 'P@ssw0rd' --uid-number=10001 --gid-number=3001
 >
 > # Creamos user2 asignando su UID y el GID del grupo bomberos
-> sudo samba-tool user create user2 'P@ssword2026!' --uid-number=10002 --gid-number=3002
+> sudo samba-tool user create user2 'P@ssw0rd' --uid-number=10002 --gid-number=3002
 >
 > # Añadimos cada usuario a su grupo correspondiente
 > sudo samba-tool group addmembers policia user1
@@ -158,7 +158,7 @@
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | `id user1` no devuelve nada. | El `winbind` no está en `/etc/nsswitch.conf` o el servicio no está activo. | Comprueba el Paso 1 y verifica que las líneas `passwd` y `group` incluyen `winbind`. Luego ejecuta `sudo systemctl status winbind`. |
-> | Error: "Password too weak". | La política de AD exige complejidad. | Usa una contraseña con mayúsculas, números y símbolos como `P@ssword2026!`. |
+> | Error: "Password too weak". | La política de AD exige complejidad. | Usa una contraseña con mayúsculas, números y símbolos como `P@ssw0rd`. |
 > | Error: "Group already exists". | El grupo se creó en un intento anterior. | Ejecuta `sudo samba-tool group delete policia` y vuelve a crearlo. |
 > | Error de esquema LDAP en `addunixattrs` ("no such attribute" o similar). | El dominio se provisionó sin el flag RFC 2307. | El script de la Fase 4 debe haberse ejecutado con `--use-rfc2307`. Vuelve a la Fase 4, borra el dominio con `sudo samba-tool domain demote` y ejecuta de nuevo el script. |
 
@@ -166,7 +166,7 @@
 > 1. ¿Por qué es mejor y más profesional dar permisos a un grupo que a un usuario individual?
 > 2. ¿Qué es el servicio **winbind** y por qué decimos que es el "traductor" del sistema?
 > 3. 🔬 **Reto práctico:** Ejecuta `id user1` e `id user2` en el servidor. Anota el UID y GID de cada uno. Ahora crea un archivo vacío dentro de `/srv/samba/prueba1/` con `sudo -u 'BOOCHANLAB\user1' touch /srv/samba/prueba1/test_user1.txt` y ejecuta `ls -la /srv/samba/prueba1/`. ¿A qué usuario y grupo pertenece el archivo? ¿Coincide con los IDs que anotaste?
-> 4. 🔬 **Reto práctico:** Intenta crear un usuario sin especificar UID: `sudo samba-tool user create user3 'P@ssword2026!'`. Luego ejecuta `id user3`. ¿Qué UID recibe? ¿Puedes predecir qué UID tendrá el próximo usuario sin especificarlo? ¿Por qué esto es un problema en un servidor de producción con permisos de carpetas?
+> 4. 🔬 **Reto práctico:** Intenta crear un usuario sin especificar UID: `sudo samba-tool user create user3 'P@ssw0rd'`. Luego ejecuta `id user3`. ¿Qué UID recibe? ¿Puedes predecir qué UID tendrá el próximo usuario sin especificarlo? ¿Por qué esto es un problema en un servidor de producción con permisos de carpetas?
 > 5. ¿Cómo verificarías en la terminal que un usuario de Samba es reconocido por el comando `ls -l`?
 
 ---

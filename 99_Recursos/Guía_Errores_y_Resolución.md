@@ -461,7 +461,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > Al crear un usuario con `samba-tool user create` con una contraseña que no cumple la política de complejidad de Active Directory.
 
 > [!info] ¿Hay que preocuparse?
-> No. Usa una contraseña con mayúsculas, minúsculas, números y símbolos, como `P@ssword2026!`.
+> No. Usa una contraseña con mayúsculas, minúsculas, números y símbolos, como `P@ssw0rd`.
 
 ---
 

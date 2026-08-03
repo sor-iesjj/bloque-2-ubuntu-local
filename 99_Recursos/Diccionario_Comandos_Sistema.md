@@ -117,7 +117,7 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 > - `sudo samba-tool domain provision --use-rfc2307 --realm=BOOCHANLAB.LOCAL --domain=BOOCHANLAB --interactive`: Este comando inicia un "wizard" (asistente interactivo) para convertir un pequeño servidor Linux en el Controlador Maestro del dominio `BOOCHANLAB.LOCAL`. En BoochanV1 se ejecuta automáticamente a través del script `provision_boochan.sh`.
 > - `sudo samba-tool group add policia`: Da de alta el grupo "policia" en el dominio.
 > - `sudo samba-tool group addunixattrs policia 3001`: Inyecta la traducción (RFC2307) para que Linux asocie el grupo "policia" con el número **3001**. Indispensable.
-> - `sudo samba-tool user create user1 'P@ssword2026!' --uid-number=10001 --gid-number=3001`: Crea un empleado y, a la vez, lo casa con el sistema numérico de seguridad interno del Kernel.
+> - `sudo samba-tool user create user1 'P@ssw0rd' --uid-number=10001 --gid-number=3001`: Crea un empleado y, a la vez, lo casa con el sistema numérico de seguridad interno del Kernel.
 > - `sudo samba-tool domain level show`: Te indica si estás emulando la estructura base de un Windows Server 2008 o 2012.
 > - `sudo samba-tool user list`: Lista todos los usuarios del dominio, incluidos los que Samba crea automáticamente al provisionar (`Administrator`, `krbtgt`, `Guest`).
 

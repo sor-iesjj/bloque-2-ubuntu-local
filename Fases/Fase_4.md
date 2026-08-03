@@ -132,7 +132,7 @@
 > > - **`git clone`:** Descarga una copia completa del proyecto desde internet a tu servidor (usando el adaptador NAT para salir), igual que descargar un ZIP pero de forma más profesional.
 > > - **`chmod +x`:** En Linux, los archivos descargados no "tienen permiso" para ejecutarse por seguridad. Este comando le pone la etiqueta de **ejecutable**.
 > > - **El punto y la barra (`./`):** Le dice a Linux: "Busca este archivo **aquí mismo**, en esta carpeta". Sin el `./`, Linux buscaría el comando en las carpetas del sistema y no lo encontraría.
-> > - **Los valores por defecto del script:** El script ya viene configurado con los valores correctos de este proyecto (`BOOCHANLAB`, Realm `BOOCHANLAB.LOCAL`, contraseña `P@ssword2026!`). No necesitas modificar nada salvo que tu profesor indique lo contrario.
+> > - **Los valores por defecto del script:** El script ya viene configurado con los valores correctos de este proyecto (`BOOCHANLAB`, Realm `BOOCHANLAB.LOCAL`, contraseña `P@ssw0rd`). No necesitas modificar nada salvo que tu profesor indique lo contrario.
 >
 > > [!note] 📄 Contenido de referencia del script (`provision_boochan.sh` — versión V1)
 > > A diferencia de V2/V3, aquí no hay ningún paso de "gestión DNS persistente frente a la nube" que cambie — el mecanismo de `systemd-resolved` es el mismo en local. Solo cambian dos variables al principio del script:
@@ -141,7 +141,7 @@
 > > # BOOCHAN V1 - Script Profesional de Aprovisionamiento Samba AD DC (VirtualBox local)
 > > DOMAIN_NAME=${1:-"BOOCHANLAB"}
 > > REALM_NAME=${2:-"BOOCHANLAB.LOCAL"}
-> > ADMIN_PASS=${3:-"P@ssword2026!"}
+> > ADMIN_PASS=${3:-"P@ssw0rd"}
 > > DNS_FORWARDER="8.8.8.8"
 > >
 > > echo "--- Iniciando el despliegue desatendido del Reino: $REALM_NAME ---"
