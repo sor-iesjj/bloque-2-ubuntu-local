@@ -120,25 +120,76 @@
 >
 > Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
 
-> [!example] Al terminar: cierra el 22 directo y activa el SSH seguro por el 2222 vía túnel
-> Una vez que el túnel VPN funcione y hayas comprobado el `ping 10.20.20.1`, aplica **Zero Trust**: cerramos el acceso SSH directo por la Red Solo Anfitrión y dejamos solo el acceso a través del túnel cifrado.
+> [!danger] 🛑 ANTES DE TOCAR NADA: no cierres tu única puerta
+> Lo que viene a continuación **deja el servidor accesible SOLO a través del túnel**. Si lo aplicas antes de que el túnel funcione, te quedas fuera y tendrás que recuperar el acceso desde la consola de VirtualBox.
 >
-> **En el servidor:** cambia el puerto SSH de 22 a 2222 y haz que solo escuche en la interfaz del túnel:
+> **Tres condiciones, las tres obligatorias, antes de ejecutar un solo comando de este apartado:**
+>
+> 1. [ ] El túnel está levantado: `sudo wg show` muestra el *peer* conectado.
+> 2. [ ] El `ping 10.20.20.1` responde **desde el cliente**.
+> 3. [ ] 💾 Tienes la instantánea **`Fase 3 terminada`** tomada. *(Si algo sale mal, restaurar es más rápido que arreglarlo.)*
+>
+> Si alguna casilla está sin marcar, **no sigas**. Termina primero el procedimiento de la fase y vuelve aquí al final.
+
+> [!example] Al terminar: cierra el 22 directo y deja el SSH solo por el túnel
+> Con las tres condiciones cumplidas, aplicamos **Zero Trust**: se cierra el acceso SSH directo por la Red Solo Anfitrión y se deja únicamente a través del túnel cifrado.
+>
+> > [!warning] ⚠️ Editar `sshd_config` NO cambia el puerto en Ubuntu moderno
+> > Esto sorprende a todo el mundo, y es un fallo de seguridad silencioso si no lo sabes.
+> >
+> > Desde **Ubuntu 22.10**, OpenSSH arranca por **activación por socket de systemd**: quien escucha en el puerto no es `sshd`, sino una unidad llamada **`ssh.socket`**. Por eso las directivas **`Port` y `ListenAddress` de `/etc/ssh/sshd_config` se IGNORAN**.
+> >
+> > Si editas el fichero, reinicias el servicio y das el cierre por hecho, tendrás un servidor que **crees** cerrado y que sigue escuchando en el 22 para todo el mundo. Compruébalo tú mismo:
+> > ```bash
+> > sudo ss -tlnp | grep :22
+> > ```
+> > Si en la línea aparece **`("systemd",pid=1,...)`** como propietario del socket, es que manda `ssh.socket` y no `sshd_config`.
+>
+> **El procedimiento correcto** es editar la unidad del socket:
+>
 > ```bash
-> sudo nano /etc/ssh/sshd_config
-> ```
-> Busca la línea `#Port 22`, elimina el `#` y cámbiala a `Port 2222`. Añade también una línea `ListenAddress 10.20.20.1` para que SSH solo escuche a través del túnel WireGuard (no en `10.10.10.10`). Guarda (`Ctrl+O`, `Enter`, `Ctrl+X`) y reinicia el servicio:
-> ```bash
-> sudo systemctl restart ssh
+> sudo systemctl edit ssh.socket
 > ```
 >
-> > [!caution] ⚠️ No cierres tu única puerta antes de verificar
-> > No apliques este cambio hasta que hayas comprobado el `ping 10.20.20.1` funcionando desde el cliente. Si cierras el SSH de la Red Solo Anfitrión antes de que el túnel esté probado y operativo, te quedarás sin forma de administrar el servidor remotamente — tendrás que recuperar el acceso desde la propia consola de VirtualBox.
+> Se abre un editor. Escribe esto **en la zona editable** (entre las líneas de comentarios que te marca):
 >
-> A partir de este momento **todas tus conexiones SSH usarán este comando** (con la IP del túnel, no la de la Red Solo Anfitrión):
-> ```bash
-> ssh -p 2222 usuario@10.20.20.1
 > ```
+> [Socket]
+> ListenStream=
+> ListenStream=10.20.20.1:2222
+> ```
+>
+> > [!important] 💡 La línea vacía no sobra
+> > `ListenStream=` **a secas borra el valor por defecto**. Sin ella, systemd **suma** los dos valores y el servidor seguiría escuchando también en el `0.0.0.0:22` — es decir, no habrías cerrado nada.
+>
+> Aplica y **verifica antes de cerrar la sesión**:
+>
+> ```bash
+> sudo systemctl daemon-reload
+> sudo systemctl restart ssh.socket
+> sudo ss -tlnp | grep ssh
+> ```
+>
+> Tiene que aparecer **`10.20.20.1:2222`** y **ninguna línea con `0.0.0.0:22`**.
+>
+> > [!danger] 🔑 Comprueba el acceso nuevo SIN cerrar el actual
+> > Deja tu sesión abierta y abre **otra terminal**. Prueba desde ahí:
+> > ```bash
+> > ssh -p 2222 boochan@10.20.20.1
+> > ```
+> > **Solo cuando esa segunda sesión funcione**, cierra la primera. Si no funciona, aún estás dentro y puedes revertir.
+> >
+> > **Para revertir:** `sudo systemctl revert ssh.socket` seguido de `sudo systemctl daemon-reload && sudo systemctl restart ssh.socket`. Vuelve al `0.0.0.0:22` de fábrica.
+>
+> A partir de aquí, **todas tus conexiones** usan la IP del túnel:
+> ```bash
+> ssh -p 2222 boochan@10.20.20.1
+> ```
+>
+> > [!caution] ⚠️ Esto rompe el reenvío de puertos, si lo montaste
+> > Si en la Fase 1 configuraste un reenvío `anfitrión:2222 → VM:22` para entrar desde otro ordenador de la red, **deja de funcionar**: ya no hay nadie escuchando en el 22 de la VM.
+> >
+> > Tienes dos salidas: administrar desde la consola de VirtualBox, o **instalar el cliente WireGuard en ese otro ordenador** y entrar por el túnel, que es justo lo que esta fase quiere enseñarte. La segunda es la buena.
 
 ---
 
@@ -350,7 +401,9 @@
 > 3. ¿Para qué sirve el parámetro `AllowedIPs` en la configuración del Peer?
 > 4. Si tu Red Solo Anfitrión de VirtualBox ya está aislada de internet por diseño, ¿qué aporta realmente montar una VPN encima? Argumenta con el concepto de "Defensa en Profundidad".
 > 5. 🔬 **Reto práctico:** Con el túnel activo, ejecuta `sudo wg show` en el servidor y localiza la línea `latest handshake`. ¿Hace cuántos segundos fue el último intercambio? Ahora desactiva el túnel desde el cliente y vuelve a ejecutar el comando 30 segundos después. ¿Qué cambió en esa línea? ¿Qué te dice eso sobre el estado de la conexión?
-> 6. 🔬 **Reto práctico:** Con el túnel WireGuard **desactivado**, intenta conectarte al servidor por SSH usando la IP `10.10.10.10` (no la `10.20.20.1`). ¿Puedes entrar? ¿Por qué sí o por qué no? Razona tu respuesta mirando la configuración `ListenAddress` de `sshd_config` que aplicaste en esta fase.
+> 6. 🔬 **Reto práctico:** Con el túnel WireGuard **desactivado**, intenta conectarte al servidor por SSH usando la IP `10.10.10.10` (no la `10.20.20.1`). ¿Puedes entrar? ¿Por qué sí o por qué no? Razónalo mirando la salida de `sudo ss -tlnp | grep ssh` y la configuración de `ssh.socket` que aplicaste.
+> 7. 🔬 **Reto de diagnóstico:** edita `/etc/ssh/sshd_config`, pon `Port 9999`, reinicia con `sudo systemctl restart ssh` y ejecuta `sudo ss -tlnp | grep ssh`. **El puerto no cambia.** ¿Por qué? ¿Quién está escuchando en realidad? *(Pista: mira quién aparece como propietario del socket.)* Deshaz el cambio después.
+>    **Esta es la pregunta importante de toda la fase:** un fichero de configuración puede estar diciendo una cosa mientras el sistema hace otra. Y si te fías del fichero, crees tener cerrado algo que sigue abierto.
 
 ---
 
