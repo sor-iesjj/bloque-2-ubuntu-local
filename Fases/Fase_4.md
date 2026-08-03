@@ -63,7 +63,7 @@
 > *   **DNS Interno:** Samba gestiona sus propios registros SRV que indican dónde están los servicios de red.
 
 > [!important] 2. Inmutabilidad y Persistencia (aquí también hace falta, aunque no haya "nube" de por medio)
-> Podrías pensar que el problema de `resolv.conf` sobrescrito es exclusivo de la nube (Azure/AWS inyectando su propio DNS). **No es así.** Ubuntu Server 24.04 gestiona el DNS mediante `systemd-resolved` de forma nativa, tanto si la VM corre en AWS como si corre en tu VirtualBox local. Cada vez que la interfaz de red se reconfigura (por ejemplo, en cada arranque, al renovar la IP del adaptador NAT), `systemd-resolved` puede reescribir `/etc/resolv.conf` y borrar nuestra configuración manual. El comando `chattr +i` lo hace **inmutable** (imposible de borrar o cambiar ni por el propio root), garantizando que el servidor siempre se consulte a sí mismo (`127.0.0.1`) para resolver nombres del dominio.
+> Podrías pensar que el problema de `resolv.conf` sobrescrito es exclusivo de la nube (Azure/AWS inyectando su propio DNS). **No es así.** Ubuntu Server 26.04 gestiona el DNS mediante `systemd-resolved` de forma nativa, tanto si la VM corre en AWS como si corre en tu VirtualBox local. Cada vez que la interfaz de red se reconfigura (por ejemplo, en cada arranque, al renovar la IP del adaptador NAT), `systemd-resolved` puede reescribir `/etc/resolv.conf` y borrar nuestra configuración manual. El comando `chattr +i` lo hace **inmutable** (imposible de borrar o cambiar ni por el propio root), garantizando que el servidor siempre se consulte a sí mismo (`127.0.0.1`) para resolver nombres del dominio.
 
 ### 📖 Diccionario de Conceptos Clave
 

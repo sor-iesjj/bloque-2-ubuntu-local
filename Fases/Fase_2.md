@@ -32,7 +32,7 @@
 ### 🎯 ¿Dónde Estamos?
 
 > [!info] Vienes de Fase 1
-> Creaste una máquina virtual con Ubuntu Server 24.04 LTS en VirtualBox, con dos adaptadores de red: uno de **Red Solo Anfitrión** con la IP estática `10.10.10.10/24` (para hablar con la futura VM cliente Windows 11 y con tu propio ordenador) y otro **NAT** (para salir a internet y actualizar paquetes). La VM está encendida y accesible. Pero viene "de fábrica" con software innecesario: servicios antiguos, demonios durmiendo, paquetes que consumirán RAM y podrían ser puertas de seguridad.
+> Creaste una máquina virtual con Ubuntu Server 26.04 LTS en VirtualBox, con dos adaptadores de red: uno de **Red Solo Anfitrión** con la IP estática `10.10.10.10/24` (para hablar con la futura VM cliente Windows 11 y con tu propio ordenador) y otro **NAT** (para salir a internet y actualizar paquetes). La VM está encendida y accesible. Pero viene "de fábrica" con software innecesario: servicios antiguos, demonios durmiendo, paquetes que consumirán RAM y podrían ser puertas de seguridad.
 
 > [!warning] El Problema
 > Ubuntu instala de serie Samba básico (para "compartir archivos entre amigos"). Este Samba primitivo ocupa el puerto 445, que tu futuro **Controlador de Dominio profesional** (Fase 4) necesitará. Además, servicios como CUPS (impresoras) o IMAP (correo) están dormidos pero activos, consumiendo recursos. El servidor tampoco sabe su identidad: `/etc/hosts` dice "localhost" sin un verdadero nombre de dominio.

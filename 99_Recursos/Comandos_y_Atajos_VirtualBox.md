@@ -30,7 +30,7 @@ Esta guía no existe en BoochanV2 (Azure) ni en BoochanV3 (AWS), porque allí la
 > **Ruta:** `Configuración → Almacenamiento` → selecciona el icono de disquete/CD bajo el controlador → icono de disco a la derecha → `Elegir un archivo de disco...`
 
 > [!example] Uso en BoochanV1
-> - Fase 1: montar la ISO de Ubuntu Server 24.04 LTS para instalar el servidor.
+> - Fase 1: montar la ISO de Ubuntu Server 26.04 LTS para instalar el servidor.
 > - Fase 8: montar la ISO de Windows 11 para instalar la VM cliente.
 > - Al terminar la instalación, VirtualBox expulsa la ISO automáticamente cuando el instalador te lo pide (pulsa Enter).
 

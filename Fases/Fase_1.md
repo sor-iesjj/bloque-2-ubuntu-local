@@ -11,7 +11,7 @@
 > **Centro:** IES Jorge Juan (ALICANTE)
 >
 > **⏱️ Tiempo estimado:** ~1,5 - 2 horas (descarga de la ISO incluida, teoría + práctica + troubleshooting)
-> **Requisitos:** VirtualBox instalado en el equipo · ~2 GB de RAM libres · ~20 GB de disco libres · ISO de Ubuntu Server 24.04 LTS
+> **Requisitos:** VirtualBox instalado en el equipo · ~2 GB de RAM libres · ~20 GB de disco libres · ISO de Ubuntu Server 26.04 LTS
 
 ---
 
@@ -37,7 +37,7 @@ Al terminar esta fase serás capaz de:
 - [ ] Instalar o verificar VirtualBox en tu equipo del aula.
 - [ ] Crear una máquina virtual dimensionada de forma realista para un portátil compartido.
 - [ ] Configurar **dos adaptadores de red** distintos en la VM y explicar para qué sirve cada uno.
-- [ ] Instalar Ubuntu Server 24.04 LTS desde cero, incluyendo una **IP estática** en la red interna.
+- [ ] Instalar Ubuntu Server 26.04 LTS desde cero, incluyendo una **IP estática** en la red interna.
 - [ ] Conocer el nombre de dominio (`BOOCHANLAB.LOCAL`) que usará todo el proyecto BoochanV1.
 - [ ] Verificar que la VM arranca, tiene red y responde a `ping` desde tu propio ordenador (el host).
 
@@ -52,11 +52,11 @@ Al terminar esta fase serás capaz de:
 > No siempre hay presupuesto (ni conexión a Internet fiable en el aula) para tener una cuenta cloud por alumno. Además, entender cómo funciona la virtualización *local* — la que corre en tu propio hardware — es la base sobre la que luego se entiende la virtualización *en la nube*. Antes de "alquilar" un ordenador virtual a Microsoft o Amazon, tienes que entender cómo se crea uno tú mismo.
 
 > [!success] Objetivo de esta Fase
-> Crear una **máquina virtual en VirtualBox** que aloje Ubuntu Server 24.04 LTS, con dos tarjetas de red (una para salir a Internet, otra para hablar con la futura VM cliente de Windows 11) y una dirección IP fija en `10.10.10.10`. Este servidor será, en las próximas fases, tu controlador de dominio Active Directory.
+> Crear una **máquina virtual en VirtualBox** que aloje Ubuntu Server 26.04 LTS, con dos tarjetas de red (una para salir a Internet, otra para hablar con la futura VM cliente de Windows 11) y una dirección IP fija en `10.10.10.10`. Este servidor será, en las próximas fases, tu controlador de dominio Active Directory.
 
 > [!tip] Hoja de Ruta
 > 1. Verificar o instalar VirtualBox en tu equipo
-> 2. Descargar la ISO de Ubuntu Server 24.04 LTS
+> 2. Descargar la ISO de Ubuntu Server 26.04 LTS
 > 3. Crear la máquina virtual con RAM, CPU y disco dimensionados para un portátil de aula
 > 4. Configurar dos adaptadores de red: NAT (Internet) + Red Solo-Anfitrión (red aislada servidor↔cliente↔host)
 > 5. Instalar Ubuntu Server desde la ISO, con IP estática `10.10.10.10/24`
@@ -143,7 +143,7 @@ Al terminar esta fase serás capaz de:
 > > [!tip] 💡 ¿Qué versión descargar?
 > > Usa siempre la versión estable más reciente que ofrezca la web oficial (a fecha de escritura de este manual, la rama 7.x). No hace falta anotar el número de versión exacto para este proyecto.
 
-> [!example] Paso 2: Descarga de la ISO de Ubuntu Server 24.04 LTS
+> [!example] Paso 2: Descarga de la ISO de Ubuntu Server 26.04 LTS
 > 1. Entra en `ubuntu.com/download/server`.
 > 2. Descarga la imagen **Ubuntu Server 26.04 LTS** (la versión "LTS" — *Long Term Support* — es la que se usa siempre en un entorno de producción o de prácticas serias, porque recibe actualizaciones de seguridad durante años).
 > 3. Guarda el archivo `.iso` descargado en una carpeta que recuerdes (por ejemplo, `Descargas` o una carpeta específica del proyecto). Pesa aproximadamente 2-3 GB — la descarga puede tardar según la conexión del aula.
@@ -160,14 +160,33 @@ Al terminar esta fase serás capaz de:
 > | :--- | :--- | :--- |
 > | **Nombre** | `UbuntuServer` | Coherencia con V2/V3, facilita seguir el manual |
 > | **Carpeta de la máquina** | La que sugiera VirtualBox por defecto | Evita problemas de rutas con espacios o caracteres raros |
+> | **Imagen ISO** | Selecciona el `.iso` descargado en el Paso 2 | Es el "disco de instalación" que arrancará la VM |
+> | **⚠️ `Omitir instalación desatendida`** | **MARCADA** | **Lee el aviso de abajo. Si no la marcas, esta práctica no te sirve de nada.** |
 > | **Tipo** | `Linux` | Familia de sistema operativo del guest |
-> | **Versión** | `Ubuntu (64-bit)` | Ubuntu Server 24.04 es de 64 bits |
-> | **Imagen ISO** | Selecciona el `.iso` descargado en el Paso 2 | Permite el "arranque asistido" (Guided Installation) de VirtualBox |
+> | **Versión** | `Ubuntu (64-bit)` | Ubuntu Server 26.04 es de 64 bits |
 > | **Memoria base (RAM)** | `2048 MB` (2 GB) | Ver nota de dimensionado abajo |
 > | **Procesadores (CPU)** | `2 vCPU` | Suficiente para instalación y prácticas; no bloquea al host |
-> | **Disco duro** | Crear un disco virtual nuevo, `20 GB`, **VDI**, **de asignación dinámica** | 20 GB da margen para el sistema, Samba y los ficheros de prácticas, sin reservar de golpe espacio que no se usa |
+> | **Tamaño de disco** | `20 GB`, con **`Preasignar tamaño completo` SIN marcar** | 20 GB da margen para sistema, Samba y ficheros de prácticas. Sin preasignar, el fichero crece según se usa |
 >
 > 3. Antes de crear, revisa el resumen final y pulsa **`Finalizar`**.
+>
+> > [!danger] ⚠️ MARCA `Omitir instalación desatendida`. Esto es lo que más se falla en esta fase.
+> > En cuanto seleccionas la ISO, **VirtualBox 7.x reconoce que es Ubuntu y se ofrece a instalarlo él solo**: te pide un usuario, una contraseña y un nombre de máquina en el propio asistente, y después arranca la VM e instala Ubuntu entero sin que tú toques nada.
+> >
+> > Suena cómodo. Y para esta práctica es **exactamente lo que no queremos**, por dos motivos:
+> > 1. **No aprenderías nada.** Todo el Paso 5 — elegir el teclado, configurar las dos tarjetas de red, poner la IP fija `10.10.10.10`, marcar OpenSSH — lo decidiría VirtualBox por su cuenta, con sus valores. Instalar un sistema operativo en red es literalmente el RA.01 de este módulo: es lo que se evalúa, no se delega.
+> > 2. **Te dejaría el servidor mal configurado.** La instalación desatendida deja las **dos** tarjetas en automático (DHCP). Tu servidor se quedaría sin la IP fija `10.10.10.10`, y la Fase 4 (dominio Active Directory) no funciona sin ella.
+> >
+> > **Dónde está la casilla:** en la primera página del asistente, **`Nombre y sistema operativo`**, justo debajo del selector de la ISO. Se llama `Omitir instalación desatendida` (*Skip Unattended Installation*). **Márcala.** Al hacerlo verás que la página siguiente, la que pedía usuario y contraseña, desaparece del asistente: ya no hace falta, porque esos datos los vas a introducir tú a mano en el Paso 5, dentro del instalador de verdad.
+> >
+> > 🎥 **Que se te vea marcarla en el vídeo.** Es el detalle que distingue la fase hecha de la fase "instalada sola".
+>
+> > [!note] 💡 Sobre el disco: ¿y el "VDI de asignación dinámica"?
+> > Si has leído otros manuales, verás que hablan de elegir **VDI** y **asignación dinámica**. En el asistente de VirtualBox 7.x **esas dos opciones ya no aparecen**: la página de disco solo te muestra el tamaño y una casilla llamada `Preasignar tamaño completo`. No te has saltado nada — es que VirtualBox ya decide por ti:
+> > - **VDI** es el formato por defecto (los otros — VMDK, VHD — solo se eligen si necesitas abrir el disco con VMware o Hyper-V, que no es el caso).
+> > - **Dejar `Preasignar tamaño completo` sin marcar ES la asignación dinámica.** Marcarla haría lo contrario: reservar los 20 GB enteros de golpe en tu disco, aunque Ubuntu solo use 6.
+> >
+> > Si quieres verlo con tus ojos, en `Archivo → Herramientas → Administrador de medios virtuales` sí aparecen el tipo de fichero y el "dinámico vs. fijo" con todas las letras. Compruébalo ahí después de crear la VM y **anota en tu entrada qué tamaño ocupa realmente el fichero `.vdi` recién creado**, comparado con los 20 GB que dice tener.
 >
 > > [!important] 💡 Nota de dimensionado: por qué 2 GB de RAM y no más
 > > Elegimos **2048 MB** como punto de partida porque es el mínimo cómodo para instalar y usar Ubuntu Server sin servicios adicionales, y porque en un portátil de aula compartido (8 GB totales es habitual) reservar más de golpe puede dejar el equipo sin margen para el resto de aplicaciones del alumno (navegador, editor, la propia VirtualBox...).
@@ -199,7 +218,7 @@ Al terminar esta fase serás capaz de:
 > >
 > > Con esto, `10.10.10.1` pasa a ser la IP de tu propio ordenador (el host) dentro de esa red privada — la usarás en el Paso 7 para hacer ping al servidor.
 
-> [!example] Paso 5: Instalación de Ubuntu Server 24.04 desde la ISO
+> [!example] Paso 5: Instalación de Ubuntu Server 26.04 desde la ISO
 > Enciende la VM (`Iniciar`). VirtualBox arrancará el instalador de Ubuntu Server desde la ISO.
 >
 > 1. **Idioma:** elige `English` o `Español` (el instalador en español a veces tiene menos opciones traducidas; `English` es más estable, pero cualquiera de los dos sirve).
@@ -215,11 +234,30 @@ Al terminar esta fase serás capaz de:
 >      - **Servidores de nombres (DNS):** déjalo en blanco por ahora (se configurará en la Fase 4 al instalar el propio DNS del dominio).
 > 6. **Proxy y espejo de Ubuntu:** deja los valores por defecto.
 > 7. **Configuración del disco:** elige `Use an entire disk` (usar todo el disco virtual de 20 GB) con la opción de LVM por defecto que propone el instalador.
-> 8. **Perfil del usuario:**
->    - **Tu nombre:** el que quieras (ej. `Alumno`)
->    - **Nombre del servidor (hostname):** `UbuntuServer`
->    - **Nombre de usuario:** `boochan`
->    - **Contraseña:** define una segura y **anótala** — la necesitarás en cada práctica.
+> 8. **Perfil del usuario — los tres datos que usarás el resto del curso.** El instalador te pide cuatro campos en una sola pantalla; rellénalos **exactamente así**:
+>
+>    | Campo del instalador | Qué pones | ¿Se puede cambiar? |
+>    | :--- | :--- | :--- |
+>    | **Your name** (tu nombre) | El que quieras (ej. `Alumno`) | Sí, es solo decorativo |
+>    | **Your server's name** (hostname) | `UbuntuServer` | **No.** Las fases siguientes lo usan tal cual |
+>    | **Pick a username** | `boochan` | **No.** Todos los comandos del manual asumen este usuario |
+>    | **Choose a password** | `P@ssw0rd` | **No.** Es la contraseña de laboratorio de todo el módulo |
+>
+>    Este usuario `boochan` será tu **administrador del servidor**: el instalador lo mete automáticamente en el grupo `sudo`, así que desde él ejecutarás todos los comandos con `sudo` de las próximas fases. Ubuntu, a diferencia de Windows, **no crea una cuenta `root` con contraseña** — no la busques, no existe.
+>
+>    > [!important] 🔐 Por qué la contraseña es la misma para toda la clase — y por qué eso sería inaceptable en una empresa
+>    > `P@ssw0rd` es la contraseña de **todas** las máquinas de este módulo. No es pereza: en un laboratorio donde vamos a montar y destruir servidores durante todo el curso, que cada uno tenga la suya significa que la mitad de la clase se queda fuera de su propia VM el segundo día, y las horas se van en resetear contraseñas en vez de en administrar sistemas.
+>    >
+>    > Dicho esto, **quiero que sepas exactamente lo que estás haciendo:** `P@ssw0rd` es una de las contraseñas más comprometidas del mundo. Aparece en las listas de los primeros puestos de cualquier diccionario de ataque, y un atacante la prueba en el primer segundo. Cumple las reglas de complejidad (mayúscula, minúscula, número, símbolo) y aun así es basura — **que una contraseña cumpla la política no significa que sea segura.** Esa es una lección que vale más que la práctica.
+>    >
+>    > La regla, entonces: **esta contraseña vale porque tu servidor vive dentro de tu portátil, en una red aislada, y no lo ve nadie.** En el momento en que un servidor tenga IP pública (lo verás en las versiones en la nube), esta contraseña deja de ser aceptable. Ahí se usan contraseñas largas y únicas, o directamente **claves SSH** — que es exactamente lo que hiciste en la Fase 0.2.1.
+>
+>    > [!warning] ⌨️ Ojo con la `@` y el `0`: dos formas de quedarte fuera de tu servidor
+>    > La escribes **a ciegas** (no se ven los caracteres), en un instalador donde acabas de elegir el teclado. Dos trampas:
+>    > - **La `@`:** en teclado **español** es `AltGr + 2`. En teclado **inglés** es `Shift + 2`. Si en el Paso 3 de esta lista dejaste el teclado en inglés sin querer, tu `AltGr+2` **no escribe una arroba** — y tu contraseña no es la que crees.
+>    > - **El `0`:** es un **cero**, no una `o`. `P@ssw0rd`, no `P@ssword`.
+>    >
+>    > **Truco para no fallar:** escríbela primero en el campo de *nombre de usuario* (ahí sí se ven los caracteres), comprueba con tus ojos que pone `P@ssw0rd`, bórralo, y solo entonces escríbela en los dos campos de contraseña.
 > 9. **OpenSSH Server:** marca la casilla **`Install OpenSSH server`**. Te permitirá conectarte por SSH a la VM desde tu propio ordenador en próximas fases, en lugar de trabajar siempre desde la ventana de VirtualBox.
 > 10. **Featured Server Snaps:** no instales ninguno (los instalaremos manualmente cuando toque en cada fase).
 > 11. Espera a que termine la instalación y pulsa **`Reboot Now`**. Cuando te pida quitar el medio de instalación, pulsa Enter (VirtualBox expulsa la ISO automáticamente).
@@ -314,6 +352,9 @@ Al terminar esta fase serás capaz de:
 > [!bug] Tabla de Troubleshooting (¿Algo no funciona?)
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
+> | **La VM se instaló sola: nunca vi el instalador, ni elegí teclado, ni configuré redes. Y el usuario no es `boochan`.** | **No marcaste `Omitir instalación desatendida` en el Paso 3.** VirtualBox instaló Ubuntu por su cuenta con los datos que le diste en el asistente. | No intentes arreglarlo por dentro: la red quedó mal y el hostname también. **Borra la VM entera** (clic derecho → `Eliminar` → `Borrar todos los archivos`) y repite el Paso 3 **marcando la casilla**. Pierdes 15 minutos, no una tarde. |
+> | Marqué la casilla pero VirtualBox no me dejó elegir el "VDI de asignación dinámica" del manual. | Ninguno: el asistente de la 7.x ya no muestra esas dos opciones. | Es lo normal. Deja `Preasignar tamaño completo` **sin marcar** — eso ya es la asignación dinámica, y el formato VDI es el que usa por defecto. Ver la nota del Paso 3. |
+> | No puedo iniciar sesión: dice `Login incorrect` con la contraseña que puse. | El teclado del instalador no era el español y los símbolos de la contraseña salieron cambiados. | Prueba a escribirla con la distribución **inglesa** en mente (la `-` y la `_`, la `@`, la `ñ`). Si no hay forma, reinstala la VM y usa **solo letras y números** en la contraseña. |
 > | El instalador no arranca, VirtualBox muestra pantalla negra o error de arranque. | La ISO no se seleccionó correctamente, o la VM no tiene habilitada la virtualización por hardware en la BIOS del equipo anfitrión. | Revisa que en `Configuración → Almacenamiento` la ISO esté montada en la unidad óptica. Si persiste, consulta con el profesor si la BIOS del equipo tiene la virtualización (VT-x/AMD-V) activada — en equipos de aula puede estar bloqueada por gestión centralizada. |
 > | No puedo hacer ping a `10.10.10.10` desde mi ordenador. | La red host-only no se creó bien, o el firewall del sistema operativo anfitrión bloquea el ICMP. | Repasa el Paso 4: comprueba en `Redes solo-anfitrión` que la IP del adaptador es `10.10.10.1/24`. Si el ping sigue sin responder, revisa el firewall de Windows/macOS (puede bloquear ICMP entrante por defecto en redes "públicas"). |
 > | La VM no tiene Internet (`ping google.com` falla) pero sí tiene la IP `10.10.10.10`. | El problema está en el Adaptador 1 (NAT), no en el Adaptador 2. | Comprueba en `Configuración → Red → Adaptador 1` que está habilitado y en modo `NAT`. Reinicia la interfaz con `sudo netplan apply`. |
@@ -332,11 +373,13 @@ Al terminar esta fase serás capaz de:
 ### ✅ Checklist Final de la Fase 1
 
 - [ ] VirtualBox instalado (o verificado ya instalado) en el equipo del aula.
-- [ ] ISO de Ubuntu Server 24.04 LTS descargada.
-- [ ] VM `UbuntuServer` creada con 2048 MB RAM, 2 vCPU, disco de 20 GB (VDI, dinámico).
+- [ ] ISO de Ubuntu Server 26.04 LTS descargada.
+- [ ] Casilla **`Omitir instalación desatendida`** marcada en el asistente (¡la más importante!).
+- [ ] VM `UbuntuServer` creada con 2048 MB RAM, 2 vCPU, disco de 20 GB sin preasignar.
+- [ ] Usuario `boochan` creado **por ti** dentro del instalador de Ubuntu, con contraseña anotada fuera del repositorio.
 - [ ] Adaptador 1 en modo NAT (Internet) habilitado.
 - [ ] Adaptador 2 en modo Red Solo-Anfitrión, red `vboxnet0` con IP `10.10.10.1/24` y DHCP deshabilitado.
-- [ ] Ubuntu Server 24.04 instalado, con IP estática `10.10.10.10/24` en el adaptador Solo-Anfitrión.
+- [ ] Ubuntu Server 26.04 instalado, con IP estática `10.10.10.10/24` en el adaptador Solo-Anfitrión.
 - [ ] OpenSSH Server instalado durante la instalación.
 - [ ] Nombre NetBIOS (`BOOCHANLAB`) y Realm (`BOOCHANLAB.LOCAL`) anotados para las próximas fases.
 - [ ] `ping google.com` funciona desde dentro de la VM.

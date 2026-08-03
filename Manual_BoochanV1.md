@@ -33,7 +33,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 - **RAM mínima recomendada:** 2 GB libres para la VM del servidor en las Fases 1-3 (subir a 3-4 GB a partir de la Fase 4, cuando se provisiona Samba AD DC), más 4 GB adicionales para la VM cliente Windows 11 a partir de la Fase 8. En un portátil de aula de 8 GB totales, es fácil quedarse justo si ambas VMs están encendidas a la vez — cierra el resto de aplicaciones del host antes de trabajar.
 - **Disco libre:** al menos 20 GB para la VM del servidor (disco VDI dinámico) + 40 GB para la VM cliente Windows 11 + margen para los discos virtuales de cuotas de la Fase 6 (2×5 GB).
 - **Virtualización por hardware (VT-x/AMD-V) activada en la BIOS** del equipo anfitrión. En equipos de aula gestionados centralizadamente puede estar bloqueada — si el instalador de VirtualBox no arranca la VM, es la primera causa a descartar con el profesor.
-- **ISOs necesarias:** Ubuntu Server 24.04 LTS (Fase 1) y Windows 11 (Fase 8).
+- **ISOs necesarias:** Ubuntu Server 26.04 LTS (Fase 1) y Windows 11 (Fase 8).
 
 ---
 
@@ -53,7 +53,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 ### Resumen de cada fase
 
-**[Fase 1 — Infraestructura Virtual Local](Fases/Fase_1.md):** se crea la VM `UbuntuServer` en VirtualBox (2 GB RAM, 2 vCPU, disco VDI dinámico de 20 GB) con dos adaptadores de red — NAT para salida a internet y Red Solo Anfitrión (`vboxnet0`, `10.10.10.0/24`, DHCP desactivado) para la comunicación aislada servidor-cliente-host — y se instala Ubuntu Server 24.04 LTS con IP estática `10.10.10.10`. Se fija el nombre del dominio de todo el proyecto: `BOOCHANLAB` / `BOOCHANLAB.LOCAL`.
+**[Fase 1 — Infraestructura Virtual Local](Fases/Fase_1.md):** se crea la VM `UbuntuServer` en VirtualBox (2 GB RAM, 2 vCPU, disco VDI dinámico de 20 GB) con dos adaptadores de red — NAT para salida a internet y Red Solo Anfitrión (`vboxnet0`, `10.10.10.0/24`, DHCP desactivado) para la comunicación aislada servidor-cliente-host — y se instala Ubuntu Server 26.04 LTS con IP estática `10.10.10.10`. Se fija el nombre del dominio de todo el proyecto: `BOOCHANLAB` / `BOOCHANLAB.LOCAL`.
 
 **[Fase 2 — Purga y Preparación del Entorno](Fases/Fase_2.md):** se elimina el Samba preinstalado (libera el puerto 445), se instalan las dependencias de Samba AD DC/Kerberos/winbind, y se configura el FQDN completo del servidor (`UbuntuServer.BOOCHANLAB.LOCAL`) en `/etc/hostname` y `/etc/hosts`, requisito imprescindible para que Kerberos funcione en la Fase 4.
 
@@ -85,7 +85,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 | **Red host-only de VirtualBox** | `vboxnet0` (creada/configurada manualmente en la Fase 1, DHCP desactivado) |
 | **Usuario administrador Linux** | `boochan` |
 | **Usuarios de dominio de ejemplo** | `user1` (UID 10001, grupo `policia`/GID 3001) · `user2` (UID 10002, grupo `bomberos`/GID 3002) |
-| **Sistema operativo servidor** | Ubuntu Server 24.04 LTS |
+| **Sistema operativo servidor** | Ubuntu Server 26.04 LTS |
 | **Sistema operativo cliente** | Windows 11 (64-bit) |
 
 ---
