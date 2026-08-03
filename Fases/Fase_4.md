@@ -1,4 +1,4 @@
-## 👑 Fase 4: Aprovisionamiento del Dominio (Samba AD DC)
+	## 👑 Fase 4: Aprovisionamiento del Dominio (Samba AD DC)
 
 ### Infraestructura de Servidor Local (VirtualBox)
 
@@ -121,21 +121,38 @@
 >
 > > [!info] 📚 Diccionario de Comandos: Consulta el [[Diccionario_Comandos_Sistema]] para entender al detalle cómo funcionan los comandos administrativos que usaremos aquí.
 >
+> **1.** Instala `git` y clona el repositorio de la práctica dentro del servidor:
 > ```bash
-> # Instala git si no lo tienes aún
 > sudo apt install git -y
-> # Descarga el repositorio del proyecto en la carpeta /opt/boochan
-> git clone URL_DEL_REPOSITORIO /opt/boochan
-> # Entra en la carpeta descargada
+> sudo git clone https://github.com/sor-iesjj/bloque-2-ubuntu-local /opt/boochan
+> ```
+>
+> > [!warning] ⚠️ Que sea el de **V1 (Local)**
+> > Los scripts `provision_boochan.sh` de V1, V2 y V3 se parecen muchísimo, pero los de la nube usan el realm **`BOOCHAN.SPACE`**. Si clonas el equivocado, el dominio no coincidirá con el `/etc/hosts` que configuraste en la Fase 2 y **nada encajará**.
+> > El repositorio correcto es el que termina en **`bloque-2-ubuntu-local`**.
+>
+> **2.** Entra y **LEE EL SCRIPT ANTES DE EJECUTARLO**:
+> ```bash
 > cd /opt/boochan
-> # Dale permiso de ejecución al script y ejecútalo
+> cat provision_boochan.sh
+> ```
+>
+> > [!danger] 🛑 Esto no es una formalidad
+> > Vas a ejecutar como **root** un fichero descargado de internet. Ahí dentro hay comandos que **borran ficheros del sistema** (`rm -f /etc/resolv.conf`) y que dejan otros **imposibles de modificar** (`chattr +i`).
+> >
+> > **Nunca ejecutes como root un script que no has leído.** Si un día alguien te pasa un `curl ... | sudo bash`, esa es exactamente la costumbre que te salva.
+> >
+> > Localiza en el `cat` estas cuatro cosas y explícalas en el vídeo:
+> > 1. Las variables del principio: `DOMAIN_NAME`, `REALM_NAME`, `ADMIN_PASS`.
+> > 2. Qué le hace a `/etc/resolv.conf` y por qué.
+> > 3. Qué significa `--use-rfc2307` *(pista: sin eso, la Fase 5 no funciona)*.
+> > 4. Qué tres servicios apaga al final, y por qué estorban.
+>
+> **3.** Ahora sí, dale permiso de ejecución y lánzalo:
+> ```bash
 > sudo chmod +x provision_boochan.sh
 > sudo ./provision_boochan.sh
 > ```
-> > [!caution] ⚠️ Antes de ejecutar: pide la URL al profesor (la de **V1 / Local**)
-> > El texto `URL_DEL_REPOSITORIO` es un marcador de posición. **Sustitúyelo** por la URL real que te proporcione tu profesor antes de pulsar Enter. Si ejecutas el comando con ese texto literal, git devolverá un error inmediato.
-> >
-> > **Asegúrate de clonar el repositorio de BoochanV1 (Local).** Los scripts `provision_boochan.sh` de V1, V2 y V3 se parecen mucho entre sí, pero clonar el equivocado usará el Realm `BOOCHAN.SPACE` en lugar de `BOOCHANLAB.LOCAL`, y todo lo que configuraste en la Fase 2 dejará de coincidir. Ante la duda, confirma con el profesor que la URL corresponde a **V1**.
 >
 > El script tardará **2-3 minutos**. Verás mensajes de progreso en pantalla.
 >
@@ -147,7 +164,7 @@
 > > Si no aparece esa línea, el script falló. Revisa la tabla de troubleshooting al final de esta fase.
 >
 > > [!tip] 💡 ¿Qué hace este comando?
-> > - **`git clone`:** Descarga una copia completa del proyecto desde internet a tu servidor (usando el adaptador NAT para salir), igual que descargar un ZIP pero de forma más profesional.
+> > - **`git clone`:** Descarga una copia completa del proyecto desde internet a tu servidor (usando el adaptador NAT para salir), igual que descargar un ZIP pero de forma más profesional. Necesita el adaptador **NAT** funcionando: la Red Solo Anfitrión no da salida a internet.
 > > - **`chmod +x`:** En Linux, los archivos descargados no "tienen permiso" para ejecutarse por seguridad. Este comando le pone la etiqueta de **ejecutable**.
 > > - **El punto y la barra (`./`):** Le dice a Linux: "Busca este archivo **aquí mismo**, en esta carpeta". Sin el `./`, Linux buscaría el comando en las carpetas del sistema y no lo encontraría.
 > > - **Los valores por defecto del script:** El script ya viene configurado con los valores correctos de este proyecto (`BOOCHANLAB`, Realm `BOOCHANLAB.LOCAL`, contraseña `P@ssw0rd`). No necesitas modificar nada salvo que tu profesor indique lo contrario.
