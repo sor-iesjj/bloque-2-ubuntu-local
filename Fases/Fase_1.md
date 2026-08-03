@@ -186,7 +186,13 @@ Al terminar esta fase serás capaz de:
 > > - **VDI** es el formato por defecto (los otros — VMDK, VHD — solo se eligen si necesitas abrir el disco con VMware o Hyper-V, que no es el caso).
 > > - **Dejar `Preasignar tamaño completo` sin marcar ES la asignación dinámica.** Marcarla haría lo contrario: reservar los 20 GB enteros de golpe en tu disco, aunque Ubuntu solo use 6.
 > >
-> > Si quieres verlo con tus ojos, en `Archivo → Herramientas → Administrador de medios virtuales` sí aparecen el tipo de fichero y el "dinámico vs. fijo" con todas las letras. Compruébalo ahí después de crear la VM y **anota en tu entrada qué tamaño ocupa realmente el fichero `.vdi` recién creado**, comparado con los 20 GB que dice tener.
+> > **🔬 Compruébalo tú, sin fiarte de lo que pone aquí.** Cuando termines de crear la VM (antes de instalar Ubuntu), abre el explorador de archivos de tu ordenador y busca la carpeta de la máquina — es la que te propuso VirtualBox en el primer paso, normalmente `VirtualBox VMs/UbuntuServer/`. Dentro está el fichero `UbuntuServer.vdi`. **Mira lo que ocupa y anótalo en tu entrada.**
+> >
+> > Dice tener 20 GB. Ocupa unos pocos MB. **Eso es la asignación dinámica**, y lo estás viendo con tus ojos en vez de creértelo.
+> >
+> > Vuelve a mirar ese mismo fichero **al acabar la fase**, con Ubuntu ya instalado, y anota los dos tamaños. Es la mejor respuesta posible a la pregunta "¿qué es un disco de asignación dinámica?".
+> >
+> > *(Si además quieres ver el tipo de fichero y el "dinámico vs. fijo" escritos con todas las letras, están en la sección **Herramientas → Medios** del panel izquierdo de la ventana principal de VirtualBox. Ojo: esa parte de la interfaz **cambia de sitio en cada versión** — si no la encuentras donde dice aquí, no te vuelvas loco; el fichero en el explorador te da la misma información y no caduca.)*
 >
 > > [!important] 💡 Nota de dimensionado: por qué 2 GB de RAM y no más
 > > Elegimos **2048 MB** como punto de partida porque es el mínimo cómodo para instalar y usar Ubuntu Server sin servicios adicionales, y porque en un portátil de aula compartido (8 GB totales es habitual) reservar más de golpe puede dejar el equipo sin margen para el resto de aplicaciones del alumno (navegador, editor, la propia VirtualBox...).
