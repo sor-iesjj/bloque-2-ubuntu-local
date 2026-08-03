@@ -57,28 +57,21 @@ done
 
 echo "[OK] Comprobaciones previas superadas."
 
-# --- 1. Gestión DNS Persistente -------------------------------------------
-# systemd-resolved ocupa el puerto 53, que Samba necesita para su propio DNS.
-# chattr +i deja /etc/resolv.conf inmutable: ni root puede sobrescribirlo, que
-# es lo que systemd-resolved intentaría en cada arranque.
-# El 'chattr -i' inicial es lo que permite RELANZAR este script: sin él, el
-# 'rm' fallaría porque el fichero quedó inmutable en la ejecución anterior.
-echo "[1/4] Configurando DNS..."
-chattr -i /etc/resolv.conf 2>/dev/null || true
-sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
-systemctl restart systemd-resolved
-rm -f /etc/resolv.conf
-printf "nameserver 127.0.0.1\nsearch %s\n" "$REALM_NAME" > /etc/resolv.conf
-chattr +i /etc/resolv.conf
-
-# --- 2. Aprovisionamiento Automático (Desatendido) ------------------------
+# --- 1. Aprovisionamiento del Dominio -------------------------------------
+# ORDEN IMPORTANTE: esto va ANTES de tocar el DNS. Si el aprovisionamiento
+# falla, el servidor conserva su resolucion de nombres y puedes seguir
+# instalando paquetes para arreglarlo. Al reves -como estaba antes- un fallo
+# aqui te dejaba sin DNS y sin forma de instalar nada: encerrado fuera.
+#
 # samba-tool se NIEGA a aprovisionar si existe un smb.conf con 'server role =
 # standalone server', que es justo el que crea el paquete 'samba' al
-# instalarse. Hay que quitarlo de en medio: el provision genera el suyo.
+# instalarse. Hay que apartarlo: el provision genera el suyo.
 # --use-rfc2307 es imprescindible: guarda UID/GID de Unix dentro de Active
 # Directory. Sin esto, la Fase 5 (winbind) no puede funcionar.
-echo "[2/4] Aprovisionando el dominio (2-3 minutos)..."
-[ -f /etc/samba/smb.conf ] && mv /etc/samba/smb.conf /etc/samba/smb.conf.bak-$(date +%s)
+echo "[1/4] Aprovisionando el dominio (2-3 minutos)..."
+if [ -f /etc/samba/smb.conf ]; then
+    mv /etc/samba/smb.conf "/etc/samba/smb.conf.bak-$(date +%s)"
+fi
 
 samba-tool domain provision \
  --server-role=dc \
@@ -90,22 +83,44 @@ samba-tool domain provision \
  --host-ip="$HOST_IP" \
  --option="dns forwarder = $DNS_FORWARDER"
 
-# --- 3. Configuración Kerberos --------------------------------------------
-echo "[3/4] Configurando Kerberos..."
+# --- 2. Configuración Kerberos --------------------------------------------
+echo "[2/4] Configurando Kerberos..."
 cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
 
-# --- 4. Activación del Servidor AD DC -------------------------------------
-# smbd, nmbd y winbind son los servicios del Samba "clásico" y ocupan los
+# --- 3. Activación del Servidor AD DC -------------------------------------
+# smbd, nmbd y winbind son los servicios del Samba "clasico" y ocupan los
 # puertos que necesita el controlador de dominio. samba-ad-dc los sustituye a
-# los tres. Viene enmascarado de fábrica, de ahí el unmask.
-echo "[4/4] Activando samba-ad-dc..."
+# los tres. Viene enmascarado de fabrica, de ahi el unmask.
+# El stub de systemd-resolved se apaga AQUI, justo antes de levantar Samba,
+# para que su DNS interno pueda quedarse con el puerto 53.
+echo "[3/4] Activando samba-ad-dc..."
+sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
+systemctl restart systemd-resolved
 systemctl disable --now smbd nmbd winbind 2>/dev/null || true
 systemctl unmask samba-ad-dc
 systemctl enable --now samba-ad-dc
 
+# --- 4. DNS Persistente: apuntar el servidor a si mismo --------------------
+# Ultimo paso a proposito. Ahora SI hay un servidor DNS escuchando en
+# 127.0.0.1 (el de Samba), asi que apuntar ahi tiene sentido.
+# chattr +i lo deja inmutable: ni root puede sobrescribirlo, que es lo que
+# systemd-resolved intentaria en cada arranque.
+# El 'chattr -i' inicial es lo que permite RELANZAR el script: sin el, el 'rm'
+# fallaria con "Operation not permitted" por el candado de la vez anterior.
+echo "[4/4] Fijando el DNS del servidor..."
+chattr -i /etc/resolv.conf 2>/dev/null || true
+rm -f /etc/resolv.conf
+printf "nameserver 127.0.0.1\nsearch %s\n" "$REALM_NAME" > /etc/resolv.conf
+chattr +i /etc/resolv.conf
+
 # --- VERIFICACIÓN FINAL ----------------------------------------------------
 # Un script que dice "finalizado" sin comprobar nada es un script que miente.
 echo ""
+DNS_OK="no"
+if host -t A "$(hostname).$(echo "$REALM_NAME" | tr 'A-Z' 'a-z')" 127.0.0.1 >/dev/null 2>&1; then
+    DNS_OK="si"
+fi
+
 if systemctl is-active --quiet samba-ad-dc; then
     echo "=========================================================="
     echo " Despliegue de $DOMAIN_NAME finalizado CORRECTAMENTE."
@@ -114,6 +129,11 @@ if systemctl is-active --quiet samba-ad-dc; then
     echo " Y que el dominio apunta a la IP correcta:"
     echo "   host -t A $(hostname).$(echo $REALM_NAME | tr 'A-Z' 'a-z')"
     echo "   -> debe devolver $HOST_IP , NO una 10.0.2.x"
+    if [ "$DNS_OK" = "no" ]; then
+        echo ""
+        echo " AVISO: el DNS del dominio aun no responde. Suele resolverse solo"
+        echo "        en unos segundos. Si persiste: systemctl restart samba-ad-dc"
+    fi
     echo "=========================================================="
 else
     echo "!!! El servicio samba-ad-dc NO está activo."

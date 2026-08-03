@@ -172,15 +172,21 @@
 > > - **El punto y la barra (`./`):** Le dice a Linux: "Busca este archivo **aquí mismo**, en esta carpeta". Sin el `./`, Linux buscaría el comando en las carpetas del sistema y no lo encontraría.
 > > - **Los valores por defecto del script:** El script ya viene configurado con los valores correctos de este proyecto (`BOOCHANLAB`, Realm `BOOCHANLAB.LOCAL`, contraseña `P@ssw0rd`). No necesitas modificar nada salvo que tu profesor indique lo contrario.
 >
-> > [!note] 📄 Mapa del script: las cuatro secciones que verás en el `cat`
+> > [!note] 📄 Mapa del script: las cinco secciones que verás en el `cat`
 > > **La fuente de verdad es el script que acabas de clonar**, no este resumen — si difieren, manda el del repositorio. Esto es el mapa para no perderte al leerlo:
 > >
 > > | Sección | Qué hace | La línea clave |
 > > | :--- | :--- | :--- |
 > > | **0. Comprobaciones previas** | Verifica que estás como root y que los paquetes de la Fase 2 están instalados. **Si falta algo, para aquí** y te dice qué instalar | `dpkg -s samba-ad-dc samba-ad-provision` |
-> > | **1. DNS persistente** | Apunta el servidor a sí mismo (`127.0.0.1`) y bloquea el fichero para que nada lo sobrescriba | `chattr +i /etc/resolv.conf` |
-> > | **2. Aprovisionamiento** | Crea el dominio entero: directorio LDAP, Kerberos, DNS interno | `samba-tool domain provision ... --host-ip=10.10.10.10` |
-> > | **3-4. Kerberos y arranque** | Instala el `krb5.conf` generado, apaga el Samba clásico y levanta `samba-ad-dc` | `systemctl enable --now samba-ad-dc` |
+> > | **1. Aprovisionamiento** | Crea el dominio entero: directorio LDAP, Kerberos, DNS interno | `samba-tool domain provision ... --host-ip=10.10.10.10` |
+> > | **2. Kerberos** | Instala el `krb5.conf` que acaba de generar el dominio | `cp /var/lib/samba/private/krb5.conf` |
+> > | **3. Arranque del AD DC** | Apaga el Samba clásico y levanta el controlador de dominio | `systemctl enable --now samba-ad-dc` |
+> > | **4. DNS persistente** | Apunta el servidor a sí mismo y bloquea el fichero para que nada lo sobrescriba | `chattr +i /etc/resolv.conf` |
+> >
+> > > [!question] 🤔 ¿Por qué el DNS se toca al FINAL y no al principio?
+> > > Porque apuntar el servidor a `127.0.0.1` **solo tiene sentido cuando ya hay un DNS escuchando ahí** — y ese DNS es el de Samba, que no existe hasta la sección 3.
+> > > Y hay un motivo más importante: si el aprovisionamiento falla, el servidor **conserva su resolución de nombres** y puedes seguir instalando paquetes para arreglarlo. Al revés, un fallo te dejaría sin DNS y sin poder instalar nada: encerrado fuera de tu propia máquina.
+> > > **Regla general: lo que te puede dejar aislado, se hace al final y solo si todo lo demás ha ido bien.**
 > >
 > > Y una línea más, arriba del todo, que es la que hace al script digno de confianza: **`set -euo pipefail`** — aborta al primer error en vez de seguir adelante con todo roto. Un script de administración que no para cuando algo falla es un script que miente.
 > >
@@ -210,7 +216,7 @@
 > | Error `Realm not found`. | El archivo `/etc/krb5.conf` no está bien configurado. | Copia el generado por Samba: `sudo cp /var/lib/samba/private/krb5.conf /etc/krb5.conf`. |
 > | No resuelve al `127.0.0.1`. | `systemd-resolved` está secuestrando el DNS. | Primero desbloquea el fichero: `sudo chattr -i /etc/resolv.conf` (sin esto, el siguiente `rm` falla con `Operation not permitted`). Luego `sudo rm /etc/resolv.conf`, reescribe: `echo "nameserver 127.0.0.1" \| sudo tee /etc/resolv.conf`, y vuelve a bloquear: `sudo chattr +i /etc/resolv.conf`. |
 > | El script para con `ERROR: falta el paquete 'samba-ad-dc'` (o `samba-ad-provision`). | La Fase 2 se hizo con una versión antigua del material, o restauraste una instantánea anterior a su instalación. | Es el script **protegiéndote**: instala lo que pide — `sudo apt install -y samba-ad-dc samba-ad-provision` — y relánzalo. Recuerda restaurar el DNS primero si no tienes internet: `sudo chattr -i /etc/resolv.conf && echo "nameserver 8.8.8.8" \| sudo tee /etc/resolv.conf`. |
-> | `host -t A ubuntuserver.boochanlab.local` devuelve una `10.0.2.x` en vez de `10.10.10.10`. | El dominio se aprovisionó sin `--host-ip` y Samba eligió la tarjeta NAT. El dominio "funciona"… pero nadie podrá encontrarlo, y la Fase 8 fallará con "No se encuentra el dominio". | Corrige el registro: `sudo samba-tool dns delete 127.0.0.1 boochanlab.local ubuntuserver A 10.0.2.15 -U Administrator` y luego `sudo samba-tool dns add 127.0.0.1 boochanlab.local ubuntuserver A 10.10.10.10 -U Administrator`. Comprueba de nuevo con `host`. |
+> | `host -t A ubuntuserver.boochanlab.local` devuelve una `10.0.2.x` en vez de `10.10.10.10`. | El dominio se aprovisionó sin `--host-ip` y Samba eligió la tarjeta NAT. El dominio "funciona"… pero nadie podrá encontrarlo, y la Fase 8 fallará con "No se encuentra el dominio". | **Borra el registro malo usando la IP exacta que te haya devuelto el `host`** (no la copies de aquí, mira la tuya) y añade el bueno:<br>`sudo samba-tool dns delete 127.0.0.1 boochanlab.local ubuntuserver A LA_IP_QUE_TE_SALIO -U Administrator`<br>`sudo samba-tool dns add 127.0.0.1 boochanlab.local ubuntuserver A 10.10.10.10 -U Administrator`<br>Vuelve a comprobar con `host`. |
 > | El script falla en `git clone` por falta de red. | El adaptador NAT no está activo o `git` intenta usar la Red Solo Anfitrión (sin salida a internet). | Comprueba `ping 8.8.8.8` antes de clonar; revisa el adaptador NAT en `Configuración de la VM → Red`. |
 
 > [!help] Preguntas Críticas (Autoevaluación)
