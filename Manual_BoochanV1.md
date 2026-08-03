@@ -41,7 +41,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 | Fase | Título | Concepto VirtualBox / Linux clave |
 |------|--------|-------------------------------------|
-| [1](Fases/Fase_1.md) | Infraestructura Virtual Local (VirtualBox) | Hipervisor Tipo 2, VM, red NAT + Red Solo Anfitrión (la del laboratorio (`10.10.10.1`)), IP estática |
+| [1](Fases/Fase_1.md) | Infraestructura Virtual Local (VirtualBox) | Hipervisor Tipo 2, VM, red NAT + Red Solo Anfitrión (`10.10.10.0/24`), IP estática |
 | [2](Fases/Fase_2.md) | Purga y Preparación del Entorno | Limpieza Ubuntu, FQDN, `/etc/hosts`, dominio `.LOCAL` |
 | [3](Fases/Fase_3.md) | Conectividad VPN (WireGuard) | Túnel cifrado sobre red ya aislada, defensa en profundidad, cierre SSH directo |
 | [4](Fases/Fase_4.md) | Aprovisionamiento del Dominio (Samba AD DC) | Active Directory, Kerberos, DNS interno, sin firewall perimetral que abrir |
@@ -67,7 +67,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 **[Fase 7 — Seguridad Avanzada (ACLs y ABE)](Fases/Fase_7.md):** se aplican ACLs (`setfacl`) al grupo `policia` sobre `prueba3` con herencia (`-d`), y se activa Access Based Enumeration (`access based share enum = yes`, `hide unreadable = yes`) en `smb.conf`, de modo que `user2` (bomberos) ni siquiera ve la carpeta `prueba3` en el explorador de red.
 
-**[Fase 8 — Integración del Cliente (Windows 11)](Fases/Fase_8.md):** se crea una **segunda VM** en VirtualBox (`Cliente-Windows11`, 4 GB RAM, 40 GB disco, TPM 2.0 y Secure Boot activados) conectada a la misma Red Solo Anfitrión la del laboratorio (`10.10.10.1`) con IP fija `10.10.10.20`, se une al dominio `BOOCHANLAB.LOCAL`, se instala RSAT y se mapean las carpetas compartidas como unidades de red — demostrando que el modelo de permisos definido en Linux se respeta desde el cliente Windows.
+**[Fase 8 — Integración del Cliente (Windows 11)](Fases/Fase_8.md):** se crea una **segunda VM** en VirtualBox (`Cliente-Windows11`, 4 GB RAM, 40 GB disco, TPM 2.0 y Secure Boot activados) conectada a la misma Red Solo Anfitrión del laboratorio (`10.10.10.0/24`) con IP fija `10.10.10.20`, se une al dominio `BOOCHANLAB.LOCAL`, se instala RSAT y se mapean las carpetas compartidas como unidades de red — demostrando que el modelo de permisos definido en Linux se respeta desde el cliente Windows.
 
 **[Auditoría Final — Hardening](Fases/Auditoria_Final.md):** cierre de seguridad con el principio Zero Trust aplicado mediante `ufw` **dentro** del propio servidor (política `deny incoming` por defecto, permitiendo solo `10.10.10.0/24`, `10.20.20.0/24` y el puerto WireGuard `51820/udp`), ya que en un laboratorio local no existe un firewall externo tipo Security Group que restringir.
 

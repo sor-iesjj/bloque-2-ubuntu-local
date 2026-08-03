@@ -191,27 +191,60 @@
 >
 > > [!info] 📚 Recurso: Si no recuerdas cómo usar este editor, repasa la [[Guía_Editor_Nano]].
 >
+> **1.** Primero, **saca a pantalla la llave PRIVADA del servidor**, que es la que necesitas ahora. Es el otro fichero que generaste en el Paso 1:
+> ```bash
+> sudo cat /etc/wireguard/privatekey
+> ```
+> Cópiala. Es una cadena larga terminada en `=`, parecida a la pública pero **distinta**.
+>
+> > [!danger] 🔑 No confundas las dos llaves
+> > | Fichero | Qué es | Dónde va |
+> > | :--- | :--- | :--- |
+> > | `privatekey` | El secreto del servidor | **Solo** en el `wg0.conf` del servidor. **No sale de la máquina jamás** |
+> > | `publickey` | La identidad pública del servidor | Se le da al **cliente**, en su configuración |
+> >
+> > Si metes la pública donde va la privada, el túnel no levantará y el error no te dirá que has confundido las llaves. **Compruébalo antes de guardar.**
+> >
+> > Que la privada aparezca en pantalla mientras grabas es aceptable en un laboratorio aislado. En un servidor real sería un incidente de seguridad — y la primera medida sería regenerar las llaves.
+>
+> **2.** Ahora crea el fichero:
 > ```bash
 > sudo nano /etc/wireguard/wg0.conf
 > ```
-> Escribe este contenido. Sustituye `<CONTENIDO_DE_TU_PRIVATEKEY>` por el valor del archivo `privatekey`:
+>
+> **3.** Escribe **solo esto**, sustituyendo `<TU_PRIVATEKEY>` por lo que acabas de copiar:
 > ```ini
 > [Interface]
-> PrivateKey = <CONTENIDO_DE_TU_PRIVATEKEY>
+> PrivateKey = <TU_PRIVATEKEY>
 > Address = 10.20.20.1/24
 > ListenPort = 51820
->
-> [Peer]
-> PublicKey = <LLAVE_PÚBLICA_DEL_CLIENTE>
-> AllowedIPs = 10.20.20.2/32
 > ```
-> Guarda con `Ctrl + O`, `Enter`, `Ctrl + X`. Deja el campo `<LLAVE_PÚBLICA_DEL_CLIENTE>` como está por ahora; lo completarás en el Paso 4 una vez que generes las llaves del cliente.
+>
+> Guarda con `Ctrl + O`, `Enter`, `Ctrl + X`.
+>
+> > [!warning] ⚠️ La sección `[Peer]` todavía NO
+> > El túnel tiene dos extremos y aún no existe el segundo: **la llave pública del cliente se genera en el Paso 3.**
+> >
+> > Podrías escribir el bloque `[Peer]` ahora con un marcador tipo `<LLAVE_DEL_CLIENTE>` y rellenarlo después, pero **no lo hagas**: un `wg0.conf` con un marcador dentro es un fichero **inválido**, y si arrancas WireGuard por error te dará un error de sintaxis críptico que te hará perder el tiempo buscando dónde está el fallo.
+> >
+> > Mejor un fichero **incompleto pero correcto** que uno completo y roto. Añadirás el `[Peer]` en el Paso 4, cuando tengas la llave de verdad:
+> > ```ini
+> > [Peer]
+> > PublicKey = <la llave pública del cliente>
+> > AllowedIPs = 10.20.20.2/32
+> > ```
+>
+> **4.** Comprueba lo que has escrito antes de seguir:
+> ```bash
+> sudo cat /etc/wireguard/wg0.conf
+> ```
+> Y verifica que la línea `PrivateKey` coincide **carácter por carácter** con la salida del punto 1. Un solo carácter de más al copiar y pegar, y el túnel no levanta.
 
 > [!example] Paso 3: Configuración del Lado Cliente
 > El túnel VPN necesita dos extremos configurados. En el proyecto final, el "cliente" será la **VM Windows 11** que crearás en una fase posterior de este itinerario. Como esa VM todavía no existe, tienes dos caminos válidos para completar y probar esta fase ahora mismo:
 >
 > > [!tip] 💡 Opción A (recomendada): usa tu propio PC físico como cliente de prueba
-> > Instala temporalmente la aplicación WireGuard en el PC donde corre VirtualBox. Como tu propio ordenador ya forma parte de la Red Solo Anfitrión la del laboratorio (`10.10.10.1`) (con IP `10.10.10.1`, configurada en la Fase 1), puedes usarlo directamente como cliente de prueba sin tocar nada más en VirtualBox. Esto te permite verificar el túnel de extremo a extremo *ahora*, sin esperar a tener la VM Windows 11 lista. Cuando más adelante crees esa VM, repetirás estos mismos pasos dentro de ella y usarás su llave pública en lugar de la de tu PC — el resto de la configuración del servidor no cambia.
+> > Instala temporalmente la aplicación WireGuard en el PC donde corre VirtualBox. Como tu propio ordenador ya forma parte de la Red Solo Anfitrión del laboratorio (con IP `10.10.10.1`, configurada en la Fase 1.2), puedes usarlo directamente como cliente de prueba sin tocar nada más en VirtualBox. Esto te permite verificar el túnel de extremo a extremo *ahora*, sin esperar a tener la VM Windows 11 lista. Cuando más adelante crees esa VM, repetirás estos mismos pasos dentro de ella y usarás su llave pública en lugar de la de tu PC — el resto de la configuración del servidor no cambia.
 >
 > > [!tip] 💡 Opción B: deja el túnel preparado y sin probar
 > > Si prefieres no instalar WireGuard en tu PC físico, puedes completar el archivo `wg0.conf` del servidor con una llave de cliente "provisional" (generada con `wg genkey | wg pubkey`, sin instalarla en ningún sitio todavía) y posponer la verificación del `ping 10.20.20.1` hasta la fase en la que crees la VM Windows 11. Ten en cuenta que en ese caso no podrás completar el Punto de Control de esta fase hasta entonces.
@@ -434,7 +467,7 @@
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | `Address already in use`. | Ya hay otra interfaz VPN activa con esa IP. | Ejecuta `sudo wg-quick down wg0` antes de volver a levantarla. |
-> | No hay ping entre `10.20.20.1` y `10.20.20.2`. | El cliente no está en la misma Red Solo Anfitrión que el servidor, o el adaptador de red del cliente está mal seleccionado en VirtualBox. | Comprueba en VirtualBox que el adaptador usado por el cliente apunta a la misma red Solo Anfitrión (la del laboratorio (`10.10.10.1`), la que configuraste en la Fase 1). |
+> | No hay ping entre `10.20.20.1` y `10.20.20.2`. | El cliente no está en la misma Red Solo Anfitrión que el servidor, o el adaptador de red del cliente está mal seleccionado en VirtualBox. | Comprueba en VirtualBox que el adaptador usado por el cliente apunta a la misma red Solo Anfitrión (la del `10.10.10.1`, la que configuraste en la Fase 1.2). |
 > | WireGuard no conecta pero no hay firewall de por medio. | Las llaves públicas están intercambiadas incorrectamente. | Verifica que la llave pública del cliente en el servidor y la del servidor en el cliente son exactas. |
 > | El cliente no encuentra el `Endpoint`. | Escribiste mal la IP `10.10.10.10` o el servidor no tiene esa IP activa. | Ejecuta `hostname -I` en el servidor y confirma que `10.10.10.10` sigue asignada al adaptador de Red Solo Anfitrión. |
 

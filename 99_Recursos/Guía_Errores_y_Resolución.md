@@ -49,10 +49,10 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > ⚠️ **Ojo también a la máscara:** VirtualBox crea la red con `255.255.0.0` por defecto. Hay que cambiarla a `255.255.255.0` a mano, y verificar después que se guardó.
 
 > **1. ¿Existe la red del laboratorio (`10.10.10.0/24`) y tiene la IP correcta?**
-> `Herramientas → Redes → Redes solo-anfitrión` en el VirtualBox Manager. Debe existir la del laboratorio (`10.10.10.1`) con IP `10.10.10.1/24` y el DHCP **desactivado** (ver Fase 1, Paso 4). Si no existe, créala con el botón `+`.
+> `Herramientas → Redes → Redes solo-anfitrión` en el VirtualBox Manager. Debe existir la red del laboratorio, con IP `10.10.10.1/24` y el DHCP **desactivado** (ver Fase 1, Paso 4). Si no existe, créala con el botón `+`.
 >
 > **2. ¿Todas las VMs implicadas apuntan a la misma red host-only?**
-> En cada VM: `Configuración → Red → Adaptador [el de Solo Anfitrión] → Nombre`. Debe decir la del laboratorio (`10.10.10.1`) en **todas** — servidor y cliente Windows. Es muy fácil que VirtualBox cree sin querer otra red host-only distinta si se edita la red desde una VM diferente; revisa que el nombre coincide letra por letra.
+> En cada VM: `Configuración → Red → Adaptador [el de Solo Anfitrión] → Nombre`. Debe apuntar a la red que tiene la IP `10.10.10.1` en **todas** — servidor y cliente Windows. Es muy fácil acabar con dos redes host-only y que cada máquina esté en una; **compruébalo por su IP, no por su nombre.**
 >
 > **3. ¿La IP dentro de la VM es la correcta?**
 > Dentro del servidor: `hostname -I` o `ip a` debe mostrar `10.10.10.10` en la interfaz correspondiente. Dentro de Windows: `ipconfig` debe mostrar `10.10.10.20` en el adaptador de Red Solo Anfitrión.
@@ -791,10 +791,10 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 ### Error 8.6 — Las dos VMs no se ven entre sí aunque ambas tienen "Red Solo Anfitrión"
 
 > [!bug] Cuándo se produce
-> El cliente está conectado a una red host-only distinta (otra red host-only distinta) en lugar de la del laboratorio (`10.10.10.1`).
+> El cliente está conectado a una red host-only distinta en lugar de la del laboratorio.
 
 > [!example] Resolución
-> Corrígelo en `VirtualBox → Configuración → Red → Adaptador 1 → Nombre`: selecciona la del laboratorio (`10.10.10.1`), la misma red que usa el servidor. Ver también Error 0.2.
+> Corrígelo en `VirtualBox → Configuración → Red → Adaptador 1 → Nombre`: selecciona la red que tiene la IP `10.10.10.1`, la misma que usa el servidor. Ver también Error 0.2.
 
 ---
 

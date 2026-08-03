@@ -47,27 +47,27 @@ Esta es la parte más importante y la que más errores genera en BoochanV1. Rep�
 > | Adaptador | Conectado a | Uso |
 > | :--- | :--- | :--- |
 > | **Adaptador 1** | `NAT` | Salida a internet (apt, git clone, activación de Windows) |
-> | **Adaptador 2** | `Red Solo Anfitrión` (Host-only Adapter), red la del laboratorio (`10.10.10.1`) | Comunicación aislada servidor ↔ cliente ↔ host, `10.10.10.0/24` |
+> | **Adaptador 2** | `Red Solo Anfitrión` (Host-only Adapter), red del laboratorio (`10.10.10.0/24`) | Comunicación aislada servidor ↔ cliente ↔ host, `10.10.10.0/24` |
 
 ### Crear o editar una red Solo Anfitrión (Host-Only Network)
 > **Ruta:** `Herramientas → Redes` (icono en la parte superior del VirtualBox Manager) → pestaña `Redes solo-anfitrión` → botón `+` (crear) o icono de lápiz (editar)
 >
 > *(En versiones más antiguas: `Archivo → Herramientas → Administrador de red del anfitrión`)*
 
-> [!example] Configuración de la del laboratorio (`10.10.10.1`) en BoochanV1 (Fase 1)
+> [!example] Configuración de la red sólo-anfitrión en BoochanV1 (Fase 1.2)
 > 1. Pestaña **Adaptador**:
 >    - Dirección IPv4: `10.10.10.1`
 >    - Máscara de subred: `255.255.255.0`
 > 2. Pestaña **Servidor DHCP**: **desmarcar** "Habilitar servidor" — la IP del servidor (`10.10.10.10`) y del cliente (`10.10.10.20`) se fijan a mano dentro de cada VM, no por DHCP.
 >
 > > [!important] 💡 Por qué evitamos el rango por defecto
-> > VirtualBox suele crear la del laboratorio (`10.10.10.1`) con el rango `192.168.56.0/24` de fábrica. En BoochanV1 lo cambiamos deliberadamente a `10.10.10.0/24` para que nunca se confunda con una red Wi-Fi doméstica típica (`192.168.x.x`).
+> > VirtualBox suele crear las redes sólo-anfitrión con el rango `192.168.56.0/24` de fábrica, y con máscara `255.255.0.0`. En BoochanV1 lo cambiamos deliberadamente a `10.10.10.0/24` para que nunca se confunda con una red Wi-Fi doméstica típica (`192.168.x.x`).
 
 ### Comprobar qué redes host-only existen y su estado
 > **Ruta:** Misma ventana que arriba (`Herramientas → Redes → Redes solo-anfitrión`). Muestra el nombre (el que sea en tu sistema), la IP del adaptador y si el DHCP está activo.
 
 > [!tip] 💡 Diagnóstico rápido: ¿por qué dos VMs no se ven?
-> La causa más común de que el servidor y el cliente Windows no se vean entre sí es que **cada uno esté conectado a una red host-only distinta** (por ejemplo, el cliente creó sin querer una red host-only nueva en lugar de reutilizar la del laboratorio (`10.10.10.1`)). Verifica en `Configuración → Red → Adaptador [Solo Anfitrión]` de ambas VMs que el nombre de red coincide exactamente.
+> La causa más común de que el servidor y el cliente Windows no se vean entre sí es que **cada uno esté conectado a una red host-only distinta** (por ejemplo, el cliente creó sin querer una red host-only nueva en lugar de reutilizar la del laboratorio). Verifica en `Configuración → Red → Adaptador [Solo Anfitrión]` de ambas VMs que las dos apuntan a **la red que tiene la IP `10.10.10.1`**. Identifícala por su dirección, nunca por su nombre: los nombres cambian según el sistema operativo del anfitrión.
 
 ---
 

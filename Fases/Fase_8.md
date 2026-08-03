@@ -97,7 +97,7 @@
 > - **Clock Skew:** El desfase de tiempo máximo permitido por seguridad (300 segundos = 5 minutos).
 > - **RSAT:** Herramientas de administración remota para gestionar el dominio Linux desde la interfaz gráfica de Windows.
 > - **net use:** Comando de consola para conectar carpetas compartidas como si fueran discos locales.
-> - **Red Solo Anfitrión (Host-Only Adapter):** Modo de red de VirtualBox que crea una red privada entre el host y las VMs que se conectan a la misma red host-only (aquí, la del laboratorio (`10.10.10.1`)) — no sale a Internet, pero sí es visible desde el host.
+> - **Red Solo Anfitrión (Host-Only Adapter):** Modo de red de VirtualBox que crea una red privada entre el host y las VMs que se conectan a la misma red host-only (aquí, la del laboratorio: `10.10.10.0/24`) — no sale a Internet, pero sí es visible desde el host.
 
 ---
 
@@ -130,11 +130,11 @@
 >
 > | Adaptador | Modo | Nombre de red | Para qué sirve |
 > | :--- | :--- | :--- | :--- |
-> | **Adaptador 1** | Red Solo Anfitrión (*Host-only Adapter*) | la del laboratorio (`10.10.10.1`) — la misma red host-only que ya creaste y configuraste en la Fase 1 | Hablar con el servidor: dominio, DNS, SMB, Kerberos |
+> | **Adaptador 1** | Red Solo Anfitrión (*Host-only Adapter*) | la del laboratorio — la misma red host-only que ya creaste y configuraste en la Fase 1 | Hablar con el servidor: dominio, DNS, SMB, Kerberos |
 > | **Adaptador 2** | NAT | — | Salida a Internet: activación de Windows, Windows Update, descarga de RSAT |
 >
 > > [!important] ⚠️ Selecciona la misma red del laboratorio (`10.10.10.0/24`), no crees una red nueva
-> > No hace falta crear ninguna red nueva ni inventar un nombre propio: en el Adaptador 1, selecciona **`Red Solo Anfitrión`** y, en el desplegable de nombre de red, elige **la del laboratorio (`10.10.10.1`)** — la misma red host-only que configuraste manualmente en la Fase 1 (IP del host `10.10.10.1/24`, DHCP desactivado) y a la que ya está conectado el servidor. Al compartir exactamente la misma red host-only, servidor, cliente y tu propio ordenador se ven entre sí sin ningún paso adicional.
+> > No hace falta crear ninguna red nueva ni inventar un nombre propio: en el Adaptador 1, selecciona **`Red Solo Anfitrión`** y, en el desplegable de nombre de red, elige **la que tiene la IP `10.10.10.1`** — la misma red host-only que configuraste manualmente en la Fase 1 (IP del host `10.10.10.1/24`, DHCP desactivado) y a la que ya está conectado el servidor. Al compartir exactamente la misma red host-only, servidor, cliente y tu propio ordenador se ven entre sí sin ningún paso adicional.
 >
 > > [!tip] 💡 ¿Por qué añadimos un adaptador NAT si el proyecto es "todo local"?
 > > Decisión de diseño: sin salida a Internet, Windows 11 no puede activarse, no puede descargar actualizaciones ni instalar las **RSAT** (Paso 8, más abajo, requiere descargar un paquete desde los servidores de Microsoft). El adaptador NAT resuelve esto sin comprometer la seguridad del laboratorio: NAT es una salida *unidireccional* — nadie desde fuera puede entrar hacia la VM a través de él salvo que configures explícitamente un reenvío de puertos (Port Forwarding), cosa que no vamos a hacer en el cliente. El tráfico de dominio (DNS, Kerberos, SMB) sigue viajando exclusivamente por el Adaptador 1 (Red Solo Anfitrión), nunca por el NAT.
@@ -241,7 +241,7 @@
 > | "Error de relación de confianza". | Desfase horario (Clock Skew) superior a 5 minutos — muy típico tras reanudar una VM pausada. | Ejecuta `w32tm /resync /force` (Paso 2) antes de reintentar. |
 > | La unidad `Z:` no aparece al reiniciar. | El mapeo no es persistente. | Añade `/persistent:yes` al final del comando `net use`. |
 > | RSAT no se descarga / se queda "buscando actualizaciones". | El adaptador NAT no está activo o no tiene salida a Internet. | Comprueba que el Adaptador 2 (NAT) está conectado en la configuración de la VM y que el host tiene Internet. |
-> | Las dos VMs no se ven entre sí aunque ambas tienen "Red Solo Anfitrión". | El cliente está conectado a una red host-only distinta (otra red host-only distinta) en lugar de la del laboratorio (`10.10.10.1`). | Corrígelo en VirtualBox → Configuración → Red → Adaptador 1 → Nombre: selecciona la del laboratorio (`10.10.10.1`), la misma red que usa el servidor. |
+> | Las dos VMs no se ven entre sí aunque ambas tienen "Red Solo Anfitrión". | El cliente está conectado a una red host-only distinta en lugar de la del laboratorio. | Corrígelo en VirtualBox → Configuración → Red → Adaptador 1 → Nombre: selecciona la red que tiene la IP `10.10.10.1`, la misma que usa el servidor. |
 
 > [!help] Preguntas Críticas (Autoevaluación)
 > 1. ¿Por qué en este proyecto el cliente Windows no necesita el túnel WireGuard para unirse al dominio, a diferencia de BoochanV2/V3?
