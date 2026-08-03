@@ -359,6 +359,14 @@
 
 ---
 
+### 🚩 Puntos de control
+
+> [!help] Antes de dar la fase por terminada
+> - [ ] ¿El túnel WireGuard está levantado y el `ping` entre `10.20.20.1` y `10.20.20.2` responde?
+> - [ ] 💾 **Instantánea `Fase 3 terminada` tomada** en VirtualBox, con la VM apagada y **grabándolo**.
+
+---
+
 ### ✅ Entregables y cierre
 
 > [!abstract] Qué tienes que tener hecho al acabar esta fase
@@ -367,6 +375,7 @@
 > | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-3-conectividad-vpn-wireguard.md` | Estructura completa + **respuestas a las Preguntas Críticas y al 🔬 Reto** + **enlace del vídeo** |
 > | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `V1 · Fase 3 — Conectividad VPN (WireGuard)`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
+> | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 3 terminada`**, y **tomada durante la grabación** para que se vea que la has hecho |
 >
 > > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
 > > Las **Preguntas Críticas** y el **🔬 Reto** de más arriba no son decorativos: son la parte de la fase que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.

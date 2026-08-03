@@ -205,6 +205,7 @@
 > - [ ] ¿El comando `id user1` devuelve correctamente `uid=10001` y `gid=3001`?
 > - [ ] ¿El comando `id user2` devuelve correctamente `uid=10002` y `gid=3002`?
 > - [ ] ¿El archivo `/etc/nsswitch.conf` tiene `winbind` en las líneas `passwd` y `group`?
+> - [ ] 💾 **Instantánea `Fase 5 terminada` tomada** en VirtualBox, con la VM apagada y **grabándolo**.
 
 ---
 
@@ -216,6 +217,7 @@
 > | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-5-gestion-de-identidades-usuarios-y-grupos.md` | Estructura completa + **respuestas a las Preguntas Críticas y al 🔬 Reto** + **enlace del vídeo** |
 > | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `V1 · Fase 5 — Gestión de Identidades (Usuarios y Grupos)`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
+> | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 5 terminada`**, y **tomada durante la grabación** para que se vea que la has hecho |
 >
 > > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
 > > Las **Preguntas Críticas** y el **🔬 Reto** de más arriba no son decorativos: son la parte de la fase que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.

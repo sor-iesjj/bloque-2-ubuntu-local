@@ -223,6 +223,7 @@
 - [ ] `BOOCHANLAB` y `BOOCHANLAB.LOCAL` anotados.
 - [ ] Ejercicio de las APIs hecho, con el cálculo de subred **escrito antes** de consultarla.
 - [ ] Las 5 preguntas críticas respondidas en la entrada.
+- [ ] 💾 **Instantánea `Fase 1 terminada` tomada** en VirtualBox, con la VM apagada y **grabándolo**.
 
 ---
 
@@ -234,6 +235,7 @@
 > | **Entrada de apuntes** | `.../v1-fase-1-4-verificacion-y-acceso-remoto.md` | Las comprobaciones + **respuestas a las preguntas del ejercicio y a las 5 críticas** + **enlace del vídeo** |
 > | **Vídeo** | Playlist `B2_Ubuntu_Local` | `V1 · Fase 1.4 — Verificación y Acceso Remoto`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes | La entrada subida con `add` → `commit` → `push` |
+> | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 1 terminada`**, y **tomada durante la grabación** para que se vea que la has hecho |
 >
 > > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
 > > Son la parte que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**. Una sub-fase con el procedimiento perfecto y las preguntas en blanco está **incompleta**.

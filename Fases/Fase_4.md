@@ -238,6 +238,7 @@
 > ```
 > - [ ] ¿Responde `samba-tool domain level show` sin errores?
 > - [ ] ¿El comando `nslookup _kerberos._tcp.BOOCHANLAB.LOCAL` devuelve la IP correcta?
+> - [ ] 💾 **Instantánea `Fase 4 terminada` tomada** en VirtualBox, con la VM apagada y **grabándolo**.
 
 ---
 
@@ -249,6 +250,7 @@
 > | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-4-aprovisionamiento-del-dominio-samba-ad-d.md` | Estructura completa + **respuestas a las Preguntas Críticas y al 🔬 Reto** + **enlace del vídeo** |
 > | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `V1 · Fase 4 — Aprovisionamiento del Dominio (Samba AD DC)`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
+> | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 4 terminada`**, y **tomada durante la grabación** para que se vea que la has hecho |
 >
 > > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
 > > Las **Preguntas Críticas** y el **🔬 Reto** de más arriba no son decorativos: son la parte de la fase que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.
