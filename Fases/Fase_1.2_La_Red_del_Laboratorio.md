@@ -1,4 +1,4 @@
-## 🔌 Fase 1.2: La Red del Laboratorio
+	## 🔌 Fase 1.2: La Red del Laboratorio
 
 ### Dos tarjetas, dos trabajos distintos
 
