@@ -1,4 +1,4 @@
-	## 🧹 Fase 2: Purga y Preparación del Entorno
+## 🧹 Fase 2: Purga y Preparación del Entorno
 
 ### Infraestructura de Servidor Local (VirtualBox)
 
@@ -14,7 +14,29 @@
 
 ---
 
-> [!abstract] 📋 Qué se te evalúa en esta fase
+## 🧭 Índice de la fase
+
+| | Sección | Qué encontrarás |
+| :--- | :--- | :--- |
+| 1 | [📋 Qué se te evalúa](#evaluacion) | Los RA y CE que demuestras aquí |
+| 2 | [✅ Qué entregas y cómo lo grabas](#entrega) | Los cuatro entregables y las obligaciones de grabación |
+| 3 | [🎯 ¿Dónde estamos?](#donde) | De dónde vienes, qué problema resuelves y a dónde llegas |
+| 4 | [📚 Fundamento teórico](#teoria) | Los siete conceptos + diccionario |
+| 5 | [🛠️ Procedimiento](#procedimiento) | **El trabajo:** Paso 0 · 1A · 1B · 2 · 3 |
+| 6 | [🚩 Resolución de problemas](#problemas) | Tabla de averías |
+| 7 | [💾 Punto de control](#instantanea) | Toma la instantánea antes de seguir |
+| 8 | [❓ Preguntas críticas](#preguntas) | Lo que va a tu entrada de apuntes |
+| 9 | [🏁 Auditoría y cierre](#cierre) | La checklist final |
+
+> [!tip] 💡 Cómo se lee esta fase
+> Los apartados **1 y 2** se leen **antes de encender nada**: te dicen qué se te va a pedir. El **5** es el trabajo. Los apartados **7, 8 y 9** son el cierre, en ese orden: primero aseguras la máquina, luego escribes, luego compruebas que no te dejas nada.
+
+---
+
+<a id="evaluacion"></a>
+## 1. 📋 Qué se te evalúa en esta fase
+
+> [!abstract] Resultados de aprendizaje y criterios
 > Esta fase toca **dos** resultados de aprendizaje a la vez:
 >
 > **`RA.01`** *(35 % del módulo · UD1-UD4)* — *Instala sistemas operativos en red describiendo sus características e interpretando la documentación técnica.*
@@ -29,6 +51,19 @@
 
 ---
 
+<a id="entrega"></a>
+## 2. ✅ Qué entregas y cómo lo grabas
+
+> [!abstract] 📦 Los cuatro entregables
+> **Léelo antes de empezar.** Esto es lo que se te va a pedir al terminar:
+>
+> | Entregable | Dónde vive | Qué debe contener |
+> | :--- | :--- | :--- |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-2-purga-y-preparacion-del-entorno.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **enlace del vídeo** |
+> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | `V1 · Fase 2 — Purga y Preparación del Entorno`, con presentación, identidad y timestamps |
+> | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
+> | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 2 terminada`**, tomada **durante la grabación** |
+
 > [!important] 📹 Obligaciones de grabación (LÉEME — es igual en TODAS las fases)
 > Esta práctica se **graba entera con OBS**, de principio a fin. No es un repaso al final: quiero ver **cómo lo haces tú**.
 > 1. **Prepárate primero (sin grabar):** comprueba lo necesario, **léete el procedimiento entero** y **crea la entrada de apuntes de esta fase** en Obsidian: fichero `v1-fase-2-purga-y-preparacion-del-entorno.md` dentro de `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`, con la estructura de la Fase 0.1 y **vacía**. Rellenarla es cosa tuya, después.
@@ -39,11 +74,14 @@
 > 6. **~8-10 min.** Esta fase es más larga que las de prerrequisitos: ve al grano, pero no te saltes pasos. Si se te va mucho, **pártela en dos vídeos** y ponlos los dos en la entrada.
 > 7. **El enlace del vídeo va DENTRO de tu entrada de apuntes**, en el apartado `Enlace al vídeo explicativo`. Ahí, no en un papel.
 > 8. **La entrega va por la TAREA de Teams.** Abriré una tarea que cubrirá **esta fase y otras**; te llegará notificación con fecha límite.
+>
+> > [!info] 🏷️ Por qué el nombre lleva `V1` delante
+> > Porque el proyecto Boochan existe en **varias versiones** (VirtualBox, Hyper-V, Azure, AWS…) y algunas comparten bloque y playlist. Sin la etiqueta, la Fase 2 de Azure y la de AWS se llamarían **exactamente igual** y no habría forma de distinguirlas.
 
 ---
 
-
-### 🎯 ¿Dónde Estamos?
+<a id="donde"></a>
+## 3. 🎯 ¿Dónde Estamos?
 
 > [!info] Vienes de Fase 1
 > Creaste una máquina virtual con Ubuntu Server 26.04 LTS en VirtualBox, con dos adaptadores de red: uno de **Red Solo Anfitrión** con la IP estática `10.10.10.10/24` (para hablar con la futura VM cliente Windows 11 y con tu propio ordenador) y otro **NAT** (para salir a internet y actualizar paquetes). La VM está encendida y accesible. Pero viene "de fábrica" con software innecesario: servicios antiguos, demonios durmiendo, paquetes que consumirán RAM y podrían ser puertas de seguridad.
@@ -67,7 +105,8 @@
 
 ---
 
-### 📚 Fundamento Teórico Avanzado
+<a id="teoria"></a>
+## 4. 📚 Fundamento Teórico
 
 > [!abstract] 1. Idempotencia: "La Pizarra Limpia"
 > En la U.T. 5 aprendemos que un servidor profesional debe ser **idempotente** (puedes repetir el proceso y el resultado siempre será el mismo) y **predecible**. No podemos construir un rascacielos sobre los cimientos de una cabaña vieja.
@@ -113,14 +152,15 @@
 
 ---
 
-### 🛠️ Procedimiento Práctico (BoochanV1)
+<a id="procedimiento"></a>
+## 5. 🛠️ Procedimiento Práctico
 
-> [!important] 🔌 Antes de empezar: Conéctate al servidor
+> [!important] 🔌 Paso 0: Conéctate al servidor
 > Todos los comandos de esta fase se ejecutan **dentro de tu VM de VirtualBox**, no en tu PC físico. Puedes trabajar directamente en la ventana de consola de la VM, o bien abrir una terminal en tu PC y conectarte por SSH a la IP interna que configuraste en la Fase 1:
 > ```bash
-> ssh usuario@10.10.10.10
+> ssh boochan@10.10.10.10
 > ```
-> Sustituye `usuario` por el nombre de usuario administrador que creaste durante la instalación de Ubuntu Server en la Fase 1. Cuando veas el símbolo `$` al final de la línea, ya estás listo para continuar.
+> Cuando veas el símbolo `$` al final de la línea, ya estás listo para continuar.
 >
 > > [!tip] 💡 ¿Consola de VirtualBox o SSH?
 > > Ambas opciones son válidas y hacen exactamente lo mismo. La consola de VirtualBox (la ventana de la VM) siempre funciona, incluso si la red todavía no está bien configurada. El SSH es más cómodo (puedes copiar y pegar comandos largos) pero requiere que la Red Solo Anfitrión ya esté operativa. Si tienes dudas de cuál usar, empieza por la consola de VirtualBox.
@@ -128,10 +168,10 @@
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
 > 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-2-purga-y-preparacion-del-entorno.md`) con su estructura, vacía.
-> 2. **Léete los 3 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 2. **Léete los pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
 > 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
 >
-> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado**.
 
 > [!example] Paso 1A: Limpieza Total del Entorno
 > Antes de construir, debemos demoler lo viejo. Ejecuta estos comandos para liberar los puertos y limpiar la caché:
@@ -176,7 +216,7 @@
 >
 > | Comando | Respuesta que buscas | Si sale otra cosa |
 > | :--- | :--- | :--- |
-> | `systemctl status smbd` | `Unit smbd.service could not be found` | Si dice `active (running)`, la purga **no se ha ejecutado**. Vuelve al Paso 1 |
+> | `systemctl status smbd` | `Unit smbd.service could not be found` | Si dice `active (running)`, la purga **no se ha ejecutado**. Vuelve al Paso 1A |
 > | `ss` en 139/445 | **nada, ninguna línea** | Si aparece `smbd` escuchando, esos puertos siguen ocupados y **la Fase 4 fallará** |
 > | `dpkg -l \| grep '^ii samba'` | **nada** | Si hay líneas `ii`, los paquetes siguen instalados |
 >
@@ -205,14 +245,13 @@
 > > Comprueba que están:
 > > ```bash
 > > dpkg -s samba-ad-dc samba-ad-provision | grep -E '^Package|^Status'
-> > ```>
+> > ```
+>
 > > [!caution] ⚠️ Si el comando falla a mitad de la instalación
-> > Este comando instala muchos paquetes a la vez. Si ves un error en rojo y la instalación se detiene, no entres en pánico. Ejecuta este comando para reparar los paquetes que quedaron a medias y vuelve a intentarlo:
+> > Este comando instala muchos paquetes a la vez. Si ves un error en rojo y la instalación se detiene, no entres en pánico. Ejecuta esto para reparar los paquetes que quedaron a medias y vuelve a intentarlo:
 > > ```bash
 > > sudo apt --fix-broken install -y
-> > sudo apt install acl attr samba krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config wireguard resolvconf -y
 > > ```
-> >
 > > **Si `apt update` da error de red:** comprueba que el adaptador **NAT** de la VM está conectado (`Configuración → Red → Adaptador 1` en VirtualBox) y que puedes hacer `ping 8.8.8.8` desde dentro de la VM. El adaptador de Red Solo Anfitrión (`10.10.10.10`) **no** da salida a internet por diseño — solo el NAT lo hace.
 >
 > > [!important] 💡 La pantalla azul de Kerberos (`krb5-config`)
@@ -224,12 +263,11 @@
 > > **¡Las mayúsculas son obligatorias!** Si escribes `boochanlab.local` en minúsculas, el sistema de seguridad Kerberos fallará más adelante y ningún usuario podrá autenticarse.
 >
 > > [!warning] ⚠️ Nota sobre `resolvconf` y el DNS del sistema
-> > El paquete `resolvconf` que acabas de instalar puede entrar en conflicto con el servicio de DNS que Ubuntu trae por defecto (`systemd-resolved`). De momento no haremos nada; el script de la Fase 4 se encarga de resolver este conflicto automáticamente. Si en la Fase 4 el DNS no apunta a `127.0.0.1`, encontrarás el procedimiento de reparación en su tabla de troubleshooting.
+> > El paquete `resolvconf` que acabas de instalar puede entrar en conflicto con el servicio de DNS que Ubuntu trae por defecto (`systemd-resolved`). De momento no haremos nada; el script de la Fase 4 se encarga de resolver este conflicto automáticamente.
 
 > [!example] Paso 3: Configuración de la Identidad (FQDN)
 > Debemos decirle al servidor quién es. Primero comprobamos que la IP estática de la Fase 1 sigue activa:
 > ```bash
-> # Muestra las IPs del servidor
 > hostname -I
 > ```
 > > [!tip] 💡 ¿Qué IP anoto si aparecen varias?
@@ -269,82 +307,29 @@
 
 ---
 
-### 🚩 Resolución de Problemas y Evaluación
+<a id="problemas"></a>
+## 6. 🚩 Resolución de Problemas
 
 > [!bug] Troubleshooting (¿Algo no va bien?)
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | `apt purge` no encuentra Samba. | Samba no estaba instalado o ya lo borraste. | No te preocupes, verifica con `dpkg -l \| grep samba`. Si está vacío, perfecto. |
-> | En el **Paso 1b** (antes del Paso 2), `systemctl status smbd` sigue diciendo `active (running)`. | El servicio seguía arrancado, o la purga no incluyó todos los paquetes. | Ejecuta el Paso 1A **entero y en orden**: primero el `systemctl stop`, después el `purge` con la lista completa. |
+> | En el **Paso 1B** (antes del Paso 2), `systemctl status smbd` sigue diciendo `active (running)`. | El servicio seguía arrancado, o la purga no incluyó todos los paquetes. | Ejecuta el Paso 1A **entero y en orden**: primero el `systemctl stop`, después el `purge` con la lista completa. |
 > | **Al ACABAR la fase**, `systemctl status smbd` dice `active (running)`. | **Ninguna: es lo correcto.** El Paso 2 reinstaló Samba a propósito. | No toques nada. La Fase 4 lo desactiva ella sola antes de levantar el dominio. |
 > | Purgué con `samba*` y `winbind` sigue instalado. | El comodín solo caza lo que empieza por "samba". | Usa la lista explícita del Paso 1A, que incluye `winbind`, `libnss-winbind` y `libpam-winbind`. |
-> | `ss` sigue mostrando algo en el 445 después de purgar. | Un proceso quedó vivo aunque el paquete se borrara. | `sudo ss -tlnp \| grep :445` te dice **qué proceso** lo ocupa. Párelo con `sudo systemctl stop <servicio>` y vuelve a comprobar. |
+> | `ss` sigue mostrando algo en el 445 después de purgar. | Un proceso quedó vivo aunque el paquete se borrara. | `sudo ss -tlnp \| grep :445` te dice **qué proceso** lo ocupa. Páralo con `sudo systemctl stop <servicio>` y vuelve a comprobar. |
 > | El nombre del servidor es incorrecto. | Error de escritura en `/etc/hostname` o `/etc/hosts`. | Ejecuta `hostname -f`. Debe devolver `UbuntuServer.BOOCHANLAB.LOCAL`. |
 > | La pantalla azul de Kerberos no aparece. | Ya está configurado de una instalación anterior. | Ejecuta `sudo dpkg-reconfigure krb5-config` para reconfigurarlo. |
 > | `apt update` no descarga nada / sin internet. | El adaptador NAT no está conectado o mal configurado. | En VirtualBox: `Configuración de la VM → Red → Adaptador 1` debe estar habilitado y en modo `NAT`. Reinicia la VM tras el cambio. |
 > | `hostname -I` no muestra `10.10.10.10`. | La configuración estática de netplan de la Fase 1 no se aplicó o se perdió. | Revisa el archivo `.yaml` en `/etc/netplan/` y ejecuta `sudo netplan apply`. |
 
-> [!help] Preguntas Críticas (Autoevaluación)
-> 1. ¿Qué diferencia real hay entre un `apt remove` y un `apt purge`?
-> 2. ¿Para qué sirve el archivo `/etc/hosts` en la resolución de nombres local (sin salir a Internet)?
-> 3. ¿Por qué es crítico que el FQDN sea idéntico en todos los archivos de configuración futuros?
-> 4. ¿Por qué usamos el sufijo `.LOCAL` en vez de un dominio real como `.SPACE` o `.COM` para este laboratorio?
-> 5. 🔬 **Reto práctico:** Ejecuta `hostname -f` en el servidor. Compara la salida letra por letra con la línea que añadiste en `/etc/hosts`. ¿Coinciden exactamente, sin espacios ni diferencias de mayúsculas? Una sola diferencia hará que el dominio falle silenciosamente en la Fase 4 sin dar un error claro.
-> 6. 🔬 **Reto práctico:** Ejecuta `ping UbuntuServer` y luego `ping UbuntuServer.BOOCHANLAB.LOCAL` desde el propio servidor. ¿Responden los dos? ¿A qué IP resuelven? Si uno falla y el otro no, ¿qué línea del `/etc/hosts` tienes mal configurada?
-
 ---
 
-> [!caution] 🛑 Auditoría y Evaluación (RA.02)
-> El alumno debe demostrar que el servidor resuelve su propio FQDN. **Riesgo Crítico:** Si el `hosts` no coincide con el dominio que instalaremos en la Fase 4, Kerberos jamás sacará tickets y el proyecto fallará.
+<a id="instantanea"></a>
+## 7. 💾 Punto de Control: toma tu instantánea
 
-> [!success] 🏁 Punto de Control (Antes de seguir)
-> - [ ] ¿El comando `hostname -f` devuelve `UbuntuServer.BOOCHANLAB.LOCAL`?
-> - [ ] ¿Comprobaste en el **Paso 1B**, **antes** de reinstalar, que la purga había dejado el sistema limpio?
->
-> > [!warning] ⚠️ Al terminar esta fase, `smbd` ESTÁ corriendo. Y es lo correcto.
-> > Si ahora ejecutas `systemctl status smbd` verás `active (running)`. **No es un fallo y no hay que arreglarlo.**
-> >
-> > Esta fase hace dos cosas seguidas que parecen contradictorias:
-> > 1. El **Paso 1 purga** el Samba que Ubuntu trae de fábrica, **con su configuración**.
-> > 2. El **Paso 2 instala** el Samba que vamos a usar de verdad, limpio y acompañado de Kerberos y winbind.
-> >
-> > Demoler y volver a construir. Lo que sobraba no era el programa: era **la configuración vieja** que se habría mezclado con la del dominio.
-> >
-> > Por eso la comprobación de que la purga funcionó va **en medio** (Paso 1B) y no al final: al final ya no se puede comprobar, porque el Paso 2 lo ha vuelto a instalar.
-> >
-> > **¿Y los puertos 139 y 445?** Los ocupa ahora el Samba nuevo. La **Fase 4** los libera ella misma antes de levantar el controlador de dominio, con `sudo systemctl disable --now smbd nmbd winbind`. Ya está previsto — no tienes que hacer nada.
-> - [ ] ¿`hostname -I` muestra la IP estática `10.10.10.10` del adaptador de Red Solo Anfitrión?
-> - [ ] 💾 **Instantánea `Fase 2 terminada` tomada** en VirtualBox, con la VM apagada y **grabándolo**.
-
----
-
-### ✅ Entregables y cierre
-
-> [!abstract] Qué tienes que tener hecho al acabar esta fase
-> | Entregable | Dónde vive | Qué debe contener |
-> | :--- | :--- | :--- |
-> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-2-purga-y-preparacion-del-entorno.md` | Estructura completa + **respuestas a las Preguntas Críticas y al 🔬 Reto** + **enlace del vídeo** |
-> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `V1 · Fase 2 — Purga y Preparación del Entorno`, con presentación, identidad y timestamps |
-> | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
-> | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 2 terminada`**, y **tomada durante la grabación** para que se vea que la has hecho |
->
-> > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
-> > Las **Preguntas Críticas** y el **🔬 Reto** de más arriba no son decorativos: son la parte de la fase que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.
-> > Una fase con el procedimiento perfecto y las preguntas en blanco está **incompleta**.
->
-> > [!info] 🏷️ Por qué el nombre lleva `V1` delante
-> > Porque el proyecto Boochan existe en **varias versiones** (VirtualBox, Hyper-V, Azure, AWS…) y algunas comparten bloque y playlist. Sin la etiqueta, la Fase 4 de Azure y la de AWS se llamarían **exactamente igual** y no habría forma de distinguirlas. Con ella, tu carpeta y tu playlist dicen siempre **qué versión hiciste**.
->
-> > [!success] 🎯 Criterio de éxito
-> > Abro tu repositorio, encuentro la entrada de esta fase, y dentro está: qué has hecho, qué has entendido, qué dudas te han quedado y el enlace al vídeo donde se te ve haciéndolo. Si falta el enlace o faltan las respuestas, la fase **no cuenta como entregada**.
->
-> > [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
-> > **Una fase, una entrada.** No creas un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**, para no perder nunca más de un día de trabajo.
-
----
-
-> [!important] 💾 ÚLTIMO PASO: toma tu punto de control
-> Antes de cerrar la grabación, **apaga la VM y toma una instantánea**:
+> [!important] 💾 El trabajo de máquina termina aquí
+> Antes de sentarte a contestar las preguntas, **asegura el estado del servidor**. Con la grabación todavía en marcha:
 >
 > ```bash
 > sudo poweroff
@@ -352,8 +337,70 @@
 >
 > En VirtualBox: selecciona la VM → **`Instantáneas`** → **`Tomar`** → nómbrala **`Fase 2 terminada`**, con la descripción *"Samba purgado y reinstalado, sistema actualizado, `/etc/hosts` con el FQDN"*.
 >
-> **Por qué:** si algo se rompe en la fase siguiente, vuelves aquí en treinta segundos en vez de reinstalar desde cero. Y te permite **probar cosas a propósito** para ver qué pasa, sabiendo que puedes deshacerlo.
+> Por comando, si el botón no aparece:
+> ```
+> VBoxManage snapshot "UbuntuServer" take "Fase 2 terminada" --description "Samba purgado y reinstalado, hosts con FQDN"
+> ```
 >
-> Cómo se hace paso a paso, y qué NO conserva una instantánea: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
+> **Por qué aquí y no al final:** las preguntas son trabajo de mesa y puedes tardar días en redactarlas. La instantánea cierra el trabajo de máquina **mientras lo tienes fresco y la VM en la mano**.
 >
-> ⚠️ **Antes de la Fase 4 esto no es opcional.** Es la fase que más piezas mueve y la que más se rompe.
+> Cómo se hace paso a paso, cómo verificar que existe y qué NO conserva: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
+
+---
+
+<a id="preguntas"></a>
+## 8. ❓ Preguntas Críticas
+
+> [!help] Contéstalas en tu entrada de apuntes, con tus palabras
+> 1. ¿Qué diferencia real hay entre un `apt remove` y un `apt purge`?
+> 2. ¿Para qué sirve el archivo `/etc/hosts` en la resolución de nombres local (sin salir a Internet)?
+> 3. ¿Por qué es crítico que el FQDN sea idéntico en todos los archivos de configuración futuros?
+> 4. ¿Por qué usamos el sufijo `.LOCAL` en vez de un dominio real como `.SPACE` o `.COM` para este laboratorio?
+> 5. 🔬 **Reto práctico:** Ejecuta `hostname -f` en el servidor. Compara la salida letra por letra con la línea que añadiste en `/etc/hosts`. ¿Coinciden exactamente, sin espacios ni diferencias de mayúsculas? Una sola diferencia hará que el dominio falle silenciosamente en la Fase 4 sin dar un error claro.
+> 6. 🔬 **Reto práctico:** Ejecuta `ping UbuntuServer` y luego `ping UbuntuServer.BOOCHANLAB.LOCAL` desde el propio servidor. ¿Responden los dos? ¿A qué IP resuelven? Si uno falla y el otro no, ¿qué línea del `/etc/hosts` tienes mal configurada?
+
+> [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
+> Estas preguntas no son decorativas: son la parte de la fase que demuestra que has **entendido** lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.
+>
+> Una fase con el procedimiento perfecto y las preguntas en blanco está **incompleta**.
+
+---
+
+<a id="cierre"></a>
+## 9. 🏁 Auditoría y Cierre
+
+> [!caution] 🛑 Qué se audita en esta fase
+> Que el servidor **resuelve su propio FQDN**. Si el `/etc/hosts` no coincide exactamente con el dominio que instalarás en la Fase 4, Kerberos jamás emitirá tickets y el proyecto fallará — **sin dar un error que apunte a esta fase**.
+
+> [!success] ✅ Checklist final: no sigas a la Fase 3 sin esto
+> - [ ] ¿Comprobaste en el **Paso 1B**, **antes** de reinstalar, que la purga había dejado el sistema limpio?
+> - [ ] ¿`hostname -f` devuelve exactamente `UbuntuServer.BOOCHANLAB.LOCAL`?
+> - [ ] ¿`hostname -I` muestra la IP estática `10.10.10.10`?
+> - [ ] ¿`dpkg -s samba-ad-dc samba-ad-provision` confirma que **los dos** están instalados?
+> - [ ] 💾 ¿Tomaste la instantánea **`Fase 2 terminada`**?
+> - [ ] ¿Tu entrada de apuntes tiene las **6 preguntas contestadas** y el **enlace del vídeo**?
+> - [ ] ¿Hiciste `commit` y `push` de la entrada?
+
+> [!warning] ⚠️ Al terminar esta fase, `smbd` ESTÁ corriendo. Y es lo correcto.
+> Si ahora ejecutas `systemctl status smbd` verás `active (running)`. **No es un fallo y no hay que arreglarlo.**
+>
+> Esta fase hace dos cosas seguidas que parecen contradictorias:
+> 1. El **Paso 1A purga** el Samba que Ubuntu trae de fábrica, **con su configuración**.
+> 2. El **Paso 2 instala** el Samba que vamos a usar de verdad, limpio y acompañado de Kerberos y winbind.
+>
+> Demoler y volver a construir. Lo que sobraba no era el programa: era **la configuración vieja** que se habría mezclado con la del dominio.
+>
+> Por eso la comprobación de que la purga funcionó va **en medio** (Paso 1B) y no al final: al final ya no se puede comprobar, porque el Paso 2 lo ha vuelto a instalar.
+>
+> **¿Y los puertos 139 y 445?** Los ocupa ahora el Samba nuevo. La **Fase 4** los libera ella misma antes de levantar el controlador de dominio. Ya está previsto — no tienes que hacer nada.
+
+> [!success] 🎯 Criterio de éxito
+> Abro tu repositorio, encuentro la entrada de esta fase, y dentro está: qué has hecho, qué has entendido, qué dudas te han quedado y el enlace al vídeo donde se te ve haciéndolo. Si falta el enlace o faltan las respuestas, la fase **no cuenta como entregada**.
+
+> [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
+> **Una fase, una entrada.** No creas un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**, para no perder nunca más de un día de trabajo.
+
+> [!summary] 🎓 Qué has aprendido
+> Que `remove` y `purge` no son lo mismo, y que la diferencia son los ficheros de configuración — los que se quedan escondidos y rompen cosas tres fases después. Que un servidor necesita saber su propio nombre completo antes de poder demostrar quién es. Y que **una comprobación hay que hacerla cuando aún se puede**: la del Paso 1B, después del Paso 2, ya no vale para nada.
+>
+> **Siguiente:** Fase 3 — Conectividad VPN (WireGuard).
