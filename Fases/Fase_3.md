@@ -131,13 +131,37 @@
 >
 > > [!info] 📚 Diccionario de Comandos: Para entender la sintaxis exacta de `wg` y repasar otros comandos de Linux, consulta el [[Diccionario_Comandos_Sistema]].
 >
+> > [!danger] ⚠️ Estos comandos NO se pegan de golpe. Uno a uno.
+> > `sudo -i` **abre una shell nueva**. Si pegas el bloque entero, las líneas siguientes llegan antes de que esa shell esté lista para leerlas y **se ejecutan donde no toca**: acabas con las llaves creadas en `/root` en vez de en `/etc/wireguard`, sin ningún mensaje de error que te avise.
+> >
+> > Es un fallo silencioso y desconcertante: los comandos "funcionan", pero el `cat` posterior te dice `No such file or directory` y no entiendes por qué.
+> >
+> > **Ejecuta cada línea por separado, y comprueba dónde estás antes de generar nada.**
+>
+> **1.** Conviértete en administrador. Ejecuta **solo esta línea** y espera a ver el nuevo prompt:
 > ```bash
 > sudo -i
+> ```
+>
+> **2.** Sitúate en el directorio de WireGuard **y comprueba que estás ahí**:
+> ```bash
 > cd /etc/wireguard
+> pwd
+> ```
+> El `pwd` tiene que devolver exactamente `/etc/wireguard`. **Si devuelve `/root`, no sigas** — el `cd` no ha funcionado y las llaves acabarían en el sitio equivocado.
+>
+> > [!tip] 💡 El prompt también te lo dice
+> > Fíjate en la línea de comandos: `root@UbuntuServer:~#` significa que estás en `/root` (el `~` es tu carpeta personal). Cuando el `cd` funcione verás `root@UbuntuServer:/etc/wireguard#`. **Acostúmbrate a leer el prompt: te está diciendo dónde estás en todo momento.**
+>
+> **3.** Ahora sí, genera las llaves:
+> ```bash
 > umask 077
 > wg genkey | tee privatekey | wg pubkey > publickey
+> ls -l
 > ```
-> Ahora **lee y anota** la llave pública del servidor. La necesitarás cuando configures el cliente en el Paso 3:
+> El `ls -l` debe mostrar `privatekey` y `publickey` con permisos **`-rw-------`**: solo el propietario puede leerlas. Si ves otros permisos, el `umask` no se aplicó.
+>
+> **4.** Ahora **lee y anota** la llave pública del servidor. La necesitarás cuando configures el cliente en el Paso 3:
 > ```bash
 > # Muestra la llave PÚBLICA del servidor (esta se comparte con el cliente)
 > cat /etc/wireguard/publickey
