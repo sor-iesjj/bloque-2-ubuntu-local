@@ -20,6 +20,12 @@ DOMAIN_NAME=${1:-"BOOCHANLAB"}
 REALM_NAME=${2:-"BOOCHANLAB.LOCAL"}
 ADMIN_PASS=${3:-"P@ssw0rd"}
 DNS_FORWARDER="8.8.8.8"
+# IP del servidor en la red del laboratorio (adaptador solo-anfitrion).
+# IMPRESCINDIBLE: esta VM tiene DOS tarjetas, y si no se le dice cual usar,
+# samba-tool elige la primera que encuentra (la NAT, 10.0.2.x). El dominio se
+# anunciaria entonces en una IP que nadie puede alcanzar, y la Fase 8 fallaria
+# sin dar ninguna pista del motivo.
+HOST_IP="10.10.10.10"
 
 echo "=== Despliegue del Reino: $REALM_NAME ==="
 
@@ -81,6 +87,7 @@ samba-tool domain provision \
  --realm="$REALM_NAME" \
  --domain="$DOMAIN_NAME" \
  --adminpass="$ADMIN_PASS" \
+ --host-ip="$HOST_IP" \
  --option="dns forwarder = $DNS_FORWARDER"
 
 # --- 3. Configuración Kerberos --------------------------------------------
@@ -104,6 +111,9 @@ if systemctl is-active --quiet samba-ad-dc; then
     echo " Despliegue de $DOMAIN_NAME finalizado CORRECTAMENTE."
     echo " Realm: $REALM_NAME"
     echo " Comprueba ahora:  sudo samba-tool domain level show"
+    echo " Y que el dominio apunta a la IP correcta:"
+    echo "   host -t A $(hostname).$(echo $REALM_NAME | tr 'A-Z' 'a-z')"
+    echo "   -> debe devolver $HOST_IP , NO una 10.0.2.x"
     echo "=========================================================="
 else
     echo "!!! El servicio samba-ad-dc NO está activo."
