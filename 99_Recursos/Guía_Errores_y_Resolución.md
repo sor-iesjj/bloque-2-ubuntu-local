@@ -37,11 +37,22 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > **Sí.** Sin esta red, ninguna fase posterior funciona: ni SSH, ni el dominio, ni WireGuard, ni la unión de Windows.
 
 > [!example] Resolución — Comprueba en este orden
-> **1. ¿Existe la red `vboxnet0` y tiene la IP correcta?**
-> `Herramientas → Redes → Redes solo-anfitrión` en el VirtualBox Manager. Debe existir `vboxnet0` con IP `10.10.10.1/24` y el DHCP **desactivado** (ver Fase 1, Paso 4). Si no existe, créala con el botón `+`.
+> [!danger] 🧭 REGLA DE ORO: identifica la red por su IP, nunca por su nombre
+> El nombre de la red sólo-anfitrión **cambia según el sistema operativo de tu ordenador**:
+> - **Mac y Linux:** `vboxnet0`, `vboxnet1`…
+> - **Windows:** `VirtualBox Host-Only Ethernet Adapter`, y si ya existía una, `#2`, `#3`…
+>
+> Además, si el equipo ya tenía VirtualBox, **es muy probable que haya más de una red sólo-anfitrión** (la de fábrica en `192.168.56.1` y la del laboratorio en `10.10.10.1`). Se parecen tanto que conectar una VM a la equivocada es facilísimo, y el fallo no se nota hasta que un ping no responde con todo aparentemente bien configurado.
+>
+> **La nuestra es siempre la que tiene el adaptador en `10.10.10.1` con máscara `255.255.255.0`.** Compruébalo en `ipconfig` (Windows) o `ifconfig` (Mac/Linux) antes de dar nada por bueno.
+>
+> ⚠️ **Ojo también a la máscara:** VirtualBox crea la red con `255.255.0.0` por defecto. Hay que cambiarla a `255.255.255.0` a mano, y verificar después que se guardó.
+
+> **1. ¿Existe la red del laboratorio (`10.10.10.0/24`) y tiene la IP correcta?**
+> `Herramientas → Redes → Redes solo-anfitrión` en el VirtualBox Manager. Debe existir la del laboratorio (`10.10.10.1`) con IP `10.10.10.1/24` y el DHCP **desactivado** (ver Fase 1, Paso 4). Si no existe, créala con el botón `+`.
 >
 > **2. ¿Todas las VMs implicadas apuntan a la misma red host-only?**
-> En cada VM: `Configuración → Red → Adaptador [el de Solo Anfitrión] → Nombre`. Debe decir `vboxnet0` en **todas** — servidor y cliente Windows. Es muy fácil que VirtualBox cree sin querer una `vboxnet1` distinta si se edita la red desde una VM diferente; revisa que el nombre coincide letra por letra.
+> En cada VM: `Configuración → Red → Adaptador [el de Solo Anfitrión] → Nombre`. Debe decir la del laboratorio (`10.10.10.1`) en **todas** — servidor y cliente Windows. Es muy fácil que VirtualBox cree sin querer otra red host-only distinta si se edita la red desde una VM diferente; revisa que el nombre coincide letra por letra.
 >
 > **3. ¿La IP dentro de la VM es la correcta?**
 > Dentro del servidor: `hostname -I` o `ip a` debe mostrar `10.10.10.10` en la interfaz correspondiente. Dentro de Windows: `ipconfig` debe mostrar `10.10.10.20` en el adaptador de Red Solo Anfitrión.
@@ -255,7 +266,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 > [!example] Resolución — Comprueba en este orden
 > **1. ¿El cliente está en la misma Red Solo Anfitrión que el servidor?**
-> A diferencia de la nube, aquí no hay ningún puerto de firewall externo que abrir — el problema casi siempre es que el adaptador de red del cliente (tu PC físico en la Opción A de la Fase 3, o la futura VM Windows) no apunta a la misma red host-only `vboxnet0` que el servidor.
+> A diferencia de la nube, aquí no hay ningún puerto de firewall externo que abrir — el problema casi siempre es que el adaptador de red del cliente (tu PC físico en la Opción A de la Fase 3, o la futura VM Windows) no apunta a la misma red host-only del laboratorio (`10.10.10.0/24`) que el servidor.
 >
 > **2. ¿Están las claves cruzadas correctamente?**
 > - La clave pública del **servidor** debe estar en el fichero de configuración del **cliente**.
@@ -713,7 +724,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > **Sí.**
 
 > [!example] Resolución
-> Revisa el Paso 0.1 de la Fase 8: el **Adaptador 1** de la VM cliente debe estar en modo `Red Solo Anfitrión` con la red `vboxnet0` seleccionada, exactamente igual que en el servidor. Consulta también el Error 0.2 de esta guía.
+> Revisa el Paso 0.1 de la Fase 8: el **Adaptador 1** de la VM cliente debe estar en modo `Red Solo Anfitrión` con la red del laboratorio (`10.10.10.0/24`) seleccionada, exactamente igual que en el servidor. Consulta también el Error 0.2 de esta guía.
 
 ---
 
@@ -780,10 +791,10 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 ### Error 8.6 — Las dos VMs no se ven entre sí aunque ambas tienen "Red Solo Anfitrión"
 
 > [!bug] Cuándo se produce
-> El cliente está conectado a una red host-only distinta (por ejemplo `vboxnet1`) en lugar de `vboxnet0`.
+> El cliente está conectado a una red host-only distinta (otra red host-only distinta) en lugar de la del laboratorio (`10.10.10.1`).
 
 > [!example] Resolución
-> Corrígelo en `VirtualBox → Configuración → Red → Adaptador 1 → Nombre`: selecciona `vboxnet0`, la misma red que usa el servidor. Ver también Error 0.2.
+> Corrígelo en `VirtualBox → Configuración → Red → Adaptador 1 → Nombre`: selecciona la del laboratorio (`10.10.10.1`), la misma red que usa el servidor. Ver también Error 0.2.
 
 ---
 

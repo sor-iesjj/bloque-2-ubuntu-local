@@ -196,7 +196,7 @@
 > El túnel VPN necesita dos extremos configurados. En el proyecto final, el "cliente" será la **VM Windows 11** que crearás en una fase posterior de este itinerario. Como esa VM todavía no existe, tienes dos caminos válidos para completar y probar esta fase ahora mismo:
 >
 > > [!tip] 💡 Opción A (recomendada): usa tu propio PC físico como cliente de prueba
-> > Instala temporalmente la aplicación WireGuard en el PC donde corre VirtualBox. Como tu propio ordenador ya forma parte de la Red Solo Anfitrión `vboxnet0` (con IP `10.10.10.1`, configurada en la Fase 1), puedes usarlo directamente como cliente de prueba sin tocar nada más en VirtualBox. Esto te permite verificar el túnel de extremo a extremo *ahora*, sin esperar a tener la VM Windows 11 lista. Cuando más adelante crees esa VM, repetirás estos mismos pasos dentro de ella y usarás su llave pública en lugar de la de tu PC — el resto de la configuración del servidor no cambia.
+> > Instala temporalmente la aplicación WireGuard en el PC donde corre VirtualBox. Como tu propio ordenador ya forma parte de la Red Solo Anfitrión la del laboratorio (`10.10.10.1`) (con IP `10.10.10.1`, configurada en la Fase 1), puedes usarlo directamente como cliente de prueba sin tocar nada más en VirtualBox. Esto te permite verificar el túnel de extremo a extremo *ahora*, sin esperar a tener la VM Windows 11 lista. Cuando más adelante crees esa VM, repetirás estos mismos pasos dentro de ella y usarás su llave pública en lugar de la de tu PC — el resto de la configuración del servidor no cambia.
 >
 > > [!tip] 💡 Opción B: deja el túnel preparado y sin probar
 > > Si prefieres no instalar WireGuard en tu PC físico, puedes completar el archivo `wg0.conf` del servidor con una llave de cliente "provisional" (generada con `wg genkey | wg pubkey`, sin instalarla en ningún sitio todavía) y posponer la verificación del `ping 10.20.20.1` hasta la fase en la que crees la VM Windows 11. Ten en cuenta que en ese caso no podrás completar el Punto de Control de esta fase hasta entonces.
@@ -340,7 +340,7 @@
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | `Address already in use`. | Ya hay otra interfaz VPN activa con esa IP. | Ejecuta `sudo wg-quick down wg0` antes de volver a levantarla. |
-> | No hay ping entre `10.20.20.1` y `10.20.20.2`. | El cliente no está en la misma Red Solo Anfitrión que el servidor, o el adaptador de red del cliente está mal seleccionado en VirtualBox. | Comprueba en VirtualBox que el adaptador usado por el cliente apunta a la misma red Solo Anfitrión (`vboxnet0`, la que configuraste en la Fase 1). |
+> | No hay ping entre `10.20.20.1` y `10.20.20.2`. | El cliente no está en la misma Red Solo Anfitrión que el servidor, o el adaptador de red del cliente está mal seleccionado en VirtualBox. | Comprueba en VirtualBox que el adaptador usado por el cliente apunta a la misma red Solo Anfitrión (la del laboratorio (`10.10.10.1`), la que configuraste en la Fase 1). |
 > | WireGuard no conecta pero no hay firewall de por medio. | Las llaves públicas están intercambiadas incorrectamente. | Verifica que la llave pública del cliente en el servidor y la del servidor en el cliente son exactas. |
 > | El cliente no encuentra el `Endpoint`. | Escribiste mal la IP `10.10.10.10` o el servidor no tiene esa IP activa. | Ejecuta `hostname -I` en el servidor y confirma que `10.10.10.10` sigue asignada al adaptador de Red Solo Anfitrión. |
 
