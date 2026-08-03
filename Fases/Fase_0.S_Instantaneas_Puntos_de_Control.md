@@ -232,19 +232,72 @@
 
 ---
 
+### 🔁 El simulacro: repetir es el objetivo
+
+> [!danger] Hacer una fase una vez NO es saber hacerla
+> La primera vez que montas el dominio vas leyendo el manual línea a línea, sin saber muy bien por qué haces cada cosa. Terminas, funciona, y tienes la sensación de haberlo aprendido.
+>
+> **No lo has aprendido. Has sabido seguir instrucciones.** Que está bien, y es el primer paso — pero no es lo mismo.
+>
+> Sabes montar un servidor cuando puedes hacerlo **sin el manual delante, en la mitad de tiempo, y sabiendo qué va a pasar antes de que pase**. Y a eso solo se llega repitiendo.
+
+> [!success] Para esto sirven de verdad las instantáneas
+> Sin puntos de control, repetir el proyecto significa reinstalar Ubuntu: media hora de pantallas antes de llegar a lo que querías practicar. Con ellas, **estás de vuelta en el punto de partida en treinta segundos**.
+>
+> Eso convierte la repetición en algo viable. Y una habilidad que se puede repetir barato, se acaba dominando.
+
+> [!example] 🏃 Cómo se hace un simulacro
+> 1. **Restaura `Sistema base`** — el sistema operativo recién instalado, sin nada más.
+> 2. **Pon un cronómetro.**
+> 3. **Rehaz las fases 1.4, 2, 3 y 4** de un tirón. El manual puedes tenerlo, pero **intenta no mirarlo** hasta que te atasques.
+> 4. Cuando te atasques, **anota en qué paso** ha sido antes de mirar. Eso es exactamente lo que aún no sabes.
+> 5. Apunta el tiempo total.
+>
+> **Marcas de referencia** *(sin contar la instalación del sistema, que no se repite)*:
+>
+> | Intento | Tiempo esperable | Qué significa |
+> | :--- | :--- | :--- |
+> | **1.º** (con el manual) | 4-5 horas | Estás aprendiendo. Normal |
+> | **2.º** | 1-1,5 horas | Ya sabes a dónde vas, aunque consultes |
+> | **3.º** | **30-40 minutos** | **Lo dominas.** Este es el objetivo |
+>
+> Si en el tercer intento sigues necesitando el manual para el aprovisionamiento del dominio, no es que seas lento: es que ese paso no lo has entendido, solo lo has copiado. Vuelve a la teoría de esa fase.
+
+> [!question] 🎯 Lo que de verdad mide el simulacro
+> No es la velocidad. Es esto:
+> - **¿Sabes qué comando viene después sin mirarlo?** → conoces la secuencia.
+> - **¿Sabes por qué viene después?** → entiendes las dependencias entre servicios.
+> - **¿Reconoces un error nada más verlo?** → has visto suficientes.
+> - **¿Puedes explicárselo a un compañero mientras lo haces?** → lo dominas.
+>
+> El último es el bueno. Si puedes ir narrando lo que haces sin pararte a pensar, has llegado.
+
+> [!tip] 💡 Y una cosa más que solo se puede hacer con puntos de control
+> **Rompe cosas a propósito.** Restaura `Sistema base` y prueba:
+> - Purgar Samba **sin parar los servicios antes**. ¿Qué cambia?
+> - Poner la máscara `/16` en vez de `/24`. ¿Qué deja de funcionar?
+> - Saltarte el `chattr +i` del `resolv.conf` de la Fase 4 y reiniciar. ¿Qué pasa?
+>
+> Cada una de esas preguntas tiene una respuesta que **no se te va a olvidar nunca** si la ves con tus ojos, y que si te la cuento yo se te olvida esta semana.
+>
+> Un administrador que puede volver atrás **experimenta**. Uno que no, obedece instrucciones por miedo a romper algo. Tú ya puedes elegir cuál ser.
+
+---
+
 ### 📏 La regla del proyecto
 
 > [!important] Al terminar CADA fase, antes de cerrar la grabación
-> | Al acabar | Instantánea |
-> | :--- | :--- |
-> | Fase 1.4 (Fase 1 completa) | `Fase 1 terminada` |
-> | Fase 2 | `Fase 2 terminada` |
-> | Fase 3 | `Fase 3 terminada` |
-> | Fase 4 | `Fase 4 terminada` |
-> | Fase 5 | `Fase 5 terminada` |
-> | Fase 6 | `Fase 6 terminada` |
-> | Fase 7 | `Fase 7 terminada` |
-> | Fase 8 | `Fase 8 terminada` |
+> | Al acabar | Instantánea | Para qué sirve |
+> | :--- | :--- | :--- |
+> | **Fase 1.3** (sistema recién instalado) | **`Sistema base`** | **La más importante.** Evita tener que reinstalar Ubuntu nunca más, y es el punto de partida de los simulacros |
+> | Fase 1.4 (Fase 1 completa) | `Fase 1 terminada` | Punto de partida limpio para la Fase 2 |
+> | Fase 2 | `Fase 2 terminada` | Servidor limpio y con identidad |
+> | Fase 3 | `Fase 3 terminada` | Túnel VPN operativo |
+> | Fase 4 | `Fase 4 terminada` | Dominio provisionado — **la que más se necesita** |
+> | Fase 5 | `Fase 5 terminada` | Usuarios y grupos creados |
+> | Fase 6 | `Fase 6 terminada` | Cuotas aplicadas |
+> | Fase 7 | `Fase 7 terminada` | Permisos y visibilidad |
+> | Fase 8 | `Fase 8 terminada` | Cliente Windows integrado |
 >
 > **Especialmente antes de la Fase 4.** Es la fase más larga, la que más piezas mueve y la que más se rompe. Llegar a ella sin un `Fase 3 terminada` es jugársela sin motivo.
 

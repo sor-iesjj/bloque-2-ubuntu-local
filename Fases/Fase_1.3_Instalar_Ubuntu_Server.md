@@ -177,6 +177,36 @@
 
 ---
 
+> [!important] 💾 ÚLTIMO PASO: la instantánea más importante de todo el proyecto
+> Acabas de instalar el sistema operativo. **Guárdalo ahora**, antes de tocar nada más:
+>
+> ```bash
+> sudo poweroff
+> ```
+>
+> Y toma una instantánea llamada **`Sistema base`**, con la descripción *"Ubuntu Server 26.04 recién instalado: teclado ES, dos tarjetas, 10.10.10.10, usuario boochan, OpenSSH"*.
+>
+> Por comando, si el botón no aparece:
+> ```
+> VBoxManage snapshot "UbuntuServer" take "Sistema base" --description "Ubuntu Server 26.04 recien instalado"
+> ```
+>
+> > [!danger] ⚠️ Esta es la que protege lo caro
+> > Piensa en lo que cuesta rehacer cada cosa:
+> >
+> > | Rehacer… | Cuesta |
+> > | :--- | :--- |
+> > | Instalar Ubuntu desde la ISO | **20-30 minutos**, y hay que estar delante contestando pantallas |
+> > | Cualquier fase posterior | minutos, y son comandos que se pegan |
+> >
+> > **Todo lo que viene después son comandos. Esto no.** Es la única parte del proyecto que no se puede automatizar ni acelerar, y la única que da pereza de verdad repetir.
+> >
+> > Con `Sistema base` guardada, **nunca más tendrás que reinstalar Ubuntu en este proyecto**, pase lo que pase. Sin ella, cualquier catástrofe seria te devuelve a la casilla de salida.
+>
+> Cómo se hace y cómo comprobar que se ha creado: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
+
+---
+
 ### ✅ Checklist de la 1.3
 
 - [ ] Teclado `Spanish`, **comprobado escribiendo una `@`** en el instalador.
@@ -187,6 +217,7 @@
 - [ ] **`Install OpenSSH server` marcado.**
 - [ ] Ningún snap instalado.
 - [ ] El sistema arranca y puedes iniciar sesión.
+- [ ] 💾 **Instantánea `Sistema base` tomada** con la VM apagada, y **grabándolo**.
 
 ---
 
