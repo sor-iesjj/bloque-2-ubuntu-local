@@ -191,9 +191,23 @@
 > [!example] Paso 2: Instalación de Dependencias Críticas
 > Instalamos las herramientas que permiten a Linux "disfrazarse" de servidor Windows. Este comando necesita el adaptador **NAT** funcionando, ya que descarga paquetes de internet:
 > ```bash
-> sudo apt update && sudo apt install acl attr samba krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config wireguard resolvconf -y
+> sudo apt update && sudo apt install -y acl attr samba samba-ad-dc samba-ad-provision krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config wireguard resolvconf
 > ```
 >
+> > [!danger] ⚠️ `samba-ad-dc` y `samba-ad-provision`: sin ellos la Fase 4 es IMPOSIBLE
+> > **Desde Ubuntu 24.04, el paquete `samba` ya NO incluye lo necesario para montar un controlador de dominio.** Se reparte en dos paquetes aparte:
+> >
+> > | Paquete | Qué aporta | Qué pasa si falta |
+> > | :--- | :--- | :--- |
+> > | **`samba-ad-provision`** | Los ficheros de esquema de Active Directory | El aprovisionamiento falla: *"AD_DS_Attributes... not found"* |
+> > | **`samba-ad-dc`** | El servicio `samba-ad-dc.service` y módulos internos | *"Unit samba-ad-dc.service does not exist"* y *"Module [samba_secrets] not found"* |
+> >
+> > Y lo peor: **los errores no aparecen aquí, sino dos fases más adelante**, en mitad del aprovisionamiento del dominio, con mensajes que no mencionan que falte un paquete. Si te saltas esta línea, lo descubrirás en la Fase 4 sin saber por qué.
+> >
+> > Comprueba que están:
+> > ```bash
+> > dpkg -s samba-ad-dc samba-ad-provision | grep -E '^Package|^Status'
+> > ```>
 > > [!caution] ⚠️ Si el comando falla a mitad de la instalación
 > > Este comando instala muchos paquetes a la vez. Si ves un error en rojo y la instalación se detiene, no entres en pánico. Ejecuta este comando para reparar los paquetes que quedaron a medias y vuelve a intentarlo:
 > > ```bash
