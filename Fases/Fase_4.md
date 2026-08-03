@@ -142,11 +142,12 @@
 > >
 > > **Nunca ejecutes como root un script que no has leído.** Si un día alguien te pasa un `curl ... | sudo bash`, esa es exactamente la costumbre que te salva.
 > >
-> > Localiza en el `cat` estas cuatro cosas y explícalas en el vídeo:
+> > Localiza en el `cat` estas cinco cosas y explícalas en el vídeo:
 > > 1. Las variables del principio: `DOMAIN_NAME`, `REALM_NAME`, `ADMIN_PASS`.
 > > 2. Qué le hace a `/etc/resolv.conf` y por qué.
 > > 3. Qué significa `--use-rfc2307` *(pista: sin eso, la Fase 5 no funciona)*.
-> > 4. Qué tres servicios apaga al final, y por qué estorban.
+> > 4. Para qué está `--host-ip=10.10.10.10` *(pista: tu servidor tiene DOS tarjetas — ¿qué pasaría si Samba eligiera la otra?)*.
+> > 5. Qué tres servicios apaga al final, y por qué estorban.
 >
 > **3.** Ahora sí, dale permiso de ejecución y lánzalo:
 > ```bash
@@ -157,11 +158,13 @@
 > El script tardará **2-3 minutos**. Verás mensajes de progreso en pantalla.
 >
 > > [!tip] 💡 El script escribe mucho en pantalla — ¿cómo sé si va bien?
-> > Es normal ver líneas de color amarillo o incluso algún aviso en rojo durante el proceso: son mensajes informativos de Samba, no errores reales. Solo hay que preocuparse si el script **se detiene antes de terminar** sin mostrar el mensaje final. La línea que confirma que todo ha ido bien es:
+> > Es normal ver líneas amarillas e incluso algún aviso en rojo durante el proceso: son mensajes informativos de Samba, no errores reales. El script está preparado para **pararse él solo en cuanto algo falle de verdad**, diciéndote qué falta y cómo arreglarlo. La confirmación de éxito es este recuadro:
 > > ```
-> > Despliegue de BOOCHANLAB finalizado
+> > ==========================================================
+> >  Despliegue de BOOCHANLAB finalizado CORRECTAMENTE.
+> > ==========================================================
 > > ```
-> > Si no aparece esa línea, el script falló. Revisa la tabla de troubleshooting al final de esta fase.
+> > Si en su lugar ves una línea que empieza por `ERROR:` o por `!!!`, **lee lo que dice**: te indica exactamente qué instalar o qué revisar. No sigas al Paso 2 sin el recuadro de éxito.
 >
 > > [!tip] 💡 ¿Qué hace este comando?
 > > - **`git clone`:** Descarga una copia completa del proyecto desde internet a tu servidor (usando el adaptador NAT para salir), igual que descargar un ZIP pero de forma más profesional. Necesita el adaptador **NAT** funcionando: la Red Solo Anfitrión no da salida a internet.
@@ -169,46 +172,19 @@
 > > - **El punto y la barra (`./`):** Le dice a Linux: "Busca este archivo **aquí mismo**, en esta carpeta". Sin el `./`, Linux buscaría el comando en las carpetas del sistema y no lo encontraría.
 > > - **Los valores por defecto del script:** El script ya viene configurado con los valores correctos de este proyecto (`BOOCHANLAB`, Realm `BOOCHANLAB.LOCAL`, contraseña `P@ssw0rd`). No necesitas modificar nada salvo que tu profesor indique lo contrario.
 >
-> > [!note] 📄 Contenido de referencia del script (`provision_boochan.sh` — versión V1)
-> > A diferencia de V2/V3, aquí no hay ningún paso de "gestión DNS persistente frente a la nube" que cambie — el mecanismo de `systemd-resolved` es el mismo en local. Solo cambian dos variables al principio del script:
-> > ```bash
-> > #!/bin/bash
-> > # BOOCHAN V1 - Script Profesional de Aprovisionamiento Samba AD DC (VirtualBox local)
-> > DOMAIN_NAME=${1:-"BOOCHANLAB"}
-> > REALM_NAME=${2:-"BOOCHANLAB.LOCAL"}
-> > ADMIN_PASS=${3:-"P@ssw0rd"}
-> > DNS_FORWARDER="8.8.8.8"
+> > [!note] 📄 Mapa del script: las cuatro secciones que verás en el `cat`
+> > **La fuente de verdad es el script que acabas de clonar**, no este resumen — si difieren, manda el del repositorio. Esto es el mapa para no perderte al leerlo:
 > >
-> > echo "--- Iniciando el despliegue desatendido del Reino: $REALM_NAME ---"
+> > | Sección | Qué hace | La línea clave |
+> > | :--- | :--- | :--- |
+> > | **0. Comprobaciones previas** | Verifica que estás como root y que los paquetes de la Fase 2 están instalados. **Si falta algo, para aquí** y te dice qué instalar | `dpkg -s samba-ad-dc samba-ad-provision` |
+> > | **1. DNS persistente** | Apunta el servidor a sí mismo (`127.0.0.1`) y bloquea el fichero para que nada lo sobrescriba | `chattr +i /etc/resolv.conf` |
+> > | **2. Aprovisionamiento** | Crea el dominio entero: directorio LDAP, Kerberos, DNS interno | `samba-tool domain provision ... --host-ip=10.10.10.10` |
+> > | **3-4. Kerberos y arranque** | Instala el `krb5.conf` generado, apaga el Samba clásico y levanta `samba-ad-dc` | `systemctl enable --now samba-ad-dc` |
 > >
-> > # --- 1. Gestión DNS Persistente ---
-> > sudo sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
-> > sudo systemctl restart systemd-resolved
-> > sudo rm -f /etc/resolv.conf
-> > echo -e "nameserver 127.0.0.1\nsearch $REALM_NAME" | sudo tee /etc/resolv.conf
-> > sudo chattr +i /etc/resolv.conf
+> > Y una línea más, arriba del todo, que es la que hace al script digno de confianza: **`set -euo pipefail`** — aborta al primer error en vez de seguir adelante con todo roto. Un script de administración que no para cuando algo falla es un script que miente.
 > >
-> > # --- 2. Aprovisionamiento Automático (Desatendido) ---
-> > sudo samba-tool domain provision \
-> >  --server-role=dc \
-> >  --use-rfc2307 \
-> >  --dns-backend=SAMBA_INTERNAL \
-> >  --realm=$REALM_NAME \
-> >  --domain=$DOMAIN_NAME \
-> >  --adminpass=$ADMIN_PASS \
-> >  --option="dns forwarder = $DNS_FORWARDER"
-> >
-> > # --- 3. Configuración Kerberos ---
-> > sudo cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
-> >
-> > # --- 4. Activación del Servidor AD DC ---
-> > sudo systemctl disable --now smbd nmbd winbind
-> > sudo systemctl unmask samba-ad-dc
-> > sudo systemctl enable --now samba-ad-dc
-> >
-> > echo "--- Despliegue de $DOMAIN_NAME finalizado. ---"
-> > ```
-> > El `DNS_FORWARDER=8.8.8.8` sigue funcionando en local exactamente igual: cuando Samba no sabe resolver un nombre (porque no es del dominio), reenvía la consulta a Google DNS a través del adaptador NAT de la VM.
+> > El `DNS_FORWARDER=8.8.8.8` funciona así: cuando Samba no sabe resolver un nombre (porque no es del dominio), reenvía la consulta a Google DNS a través del adaptador NAT.
 
 > [!example] Paso 2: Verificación de Servicios
 > Una vez finalizado el script, debemos comprobar que el "corazón" del dominio está latiendo:
@@ -232,7 +208,9 @@
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | Error `Realm not found`. | El archivo `/etc/krb5.conf` no está bien configurado. | Copia el generado por Samba: `sudo cp /var/lib/samba/private/krb5.conf /etc/krb5.conf`. |
-> | No resuelve al `127.0.0.1`. | `systemd-resolved` está secuestrando el DNS por un error del script. | Apágalo con `sudo systemctl disable systemd-resolved --now`, luego destruye el enlace `sudo rm /etc/resolv.conf` e inyecta la IP: `echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf`. Por último, bloquéalo de nuevo con `sudo chattr +i /etc/resolv.conf`. |
+> | No resuelve al `127.0.0.1`. | `systemd-resolved` está secuestrando el DNS. | Primero desbloquea el fichero: `sudo chattr -i /etc/resolv.conf` (sin esto, el siguiente `rm` falla con `Operation not permitted`). Luego `sudo rm /etc/resolv.conf`, reescribe: `echo "nameserver 127.0.0.1" \| sudo tee /etc/resolv.conf`, y vuelve a bloquear: `sudo chattr +i /etc/resolv.conf`. |
+> | El script para con `ERROR: falta el paquete 'samba-ad-dc'` (o `samba-ad-provision`). | La Fase 2 se hizo con una versión antigua del material, o restauraste una instantánea anterior a su instalación. | Es el script **protegiéndote**: instala lo que pide — `sudo apt install -y samba-ad-dc samba-ad-provision` — y relánzalo. Recuerda restaurar el DNS primero si no tienes internet: `sudo chattr -i /etc/resolv.conf && echo "nameserver 8.8.8.8" \| sudo tee /etc/resolv.conf`. |
+> | `host -t A ubuntuserver.boochanlab.local` devuelve una `10.0.2.x` en vez de `10.10.10.10`. | El dominio se aprovisionó sin `--host-ip` y Samba eligió la tarjeta NAT. El dominio "funciona"… pero nadie podrá encontrarlo, y la Fase 8 fallará con "No se encuentra el dominio". | Corrige el registro: `sudo samba-tool dns delete 127.0.0.1 boochanlab.local ubuntuserver A 10.0.2.15 -U Administrator` y luego `sudo samba-tool dns add 127.0.0.1 boochanlab.local ubuntuserver A 10.10.10.10 -U Administrator`. Comprueba de nuevo con `host`. |
 > | El script falla en `git clone` por falta de red. | El adaptador NAT no está activo o `git` intenta usar la Red Solo Anfitrión (sin salida a internet). | Comprueba `ping 8.8.8.8` antes de clonar; revisa el adaptador NAT en `Configuración de la VM → Red`. |
 
 > [!help] Preguntas Críticas (Autoevaluación)
@@ -255,6 +233,7 @@
 > ```
 > - [ ] ¿Responde `samba-tool domain level show` sin errores?
 > - [ ] ¿El comando `nslookup _kerberos._tcp.BOOCHANLAB.LOCAL` devuelve la IP correcta?
+> - [ ] ¿`host -t A ubuntuserver.boochanlab.local` devuelve **`10.10.10.10`** — y NO una `10.0.2.x`? *(Si sale la de la NAT, ve a la tabla de troubleshooting: es un fallo silencioso que reventaría la Fase 8.)*
 > - [ ] 💾 **Instantánea `Fase 4 terminada` tomada** en VirtualBox, con la VM apagada y **grabándolo**.
 
 ---

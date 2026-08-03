@@ -157,11 +157,9 @@
 > > - **`2>/dev/null || true`:** si el servicio no existiera, el comando daría un error inofensivo. Esto le dice a Linux "si falla, ignóralo y sigue".
 >
 > > [!danger] ⚠️ Por qué la lista va escrita entera y no `apt purge samba*`
-> > Versiones anteriores de este manual usaban `apt-get purge samba* -y`, y estaba mal por dos motivos:
-> > 1. **El asterisco sin comillas lo interpreta primero la shell**, no `apt`. Bash intenta expandirlo contra **los ficheros del directorio en el que estés**. Si por casualidad hubiera un fichero que empiece por `samba`, el comando acabaría haciendo algo distinto de lo que crees.
-> > 2. **Un comodín en un borrado es una mala costumbre.** Hoy caza lo que querías; el día que caza de más, ya lo has borrado. En un servidor se escribe lo que se quiere borrar, y se lee antes de pulsar Enter.
-> >
-> > Fíjate en que `apt` te muestra la lista de lo que va a eliminar **antes** de hacerlo. Léela. Es tu última oportunidad de ver que se lleva algo que no esperabas.
+> > Verás por internet ese atajo con asterisco. **No lo uses en un borrado**, por dos motivos:
+> > 1. **El asterisco sin comillas lo interpreta primero la shell**, no `apt`: bash intenta expandirlo contra los ficheros del directorio donde estés, y el comando puede acabar haciendo algo distinto de lo que crees.
+> > 2. **Un comodín borra lo que caza, no lo que querías.** En un servidor se escribe la lista de lo que se va a borrar — y se lee antes de pulsar Enter. Fíjate en que `apt` te muestra esa lista **antes** de actuar: es tu última oportunidad de ver que se lleva algo que no esperabas.
 
 > [!example] Paso 1B: Comprueba que la demolición ha funcionado
 > **Hazlo AHORA, antes del Paso 2.** Es tu única oportunidad: el Paso 2 vuelve a instalar Samba, y a partir de ahí ya no podrás comprobar si la purga funcionó.
