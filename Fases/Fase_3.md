@@ -1,4 +1,3 @@
-
 ## 🔒 Fase 3: Conectividad VPN (WireGuard)
 
 ### Infraestructura de Servidor Local (VirtualBox)

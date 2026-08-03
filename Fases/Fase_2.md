@@ -1,4 +1,3 @@
-
 ## 🧹 Fase 2: Purga y Preparación del Entorno
 
 ### Infraestructura de Servidor Local (VirtualBox)

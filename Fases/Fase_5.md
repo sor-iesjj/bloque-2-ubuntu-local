@@ -1,13 +1,3 @@
----
-Práctica: V1.F5
-Bloque: 02_Ubuntu_Local
-Version: BoochanV1
-RA: RA.02, RA.03
-CE: CE.02.a, CE.02.d, CE.02.e, CE.02.f, CE.02.g, CE.02.i, CE.03.f
-Playlist: B2_Ubuntu_Local
-Vídeo: V1 · Fase 5 — Gestión de Identidades (Usuarios y Grupos)
----
-
 ## 👥 Fase 5: Gestión de Identidades (Usuarios y Grupos)
 
 ### Infraestructura de Servidor Virtual (VirtualBox)

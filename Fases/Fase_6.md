@@ -1,12 +1,3 @@
----
-Práctica: V1.F6
-Bloque: 02_Ubuntu_Local
-Version: BoochanV1
-RA: RA.01, RA.04, RA.05
-CE: CE.01.d, CE.04.b, CE.05.b
-Playlist: B2_Ubuntu_Local
-Vídeo: V1 · Fase 6 — Almacenamiento Virtual (Cuotas con Loop Devices)
----
 ## 💾 Fase 6: Almacenamiento Virtual (Cuotas con Loop Devices)
 
 ### Infraestructura de Servidor Virtual (VirtualBox)

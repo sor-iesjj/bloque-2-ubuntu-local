@@ -1,4 +1,3 @@
-
 ## 👑 Fase 4: Aprovisionamiento del Dominio (Samba AD DC)
 
 ### Infraestructura de Servidor Local (VirtualBox)

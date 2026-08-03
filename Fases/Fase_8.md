@@ -1,12 +1,3 @@
----
-Práctica: V1.F8
-Bloque: 02_Ubuntu_Local
-Version: BoochanV1
-RA: RA.02, RA.04, RA.06
-CE: CE.02.c, CE.04.e, CE.06.a, CE.06.b, CE.06.c, CE.06.d, CE.06.e, CE.06.i
-Playlist: B2_Ubuntu_Local
-Vídeo: V1 · Fase 8 — Integración del Cliente (Windows 11)
----
 ## 💻 Fase 8: Integración del Cliente (Windows 11)
 
 ### Infraestructura de Laboratorio Local (VirtualBox)

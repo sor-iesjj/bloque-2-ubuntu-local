@@ -1,13 +1,3 @@
----
-Práctica: V1.AF
-Bloque: 02_Ubuntu_Local
-Version: BoochanV1
-RA: RA.04, RA.05, RA.06
-CE: CE.04.f, CE.05.c, CE.05.f, CE.06.h, CE.06.i
-Playlist: B2_Ubuntu_Local
-Vídeo: V1 · Auditoría Final — Hardening y Cierre de Seguridad
----
-
 ## 🛡️ Auditoría Final y Hardening (Cierre de Seguridad)
 
 > [!abstract] 📋 Qué se te evalúa en esta auditoría

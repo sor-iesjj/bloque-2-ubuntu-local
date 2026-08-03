@@ -1,12 +1,3 @@
----
-Práctica: V1.F7
-Bloque: 02_Ubuntu_Local
-Version: BoochanV1
-RA: RA.04
-CE: CE.04.a, CE.04.b, CE.04.c, CE.04.f
-Playlist: B2_Ubuntu_Local
-Vídeo: V1 · Fase 7 — Seguridad Avanzada (ACLs y ABE)
----
 ## 🕵️ Fase 7: Seguridad Avanzada (ACLs y ABE)
 
 ### Infraestructura de Servidor Virtual (VirtualBox)

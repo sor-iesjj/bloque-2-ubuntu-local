@@ -1,4 +1,3 @@
-
 ## 🏗️ Fase 1: Infraestructura Virtual Local (VirtualBox)
 
 ### Infraestructura de Servidores en tu propio ordenador
