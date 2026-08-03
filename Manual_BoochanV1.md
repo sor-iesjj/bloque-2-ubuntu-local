@@ -96,11 +96,12 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 BoochanV1/
 ├── Manual_BoochanV1.md           ← este documento (punto de entrada)
 ├── Fases/
-│   ├── Fase_1.md                  ← índice de la Fase 1 (va en 4 sub-fases)
-│   ├── Fase_1.1 … Fase_1.4        ← VM · Red · Instalación · Verificación y SSH
-│   ├── Fase_1.E                   ← catálogo de incidentes (no se entrega)
+│   ├── Fase_1.md                  ← índice de la Fase 1
+│   ├── Fase_1/                    ← sus 5 sub-fases (VM · Red · Instalación · Verificación · incidentes)
+│   ├── Fase_2.md                  ← índice de la Fase 2
+│   ├── Fase_2/                    ← sus 10 apartados
+│   ├── Fase_3.md … Fase_8.md      ← el resto del itinerario
 │   ├── Fase_0.S                   ← instantáneas / puntos de control (no se entrega)
-│   ├── Fase_2.md … Fase_8.md      ← el resto del itinerario
 │   ├── Auditoria_Final.md        ← cierre de seguridad (hardening con ufw)
 │   └── Solucionario/             ← respuestas y retos resueltos (1 por fase)
 └── 99_Recursos/
