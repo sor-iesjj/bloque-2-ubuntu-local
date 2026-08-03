@@ -57,8 +57,8 @@
 >    ```
 >    *(Se puede hacer con la VM encendida, pero apagada ocupa menos y es más fiable. Y al terminar una fase ya no la necesitas encendida.)*
 > 2. En la ventana principal de VirtualBox, **selecciona tu VM** en la lista de la izquierda.
-> 3. Pulsa el botón **`Instantáneas`** (arriba, junto a `Detalles`). En algunas versiones es un icono con tres líneas o un menú desplegable junto al nombre de la máquina.
-> 4. Pulsa **`Tomar`** (el icono de la cámara, o `Máquina → Tomar instantánea`).
+> 3. **Cambia a la vista de Instantáneas.** Por defecto estás en `Detalles`, y **ahí el botón `Tomar` no aparece**. En VirtualBox 7.x se cambia con el **icono de tres rayas (☰)** que hay a la derecha del nombre de la VM en la lista → **`Instantáneas`**.
+> 4. Ahora sí, en la barra superior del panel derecho: **`Tomar`**.
 > 5. Rellena:
 >
 > | Campo | Qué pones |
@@ -70,6 +70,17 @@
 >
 > > [!tip] 💡 El nombre importa más de lo que parece
 > > Dentro de tres semanas vas a tener seis o siete instantáneas. Si se llaman `Instantánea 1`, `Instantánea 2`, `prueba`, `prueba buena`, no sabrás a cuál volver. **`Fase N terminada`, siempre igual.**
+>
+> > [!warning] ⚠️ ¿No encuentras el botón `Tomar`?
+> > Es normal, y hay dos motivos posibles:
+> > 1. **Sigues en la vista `Detalles`.** El botón solo existe en la vista `Instantáneas` — vuelve al paso 3.
+> > 2. **Tu versión coloca ese menú en otro sitio.** La interfaz de VirtualBox se reorganiza cada pocas versiones y esta parte es de las que más se mueven.
+> >
+> > **No pierdas el tiempo buscándolo: usa el comando.** Está en la sección de verificación, más abajo, y tiene una ventaja que la interfaz no tiene — **funciona igual en cualquier versión y en cualquier sistema operativo**:
+> > ```
+> > VBoxManage snapshot "UbuntuServer" take "Fase 1 terminada" --description "..."
+> > ```
+> > Un administrador acaba trabajando así casi siempre. Los botones cambian de sitio; los comandos, no.
 
 > [!example] Volver a una instantánea (cuando algo se ha roto)
 > 1. **Apaga la VM.**
@@ -91,6 +102,133 @@
 > Eliminar una instantánea **no deshace nada**: fusiona sus cambios con la siguiente y libera espacio. Es seguro.
 >
 > **Recomendación:** conserva siempre las dos últimas. Con eso puedes volver a la fase anterior y a la de antes, que es donde de verdad se necesita volver.
+
+---
+
+### 🔍 Verificar que la instantánea existe de verdad
+
+> [!important] No des por hecho que se ha creado porque no dio error
+> Es la misma regla de todo el módulo: **lo que no compruebas, no lo sabes.** Y aquí hay tres formas de comprobarlo, de la más fiable a la más visual.
+
+> [!example] 1️⃣ Por comando — el método que no falla
+> Es el único que **no depende de dónde esté el botón** en tu versión de VirtualBox.
+>
+> **En Windows** (`cmd` o PowerShell):
+> ```
+> "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" snapshot "UbuntuServer" list --details
+> ```
+> **En Mac o Linux:**
+> ```bash
+> VBoxManage snapshot "UbuntuServer" list --details
+> ```
+>
+> - Si hay instantáneas, te devuelve **nombre y UUID** de cada una.
+> - Si no hay ninguna: `This machine does not have any snapshots`.
+>
+> > [!tip] 💡 También puedes tomarlas así
+> > ```
+> > VBoxManage snapshot "UbuntuServer" take "Fase 1 terminada" --description "Descripción de lo que hay hecho"
+> > ```
+> > Y restaurarlas:
+> > ```
+> > VBoxManage snapshot "UbuntuServer" restore "Fase 1 terminada"
+> > ```
+> > Si no recuerdas el nombre exacto de tu VM: `VBoxManage list vms`.
+> >
+> > **Esto es lo que hace un administrador de verdad**, porque se puede meter en un script y aplicar a cincuenta máquinas de golpe. La interfaz gráfica está bien para aprender; la línea de comandos es la que se automatiza.
+
+> [!example] 2️⃣ Por ficheros — mirando el disco
+> Abre la carpeta de tu máquina virtual:
+>
+> ```
+> C:\Users\<tu_usuario>\VirtualBox VMs\UbuntuServer\
+> ```
+>
+> **Antes** de tu primera instantánea, ahí solo hay el `.vbox` y el `.vdi`. **Después** aparece una subcarpeta nueva:
+>
+> ```
+> UbuntuServer\
+> ├── UbuntuServer.vbox          ← configuración de la VM (XML, se puede leer)
+> ├── UbuntuServer.vdi           ← el disco duro virtual
+> └── Snapshots\                 ← ¡ESTA es la que aparece al tomar la primera!
+>     └── {a1b2c3d4-e5f6-7890-abcd-ef1234567890}.vdi
+> ```
+>
+> Si la carpeta `Snapshots\` existe y tiene ficheros dentro, la instantánea se creó.
+
+> [!example] 3️⃣ Por el fichero de configuración — la prueba documental
+> `UbuntuServer.vbox` es un fichero **XML**, así que **se puede abrir con el Bloc de notas**. Búscalo dentro y encontrarás:
+>
+> ```xml
+> <Snapshot uuid="{a1b2c3d4-e5f6-7890-abcd-ef1234567890}" name="Fase 1 terminada" ...>
+> ```
+>
+> Ahí está escrito, con todas las letras, el nombre que le pusiste.
+
+---
+
+> [!abstract] 🔢 Ese nombre raro entre llaves: qué es un UUID
+> El fichero del disco **no se llama** `Fase 1 terminada.vdi`. Se llama algo así:
+>
+> ```
+> {a1b2c3d4-e5f6-7890-abcd-ef1234567890}.vdi
+> ```
+>
+> Eso es un **UUID** (*Universally Unique IDentifier*): un identificador de **128 bits**, escrito en **hexadecimal**, agrupado en cinco bloques con el patrón **8-4-4-4-12** y encerrado entre llaves.
+>
+> | Bloque | Dígitos |
+> | :--- | :--- |
+> | 1.º | 8 |
+> | 2.º | 4 |
+> | 3.º | 4 |
+> | 4.º | 4 |
+> | 5.º | 12 |
+> | **Total** | **32 dígitos hexadecimales = 128 bits** |
+>
+> Cada dígito hexadecimal son 4 bits (`0-9` y `a-f`), y 32 × 4 = 128.
+>
+> **¿Por qué no usa el nombre que tú pusiste?** Porque el nombre es una **etiqueta para humanos**: lo puedes cambiar, puede repetirse, puede llevar acentos y espacios. El UUID es el **identificador interno**: no cambia nunca, es único en el mundo entero, y es el que usa VirtualBox para saber qué disco es cuál.
+>
+> **Consecuencia práctica:** mirando la carpeta `Snapshots\` **no puedes saber qué instantánea es cada fichero**. Esa correspondencia solo vive en el `.vbox` y en la salida de `VBoxManage snapshot list --details`.
+
+> [!info] 🎯 Nombre legible ≠ identificador interno — y esto ya lo has visto antes
+> Es la misma idea, en tres sitios distintos del curso:
+>
+> | Dónde | Etiqueta para humanos | Identificador interno |
+> | :--- | :--- | :--- |
+> | **Git** (Fase 0) | el mensaje del commit | el **hash** (`a3f9c21…`) |
+> | **VirtualBox** (aquí) | `Fase 1 terminada` | el **UUID** |
+> | **Active Directory** (Fase 4) | el usuario `user1` | el **SID** |
+>
+> Los sistemas serios **nunca** identifican las cosas por su nombre visible, porque los nombres cambian. Cuando entiendas esto, entenderás por qué en la Fase 5 hay que traducir SIDs a UIDs con winbind.
+
+> [!note] ℹ️ Si ves un fichero `.sav`
+> Significa que tomaste la instantánea **con la VM encendida**: es el volcado de la **memoria RAM** en ese instante. Por eso al restaurarla la máquina vuelve encendida y con los programas donde estaban — y por eso ocupa bastante más.
+>
+> Con la VM **apagada** no hay `.sav`, solo el disco de diferencias. Otra razón para tomarlas apagadas.
+
+---
+
+> [!example] 🔬 EJERCICIO: el disco que deja de crecer
+> Cuando tomas una instantánea, **VirtualBox no copia el disco**. Hace algo más listo: congela el `.vdi` original dejándolo en **solo lectura**, y crea en `Snapshots\` un **disco de diferencias** donde van a parar todos los cambios a partir de ese momento.
+>
+> Compruébalo tú:
+>
+> 1. Anota lo que ocupa `UbuntuServer.vdi` **antes** de tomar la instantánea.
+> 2. Toma la instantánea.
+> 3. Arranca la VM, trabaja un rato (instala algo, crea ficheros), apágala.
+> 4. Vuelve a mirar **los dos** ficheros: el `.vdi` original y el de `Snapshots\`.
+>
+> **El `.vdi` original no ha crecido ni un byte.** Todo lo nuevo está en el disco de diferencias.
+>
+> > [!question] Lo que va a tu entrada de apuntes
+> > 1. ¿Cuánto ocupaba el `.vdi` antes y después? ¿Y el disco de diferencias?
+> > 2. Con eso en la mano, **¿por qué restaurar una instantánea es instantáneo** aunque el disco tenga 20 GB?
+> > 3. ¿Qué pasaría con el espacio de tu disco si tomaras una instantánea cada día durante un mes?
+>
+> *(La respuesta a la 2 es bonita: al restaurar no se recupera nada. Simplemente **se tira el disco de diferencias** y el original vuelve a ser el estado actual. Por eso tarda lo mismo con 20 GB que con 200.)*
+>
+> Esto enlaza con el ejercicio de la **[[Fase_1.1_La_Maquina_Virtual]]**, donde comparaste lo que ocupa el `.vdi` con los 20 GB que dice tener. Es el mismo fichero contándote otra parte de la historia.
 
 ---
 
