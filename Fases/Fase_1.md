@@ -1,10 +1,19 @@
+---
+Práctica: V1.F1
+Bloque: 02_Ubuntu_Local
+Version: BoochanV1
+RA: RA1
+CE: CE.01.a, CE.01.b, CE.01.c, CE.01.e, CE.01.g, CE.01.i
+Playlist: B2_Ubuntu_Local
+Vídeo: V1 · Fase 1 — Infraestructura Virtual Local (VirtualBox)
+---
+
 ## 🏗️ Fase 1: Infraestructura Virtual Local (VirtualBox)
 
 ### Infraestructura de Servidores en tu propio ordenador
 
 > **[Módulo: SOR — Sistemas Operativos en Red]**
 > **[U.T. 1, 2 y 3: Instalación de Sistemas Operativos en Red]**
-> **[RA.01]** Instala sistemas operativos en red describiendo sus características e interpretando la documentación técnica.
 >
 > **Profesor:** Pedro Navarro Miralles
 > **Correo:** p.navarromiralles2@edu.gva.es
@@ -12,6 +21,28 @@
 >
 > **⏱️ Tiempo estimado:** ~1,5 - 2 horas (descarga de la ISO incluida, teoría + práctica + troubleshooting)
 > **Requisitos:** VirtualBox instalado en el equipo · ~2 GB de RAM libres · ~20 GB de disco libres · ISO de Ubuntu Server 26.04 LTS
+
+---
+
+> [!abstract] 📋 Qué se te evalúa en esta fase
+> **Resultado de Aprendizaje — `RA1`:** *Instala sistemas operativos en red, describiendo sus características e interpretando la documentación técnica.*
+>
+> Esta fase toca **6 de los 9 criterios** del RA1. Estos son, y dónde se demuestra cada uno:
+>
+> | Código | Criterio de evaluación | Dónde lo demuestras aquí |
+> | :--- | :--- | :--- |
+> | `CE.01.a` | Se ha realizado el estudio de compatibilidad del sistema informático. | Paso 3: dimensionar RAM/CPU/disco según el equipo real del aula, y comprobar la virtualización (VT-x/AMD-V) |
+> | `CE.01.b` | Se han diferenciado los modos de instalación. | Paso 3: decidir entre **instalación desatendida** (la que VirtualBox ofrece) e **instalación manual**, y justificar por qué eliges la manual |
+> | `CE.01.c` | Se ha planificado y realizado el particionado del disco del servidor. | Paso 5.7: `Use an entire disk` con LVM sobre el disco virtual de 20 GB |
+> | `CE.01.e` | Se han seleccionado los componentes a instalar. | Paso 5.4 y 5.9-5.10: `Ubuntu Server` frente a la versión *minimized*, marcar OpenSSH, no instalar snaps |
+> | `CE.01.g` | Se han aplicado preferencias en la configuración del entorno personal. | Paso 5.1-5.3 y 5.8: idioma, teclado español, hostname y perfil de usuario |
+> | `CE.01.i` | Se ha comprobado la conectividad del servidor con los equipos cliente. | Pasos 7 y 8: `ping` a Internet, `ping 10.10.10.10` desde tu host y verificación con APIs externas |
+>
+> **Los 3 que NO se evalúan aquí** (para que sepas que no se te han olvidado): `CE.01.d` sistemas de archivos y `CE.01.h` actualización del sistema se trabajan en la **Fase 2**; `CE.01.f` automatización de instalaciones tiene práctica propia en el **Bloque 1 (B1.12, autoinstall)**.
+>
+> > [!note] 🎓 ¿Y esto para qué me lo cuentas?
+> > Porque tienes derecho a saber **por qué se te evalúa lo que se te evalúa**. Estos códigos no me los invento: salen de la programación didáctica del módulo, que a su vez desarrolla el **Real Decreto 1691/2007** y la **Orden de 29 de julio de 2009**. Un RA se aprueba demostrando **más del 50 % de sus criterios**, y todos pesan igual.
+> > Traducido: si haces la fase entera pero te saltas el `ping` del Paso 7, no es que "pierdas puntos" — es que hay un criterio concreto, con nombre y código, que no has demostrado.
 
 ---
 
