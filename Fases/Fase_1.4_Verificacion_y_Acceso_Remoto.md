@@ -247,3 +247,20 @@
 > **Siguiente:** Fase 2 — Purga y Preparación del Entorno, donde limpiarás el servidor de software que estorba y le darás su identidad de dominio en `/etc/hosts`.
 >
 > ¿Algo no ha salido? → [[Fase_1.E_Cuando_Algo_Falla]]
+
+---
+
+> [!important] 💾 ÚLTIMO PASO: toma tu punto de control
+> Antes de cerrar la grabación, **apaga la VM y toma una instantánea**:
+>
+> ```bash
+> sudo poweroff
+> ```
+>
+> En VirtualBox: selecciona la VM → **`Instantáneas`** → **`Tomar`** → nómbrala **`Fase 1 terminada`**, con la descripción *"VM con dos tarjetas, IP `10.10.10.10`, usuario `boochan` y SSH funcionando"*.
+>
+> **Por qué:** si algo se rompe en la fase siguiente, vuelves aquí en treinta segundos en vez de reinstalar desde cero. Y te permite **probar cosas a propósito** para ver qué pasa, sabiendo que puedes deshacerlo.
+>
+> Cómo se hace paso a paso, y qué NO conserva una instantánea: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
+>
+> ⚠️ **Antes de la Fase 4 esto no es opcional.** Es la fase que más piezas mueve y la que más se rompe.

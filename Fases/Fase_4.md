@@ -262,3 +262,20 @@
 >
 > > [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
 > > **Una fase, una entrada.** No creas un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**, para no perder nunca más de un día de trabajo.
+
+---
+
+> [!important] 💾 ÚLTIMO PASO: toma tu punto de control
+> Antes de cerrar la grabación, **apaga la VM y toma una instantánea**:
+>
+> ```bash
+> sudo poweroff
+> ```
+>
+> En VirtualBox: selecciona la VM → **`Instantáneas`** → **`Tomar`** → nómbrala **`Fase 4 terminada`**, con la descripción *"dominio `BOOCHANLAB.LOCAL` provisionado"*.
+>
+> **Por qué:** si algo se rompe en la fase siguiente, vuelves aquí en treinta segundos en vez de reinstalar desde cero. Y te permite **probar cosas a propósito** para ver qué pasa, sabiendo que puedes deshacerlo.
+>
+> Cómo se hace paso a paso, y qué NO conserva una instantánea: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
+>
+> ⚠️ **Antes de la Fase 4 esto no es opcional.** Es la fase que más piezas mueve y la que más se rompe.

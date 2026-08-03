@@ -99,6 +99,7 @@ BoochanV1/
 │   ├── Fase_1.md                  ← índice de la Fase 1 (va en 4 sub-fases)
 │   ├── Fase_1.1 … Fase_1.4        ← VM · Red · Instalación · Verificación y SSH
 │   ├── Fase_1.E                   ← catálogo de incidentes (no se entrega)
+│   ├── Fase_0.S                   ← instantáneas / puntos de control (no se entrega)
 │   ├── Fase_2.md … Fase_8.md      ← el resto del itinerario
 │   ├── Auditoria_Final.md        ← cierre de seguridad (hardening con ufw)
 │   └── Solucionario/             ← respuestas y retos resueltos (1 por fase)

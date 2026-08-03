@@ -31,6 +31,9 @@
 | **1.4** | [[Fase_1.4_Verificacion_y_Acceso_Remoto]] | Comprobar que funciona y entrar por SSH | ~45 min | `RA.01` · `CE.01.e`, `CE.01.i` |
 | **1.E** | [[Fase_1.E_Cuando_Algo_Falla]] | Catálogo de incidentes. **No se entrega** | — | — |
 
+> [!important] 💾 Antes de empezar, lee esto una vez
+> **[[Fase_0.S_Instantaneas_Puntos_de_Control]]** — cómo tomar un punto de control al terminar cada fase para poder volver atrás si algo se rompe. Son dos clics y te ahorra reinstalar el servidor entero. Léelo **antes** de la 1.1; después solo tendrás que aplicarlo cuando el manual te lo pida.
+
 > [!important] Van en orden, y cada una necesita la anterior terminada
 > No empieces la 1.3 sin haber verificado la 1.2. La mitad de los problemas de esta fase vienen de haber seguido adelante con algo a medias.
 

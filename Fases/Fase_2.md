@@ -164,6 +164,8 @@
 > > Fíjate en que `apt` te muestra la lista de lo que va a eliminar **antes** de hacerlo. Léela. Es tu última oportunidad de ver que se lleva algo que no esperabas.
 
 > [!example] Paso 1b: Comprueba que la demolición ha funcionado
+> **Hazlo AHORA, antes del Paso 2.** Es tu única oportunidad: el Paso 2 vuelve a instalar Samba, y a partir de ahí ya no podrás comprobar si la purga funcionó.
+>
 > No des por hecho que un comando ha hecho su trabajo porque no dio error. Las tres comprobaciones:
 >
 > ```bash
@@ -261,7 +263,8 @@
 > | Problema | Causa Probable | Solución Sugerida |
 > | :--- | :--- | :--- |
 > | `apt purge` no encuentra Samba. | Samba no estaba instalado o ya lo borraste. | No te preocupes, verifica con `dpkg -l \| grep samba`. Si está vacío, perfecto. |
-> | Purgué Samba pero `systemctl status smbd` sigue diciendo `active (running)`. | El servicio seguía arrancado, o la purga no incluyó todos los paquetes. | Ejecuta el Paso 1 **entero y en orden**: primero el `systemctl stop`, después el `purge` con la lista completa. Comprueba con el Paso 1b. |
+> | En el **Paso 1b** (antes del Paso 2), `systemctl status smbd` sigue diciendo `active (running)`. | El servicio seguía arrancado, o la purga no incluyó todos los paquetes. | Ejecuta el Paso 1 **entero y en orden**: primero el `systemctl stop`, después el `purge` con la lista completa. |
+> | **Al ACABAR la fase**, `systemctl status smbd` dice `active (running)`. | **Ninguna: es lo correcto.** El Paso 2 reinstaló Samba a propósito. | No toques nada. La Fase 4 lo desactiva ella sola antes de levantar el dominio. |
 > | Purgué con `samba*` y `winbind` sigue instalado. | El comodín solo caza lo que empieza por "samba". | Usa la lista explícita del Paso 1, que incluye `winbind`, `libnss-winbind` y `libpam-winbind`. |
 > | `ss` sigue mostrando algo en el 445 después de purgar. | Un proceso quedó vivo aunque el paquete se borrara. | `sudo ss -tlnp \| grep :445` te dice **qué proceso** lo ocupa. Párelo con `sudo systemctl stop <servicio>` y vuelve a comprobar. |
 > | El nombre del servidor es incorrecto. | Error de escritura en `/etc/hostname` o `/etc/hosts`. | Ejecuta `hostname -f`. Debe devolver `UbuntuServer.BOOCHANLAB.LOCAL`. |
@@ -284,9 +287,20 @@
 
 > [!success] 🏁 Punto de Control (Antes de seguir)
 > - [ ] ¿El comando `hostname -f` devuelve `UbuntuServer.BOOCHANLAB.LOCAL`?
-> - [ ] ¿Has verificado que no hay servicios de Samba antiguos corriendo (`systemctl status smbd`)?
->       - ✅ **Correcto:** `Unit smbd.service could not be found`
->       - ❌ **Si dice `active (running)`:** la purga no ha funcionado. **No sigas a la Fase 3** — los puertos 139 y 445 seguirían ocupados y la Fase 4 fallaría sin decirte por qué. Vuelve al **Paso 1** y repite la limpieza, comprobando después con el **Paso 1b**.
+> - [ ] ¿Comprobaste en el **Paso 1b**, **antes** de reinstalar, que la purga había dejado el sistema limpio?
+>
+> > [!warning] ⚠️ Al terminar esta fase, `smbd` ESTÁ corriendo. Y es lo correcto.
+> > Si ahora ejecutas `systemctl status smbd` verás `active (running)`. **No es un fallo y no hay que arreglarlo.**
+> >
+> > Esta fase hace dos cosas seguidas que parecen contradictorias:
+> > 1. El **Paso 1 purga** el Samba que Ubuntu trae de fábrica, **con su configuración**.
+> > 2. El **Paso 2 instala** el Samba que vamos a usar de verdad, limpio y acompañado de Kerberos y winbind.
+> >
+> > Demoler y volver a construir. Lo que sobraba no era el programa: era **la configuración vieja** que se habría mezclado con la del dominio.
+> >
+> > Por eso la comprobación de que la purga funcionó va **en medio** (Paso 1b) y no al final: al final ya no se puede comprobar, porque el Paso 2 lo ha vuelto a instalar.
+> >
+> > **¿Y los puertos 139 y 445?** Los ocupa ahora el Samba nuevo. La **Fase 4** los libera ella misma antes de levantar el controlador de dominio, con `sudo systemctl disable --now smbd nmbd winbind`. Ya está previsto — no tienes que hacer nada.
 > - [ ] ¿`hostname -I` muestra la IP estática `10.10.10.10` del adaptador de Red Solo Anfitrión?
 
 ---
@@ -312,3 +326,20 @@
 >
 > > [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
 > > **Una fase, una entrada.** No creas un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**, para no perder nunca más de un día de trabajo.
+
+---
+
+> [!important] 💾 ÚLTIMO PASO: toma tu punto de control
+> Antes de cerrar la grabación, **apaga la VM y toma una instantánea**:
+>
+> ```bash
+> sudo poweroff
+> ```
+>
+> En VirtualBox: selecciona la VM → **`Instantáneas`** → **`Tomar`** → nómbrala **`Fase 2 terminada`**, con la descripción *"Samba purgado y reinstalado, sistema actualizado, `/etc/hosts` con el FQDN"*.
+>
+> **Por qué:** si algo se rompe en la fase siguiente, vuelves aquí en treinta segundos en vez de reinstalar desde cero. Y te permite **probar cosas a propósito** para ver qué pasa, sabiendo que puedes deshacerlo.
+>
+> Cómo se hace paso a paso, y qué NO conserva una instantánea: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
+>
+> ⚠️ **Antes de la Fase 4 esto no es opcional.** Es la fase que más piezas mueve y la que más se rompe.

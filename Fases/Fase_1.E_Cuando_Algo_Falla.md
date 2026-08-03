@@ -430,4 +430,7 @@ ping -c2 archive.ubuntu.com
 >
 > **Esa forma de pensar es el módulo entero.** Los comandos se buscan; el razonamiento, no.
 >
+> [!tip] 💾 La red de seguridad que evita la mitad de estos sustos
+> Varios de los casos de arriba se resuelven en treinta segundos si tienes un **punto de control** de la fase anterior: restauras y repites, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver **[[Fase_0.S_Instantaneas_Puntos_de_Control]]**.
+
 > **Volver:** [[Fase_1.1_La_Maquina_Virtual]] · [[Fase_1.2_La_Red_del_Laboratorio]] · [[Fase_1.3_Instalar_Ubuntu_Server]] · [[Fase_1.4_Verificacion_y_Acceso_Remoto]]
