@@ -1,0 +1,41 @@
+## Auditoría Final · Apartado 8 — 🏁 Cierre del proyecto
+
+> **[Módulo: SOR — Sistemas Operativos en Red]** · **Auditoría Final y Hardening**
+> 🧭 Índice: [[Auditoria_Final]]
+>
+> **📍 Cuándo se lee:** Lo último del proyecto entero
+
+---
+
+> [!success] 🏁 Proyecto Finalizado
+> ¡Enhorabuena! Has construido una infraestructura híbrida profesional, segura y escalable, esta vez completamente local: dos VMs en VirtualBox comunicándose por una Red Solo Anfitrión aislada. Has pasado de tener un servidor vacío a un Controlador de Dominio con cuotas de disco, seguridad ACL invisible y un cliente Windows 11 integrado, todo ello protegido por un firewall local (`ufw`) que solo confía en la Red Solo Anfitrión del laboratorio y en el túnel cifrado WireGuard.
+
+---
+
+### ✅ Entregables y cierre
+
+> [!abstract] Qué tienes que tener hecho al acabar esta fase
+> | Entregable | Dónde vive | Qué debe contener |
+> | :--- | :--- | :--- |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-auditoria-final-hardening-y-cierre-de-seguridad.md` | Estructura completa + **respuestas a las Preguntas Críticas y al 🔬 Reto** + **enlace del vídeo** |
+> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `V1 · Auditoría Final — Hardening y cierre de seguridad`, con presentación, identidad y timestamps |
+> | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
+>
+> > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
+> > Las **Preguntas Críticas** y el **🔬 Reto** de más arriba no son decorativos: son la parte de la fase que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.
+> > Una fase con el procedimiento perfecto y las preguntas en blanco está **incompleta**.
+>
+> > [!info] 🏷️ Por qué el nombre lleva `V1` delante
+> > Porque el proyecto Boochan existe en **varias versiones** (VirtualBox, Hyper-V, Azure, AWS…) y algunas comparten bloque y playlist. Sin la etiqueta, la Fase 4 de Azure y la de AWS se llamarían **exactamente igual** y no habría forma de distinguirlas. Con ella, tu carpeta y tu playlist dicen siempre **qué versión hiciste**.
+>
+> > [!success] 🎯 Criterio de éxito
+> > Abro tu repositorio, encuentro la entrada de esta fase, y dentro está: qué has hecho, qué has entendido, qué dudas te han quedado y el enlace al vídeo donde se te ve haciéndolo. Si falta el enlace o faltan las respuestas, la fase **no cuenta como entregada**.
+>
+> > [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
+> > **Una fase, una entrada.** No creas un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**, para no perder nunca más de un día de trabajo.
+
+---
+
+| ← Anterior | 🧭 Índice | Siguiente → |
+| :--- | :---: | ---: |
+| [[Auditoria_Final.7_Preguntas]] | [[Auditoria_Final]] | **🎉 Proyecto terminado** |

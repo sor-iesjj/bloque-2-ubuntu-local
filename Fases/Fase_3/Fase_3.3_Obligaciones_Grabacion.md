@@ -1,0 +1,33 @@
+## Fase 3 · Apartado 3 — 📹 Obligaciones de grabación
+
+> **[Módulo: SOR — Sistemas Operativos en Red]** · **Conectividad VPN (WireGuard)**
+> 🧭 Índice de la fase: [[Fase_3]]
+>
+> **📍 Cuándo se lee:** **Antes de arrancar OBS.** Cómo se graba y se entrega.
+
+---
+
+> [!important] 📹 Obligaciones de grabación (LÉEME — es igual en TODAS las fases)
+> Esta práctica se **graba entera con OBS**, de principio a fin. No es un repaso al final: quiero ver **cómo lo haces tú**.
+> 1. **Prepárate primero (sin grabar):** comprueba lo necesario, **léete el procedimiento entero** y **crea la entrada de apuntes de esta fase** en Obsidian: fichero `v1-fase-3-conectividad-vpn-wireguard.md` dentro de `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`, con la estructura de la Fase 0.1 y **vacía**. Rellenarla es cosa tuya, después.
+> 2. **Arranca OBS y PRESÉNTATE:** *"Hola, me llamo [Nombre], 2.º SMR, y en este vídeo voy a explicar la Fase 3 de Boochan V1 — Conectividad VPN (WireGuard)."* Y **muestra algo que demuestre que eres tú** (tu perfil de GitHub, tu Teams o tu correo `@alu.edu.gva.es`). Di qué vas a hacer.
+> 3. **Graba TODO el procedimiento**, explicando cada paso en voz alta mientras lo haces.
+> 4. **Timestamps SIEMPRE** en la descripción: `00:00 Presentación` + uno por cada paso.
+> 5. **Al terminar:** nombra el vídeo `V1 · Fase 3 — Conectividad VPN (WireGuard)`, súbelo a tu playlist de YouTube **`B2_Ubuntu_Local`** (No listado) y **copia su enlace**.
+> 6. **~8-10 min.** Esta fase es más larga que las de prerrequisitos: ve al grano, pero no te saltes pasos. Si se te va mucho, **pártela en dos vídeos** y ponlos los dos en la entrada.
+> 7. **El enlace del vídeo va DENTRO de tu entrada de apuntes**, en el apartado `Enlace al vídeo explicativo`. Ahí, no en un papel.
+> 8. **La entrega va por la TAREA de Teams.** Abriré una tarea que cubrirá **esta fase y otras**; te llegará notificación con fecha límite.
+
+---
+
+> [!info] 🏷️ Por qué el nombre lleva `V1` delante
+> Porque el proyecto Boochan existe en **varias versiones** (VirtualBox, Hyper-V, Azure, AWS…) y algunas comparten bloque y playlist. Sin la etiqueta, la misma fase de Azure y la de AWS se llamarían **exactamente igual**.
+
+> [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
+> **Una fase, una entrada.** No creas un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**.
+
+---
+
+| ← Anterior | 🧭 Índice | Siguiente → |
+| :--- | :---: | ---: |
+| [[Fase_3.2_Entregables]] | [[Fase_3]] | [[Fase_3.4_Donde_Estamos]] |
