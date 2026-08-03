@@ -282,6 +282,8 @@ Al terminar esta fase serás capaz de:
 >    > - **El `0`:** es un **cero**, no una `o`. `P@ssw0rd`, no `P@ssword`.
 >    >
 >    > **Truco para no fallar:** escríbela primero en el campo de *nombre de usuario* (ahí sí se ven los caracteres), comprueba con tus ojos que pone `P@ssw0rd`, bórralo, y solo entonces escríbela en los dos campos de contraseña.
+>    >
+>    > Y si aun así el teclado te la juega, **no pasa nada**: hay una sección entera al final de la fase explicando cómo salir de ahí. Está pensada para leerse **cuando el problema ya te haya ocurrido**, no antes.
 > 9. **OpenSSH Server:** marca la casilla **`Install OpenSSH server`**. Te permitirá conectarte por SSH a la VM desde tu propio ordenador en próximas fases, en lugar de trabajar siempre desde la ventana de VirtualBox.
 > 10. **Featured Server Snaps:** no instales ninguno (los instalaremos manualmente cuando toque en cada fase).
 > 11. Espera a que termine la instalación y pulsa **`Reboot Now`**. Cuando te pida quitar el medio de instalación, pulsa Enter (VirtualBox expulsa la ISO automáticamente).
@@ -371,6 +373,87 @@ Al terminar esta fase serás capaz de:
 
 ---
 
+### ⌨️ El incidente del teclado (léelo CUANDO te pase, no antes)
+
+> [!danger] 🆘 «No me sale la `@`. Ni el `;`. ¿Se ha roto algo?»
+> No. Y esto le pasa a **casi todo el mundo** la primera vez. Vas a resolverlo tú en cinco minutos.
+>
+> **El síntoma.** Intentas escribir `@` con `AltGr + 2` y sale otra cosa. Buscas el `;` donde siempre y no está. Todo lo demás — letras, números — funciona perfectamente.
+>
+> **El diagnóstico.** Tu servidor tiene la distribución de teclado en **inglés (US)**, no en español. Las letras y los números coinciden en las dos distribuciones; **los símbolos, no**. Por eso parece que el teclado funciona hasta que necesitas un signo de puntuación.
+>
+> Ojo a esto, porque es lo importante: **el teclado físico no ha cambiado**. Lo que ha cambiado es el mapa que el sistema usa para traducir "tecla pulsada" → "carácter". Un teclado no envía letras: envía **números de tecla**, y el sistema operativo decide qué significa cada número. Cuando alguien te diga que "se le ha estropeado el teclado", acuérdate de esto.
+
+> [!example] 1️⃣ Primero: escribe AHORA, sin arreglar nada
+> Necesitas escribir comandos ya, y `sudo` te va a pedir `P@ssw0rd`, que lleva arroba. Con la distribución inglesa activa, tu teclado físico español da esto:
+>
+> | Quieres escribir | Pulsa en tu teclado físico |
+> | :--- | :--- |
+> | **`@`** | **`Shift` + `2`** *(no `AltGr+2`)* |
+> | **`;`** | **la tecla `Ñ`** |
+> | `:` | `Shift` + `Ñ` |
+> | `-` | la tecla `'` *(a la derecha del `0`)* |
+> | `/` | la tecla `-` *(a la izquierda de la `Shift` derecha)* |
+> | `'` | la tecla `´` *(a la derecha de la `Ñ`)* |
+> | `=` | la tecla `¡` |
+>
+> Así que **`P@ssw0rd` se teclea:** `P` · `Shift+2` · `s` · `s` · `w` · `0` (cero) · `r` · `d`.
+>
+> ¿Ves el patrón? Los símbolos están **desplazados hacia el lado derecho** del teclado. No es aleatorio: es el mapa americano puesto encima de tus teclas.
+
+> [!example] 2️⃣ Después: arréglalo de verdad
+> Ya con `sudo` a tu alcance:
+>
+> ```bash
+> sudo dpkg-reconfigure keyboard-configuration
+> ```
+>
+> Se abre un asistente de varias pantallas. Contesta así:
+>
+> | Pregunta | Respuesta | Por qué |
+> | :--- | :--- | :--- |
+> | **Modelo de teclado** | `Generic 105-key PC (intl.)` | Los teclados europeos tienen **105 teclas**; los americanos, 104. La de más es la de `< >` a la izquierda de tu `Shift` izquierda — cuéntala si dudas |
+> | **País de origen** | `Spanish` | — |
+> | **Distribución** | `Spanish` | La primera, la que **no** lleva paréntesis (`Dvorak`, `Asturian`, `Catalan`… son variantes) |
+> | **Tecla AltGr** | `The default for the keyboard layout` | Deja lo que propone |
+> | **Tecla Compose** | `No compose key` | No la necesitas |
+>
+> Muévete con las flechas, confirma con `Enter`, y salta entre botones con `Tab`.
+>
+> Y ahora, el comando que hace que surta efecto **sin reiniciar**:
+>
+> ```bash
+> sudo setupcon
+> ```
+>
+> Comprueba escribiendo `AltGr + 2`. Si sale `@`, resuelto.
+>
+> > [!tip] 💡 Si el asistente se te resiste
+> > Todo lo que hace es escribir un fichero. Puedes editarlo tú:
+> > ```bash
+> > sudo nano /etc/default/keyboard
+> > ```
+> > Deja `XKBLAYOUT="es"` y `XKBMODEL="pc105"`, guarda, y ejecuta `sudo setupcon`. Es el mismo resultado por el camino corto — y ver el fichero te enseña más que el menú.
+
+> [!question] 🤔 ¿Y si directamente no puedo entrar? (`Login incorrect`)
+> Caso distinto y peor. Distingue:
+>
+> - **Si el teclado estuvo en inglés durante TODA la instalación y sigue en inglés ahora**, no hay problema: escribiste la contraseña a ciegas con el mapa inglés y ahora la escribes igual. Coincide. Entras.
+> - **El problema aparece cuando el mapa CAMBIA entre el momento de crearla y el de escribirla.** Ahí la contraseña guardada no es la que crees.
+>
+> Si te ha pasado: prueba a escribirla **con el otro mapa** en la cabeza (usa la tabla de arriba al revés). Si no hay manera, **no pierdas la tarde**: borra la VM y repite desde el Paso 3, esta vez comprobando el teclado. Quince minutos frente a una tarde entera.
+
+> [!summary] 🎓 Por qué esta sección existe
+> Podría haberte puesto un aviso enorme en el Paso 5 para que esto no te pasara. **No lo he hecho a propósito.**
+>
+> Un administrador de sistemas se pasa la vida delante de máquinas que hacen algo raro sin explicar por qué. Lo que se te evalúa aquí no es que no cometas el error — es que, cuando aparezca, **no entres en pánico y sepas buscar**: ¿qué está fallando exactamente? ¿las letras o solo los símbolos? Ah, entonces no es el teclado, es la configuración. ¿Dónde vive esa configuración? ¿Cómo la cambio? ¿Cómo compruebo que ha funcionado?
+>
+> Ese razonamiento — **síntoma → hipótesis → comprobación → arreglo → verificación** — es la asignatura entera. El susto de no poder escribir una arroba es barato, se arregla en cinco minutos, y no se te olvida nunca más. Aprovéchalo.
+>
+> **En tu entrada de apuntes:** si te ha pasado, cuéntalo. Qué viste, qué pensaste que era, qué resultó ser y cómo lo arreglaste. Vale más que copiar el comando correcto a la primera.
+
+---
+
 ### 🚩 Resolución de Problemas y Evaluación
 
 > [!bug] Tabla de Troubleshooting (¿Algo no funciona?)
@@ -378,7 +461,10 @@ Al terminar esta fase serás capaz de:
 > | :--- | :--- | :--- |
 > | **La VM se instaló sola: nunca vi el instalador, ni elegí teclado, ni configuré redes. Y el usuario no es `boochan`.** | **No marcaste `Omitir instalación desatendida` en el Paso 3.** VirtualBox instaló Ubuntu por su cuenta con los datos que le diste en el asistente. | No intentes arreglarlo por dentro: la red quedó mal y el hostname también. **Borra la VM entera** (clic derecho → `Eliminar` → `Borrar todos los archivos`) y repite el Paso 3 **marcando la casilla**. Pierdes 15 minutos, no una tarde. |
 > | Marqué la casilla pero VirtualBox no me dejó elegir el "VDI de asignación dinámica" del manual. | Ninguno: el asistente de la 7.x ya no muestra esas dos opciones. | Es lo normal. Deja `Preasignar tamaño completo` **sin marcar** — eso ya es la asignación dinámica, y el formato VDI es el que usa por defecto. Ver la nota del Paso 3. |
-> | No puedo iniciar sesión: dice `Login incorrect` con la contraseña que puse. | El teclado del instalador no era el español y los símbolos de la contraseña salieron cambiados. | Prueba a escribirla con la distribución **inglesa** en mente (la `-` y la `_`, la `@`, la `ñ`). Si no hay forma, reinstala la VM y usa **solo letras y números** en la contraseña. |
+> | **Entro bien, pero no me sale la `@` ni el `;`.** Las letras y los números sí. | La distribución del teclado quedó en **inglés (US)**. Letras y números coinciden en ambas distribuciones; los símbolos no. | Ve a la sección **⌨️ El incidente del teclado**, justo encima de esta tabla. Atajo inmediato: la `@` es `Shift+2` y el `;` es la tecla `Ñ`. Arreglo definitivo: `sudo dpkg-reconfigure keyboard-configuration` + `sudo setupcon`. |
+> | No puedo iniciar sesión: dice `Login incorrect` con la contraseña que puse. | El mapa de teclado **cambió** entre el momento de crear la contraseña y el de escribirla, así que los símbolos no son los mismos. | Prueba a teclearla con el **otro** mapa en la cabeza (tabla de la sección del teclado). Si no hay forma, borra la VM y repite desde el Paso 3 comprobando el teclado: 15 minutos frente a una tarde. |
+> | La instalación lleva más de 30-40 minutos. | Casi siempre es el paso **`Downloading and installing security updates`**, que baja parches del mirror de Ubuntu por la tarjeta NAT y se eterniza con red lenta o filtrada. | Pulsa **`Cancel update and reboot`**: el sistema queda instalado y perfectamente usable, y los parches los aplicas en la **Fase 2** con `apt upgrade`, que es donde tocan. |
+> | Quiero ver qué está haciendo el instalador por dentro. | — | El instalador tiene una consola en la TTY2. `Ctrl+Alt+F2` se lo queda tu ordenador, así que usa la **tecla Anfitrión de VirtualBox + F2** (la tecla Anfitrión aparece en la **esquina inferior derecha** de la ventana de la VM; por defecto `⌘ izquierdo` en Mac y `Ctrl derecho` en Windows/Linux). Vuelves con **Anfitrión + F1**. Desde ahí: `ip a`, `ping -c2 8.8.8.8`, `ping -c2 archive.ubuntu.com`. |
 > | El instalador no arranca, VirtualBox muestra pantalla negra o error de arranque. | La ISO no se seleccionó correctamente, o la VM no tiene habilitada la virtualización por hardware en la BIOS del equipo anfitrión. | Revisa que en `Configuración → Almacenamiento` la ISO esté montada en la unidad óptica. Si persiste, consulta con el profesor si la BIOS del equipo tiene la virtualización (VT-x/AMD-V) activada — en equipos de aula puede estar bloqueada por gestión centralizada. |
 > | No puedo hacer ping a `10.10.10.10` desde mi ordenador. | La red host-only no se creó bien, o el firewall del sistema operativo anfitrión bloquea el ICMP. | Repasa el Paso 4: comprueba en `Redes solo-anfitrión` que la IP del adaptador es `10.10.10.1/24`. Si el ping sigue sin responder, revisa el firewall de Windows/macOS (puede bloquear ICMP entrante por defecto en redes "públicas"). |
 > | La VM no tiene Internet (`ping google.com` falla) pero sí tiene la IP `10.10.10.10`. | El problema está en el Adaptador 1 (NAT), no en el Adaptador 2. | Comprueba en `Configuración → Red → Adaptador 1` que está habilitado y en modo `NAT`. Reinicia la interfaz con `sudo netplan apply`. |
