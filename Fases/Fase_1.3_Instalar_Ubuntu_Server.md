@@ -26,13 +26,19 @@
 
 ---
 
-> [!important] 📹 Obligaciones de grabación
-> 1. **Sin grabar:** léete el procedimiento entero y **crea vacía** la entrada `v1-fase-1-3-instalar-ubuntu-server.md`.
-> 2. **Arranca OBS y preséntate**, mostrando algo que demuestre que eres tú.
-> 3. **Graba todo el procedimiento.** La espera de la instalación **puedes cortarla en la edición** — pero no cortes ninguna pantalla de decisión.
-> 4. **Timestamps** en la descripción, uno por cada pantalla del instalador.
-> 5. Vídeo: `V1 · Fase 1.3 — Instalar Ubuntu Server`, playlist **`B2_Ubuntu_Local`** (No listado). **~8-10 min.**
-> 6. El enlace del vídeo va **dentro** de tu entrada de apuntes.
+> [!important] 📹 Obligaciones de grabación (LÉEME — es igual en TODAS las fases)
+> Esta práctica se **graba entera con OBS**, de principio a fin. No es un repaso al final: quiero ver **cómo lo haces tú**.
+> 1. **Prepárate primero (sin grabar):** comprueba lo necesario, **léete el procedimiento entero** y **crea la entrada de apuntes de esta sub-fase** en Obsidian: fichero `v1-fase-1-3-instalar-ubuntu-server.md` dentro de `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`, con la estructura de la Fase 0.1 y **vacía**. Rellenarla es cosa tuya, después.
+> 2. **Arranca OBS y PRESÉNTATE:** *"Hola, me llamo [Nombre], 2.º SMR, y en este vídeo voy a explicar la Fase 1.3 de Boochan V1 — Instalar Ubuntu Server."* Y **muestra algo que demuestre que eres tú** (tu perfil de GitHub, tu Teams o tu correo `@alu.edu.gva.es`). Di qué vas a hacer.
+> 3. **Graba TODO el procedimiento**, explicando cada paso en voz alta mientras lo haces.
+> 4. **Timestamps SIEMPRE** en la descripción: `00:00 Presentación` + uno por cada paso.
+> 5. **Al terminar:** nombra el vídeo `V1 · Fase 1.3 — Instalar Ubuntu Server`, súbelo a tu playlist de YouTube **`B2_Ubuntu_Local`** (No listado) y **copia su enlace**.
+> 6. **~8-10 min.** La Fase 1 va en cuatro sub-fases precisamente para que cada vídeo sea corto: ve al grano, pero no te saltes pasos.
+> 7. **El enlace del vídeo va DENTRO de tu entrada de apuntes**, en el apartado `Enlace al vídeo explicativo`. Ahí, no en un papel.
+> 8. **La entrega va por la TAREA de Teams.** Abriré una tarea que cubrirá **esta sub-fase y otras**; te llegará notificación con fecha límite.
+>
+> > [!danger] ⚠️ Los nombres NO son orientativos
+> > El fichero se llama **exactamente** `v1-fase-1-3-instalar-ubuntu-server.md` y el vídeo **exactamente** `V1 · Fase 1.3 — Instalar Ubuntu Server`. No es una manía: con cuatro sub-fases por alumno y un grupo entero, si cada uno pone el nombre que le apetece, corregir se vuelve imposible y **tu entrega se pierde**. Un nombre distinto es una entrega no localizada.
 
 ---
 
