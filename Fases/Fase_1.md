@@ -145,7 +145,7 @@ Al terminar esta fase serás capaz de:
 
 > [!example] Paso 2: Descarga de la ISO de Ubuntu Server 24.04 LTS
 > 1. Entra en `ubuntu.com/download/server`.
-> 2. Descarga la imagen **Ubuntu Server 24.04 LTS** (la versión "LTS" — *Long Term Support* — es la que se usa siempre en un entorno de producción o de prácticas serias, porque recibe actualizaciones de seguridad durante años).
+> 2. Descarga la imagen **Ubuntu Server 26.04 LTS** (la versión "LTS" — *Long Term Support* — es la que se usa siempre en un entorno de producción o de prácticas serias, porque recibe actualizaciones de seguridad durante años).
 > 3. Guarda el archivo `.iso` descargado en una carpeta que recuerdes (por ejemplo, `Descargas` o una carpeta específica del proyecto). Pesa aproximadamente 2-3 GB — la descarga puede tardar según la conexión del aula.
 >
 > > [!warning] ⚠️ No confundas "Ubuntu Desktop" con "Ubuntu Server"
