@@ -64,9 +64,9 @@
 > 3. Crear archivo de configuración `wg0.conf` en el servidor, con el rango de túnel `10.20.20.0/24`
 > 4. Preparar la configuración del lado cliente (la usará la futura VM Windows 11, o un cliente de prueba mientras tanto)
 > 5. Activar el túnel y verificar con `ping 10.20.20.1` desde el cliente
-> 6. Cerrar el acceso SSH directo por `10.10.10.10` y aceptar solo conexiones por el túnel (`10.20.20.1`, puerto 2222)
+> 6. Verificar el `latest handshake` en el servidor — la prueba criptográfica de que el túnel está vivo
 >
-> **Resultado Final:** Servidor accesible solo a través del túnel VPN cifrado. Modelo de seguridad profesional aplicado, aunque el "peligro" real de esta red aislada sea mínimo.
+> **Resultado Final:** Túnel WireGuard montado, autenticado y verificado desde el cliente. *(El cierre del acceso directo se hace en la **Auditoría Final**: aquí el servidor sigue accesible por `10.10.10.10` porque quedan cinco fases de trabajo.)*
 > **Siguiente:** Fase 4 (Dominio) — provisionar el Active Directory. Ahora que hay conexión VPN cifrada, puedes instalar servicios críticos.
 
 ---
@@ -403,81 +403,19 @@
 
 ---
 
-### 🔒 ÚLTIMO PASO de la fase: cerrar el acceso directo
+### 🔒 ¿Y cerrar el acceso directo por `10.10.10.10`?
 
-> [!info] 📍 Estás en el sitio correcto si…
-> …ya has completado los cuatro pasos del procedimiento y el túnel funciona. **Si vienes leyendo de arriba abajo sin haber hecho nada todavía, esta sección NO te toca aún** — vuelve al `🛠️ Procedimiento Práctico` y empieza por el Paso 1.
+> [!info] Aquí no. Eso es hardening, y tiene su fase
+> El túnel ya funciona y lo has verificado con el `latest handshake`. **Ese era el objetivo de esta fase y está cumplido.**
+>
+> Cerrar el SSH directo para que solo se pueda entrar por el túnel es **endurecimiento del servidor**, y se hace en la **Auditoría Final**, junto con el firewall `ufw` y el resto del cierre de seguridad. Por tres motivos:
+>
+> 1. **Vas a necesitar administrar el servidor durante cinco fases más.** Cerrarlo ahora te complica todo el camino que queda.
+> 2. **Si pierdes el túnel, te quedas fuera.** Basta con restaurar una instantánea, cambiar de cliente o equivocarte en una llave. Con cinco fases por delante, eso es una tarde perdida.
+> 3. **Un servidor se endurece cuando está terminado**, no a mitad de construcción. Igual que no se pone la alarma en una casa a la que todavía le faltan puertas.
+>
+> Lo verás completo en la Auditoría Final: cómo se hace, cómo se comprueba **antes** de cerrar la sesión actual, y cómo revertirlo si algo sale mal.
 
-> [!danger] 🛑 ANTES DE TOCAR NADA: no cierres tu única puerta
-> Lo que viene a continuación **deja el servidor accesible SOLO a través del túnel**. Si lo aplicas antes de que el túnel funcione, te quedas fuera y tendrás que recuperar el acceso desde la consola de VirtualBox.
->
-> **Tres condiciones, las tres obligatorias, antes de ejecutar un solo comando de este apartado:**
->
-> 1. [ ] El túnel está levantado: `sudo wg show` muestra el *peer* conectado.
-> 2. [ ] El `ping 10.20.20.1` responde **desde el cliente**.
-> 3. [ ] 💾 Tienes la instantánea **`Fase 3 terminada`** tomada. *(Si algo sale mal, restaurar es más rápido que arreglarlo.)*
->
-> Si alguna casilla está sin marcar, **no sigas**. Termina primero el procedimiento de la fase y vuelve aquí al final.
-
-> [!example] Al terminar: cierra el 22 directo y deja el SSH solo por el túnel
-> Con las tres condiciones cumplidas, aplicamos **Zero Trust**: se cierra el acceso SSH directo por la Red Solo Anfitrión y se deja únicamente a través del túnel cifrado.
->
-> > [!warning] ⚠️ Editar `sshd_config` NO cambia el puerto en Ubuntu moderno
-> > Esto sorprende a todo el mundo, y es un fallo de seguridad silencioso si no lo sabes.
-> >
-> > Desde **Ubuntu 22.10**, OpenSSH arranca por **activación por socket de systemd**: quien escucha en el puerto no es `sshd`, sino una unidad llamada **`ssh.socket`**. Por eso las directivas **`Port` y `ListenAddress` de `/etc/ssh/sshd_config` se IGNORAN**.
-> >
-> > Si editas el fichero, reinicias el servicio y das el cierre por hecho, tendrás un servidor que **crees** cerrado y que sigue escuchando en el 22 para todo el mundo. Compruébalo tú mismo:
-> > ```bash
-> > sudo ss -tlnp | grep :22
-> > ```
-> > Si en la línea aparece **`("systemd",pid=1,...)`** como propietario del socket, es que manda `ssh.socket` y no `sshd_config`.
->
-> **El procedimiento correcto** es editar la unidad del socket:
->
-> ```bash
-> sudo systemctl edit ssh.socket
-> ```
->
-> Se abre un editor. Escribe esto **en la zona editable** (entre las líneas de comentarios que te marca):
->
-> ```
-> [Socket]
-> ListenStream=
-> ListenStream=10.20.20.1:2222
-> ```
->
-> > [!important] 💡 La línea vacía no sobra
-> > `ListenStream=` **a secas borra el valor por defecto**. Sin ella, systemd **suma** los dos valores y el servidor seguiría escuchando también en el `0.0.0.0:22` — es decir, no habrías cerrado nada.
->
-> Aplica y **verifica antes de cerrar la sesión**:
->
-> ```bash
-> sudo systemctl daemon-reload
-> sudo systemctl restart ssh.socket
-> sudo ss -tlnp | grep ssh
-> ```
->
-> Tiene que aparecer **`10.20.20.1:2222`** y **ninguna línea con `0.0.0.0:22`**.
->
-> > [!danger] 🔑 Comprueba el acceso nuevo SIN cerrar el actual
-> > Deja tu sesión abierta y abre **otra terminal**. Prueba desde ahí:
-> > ```bash
-> > ssh -p 2222 boochan@10.20.20.1
-> > ```
-> > **Solo cuando esa segunda sesión funcione**, cierra la primera. Si no funciona, aún estás dentro y puedes revertir.
-> >
-> > **Para revertir:** `sudo systemctl revert ssh.socket` seguido de `sudo systemctl daemon-reload && sudo systemctl restart ssh.socket`. Vuelve al `0.0.0.0:22` de fábrica.
->
-> A partir de aquí, **todas tus conexiones** usan la IP del túnel:
-> ```bash
-> ssh -p 2222 boochan@10.20.20.1
-> ```
->
-> > [!caution] ⚠️ Esto rompe el reenvío de puertos, si lo montaste
-> > Si en la Fase 1 configuraste un reenvío `anfitrión:2222 → VM:22` para entrar desde otro ordenador de la red, **deja de funcionar**: ya no hay nadie escuchando en el 22 de la VM.
-> >
-> > Tienes dos salidas: administrar desde la consola de VirtualBox, o **instalar el cliente WireGuard en ese otro ordenador** y entrar por el túnel, que es justo lo que esta fase quiere enseñarte. La segunda es la buena.
 
 
 ---
@@ -498,7 +436,7 @@
 > 3. ¿Para qué sirve el parámetro `AllowedIPs` en la configuración del Peer?
 > 4. Si tu Red Solo Anfitrión de VirtualBox ya está aislada de internet por diseño, ¿qué aporta realmente montar una VPN encima? Argumenta con el concepto de "Defensa en Profundidad".
 > 5. 🔬 **Reto práctico:** Con el túnel activo, ejecuta `sudo wg show` en el servidor y localiza la línea `latest handshake`. ¿Hace cuántos segundos fue el último intercambio? Ahora desactiva el túnel desde el cliente y vuelve a ejecutar el comando 30 segundos después. ¿Qué cambió en esa línea? ¿Qué te dice eso sobre el estado de la conexión?
-> 6. 🔬 **Reto práctico:** Con el túnel WireGuard **desactivado**, intenta conectarte al servidor por SSH usando la IP `10.10.10.10` (no la `10.20.20.1`). ¿Puedes entrar? ¿Por qué sí o por qué no? Razónalo mirando la salida de `sudo ss -tlnp | grep ssh` y la configuración de `ssh.socket` que aplicaste.
+> 6. 🔬 **Reto práctico:** con el túnel **desactivado**, intenta conectarte por SSH a `10.10.10.10`. **Entras sin problema.** ¿Por qué? Mira `sudo ss -tlnp | grep ssh`: el servidor sigue escuchando en `0.0.0.0:22`, es decir, en todas sus interfaces. Ahora responde: **¿qué habría que cambiar para que solo se pudiera entrar por el túnel?** *(Lo harás de verdad en la Auditoría Final — aquí solo razónalo.)*
 > 7. 🔬 **Reto de diagnóstico:** edita `/etc/ssh/sshd_config`, pon `Port 9999`, reinicia con `sudo systemctl restart ssh` y ejecuta `sudo ss -tlnp | grep ssh`. **El puerto no cambia.** ¿Por qué? ¿Quién está escuchando en realidad? *(Pista: mira quién aparece como propietario del socket.)* Deshaz el cambio después.
 >    **Esta es la pregunta importante de toda la fase:** un fichero de configuración puede estar diciendo una cosa mientras el sistema hace otra. Y si te fías del fichero, crees tener cerrado algo que sigue abierto.
 

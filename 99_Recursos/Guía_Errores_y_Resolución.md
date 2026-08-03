@@ -827,7 +827,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 ### Error F.2 — Reenvío de puertos (Port Forwarding) olvidado en el adaptador NAT
 
 > [!bug] Cuándo se produce
-> Si en algún momento del proyecto configuraste una regla de Port Forwarding en el Adaptador NAT del servidor (por ejemplo, `127.0.0.1:2222 → 10.10.10.10:22`) para administrar el servidor cómodamente desde el host, y la olvidas revisar en el cierre de seguridad.
+> Si en algún momento del proyecto configuraste una regla de Port Forwarding en el Adaptador NAT del servidor (por ejemplo, `anfitrión:2222 → invitado:22`) para administrar el servidor cómodamente desde el host, y la olvidas revisar en el cierre de seguridad.
 
 > [!warning] ¿Hay que preocuparse?
 > Sí, es la única "puerta trasera" real que puede haber quedado abierta en un laboratorio local — el equivalente a una regla mal cerrada en el Security Group de la nube.
