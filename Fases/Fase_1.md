@@ -34,6 +34,7 @@
 | **6.b** | [[Fase_1.6.b_Procedimiento_Red_Laboratorio]] | 🔌 **Entrega 2** — las dos tarjetas de red · ~45 min |
 | **6.c** | [[Fase_1.6.c_Procedimiento_Instalar_Ubuntu]] | 💿 **Entrega 3** — instalar el sistema · ~1 h |
 | **6.d** | [[Fase_1.6.d_Procedimiento_Verificacion_SSH]] | ✅ **Entrega 4** — verificar y entrar por SSH · ~45 min |
+| **6.e** | [[Fase_1.6.e_Procedimiento_Acceso_Desde_Otro_Equipo]] | 🌐 *Opcional* — solo si administras desde otro equipo de la red · ~20 min |
 | **7** | [[Fase_1.7_Resolucion_Problemas]] | Cuando algo no salga — 10 incidentes reales |
 | **8** | [[Fase_1.8_Punto_de_Control]] | Al terminar 6.c y 6.d — las dos instantáneas |
 | **9** | [[Fase_1.9_Preguntas]] | Después de las instantáneas — trabajo de mesa |
@@ -43,6 +44,7 @@
 > - Los apartados **1, 2 y 3** se leen **antes de encender nada**: son las reglas del juego.
 > - El **4 y el 5** te preparan: contexto y conceptos.
 > - Las **cuatro partes del 6 son el trabajo**, y van **en orden**. Cada una necesita la anterior terminada.
+> - El **6.e es opcional** y no es una quinta entrega: solo lo necesitas si administras el servidor desde **otro ordenador** de la red. En el aula, no.
 > - El **7** solo si algo falla.
 > - Los apartados **8, 9 y 10** cierran, **en ese orden**: primero aseguras la máquina, luego escribes, luego compruebas que no te dejas nada.
 

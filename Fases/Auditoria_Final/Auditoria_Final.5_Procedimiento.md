@@ -22,6 +22,17 @@
 > > **Ojo con los dos campos de la regla:** el `Puerto anfitrión` es el de tu ordenador y el `Puerto invitado` el de la VM. Y la **`IP anfitrión` debe ir VACÍA** — si pusiste `127.0.0.1`, la regla solo aceptaba conexiones del propio anfitrión y no de otros equipos de la red. Compruébalo, porque cambia mucho a quién estabas exponiendo.
 > >
 > > Si no configuraste ningún reenvío de puertos, el adaptador NAT del servidor es unidireccional (solo permite tráfico saliente) y no hace falta tocar nada ahí. Si sí configuraste alguno para administrar el servidor cómodamente desde el host, anótalo: es exactamente el tipo de "puerta trasera de comodidad" que hay que revisar en una auditoría final, igual que en la nube se revisaba el Security Group.
+>
+> > [!note] 📌 ¿De dónde salió esa regla? Del apartado opcional [[Fase_1.6.e_Procedimiento_Acceso_Desde_Otro_Equipo]]
+> > Ahí se monta el reenvío `anfitrión:2222 → invitado:22` para administrar el servidor desde otro ordenador de la red, y **ya se avisa de que habría que borrarlo al terminar**. Este paso es donde se comprueba si lo hiciste.
+> >
+> > **Y no basta con la regla de VirtualBox: son dos.** Para que el reenvío funcionara hubo que abrir también el puerto en el **cortafuegos del anfitrión**. Bórrala igualmente:
+> > ```powershell
+> > # Windows, PowerShell como administrador
+> > Get-NetFirewallRule -DisplayName "*Boochan*"
+> > Remove-NetFirewallRule -DisplayName "SSH VM Boochan 2222"
+> > ```
+> > Una auditoría que cierra una capa y se deja la otra abierta no ha cerrado nada. **Deja constancia en tu informe de las dos**, aunque no hubiera ninguna que borrar.
 
 > [!example] Paso 2: Activar y configurar `ufw` en el servidor
 > Conéctate al servidor (por SSH, a través del túnel WireGuard o directamente desde la consola de VirtualBox) y ejecuta:

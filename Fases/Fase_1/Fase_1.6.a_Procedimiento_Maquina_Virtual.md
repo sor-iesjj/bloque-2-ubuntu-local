@@ -67,7 +67,7 @@
 > [!danger] ⚠️ MARCA `Omitir instalación desatendida`. Si no, arrastrarás fallos durante horas.
 > En cuanto seleccionas la ISO, **VirtualBox 7.x reconoce que es Ubuntu y se ofrece a instalarlo él solo**: te pide un usuario y una contraseña en el propio asistente, arranca la VM e instala el sistema entero sin que tú toques nada.
 >
-> Suena cómodo. Y es exactamente lo que no queremos, porque **VirtualBox se salta la Fase 1.3 completa** y decide por ti. Esto es lo que ocurre de verdad cuando se deja marcada (probado, no teórico):
+> Suena cómodo. Y es exactamente lo que no queremos, porque **VirtualBox se salta la Fase 1.3 completa** y decide por ti. Esto es lo que se pierde si dejas que lo haga él:
 >
 > | Lo que VirtualBox decide por su cuenta | La consecuencia que te encuentras después |
 > | :--- | :--- |
@@ -77,6 +77,13 @@
 > | **No instala OpenSSH** | No puedes entrar desde tu terminal: te toca trabajar en la ventana de VirtualBox |
 >
 > Un solo *checkbox* sin marcar genera cuatro problemas que aparecen **más tarde y por separado**, cuando ya no los relacionas con su causa. Ese es el tipo de fallo más caro que existe.
+>
+> > [!note] 🔬 Aviso de honestidad: esta tabla está PENDIENTE DE VERIFICAR
+> > Lo que sí está comprobado es que el asistente pide usuario y contraseña, y que se salta la configuración manual. **Las cuatro consecuencias concretas de arriba están razonadas, no medidas una por una.**
+> >
+> > Hay además una duda abierta: la instalación desatendida de VirtualBox se diseñó para el instalador antiguo de Debian (*preseed*), y Ubuntu Server 26.04 usa **Subiquity**. Con ISOs de Server modernas el comportamiento puede no ser ninguno de los dos descritos.
+> >
+> > Se corregirá con datos reales. Si al instalar te encuentras algo distinto a lo que dice esta tabla, **dilo** — eso es exactamente lo que hace un técnico con la documentación que le dan.
 >
 > Y hay un motivo de fondo: **instalar sistemas operativos en red es literalmente el `RA.01` de este módulo.** Es lo que se evalúa. No se delega en un asistente.
 >
