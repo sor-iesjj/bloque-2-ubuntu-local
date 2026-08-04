@@ -163,3 +163,10 @@
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
 | [[Fase_1.6.c_Procedimiento_Instalar_Ubuntu]] | [[Fase_1]] | [[Fase_1.7_Resolucion_Problemas]] |
+
+> [!tip] 🌐 ¿Administras desde OTRO ordenador de la red?
+> Si el equipo desde el que quieres trabajar **no es** el que ejecuta VirtualBox (el servidor está en el sobremesa y tú vas con el portátil, o el servidor está en un Windows y tú en un Mac), `10.10.10.10` no te va a responder nunca — y no es culpa tuya.
+>
+> Hay un apartado opcional que lo resuelve y explica por qué: [[Fase_1.6.e_Procedimiento_Acceso_Desde_Otro_Equipo]].
+>
+> **Si trabajas en el mismo PC —el caso del aula—, no lo necesitas.** Sigue al apartado 7.
