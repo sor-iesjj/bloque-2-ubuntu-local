@@ -36,7 +36,7 @@
 | **6.d** | [[Fase_1.6.d_Procedimiento_Verificacion_SSH]] | ✅ **Entrega 4** — verificar y entrar por SSH · ~45 min |
 | **6.e** | [[Fase_1.6.e_Procedimiento_Acceso_Desde_Otro_Equipo]] | 🌐 *Opcional* — solo si administras desde otro equipo de la red · ~20 min |
 | **6.f** | [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] | 👥 **Entrega 5** — clonar e intercambiar con un compañero · ~50 min |
-| **7** | [[Fase_1.7_Resolucion_Problemas]] | Cuando algo no salga — 10 incidentes reales |
+| **7** | [[Fase_1.7_Resolucion_Problemas]] | Cuando algo no salga — 13 incidentes reales |
 | **8** | [[Fase_1.8_Punto_de_Control]] | Al terminar 6.c y 6.d — las dos instantáneas (y el 6.f parte de ahí) |
 | **9** | [[Fase_1.9_Preguntas]] | Después de las instantáneas — trabajo de mesa |
 | **10** | [[Fase_1.10_Auditoria_y_Cierre]] | Lo último — la checklist antes de la Fase 2 |

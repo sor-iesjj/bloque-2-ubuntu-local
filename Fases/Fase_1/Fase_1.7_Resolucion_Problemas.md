@@ -434,7 +434,180 @@ ping -c2 archive.ubuntu.com
 
 ---
 
-> [!summary] 🎓 Lo que se llevan estos diez casos
+<a id="e11"></a>
+### E11 · `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`
+
+**Síntoma.** Al conectar por SSH a una máquina donde ya habías entrado antes, sale un aviso enorme hablando de *man-in-the-middle*, y **no te deja entrar**:
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Offending ECDSA key in /home/tu_usuario/.ssh/known_hosts:6
+Host key verification failed.
+```
+
+**Hipótesis.** La primera vez que entraste, tu cliente guardó la **huella** del servidor en `~/.ssh/known_hosts`. Ahora esa IP responde con una huella distinta y SSH se planta.
+
+En este proyecto casi siempre es por una de estas tres, y **ninguna es un ataque**:
+
+| Causa | Cuándo |
+| :--- | :--- |
+| **Reinstalaste el sistema** | Ubuntu genera claves de host nuevas en cada instalación |
+| **Restauraste una instantánea** anterior a la instalación de OpenSSH | El servidor vuelve a tener otra identidad |
+| **Hay otra máquina en esa IP** | Un clon encendido a la vez → ver [E13](#e13) |
+
+> [!danger] ⚠️ No borres el aviso sin comprobar. Ese es el error de verdad
+> Casi todo el mundo borra la línea y sigue. **Mal.** El aviso existe precisamente para detectar que alguien ha puesto **otra máquina** donde estaba la tuya.
+>
+> Lo correcto es **comparar huellas** antes de aceptar nada.
+
+**Comprobación.** En el servidor, por la ventana de VirtualBox:
+
+```bash
+sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+Compara ese `SHA256:...` con el que te muestra el aviso.
+
+- **Coinciden** → es tu servidor. Sigue al arreglo.
+- **No coinciden** → estás conectando a otra máquina. **Para** y averigua a cuál ([E13](#e13)).
+
+**Arreglo.** Borra la entrada vieja **en el ordenador desde el que te conectas**:
+
+```bash
+ssh-keygen -R 10.10.10.10
+```
+
+Si conectas por un puerto distinto, la clave incluye el puerto y va entre corchetes:
+
+```bash
+ssh-keygen -R "[192.168.18.229]:2222"
+```
+
+Vuelve a conectar. Te pedirá aceptar la huella nueva: escribe `yes`.
+
+> [!summary] Qué aprendes
+> Que **la identidad de un servidor no es su IP ni su nombre: es su clave de host**. Por eso SSH puede detectar que la máquina detrás de una dirección ha cambiado, aunque la dirección sea la misma.
+>
+> Y que un aviso de seguridad se **verifica**, no se silencia. La diferencia entre un técnico y alguien que copia comandos está justo aquí.
+
+---
+
+<a id="e12"></a>
+### E12 · Mi servidor no se llama `UbuntuServer`
+
+**Síntoma.** El prompt dice `boochan@UbuntuServer2`, `boochan@ubuntu` o cualquier otra cosa. O `hostname` no devuelve `UbuntuServer`.
+
+**Hipótesis.** El nombre se escribió mal en el instalador, o instalaste una segunda vez y le pusiste otro para distinguirla.
+
+> [!warning] ⚠️ No es cosmético. Rompe la Fase 4
+> El dominio de Active Directory se construye sobre este nombre: el servidor se anunciará como `UbuntuServer.BOOCHANLAB.LOCAL`. Si el nombre no es el que espera el resto del material, los comandos de las fases siguientes no encajarán y el cliente Windows de la Fase 8 no lo encontrará.
+>
+> **Arréglalo ahora, no más adelante.** Cuanto más tarde, más cosas lo dan por bueno.
+
+**Arreglo.** Dos ficheros, no uno:
+
+```bash
+sudo hostnamectl set-hostname UbuntuServer
+sudo nano /etc/hosts
+```
+
+En `/etc/hosts`, busca la línea que empieza por `127.0.1.1` y deja el nombre correcto:
+
+```
+127.0.0.1   localhost
+127.0.1.1   UbuntuServer
+```
+
+> [!bug] Si `nano` te abre un fichero vacío
+> Escribiste la ruta **sin la barra inicial** (`etc/hosts` en vez de `/etc/hosts`), y `nano` está creando un fichero nuevo en tu carpeta personal.
+>
+> Sal con `Ctrl+X` y responde `N` a guardar. Repite el comando con `/etc/hosts`.
+
+Cierra la sesión y vuelve a entrar (`exit` y reconecta). Verifica:
+
+```bash
+hostname
+```
+
+> [!note] 📌 Dos nombres distintos: el de VirtualBox y el de dentro
+> El nombre de la VM en la lista de VirtualBox y el `hostname` del sistema **son cosas independientes**. Puedes tener una VM llamada `UbuntuServer2` cuyo sistema se llame `UbuntuServer`, y eso confunde muchísimo.
+>
+> Si quieres que coincidan, con la VM apagada:
+> ```
+> VBoxManage modifyvm "NombreViejo" --name "UbuntuServer"
+> ```
+> Solo cambia la etiqueta: no toca nada del sistema de dentro.
+
+> [!summary] Qué aprendes
+> Que un nombre mal puesto no da error: **da problemas más tarde y en otro sitio**. Y que en un sistema Linux la identidad se declara en más de un fichero, así que cambiarla en uno solo deja el sistema en desacuerdo consigo mismo.
+
+---
+
+<a id="e13"></a>
+### E13 · Cosas raras sin error claro: creo que no estoy en la máquina que pienso
+
+**Síntoma.** No hay un error concreto. Hay **incoherencias**:
+
+- Arreglas algo, y al rato aparece sin arreglar
+- `ssh boochan@10.10.10.10` entra, pero el `hostname` no es el que esperabas
+- El `ping` a `10.10.10.10` responde aunque hayas apagado el servidor
+- Salta el aviso de [E11](#e11) sin que hayas reinstalado nada
+
+**Hipótesis.** **Tienes dos máquinas virtuales encendidas a la vez con la misma IP.**
+
+Pasa con una segunda instalación, con un clon del ejercicio [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]], o con una VM de otra fase que dejaste corriendo.
+
+> [!danger] ⚠️ Este es el fallo más caro de todos, porque NO da error
+> Las dos máquinas responden a `10.10.10.10`. Cuando preguntas por esa IP, **contesta la que llegue antes**, y puede cambiar entre un intento y el siguiente.
+>
+> Puedes trabajar media hora en la máquina equivocada sin enterarte. Y lo peor: tomar una instantánea creyendo que guardas lo que has hecho.
+
+**Comprobación.** En el anfitrión:
+
+```
+VBoxManage list runningvms
+```
+
+**Debe salir UNA sola línea.** Si salen dos, ya tienes el diagnóstico.
+
+Para saber **cuál** te está respondiendo, pregunta por su dirección física:
+
+```
+ping 10.10.10.10
+arp -a | findstr 10.10.10.10
+```
+
+Eso te da la **MAC** de quien contesta. Compárala con la de cada máquina:
+
+```
+VBoxManage showvminfo "NombreDeLaVM" | findstr /i "NIC 2"
+```
+
+**Arreglo.** Apaga todas menos una:
+
+```
+VBoxManage controlvm "LaQueSobra" acpipowerbutton
+```
+
+Y si necesitas de verdad tener dos a la vez, dale a la segunda una IP distinta (`10.10.10.11`) y otro `hostname` — es justo lo que se practica en [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]].
+
+> [!success] ✅ La costumbre que te ahorra esto para siempre
+> **Antes de empezar a trabajar, siempre:**
+> ```
+> VBoxManage list runningvms
+> ```
+> Una línea. Tres segundos. Te ahorra tardes enteras.
+
+> [!summary] Qué aprendes
+> Que **identificar una máquina por su nombre o por su IP no basta**: los nombres se repiten y las direcciones se duplican. Lo único que no miente es la MAC.
+>
+> Y que un fallo sin mensaje de error es peor que uno con error. Cuando el sistema se comporta de forma incoherente en vez de fallar, lo primero no es arreglar: es **verificar que estás mirando lo que crees que miras**.
+
+---
+
+> [!summary] 🎓 Lo que se llevan estos trece casos
 > Ninguno se arregla sabiendo el comando de memoria. Todos se arreglan **mirando qué funciona y qué no, y acotando**.
 >
 > - Las letras van pero los símbolos no → no es el teclado, es el mapa.
@@ -446,9 +619,6 @@ ping -c2 archive.ubuntu.com
 >
 > [!tip] 💾 La red de seguridad que evita la mitad de estos sustos
 > Varios de los casos de arriba se resuelven en treinta segundos si tienes un **punto de control** de la fase anterior: restauras y repites, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver **[[Fase_0.S_Instantaneas_Puntos_de_Control]]**.
-
-> [!tip] 💾 La red de seguridad que evita la mitad de estos sustos
-> Varios de los casos se resuelven en treinta segundos si tienes un **punto de control**: restauras y repites, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver [[Fase_1.8_Punto_de_Control]].
 
 ---
 
