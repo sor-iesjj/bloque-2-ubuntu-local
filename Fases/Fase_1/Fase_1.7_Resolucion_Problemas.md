@@ -39,6 +39,9 @@
 | Sale un error `vmwgfx` al arrancar | [E8](#e8) |
 | La letra de la consola es minúscula (pantalla 4K) | [E9](#e9) |
 | Quiero ver qué hace el instalador por dentro | [E10](#e10) |
+| `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!` | [E11](#e11) |
+| Mi servidor no se llama `UbuntuServer` | [E12](#e12) |
+| Cosas raras sin error claro: entro y no es la máquina que creía | [E13](#e13) |
 
 ---
 
