@@ -107,8 +107,37 @@
 
 ---
 
+> [!danger] 🛑 ALTO. Las cuatro comprobaciones antes de la instantánea
+> **No tomes `Sistema base` todavía.** Una instantánea de un sistema mal instalado es peor que no tener instantánea: te devuelve una y otra vez al mismo fallo, y encima te da confianza.
+>
+> El instalador **no siempre hace lo que le pediste**. Lo hemos visto en el aula: pantallas que muestran una sola tarjeta, casillas que no se aplican. Cuatro comandos, un minuto, y lo sabes:
+>
+> ```bash
+> hostname
+> ip a | grep 10.10.10
+> systemctl status ssh
+> ```
+>
+> | Comando | Tiene que salir | Si no sale |
+> | :--- | :--- | :--- |
+> | `hostname` | `UbuntuServer` | 🔧 `sudo hostnamectl set-hostname UbuntuServer` y corregir `/etc/hosts` |
+> | `ip a \| grep 10.10.10` | `inet 10.10.10.10/24` en `enp0s8` | 🔧 Falta `enp0s8` en netplan → [[Fase_1.7_Resolucion_Problemas]] |
+> | `systemctl status ssh` | `active (running)` | 🔧 `sudo apt update && sudo apt install -y openssh-server` |
+>
+> Y la cuarta, que no da comando: **escribe una `@`** en la consola (`AltGr+2`). Si sale otra cosa, el teclado no quedó en español.
+>
+> > [!warning] ⚠️ Los dos fallos que más se repiten van juntos
+> > **`enp0s8` sin IP** y **OpenSSH sin instalar** aparecen casi siempre en el mismo servidor. No es casualidad: son las dos pantallas del instalador donde es más fácil que lo que marcaste no se aplique.
+> >
+> > Y son traicioneros porque **el servidor arranca perfectamente**. No hay ningún error. Funciona hasta que intentas entrar por SSH, y para entonces ya no relacionas el problema con la instalación.
+>
+> > [!success] ✅ Los cuatro correctos → ahora sí, la instantánea
+> > Si has tenido que arreglar algo, **arréglalo primero y vuelve a pasar las cuatro**. La instantánea se toma sobre un sistema verificado, no sobre uno que suponemos bueno.
+
+---
+
 > [!important] 💾 ÚLTIMO PASO: la instantánea más importante de todo el proyecto
-> Acabas de instalar el sistema operativo. **Guárdalo ahora**, antes de tocar nada más:
+> Acabas de instalar el sistema operativo **y lo has verificado**. Guárdalo ahora, antes de tocar nada más:
 >
 > ```bash
 > sudo poweroff
@@ -149,6 +178,11 @@
 - [ ] **`Install OpenSSH server` marcado.**
 - [ ] Ningún snap instalado.
 - [ ] El sistema arranca y puedes iniciar sesión.
+- [ ] 🛑 **Las cuatro comprobaciones pasadas ANTES de la instantánea:**
+  - [ ] `hostname` → `UbuntuServer`
+  - [ ] `ip a | grep 10.10.10` → `10.10.10.10/24` en `enp0s8`
+  - [ ] `systemctl status ssh` → `active (running)`
+  - [ ] La `@` se escribe con `AltGr+2`
 - [ ] 💾 **Instantánea `Sistema base` tomada** con la VM apagada, y **grabándolo**.
 
 ---

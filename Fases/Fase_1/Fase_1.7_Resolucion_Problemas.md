@@ -196,24 +196,37 @@ ip a show enp0s8
 ls /etc/netplan/
 ```
 
-Puede haber `00-installer-config.yaml`, `50-cloud-init.yaml`, o ambos. **Netplan los mezcla y gana el de número más alto.** Edita el que exista (si hay varios, el de número mayor):
+Puede haber `00-installer-config.yaml`, `50-cloud-init.yaml`, o ambos. **Netplan los mezcla y gana el de número más alto.**
+
+> [!warning] ⚠️ Edita **el fichero que te haya salido a ti**, no el del ejemplo
+> El nombre depende de cómo instalaras. En instalaciones recientes de Ubuntu Server suele ser **`00-installer-config.yaml`**. Sustituye el nombre en el comando por el tuyo:
 
 ```bash
-sudo nano /etc/netplan/50-cloud-init.yaml
+sudo nano /etc/netplan/00-installer-config.yaml
 ```
 
-Déjalo exactamente así:
+**No borres lo que hay: AÑADE el bloque que falta.** Lo normal es que `enp0s3` ya esté configurada y `enp0s8` no aparezca. Debe quedar así —fíjate en que `enp0s8:` va alineado con `enp0s3:`, con **4 espacios**:
 
 ```yaml
 network:
-  version: 2
   ethernets:
     enp0s3:
       dhcp4: true
+      dhcp6: true
+      match:
+        macaddress: 08:00:27:XX:XX:XX
+      set-name: enp0s3
     enp0s8:
       dhcp4: false
-      addresses: [10.10.10.10/24]
+      addresses:
+        - 10.10.10.10/24
+  version: 2
 ```
+
+> [!note] 📌 `enp0s8` no lleva `gateway` ni DNS, y es a propósito
+> La salida a Internet la da la NAT por `enp0s3`. La sólo-anfitrión es una red aislada: solo necesita una dirección.
+>
+> Y **no toques el bloque de `enp0s3`** — ese `macaddress` es el de tu tarjeta. Si lo cambias o lo borras, te quedas sin Internet.
 
 > [!danger] ⚠️ YAML no admite tabuladores
 > **Solo espacios.** Si pulsas `Tab` en `nano`, mete un tabulador y netplan lo rechazará con un error de sintaxis. Usa la barra espaciadora.
