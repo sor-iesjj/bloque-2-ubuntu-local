@@ -30,7 +30,7 @@
 >
 > **1. Idioma.** `English` o `Español`. El instalador en español a veces tiene menos opciones traducidas; `English` es algo más estable, pero cualquiera sirve.
 >
-> **2. Actualizar el instalador.** Si te lo ofrece, acepta. *(Si se queda mucho rato aquí, es red: ver [[Fase_1.7_Resolucion_Problemas]].)*
+> **2. Actualizar el instalador.** Si te lo ofrece, acepta. *(Si se queda mucho rato aquí, es red: ver [[Fase_1.7_Resolucion_Problemas]] · caso **E3**.)*
 >
 > **3. Distribución del teclado → `Spanish`.**
 >
@@ -89,21 +89,21 @@
 >
 > > [!important] 🔑 No es opcional, es el objetivo de la fase siguiente
 > > Sin esto no podrás entrar al servidor desde tu terminal y tendrás que trabajar siempre dentro de la ventana de VirtualBox: sin copiar y pegar, con la letra minúscula, y con una sola pantalla.
-> > Nadie administra un servidor así en la vida real. **Márcala.** Si se te olvida, tiene arreglo — está en [[Fase_1.7_Resolucion_Problemas]] — pero es un rato perdido.
+> > Nadie administra un servidor así en la vida real. **Márcala.** Si se te olvida, tiene arreglo — [[Fase_1.7_Resolucion_Problemas]] · caso **E7** — pero es un rato perdido.
 >
 > **10. Featured Server Snaps** → no instales ninguno. Lo que haga falta se instalará cuando toque.
 >
 > **11. Espera y reinicia.** Cuando termine, pulsa **`Reboot Now`**. Si te pide quitar el medio de instalación, pulsa `Enter`: VirtualBox expulsa la ISO solo.
 >
 > > [!tip] ⏱️ ¿Y si tarda muchísimo?
-> > Entre 15 y 30 minutos es normal. **Si pasa de 40**, casi siempre está en `Downloading and installing security updates`, bajando parches por la NAT. Hay un botón **`Cancel update and reboot`** que puedes pulsar sin miedo: el sistema queda instalado y perfectamente usable, y los parches se aplican en la Fase 2, que es donde tocan. Detalle completo en [[Fase_1.7_Resolucion_Problemas]].
+> > Entre 15 y 30 minutos es normal. **Si pasa de 40**, casi siempre está en `Downloading and installing security updates`, bajando parches por la NAT. Hay un botón **`Cancel update and reboot`** que puedes pulsar sin miedo: el sistema queda instalado y perfectamente usable, y los parches se aplican en la Fase 2, que es donde tocan. Detalle completo en [[Fase_1.7_Resolucion_Problemas]] · caso **E3**.
 
 > [!example] Primer arranque
 > 1. Verás el `login:`. Entra con `boochan` y `P@ssw0rd`.
 > 2. Puede que aparezcan mensajes del sistema **encima** del prompt — incluido alguno que dice `error`. Escribe igualmente: los mensajes no interrumpen lo que tecleas.
 >
 > > [!info] ℹ️ Sobre el mensaje `vmwgfx ... DRM error`
-> > Si lo ves, **no es una avería**. Es el driver gráfico de VMware protestando porque corre sobre VirtualBox. En un servidor sin escritorio no afecta a nada. Aprender a distinguir **el error que rompe algo** del **error que solo habla** es media asignatura. Si te molesta, en [[Fase_1.7_Resolucion_Problemas]] está cómo quitarlo.
+> > Si lo ves, **no es una avería**. Es el driver gráfico de VMware protestando porque corre sobre VirtualBox. En un servidor sin escritorio no afecta a nada. Aprender a distinguir **el error que rompe algo** del **error que solo habla** es media asignatura. Si te molesta, en [[Fase_1.7_Resolucion_Problemas]] · caso **E8** está cómo quitarlo.
 
 ---
 
@@ -121,7 +121,7 @@
 > | Comando | Tiene que salir | Si no sale |
 > | :--- | :--- | :--- |
 > | `hostname` | `UbuntuServer` | 🔧 `sudo hostnamectl set-hostname UbuntuServer` y corregir `/etc/hosts` |
-> | `ip a \| grep 10.10.10` | `inet 10.10.10.10/24` en `enp0s8` | 🔧 Falta `enp0s8` en netplan → [[Fase_1.7_Resolucion_Problemas]] |
+> | `ip a \| grep 10.10.10` | `inet 10.10.10.10/24` en `enp0s8` | 🔧 Falta `enp0s8` en netplan → [[Fase_1.7_Resolucion_Problemas]] · caso **E5** |
 > | `systemctl status ssh` | `active (running)` | 🔧 `sudo apt update && sudo apt install -y openssh-server` |
 >
 > Y la cuarta, que no da comando: **escribe una `@`** en la consola (`AltGr+2`). Si sale otra cosa, el teclado no quedó en español.
@@ -190,7 +190,7 @@
 > [!important] 💾 Al terminar esta parte, toma la instantánea **`Sistema base`**
 > Es la más importante de todo el proyecto: te evita volver a instalar Ubuntu nunca más. Cómo hacerlo: [[Fase_1.8_Punto_de_Control]]
 
-> ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]]
+> ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E13`), no leas el documento entero.
 
 ---
 

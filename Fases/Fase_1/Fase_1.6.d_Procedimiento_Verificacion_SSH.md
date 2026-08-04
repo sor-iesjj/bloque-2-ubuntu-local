@@ -36,7 +36,7 @@
 > - `enp0s3` — la NAT, con una IP tipo `10.0.2.15` puesta por DHCP
 > - `enp0s8` — la sólo-anfitrión, con **`10.10.10.10`**
 >
-> **Si solo salen dos**, falta la sólo-anfitrión y hay que arreglarlo antes de seguir → [[Fase_1.7_Resolucion_Problemas]].
+> **Si solo salen dos**, falta la sólo-anfitrión y hay que arreglarlo antes de seguir → [[Fase_1.7_Resolucion_Problemas]] · caso **E4** (la tarjeta no llega a la VM) o **E5** (llega pero sin IP).
 >
 > **b) Dentro de la VM — ¿sale a Internet?**
 > ```bash
@@ -76,7 +76,7 @@
 > > ```bash
 > > systemctl status ssh
 > > ```
-> > Si responde `Unit ssh.service could not be found`, ve a [[Fase_1.7_Resolucion_Problemas]]: tiene arreglo en dos comandos.
+> > Si responde `Unit ssh.service could not be found`, ve a [[Fase_1.7_Resolucion_Problemas]] · caso **E7**: tiene arreglo en dos comandos.
 
 > [!example] Paso 3: El dominio de todo el proyecto
 > No hay que ejecutar nada. Es información que debes **anotar en tu entrada**, porque la usarás en la Fase 2 (`/etc/hosts`) y sobre todo en la Fase 4 (creación del dominio):
@@ -156,7 +156,7 @@
 > [!important] 💾 Al terminar esta parte, toma la instantánea **`Fase 1 terminada`**
 > Cierra la fase completa. Cómo hacerlo: [[Fase_1.8_Punto_de_Control]]
 
-> ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]]
+> ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E13`), no leas el documento entero.
 
 ---
 

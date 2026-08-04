@@ -114,7 +114,7 @@
 
 ---
 
-> ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]]
+> ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E13`), no leas el documento entero.
 
 ---
 
