@@ -167,7 +167,7 @@ Comprueba con `AltGr+2`.
 3. ¿`Nombre` apunta a la red del `10.10.10.1`?
 4. En `Avanzadas`, ¿está marcado **`Cable conectado`**?
 
-Luego reinstala. Si ya habías terminado la instalación, no hace falta reinstalar: ve a [[#e5|E5]].
+Luego reinstala. Si ya habías terminado la instalación, no hace falta reinstalar: ve a [[#E5 · Mi servidor no tiene la IP 10.10.10.10|E5]].
 
 > [!summary] Qué aprendes
 > Que continuar cuando algo no cuadra sale carísimo. Aquí la instalación **habría terminado bien**, el sistema **habría arrancado bien**, y el fallo no habría aparecido hasta la Fase 4. Parar dos minutos cuando la realidad no coincide con el manual es la costumbre más rentable del oficio.
@@ -185,7 +185,7 @@ Luego reinstala. Si ya habías terminado la instalación, no hace falta reinstal
 ```bash
 ip a show enp0s8
 ```
-- `Device does not exist` → la tarjeta no llega a la máquina. Ve a [[#e4|E4]] primero.
+- `Device does not exist` → la tarjeta no llega a la máquina. Ve a [[#E4 · El instalador solo me muestra una tarjeta de red|E4]] primero.
 - Existe pero sin `inet 10.10.10.10` → falta la configuración. Sigue aquí.
 
 **Arreglo — configurar netplan a mano.** Primero mira qué ficheros hay:
