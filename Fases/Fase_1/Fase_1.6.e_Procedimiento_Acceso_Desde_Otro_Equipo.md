@@ -89,6 +89,13 @@ La solución es un **reenvío de puertos** (*Port Forwarding*): abrir a mano un 
 > [!example] Paso 3: Abre el puerto en el cortafuegos del ANFITRIÓN
 > VirtualBox ya escucha en el `2222`, pero el sistema operativo del anfitrión sigue bloqueando la conexión entrante. Hay que autorizarla.
 >
+> > [!danger] 🛑 Esto se hace en el ANFITRIÓN. **Dentro del servidor no se toca nada**
+> > Abajo hay **tres** variantes. **Ejecutas solo UNA: la del sistema operativo del ordenador que ejecuta VirtualBox.** Si tu anfitrión es Windows, la de PowerShell; si es Linux, la de `ufw`.
+> >
+> > **La línea de `ufw` NO va en el servidor Ubuntu.** Está ahí para quien tenga VirtualBox instalado sobre Linux. Ejecutarla dentro de la VM no rompe nada, pero no sirve de nada y te hace creer que hiciste algo que no hiciste.
+> >
+> > **¿Y por qué el servidor no necesita ninguna regla?** Porque en la Fase 1 su `ufw` todavía **no está activo**: acepta todo. El cortafuegos del servidor se levanta en la [[Auditoria_Final]] — y es ahí, no aquí, donde este acceso se te puede caer.
+>
 > **En Windows** — PowerShell **como administrador** (`Windows + X` → `Terminal (Administrador)`):
 > ```powershell
 > New-NetFirewallRule -DisplayName "SSH VM Boochan 2222" -Direction Inbound -Protocol TCP -LocalPort 2222 -Action Allow
@@ -196,7 +203,7 @@ La solución es un **reenvío de puertos** (*Port Forwarding*): abrir a mano un 
 - [ ] `IP_ANFITRION` averiguada con `ipconfig` / `ip a` y **anotada en la entrada**.
 - [ ] Regla de reenvío `2222 → 22` creada, **con las columnas de IP vacías**.
 - [ ] `Aceptar` pulsado en **las dos** ventanas, y la regla verificada volviendo a entrar.
-- [ ] Puerto `2222` permitido en el cortafuegos del anfitrión, con nombre descriptivo.
+- [ ] Puerto `2222` permitido en el cortafuegos **del anfitrión** (una sola variante, la de su SO), con nombre descriptivo.
 - [ ] `ssh -p 2222 boochan@IP_ANFITRION` conecta desde el otro equipo.
 - [ ] Explicado **en el vídeo** por qué la IP es la del anfitrión y no la del servidor.
 - [ ] La regla **anotada como pendiente de revisar** en la Auditoría Final.
