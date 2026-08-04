@@ -143,11 +143,27 @@
 > ```bash
 > sudo nano /etc/hosts
 > ```
-> Dentro del archivo verás varias líneas existentes. **Añade la siguiente línea al final del archivo**:
+> **Mira primero qué hay dentro.** Lo normal es que tenga ya un par de líneas de `localhost`, pero **puede estar vacío** — pasa con algunas instalaciones de Ubuntu Server 26.04 y no es culpa tuya.
+>
+> Déjalo **exactamente así**, tenga lo que tenga:
 > ```
-> 10.10.10.10  UbuntuServer.BOOCHANLAB.LOCAL  UbuntuServer
+> 127.0.0.1       localhost
+> 127.0.1.1       UbuntuServer
+> 10.10.10.10     UbuntuServer.BOOCHANLAB.LOCAL   UbuntuServer
+>
+> ::1     localhost ip6-localhost ip6-loopback
+> ff02::1 ip6-allnodes
+> ff02::2 ip6-allrouters
 > ```
 > Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
+>
+> > [!danger] ⚠️ Si el fichero estaba vacío, no era un detalle sin importancia
+> > `127.0.0.1 localhost` es cómo un sistema Linux **se encuentra a sí mismo**. Sin esa línea, cualquier programa que intente conectarse a `localhost` falla, y los errores que da no mencionan `/etc/hosts` por ninguna parte.
+> >
+> > La tercera línea es la que necesita el dominio de la **Fase 4**: hace que el servidor se reconozca por su **nombre completo**, no solo por el corto.
+>
+> > [!tip] 💡 Las tres columnas
+> > `IP` · `nombre completo (FQDN)` · `nombre corto (alias)`. El orden importa: `hostname -f` devuelve **el segundo campo** de la línea que corresponda. Si pones el nombre corto antes que el largo, `hostname -f` te dará `UbuntuServer` y la Fase 4 se aprovisionará mal.
 >
 > Verifica que el servidor se reconoce a sí mismo con el nombre completo:
 > ```bash
