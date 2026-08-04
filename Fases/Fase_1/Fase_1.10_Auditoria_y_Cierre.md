@@ -31,7 +31,7 @@
 >
 > **El clon**
 > - [ ] Clon completo creado desde `Fase 1 terminada`, con las claves de host limpiadas antes.
-> - [ ] Intercambiado con un compañero, importado y **arrancado a la vez que el tuyo**.
+> - [ ] Intercambiado con un compañero, importado y **arrancado a la vez que el tuyo** *(`CE.06.g` — trabajo en grupo: sin pareja, este criterio no se puede evaluar)*.
 > - [ ] Clon renombrado y con IP `10.10.10.11`: las dos máquinas conviven.
 > - [ ] 🧹 **Clon apagado.** No pases a la Fase 2 con dos servidores encendidos.
 >

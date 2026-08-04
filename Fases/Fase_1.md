@@ -65,6 +65,7 @@
 
 > [!abstract] 📋 Qué se te evalúa (resumen)
 > **`RA.01`** *(35 % del módulo, el más alto)* — `CE.01.a` · `CE.01.b` · `CE.01.c` · `CE.01.e` · `CE.01.g` · `CE.01.i`
+> **`RA.06`** *(12 %)* — `CE.06.g`, en la entrega **por parejas** del `6.f`
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_1.1_Que_Se_Evalua]]
 

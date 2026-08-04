@@ -24,6 +24,16 @@
 >
 > **Los 3 restantes:** `CE.01.d` (sistemas de archivos) y `CE.01.h` (actualización) se trabajan en la **Fase 2**; `CE.01.f` (automatización de instalaciones) tiene práctica propia en el **Bloque 1 (B1.12)**.
 
+> [!abstract] Y un criterio del `RA.06`, en la entrega por parejas
+> **`RA.06`** *(pesa un **12 %** del módulo · UD7)*
+> *Realiza tareas de integración de sistemas operativos libres y propietarios, describiendo las ventajas de compartir recursos.*
+>
+> | Código | Criterio de evaluación | Dónde lo demuestras |
+> | :--- | :--- | :--- |
+> | `CE.06.g` | Se ha trabajado en grupo. | [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] — clonas tu servidor, se lo das a un compañero e importas el suyo |
+>
+> Es el **único punto de la Fase 1 que no puedes hacer solo**, y por eso es el único donde se puede demostrar este criterio.
+
 > [!note] 🎓 ¿De dónde salen estos códigos?
 > De la programación didáctica del módulo, que desarrolla el **Real Decreto 1691/2007** y la **Orden de 29 de julio de 2009**. Un RA se aprueba demostrando **más del 50 % de sus criterios**, y todos pesan igual. Tienes derecho a saber por qué se te evalúa lo que se te evalúa.
 

@@ -16,6 +16,16 @@
 >
 > **Requisito imprescindible:** tener la instantánea **`Fase 1 terminada`** ([[Fase_1.8_Punto_de_Control]]). Sin ella no se puede empezar.
 
+
+> [!abstract] 📋 Qué se te evalúa aquí
+> **`RA.06`** — *Realiza tareas de integración de sistemas operativos libres y propietarios, describiendo las ventajas de compartir recursos.*
+>
+> | Código | Criterio de evaluación | Dónde lo demuestras |
+> | :--- | :--- | :--- |
+> | `CE.06.g` | Se ha trabajado en grupo. | Pasos 3 y 4 — entregas tu clon a un compañero e importas el suyo |
+>
+> **Este criterio no se puede demostrar en solitario.** Es el motivo de que esta entrega sea por parejas y no una más de la lista. El detalle del resto de la fase: [[Fase_1.1_Que_Se_Evalua]].
+
 ---
 
 ### 🎯 Qué vas a hacer, y por qué no es un ejercicio de relleno
