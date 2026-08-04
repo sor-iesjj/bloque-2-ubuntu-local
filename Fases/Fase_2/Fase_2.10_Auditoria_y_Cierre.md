@@ -11,7 +11,10 @@
 > Que el servidor **resuelve su propio FQDN**. Si el `/etc/hosts` no coincide exactamente con el dominio que instalarás en la Fase 4, Kerberos jamás emitirá tickets y el proyecto fallará — **sin dar un error que apunte a esta fase**.
 
 > [!success] ✅ Checklist final: no sigas a la Fase 3 sin esto
-> - [ ] ¿Comprobaste en el **Paso 1B**, **antes** de reinstalar, que la purga había dejado el sistema limpio?
+> - [ ] `sudo apt upgrade -y` ejecutado y `sudo dpkg --audit` **sin salida**.
+- [ ] Reiniciado si `/var/run/reboot-required` existía.
+- [ ] **Comprobado lo que hay instalado**, no lo que se pidió: `dpkg -s samba-ad-dc samba-ad-provision`.
+- [ ] ¿Comprobaste en el **Paso 1B**, **antes** de reinstalar, que la purga había dejado el sistema limpio?
 > - [ ] ¿`hostname -f` devuelve exactamente `UbuntuServer.BOOCHANLAB.LOCAL`?
 > - [ ] ¿`hostname -I` muestra la IP estática `10.10.10.10`?
 > - [ ] ¿`dpkg -s samba-ad-dc samba-ad-provision` confirma que **los dos** están instalados?

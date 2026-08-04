@@ -35,6 +35,8 @@
 | `hostname -I` no muestra `10.10.10.10` | [[#E8 · hostname -I no muestra la IP 10.10.10.10\|E8]] |
 | La pantalla azul de Kerberos no aparece | [[#E9 · La pantalla azul de Kerberos no aparece\|E9]] |
 | Al **terminar** la fase, `smbd` está `active (running)` | [[#E10 · Al terminar la fase smbd sigue activo\|E10]] |
+| Instalé todo pero luego falta un paquete | [[#E11 · Instalé los paquetes pero uno no está\|E11]] |
+| Pantalla **morada** preguntando por servicios | [[#E12 · Pantalla morada que pregunta por reiniciar servicios\|E12]] |
 
 ---
 
@@ -312,7 +314,70 @@ dpkg -s samba-ad-dc samba-ad-provision | grep -m2 ^Status
 
 ---
 
-> [!summary] 🎓 Lo que se llevan estos diez casos
+### E11 · Instalé los paquetes pero uno no está
+
+> [!bug] Síntoma
+> Ejecutaste el `apt install` del Paso 2, no viste ningún error rojo evidente… y después `dpkg -s <paquete>` dice que no está instalado.
+
+**Hipótesis.** El paquete **no existe en los repositorios** de tu versión de Ubuntu. `apt` lo avisa, pero **puede continuar instalando el resto sin abortar**, y el aviso se pierde entre cientos de líneas.
+
+**Comprobación.** Pregunta si el paquete existe siquiera:
+
+```bash
+apt-cache policy <nombre-del-paquete>
+```
+
+| Respuesta | Significa |
+| :--- | :--- |
+| `Candidate: (none)` | **No existe** en los repositorios de tu versión |
+| `Candidate: 1.2.3` + `Installed: (none)` | Existe, pero no llegó a instalarse |
+| `Installed: 1.2.3` | Está instalado. El problema es otro |
+
+**Arreglo.** Depende de la respuesta:
+- **No existe** → averigua si lo sustituye otro paquete, o si su función la cubre ya el sistema. *(Le pasó a `resolvconf`: desapareció en Ubuntu 26.04 y su trabajo lo hace `systemd-resolved`.)*
+- **Existe pero no se instaló** → repite con `sudo apt install -y <paquete>` y **lee el error**, esta vez solo.
+
+> [!success] ✅ Cómo evitarlo siempre
+> Después de una instalación larga, **comprueba lo que hay, no lo que pediste**:
+> ```bash
+> for p in samba samba-ad-dc samba-ad-provision krb5-user winbind; do
+>   printf "%-22s %s\n" "$p" "$(dpkg -s $p 2>/dev/null | grep -m1 ^Status || echo FALTA)"
+> done
+> ```
+
+> [!summary] Qué aprendes
+> Que **"no dio error" no es lo mismo que "funcionó"**. Un comando que instala trece paquetes puede fallar en uno y terminar con éxito aparente. En administración se verifica el **estado final**, no la ausencia de quejas.
+
+---
+
+### E12 · Pantalla morada que pregunta por reiniciar servicios
+
+> [!bug] Síntoma
+> Durante `apt upgrade` la pantalla se pone **morada** y aparece una lista de servicios con casillas marcadas, preguntando cuáles reiniciar.
+
+**Hipótesis.** **No es un error.** Es `needrestart`, una herramienta de Ubuntu que detecta qué servicios están usando bibliotecas que acabas de actualizar.
+
+> [!info] 🎓 Por qué existe esa pregunta
+> Cuando actualizas una biblioteca, los programas **ya en marcha siguen usando la versión vieja**, cargada en memoria desde que arrancaron. El paquete está actualizado en el disco, pero el servicio **no tiene el parche** hasta que se reinicia.
+>
+> Es exactamente por lo que las actualizaciones de seguridad piden reiniciar cosas.
+
+**Arreglo.** Pulsa **`Enter`** para aceptar los servicios que propone. Y si pregunta *"¿Reiniciar el sistema?"*, di **que no**: reinicias tú al terminar el paso.
+
+> [!warning] ⚠️ Si lanzas `apt` por SSH sin terminal interactivo, esto se cuelga
+> No te pasará siguiendo la práctica, pero conviene saberlo: `needrestart` **espera una respuesta**. Si el comando corre sin nadie que pueda contestar —por ejemplo en un script automático—, se queda parado indefinidamente, sin consumir CPU y sin decir por qué.
+>
+> En esos casos se le indica el modo de antemano:
+> ```bash
+> sudo NEEDRESTART_MODE=a apt upgrade -y
+> ```
+
+> [!summary] Qué aprendes
+> Que **actualizar un paquete no actualiza el proceso que ya estaba corriendo**. Disco y memoria van por separado — la misma idea del caso [[#E4 · En el Paso 1B smbd sigue activo|E4]], vista desde el otro lado.
+
+---
+
+> [!summary] 🎓 Lo que se llevan estos doce casos
 > Ninguno se arregla sabiendo el comando de memoria. Todos se arreglan **acotando**: qué funciona, qué no, y **en qué momento**.
 >
 > - Ping a IP sí, a nombre no → hay red, pero no hay DNS.

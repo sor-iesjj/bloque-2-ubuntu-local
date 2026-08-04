@@ -94,7 +94,7 @@
 > > · *"No sale la pantalla azul de Kerberos"* → [[Fase_2.7_Resolucion_Problemas#E9 · La pantalla azul de Kerberos no aparece|caso E9]] *(**no es un error**)*
 > Instalamos las herramientas que permiten a Linux "disfrazarse" de servidor Windows. Este comando necesita el adaptador **NAT** funcionando, ya que descarga paquetes de internet:
 > ```bash
-> sudo apt update && sudo apt install -y acl attr samba samba-ad-dc samba-ad-provision krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config wireguard resolvconf
+> sudo apt update && sudo apt install -y acl attr samba samba-ad-dc samba-ad-provision krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config wireguard
 > ```
 >
 > > [!danger] ⚠️ `samba-ad-dc` y `samba-ad-provision`: sin ellos la Fase 4 es IMPOSIBLE
@@ -127,8 +127,60 @@
 > >
 > > **¡Las mayúsculas son obligatorias!** Si escribes `boochanlab.local` en minúsculas, el sistema de seguridad Kerberos fallará más adelante y ningún usuario podrá autenticarse.
 >
-> > [!warning] ⚠️ Nota sobre `resolvconf` y el DNS del sistema
-> > El paquete `resolvconf` que acabas de instalar puede entrar en conflicto con el servicio de DNS que Ubuntu trae por defecto (`systemd-resolved`). De momento no haremos nada; el script de la Fase 4 se encarga de resolver este conflicto automáticamente.
+> > [!warning] ⚠️ El DNS del sistema lo lleva `systemd-resolved`, y punto
+> > Manuales antiguos —y versiones anteriores de esta práctica— te hacen instalar aquí un paquete llamado `resolvconf`. **En Ubuntu Server 26.04 ese paquete ya no existe**: lo comprobamos ejecutando y `apt-cache policy resolvconf` devuelve `Candidate: (none)`. Tampoco está `openresolv`.
+> >
+> > El DNS lo gestiona en exclusiva **`systemd-resolved`**, y `/etc/resolv.conf` es un enlace simbólico a un fichero suyo. Míralo:
+> > ```bash
+> > ls -l /etc/resolv.conf
+> > ```
+> >
+> > No hay que hacer nada ahora. El script de la Fase 4 apaga el *stub* de `systemd-resolved` justo antes de levantar el DNS interno de Samba, para que este pueda quedarse con el puerto 53.
+> >
+> > > [!bug] 🚩 Ojo a este comportamiento de `apt`
+> > > Si pides un paquete que **no existe en los repositorios**, `apt` avisa… y **puede seguir instalando el resto sin abortar**. Terminas creyendo que instalaste todo. Por eso la comprobación de después no es un adorno: es la única forma de saber qué hay realmente.
+> > > Detalle: [[Fase_2.7_Resolucion_Problemas#E11 · Instalé los paquetes pero uno no está|caso E11]].
+
+> [!example] Paso 2B: Actualizar el sistema
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"Sale una pantalla morada preguntando por servicios"* → [[Fase_2.7_Resolucion_Problemas#E12 · Pantalla morada que pregunta por reiniciar servicios|caso E12]] *(**no es un error**)*
+> Un servidor recién instalado arrastra semanas —o meses— de parches sin aplicar. Antes de construir el dominio encima, se pone al día:
+>
+> ```bash
+> sudo apt upgrade -y
+> ```
+>
+> > [!info] ⏱️ Tarda, y es normal
+> > Pueden ser **40 o 50 paquetes** y varios minutos. Déjalo terminar: interrumpir una actualización a medias deja paquetes rotos.
+>
+> > [!important] 🟪 Aparecerá una pantalla MORADA. No te asustes
+> > Es **`needrestart`**, y pregunta qué servicios reiniciar con las bibliotecas nuevas. Aparece con una lista de servicios preseleccionados.
+> >
+> > **Pulsa `Enter` para aceptar** lo que propone. Es lo correcto: un servicio que sigue usando una biblioteca vieja no tiene el parche de seguridad que acabas de instalar, aunque el paquete ya esté actualizado.
+> >
+> > Si además pregunta *"¿Reiniciar el sistema?"*, responde **que no**: reinicias tú al final del paso.
+>
+> **Comprueba que no ha quedado nada roto:**
+> ```bash
+> sudo dpkg --audit          # sin salida = todo correcto
+> apt list --upgradable      # deberían quedar muy pocos o ninguno
+> ```
+>
+> > [!tip] 💡 ¿Y si quedan dos o tres sin actualizar?
+> > Normal. `apt upgrade` **no toca** los paquetes cuya actualización obligaría a instalar o eliminar otros — es deliberadamente conservador. Para eso está `apt full-upgrade`, que **aquí no vamos a usar**: en un servidor, un comando que puede desinstalar cosas por su cuenta se ejecuta sabiendo lo que hace, no por costumbre.
+>
+> **Si te pide reiniciar, reinicia:**
+> ```bash
+> [ -f /var/run/reboot-required ] && echo "hay que reiniciar" || echo "no hace falta"
+> sudo reboot
+> ```
+> Se actualiza el **kernel** a menudo, y el nuevo no entra en uso hasta que reinicias.
+>
+> > [!question] 🤔 Antes de seguir
+> > `sudo apt update` y `sudo apt upgrade` **no son lo mismo**, y los dos los has ejecutado hoy. ¿Qué hace exactamente cada uno? Explícalo en tu entrada con tus palabras. *(Pista: uno consulta y el otro modifica.)*
+> >
+> > **Aquí demuestras el `CE.01.h`** — *"se ha actualizado el sistema operativo en red"*.
 
 > [!example] Paso 3: Configuración de la Identidad (FQDN)
 >
