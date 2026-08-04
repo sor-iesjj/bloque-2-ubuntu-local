@@ -43,6 +43,9 @@
 > [!note] 📌 El detalle completo
 > Cómo restaurarlas, cómo verificar que existen, qué es un UUID y por qué el fichero no lleva el nombre que le pusiste: **[[Fase_0.S_Instantaneas_Puntos_de_Control]]**
 
+> [!important] 👉 Con `Fase 1 terminada` tomada, te queda la última entrega
+> Esa instantánea no sirve solo para volver atrás: **es el punto desde el que se clona**. En [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] la conviertes en una máquina que le das a un compañero — y descubres, chocándote, qué partes de un servidor **no se pueden duplicar**.
+
 ---
 
 | ← Anterior | 🧭 Índice | Siguiente → |

@@ -29,9 +29,15 @@
 > - [ ] `ping 10.10.10.10` responde **desde el ordenador anfitrión**.
 > - [ ] Entras por **SSH** desde la terminal del anfitrión.
 >
+> **El clon**
+> - [ ] Clon completo creado desde `Fase 1 terminada`, con las claves de host limpiadas antes.
+> - [ ] Intercambiado con un compañero, importado y **arrancado a la vez que el tuyo**.
+> - [ ] Clon renombrado y con IP `10.10.10.11`: las dos máquinas conviven.
+> - [ ] 🧹 **Clon apagado.** No pases a la Fase 2 con dos servidores encendidos.
+>
 > **La entrega**
 > - [ ] 💾 Instantáneas **`Sistema base`** y **`Fase 1 terminada`** tomadas.
-> - [ ] Las **cuatro entradas** de apuntes creadas, con sus **cuatro enlaces de vídeo**.
+> - [ ] Las **cinco entradas** de apuntes creadas, con sus **cinco enlaces de vídeo**.
 > - [ ] Preguntas críticas contestadas.
 > - [ ] `commit` y `push` hechos.
 
@@ -43,6 +49,8 @@
 > Que un instalador no es un formulario: es una cadena de decisiones que condiciona meses de trabajo. Y que **un teclado no envía letras, envía números de tecla**.
 >
 > Y que verificar desde dentro vale menos que verificar desde fuera. Un servidor te dirá siempre lo que él cree de sí mismo.
+>
+> Y por último, que **clonar no es copiar**: la identidad de una máquina —su clave de host, su `machine-id`, su MAC— es justo lo que no debe viajar en una plantilla. Lo has visto chocando dos servidores idénticos, que es la única forma de que no se olvide.
 >
 > **Siguiente:** Fase 2 — Purga y Preparación del Entorno.
 

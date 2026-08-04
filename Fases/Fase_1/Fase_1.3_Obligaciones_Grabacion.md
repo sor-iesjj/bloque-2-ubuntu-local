@@ -3,7 +3,7 @@
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Fase 1: Infraestructura Virtual Local (VirtualBox)**
 > 🧭 Índice de la fase: [[Fase_1]]
 >
-> **📍 Cuándo se lee:** **Antes de arrancar OBS.** Cómo se graba y se entrega. Vale para las cuatro partes.
+> **📍 Cuándo se lee:** **Antes de arrancar OBS.** Cómo se graba y se entrega. Vale para todas las partes.
 
 ---
 

@@ -3,7 +3,7 @@
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Fase 1: Infraestructura Virtual Local (VirtualBox)**
 > 🧭 Índice de la fase: [[Fase_1]]
 >
-> **📍 Cuándo se lee:** **Antes de teclear.** Los conceptos de las cuatro partes, con su diccionario.
+> **📍 Cuándo se lee:** **Antes de teclear.** Los conceptos de todas las partes, con su diccionario.
 
 ---
 

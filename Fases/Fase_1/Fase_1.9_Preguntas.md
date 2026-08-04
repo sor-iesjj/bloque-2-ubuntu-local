@@ -21,7 +21,7 @@
 >
 > Una entrega con el procedimiento perfecto y las preguntas en blanco está **incompleta**.
 
-> [!tip] 💡 ¿En cuál de las cuatro entradas van?
+> [!tip] 💡 ¿En cuál de las entradas van?
 > Las preguntas 1 a 4 y el reto son de **la fase entera**: contéstalas en la entrada de la **parte 6.d**, que es la que cierra. Si alguna te encaja mejor en otra parte porque ahí es donde lo viviste, ponla ahí y dilo.
 
 ---
