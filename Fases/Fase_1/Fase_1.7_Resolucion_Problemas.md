@@ -29,24 +29,23 @@
 
 | Lo que ves | Ve a |
 | :--- | :--- |
-| La VM se instaló sola, no elegí nada | [E1](#e1) |
-| No me salen la `@` ni el `;` | [E2](#e2) |
-| La instalación lleva más de 40 minutos | [E3](#e3) |
-| El instalador solo me muestra una tarjeta de red | [E4](#e4) |
-| Mi servidor no tiene la IP `10.10.10.10` | [E5](#e5) |
-| El `ping 10.10.10.10` no responde desde mi ordenador | [E6](#e6) |
-| `ssh` dice `Connection timed out` o `refused` | [E7](#e7) |
-| Sale un error `vmwgfx` al arrancar | [E8](#e8) |
-| La letra de la consola es minúscula (pantalla 4K) | [E9](#e9) |
-| Quiero ver qué hace el instalador por dentro | [E10](#e10) |
-| `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!` | [E11](#e11) |
-| Mi servidor no se llama `UbuntuServer` | [E12](#e12) |
-| Cosas raras sin error claro: entro y no es la máquina que creía | [E13](#e13) |
+| La VM se instaló sola, no elegí nada | [[#E1 · La VM se instaló sola y nunca vi el instalador\|E1]] |
+| No me salen la `@` ni el `;` | [[#E2 · No me sale la arroba ni el punto y coma\|E2]] |
+| La instalación lleva más de 40 minutos | [[#E3 · La instalación lleva más de 40 minutos\|E3]] |
+| El instalador solo me muestra una tarjeta de red | [[#E4 · El instalador solo me muestra una tarjeta de red\|E4]] |
+| Mi servidor no tiene la IP `10.10.10.10` | [[#E5 · Mi servidor no tiene la IP 10.10.10.10\|E5]] |
+| El `ping 10.10.10.10` no responde desde mi ordenador | [[#E6 · El ping a 10.10.10.10 no responde desde mi ordenador\|E6]] |
+| `ssh` dice `Connection timed out` o `refused` | [[#E7 · SSH dice Connection timed out o Connection refused\|E7]] |
+| Sale un error `vmwgfx` al arrancar | [[#E8 · Sale un error vmwgfx al arrancar\|E8]] |
+| La letra de la consola es minúscula (pantalla 4K) | [[#E9 · La letra de la consola es minúscula en pantallas 4K\|E9]] |
+| Quiero ver qué hace el instalador por dentro | [[#E10 · Quiero ver qué hace el instalador por dentro\|E10]] |
+| `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!` | [[#E11 · Aviso REMOTE HOST IDENTIFICATION HAS CHANGED\|E11]] |
+| Mi servidor no se llama `UbuntuServer` | [[#E12 · Mi servidor no se llama UbuntuServer\|E12]] |
+| Cosas raras sin error claro: entro y no es la máquina que creía | [[#E13 · Entro y no es la máquina que creía\|E13]] |
 
 ---
 
-<a id="e1"></a>
-### E1 · La VM se instaló sola: nunca vi el instalador
+### E1 · La VM se instaló sola y nunca vi el instalador
 
 > [!bug] Síntoma
 > La máquina arrancó, estuvo un rato sola y apareció un `login:`. No elegiste teclado, ni red, ni usuario. Y el usuario **no es** `boochan`.
@@ -64,8 +63,7 @@ Clic derecho sobre la VM → **`Eliminar`** → **`Borrar todos los archivos`**.
 
 ---
 
-<a id="e2"></a>
-### E2 · No me sale la `@`. Ni el `;`
+### E2 · No me sale la arroba ni el punto y coma
 
 > [!bug] Síntoma
 > Intentas escribir `@` con `AltGr+2` y sale otra cosa. El `;` no está donde siempre. **Las letras y los números funcionan perfectamente.**
@@ -135,7 +133,6 @@ Comprueba con `AltGr+2`.
 
 ---
 
-<a id="e3"></a>
 ### E3 · La instalación lleva más de 40 minutos
 
 > [!bug] Síntoma
@@ -155,7 +152,6 @@ Comprueba con `AltGr+2`.
 
 ---
 
-<a id="e4"></a>
 ### E4 · El instalador solo me muestra una tarjeta de red
 
 > [!bug] Síntoma
@@ -178,8 +174,7 @@ Luego reinstala. Si ya habías terminado la instalación, no hace falta reinstal
 
 ---
 
-<a id="e5"></a>
-### E5 · Mi servidor no tiene la IP `10.10.10.10`
+### E5 · Mi servidor no tiene la IP 10.10.10.10
 
 > [!bug] Síntoma
 > `ip a` muestra `lo` y `enp0s3`, pero no `enp0s8`. O muestra `enp0s8` sin dirección.
@@ -248,8 +243,7 @@ ip a
 
 ---
 
-<a id="e6"></a>
-### E6 · El `ping 10.10.10.10` no responde desde mi ordenador
+### E6 · El ping a 10.10.10.10 no responde desde mi ordenador
 
 > [!bug] Síntoma
 > Desde el anfitrión, `ping 10.10.10.1` funciona pero `ping 10.10.10.10` no. Y desde la VM, `ping 10.10.10.1` da `0 received` con errores.
@@ -291,8 +285,7 @@ Busca **todos** los adaptadores virtuales y sus IPs. Si ves uno con `192.168.56.
 
 ---
 
-<a id="e7"></a>
-### E7 · `ssh` dice `Connection timed out` o `Connection refused`
+### E7 · SSH dice Connection timed out o Connection refused
 
 > [!bug] Síntoma
 > `ping 10.10.10.10` responde perfectamente, pero `ssh boochan@10.10.10.10` no conecta.
@@ -330,8 +323,7 @@ Debe salir una línea con `0.0.0.0:22` y `sshd`. Vuelve a intentar el `ssh` desd
 
 ---
 
-<a id="e8"></a>
-### E8 · Sale un error `vmwgfx` al arrancar
+### E8 · Sale un error vmwgfx al arrancar
 
 > [!bug] Síntoma
 > Al arrancar aparece algo como:
@@ -366,8 +358,7 @@ Guarda y reinicia. Solo verás en consola los mensajes graves; los demás se sig
 
 ---
 
-<a id="e9"></a>
-### E9 · La letra de la consola es minúscula (pantallas 4K)
+### E9 · La letra de la consola es minúscula en pantallas 4K
 
 > [!bug] Síntoma
 > En un portátil de alta resolución, el texto de la consola es prácticamente ilegible.
@@ -402,7 +393,6 @@ sudo setupcon
 
 ---
 
-<a id="e10"></a>
 ### E10 · Quiero ver qué hace el instalador por dentro
 
 > [!bug] Situación
@@ -434,8 +424,7 @@ ping -c2 archive.ubuntu.com
 
 ---
 
-<a id="e11"></a>
-### E11 · `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`
+### E11 · Aviso REMOTE HOST IDENTIFICATION HAS CHANGED
 
 **Síntoma.** Al conectar por SSH a una máquina donde ya habías entrado antes, sale un aviso enorme hablando de *man-in-the-middle*, y **no te deja entrar**:
 
@@ -455,7 +444,7 @@ En este proyecto casi siempre es por una de estas tres, y **ninguna es un ataque
 | :--- | :--- |
 | **Reinstalaste el sistema** | Ubuntu genera claves de host nuevas en cada instalación |
 | **Restauraste una instantánea** anterior a la instalación de OpenSSH | El servidor vuelve a tener otra identidad |
-| **Hay otra máquina en esa IP** | Un clon encendido a la vez → ver [E13](#e13) |
+| **Hay otra máquina en esa IP** | Un clon encendido a la vez → ver [[#E13 · Entro y no es la máquina que creía\|E13]] |
 
 > [!danger] ⚠️ No borres el aviso sin comprobar. Ese es el error de verdad
 > Casi todo el mundo borra la línea y sigue. **Mal.** El aviso existe precisamente para detectar que alguien ha puesto **otra máquina** donde estaba la tuya.
@@ -471,7 +460,7 @@ sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
 Compara ese `SHA256:...` con el que te muestra el aviso.
 
 - **Coinciden** → es tu servidor. Sigue al arreglo.
-- **No coinciden** → estás conectando a otra máquina. **Para** y averigua a cuál ([E13](#e13)).
+- **No coinciden** → estás conectando a otra máquina. **Para** y averigua a cuál ([[#E13 · Entro y no es la máquina que creía|E13]]).
 
 **Arreglo.** Borra la entrada vieja **en el ordenador desde el que te conectas**:
 
@@ -494,8 +483,7 @@ Vuelve a conectar. Te pedirá aceptar la huella nueva: escribe `yes`.
 
 ---
 
-<a id="e12"></a>
-### E12 · Mi servidor no se llama `UbuntuServer`
+### E12 · Mi servidor no se llama UbuntuServer
 
 **Síntoma.** El prompt dice `boochan@UbuntuServer2`, `boochan@ubuntu` o cualquier otra cosa. O `hostname` no devuelve `UbuntuServer`.
 
@@ -545,15 +533,14 @@ hostname
 
 ---
 
-<a id="e13"></a>
-### E13 · Cosas raras sin error claro: creo que no estoy en la máquina que pienso
+### E13 · Entro y no es la máquina que creía
 
 **Síntoma.** No hay un error concreto. Hay **incoherencias**:
 
 - Arreglas algo, y al rato aparece sin arreglar
 - `ssh boochan@10.10.10.10` entra, pero el `hostname` no es el que esperabas
 - El `ping` a `10.10.10.10` responde aunque hayas apagado el servidor
-- Salta el aviso de [E11](#e11) sin que hayas reinstalado nada
+- Salta el aviso de [[#E11 · Aviso REMOTE HOST IDENTIFICATION HAS CHANGED|E11]] sin que hayas reinstalado nada
 
 **Hipótesis.** **Tienes dos máquinas virtuales encendidas a la vez con la misma IP.**
 

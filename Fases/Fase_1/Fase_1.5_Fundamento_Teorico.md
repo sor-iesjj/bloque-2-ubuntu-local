@@ -89,7 +89,7 @@
 > Guárdate esto: cuando alguien te diga *"se me ha roto el teclado"*, casi nunca es el teclado.
 
 > [!info] 2. Por qué la IP se pone durante la instalación
-> El instalador de Ubuntu Server (**Subiquity**) escribe la configuración de red directamente en `/etc/netplan/`. Hacerlo aquí te ahorra editar ficheros nada más arrancar. Si por lo que sea no puedes, se puede hacer después a mano — está explicado en [[Fase_1.7_Resolucion_Problemas]] · caso **E5**.
+> El instalador de Ubuntu Server (**Subiquity**) escribe la configuración de red directamente en `/etc/netplan/`. Hacerlo aquí te ahorra editar ficheros nada más arrancar. Si por lo que sea no puedes, se puede hacer después a mano — está explicado en [[Fase_1.7_Resolucion_Problemas#E5 · Mi servidor no tiene la IP 10.10.10.10|caso E5]].
 
 > [!important] 3. `Ubuntu Server` frente a `minimized`
 > El instalador te ofrece una versión **minimizada**, pensada para contenedores y despliegues automatizados: trae menos herramientas y da problemas cuando luego necesitas diagnosticar algo a mano. **Elige la normal.**

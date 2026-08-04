@@ -36,7 +36,7 @@
 > - `enp0s3` — la NAT, con una IP tipo `10.0.2.15` puesta por DHCP
 > - `enp0s8` — la sólo-anfitrión, con **`10.10.10.10`**
 >
-> **Si solo salen dos**, falta la sólo-anfitrión y hay que arreglarlo antes de seguir → [[Fase_1.7_Resolucion_Problemas]] · caso **E4** (la tarjeta no llega a la VM) o **E5** (llega pero sin IP).
+> **Si solo salen dos**, falta la sólo-anfitrión y hay que arreglarlo antes de seguir → [[Fase_1.7_Resolucion_Problemas#E4 · El instalador solo me muestra una tarjeta de red|caso E4]] (la tarjeta no llega a la VM) o [[Fase_1.7_Resolucion_Problemas#E5 · Mi servidor no tiene la IP 10.10.10.10|caso E5]] (llega pero sin IP).
 >
 > **b) Dentro de la VM — ¿sale a Internet?**
 > ```bash
@@ -76,7 +76,7 @@
 > > ```bash
 > > systemctl status ssh
 > > ```
-> > Si responde `Unit ssh.service could not be found`, ve a [[Fase_1.7_Resolucion_Problemas]] · caso **E7**: tiene arreglo en dos comandos.
+> > Si responde `Unit ssh.service could not be found`, ve a [[Fase_1.7_Resolucion_Problemas#E7 · SSH dice Connection timed out o Connection refused|caso E7]]: tiene arreglo en dos comandos.
 
 > [!example] Paso 3: El dominio de todo el proyecto
 > No hay que ejecutar nada. Es información que debes **anotar en tu entrada**, porque la usarás en la Fase 2 (`/etc/hosts`) y sobre todo en la Fase 4 (creación del dominio):
