@@ -19,6 +19,6 @@
 
 ---
 
-| ← Anterior | 🧭 Índice | Siguiente → |
-| :--- | :---: | ---: |
+| ← Anterior                 | 🧭 Índice  |                         Siguiente → |
+| :------------------------- | :--------: | ----------------------------------: |
 | [[Fase_2.1_Que_Se_Evalua]] | [[Fase_2]] | [[Fase_2.3_Obligaciones_Grabacion]] |

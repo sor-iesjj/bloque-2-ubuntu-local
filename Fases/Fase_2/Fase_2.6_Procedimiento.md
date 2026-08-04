@@ -26,6 +26,11 @@
 > Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado**.
 
 > [!example] Paso 1A: Limpieza Total del Entorno
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"No encuentra Samba"* → [[Fase_2.7_Resolucion_Problemas#E2 · apt purge dice que no encuentra Samba|caso E2]] *(casi siempre **no es un error**)*
+> > · *"Purgué y `winbind` sigue"* → [[Fase_2.7_Resolucion_Problemas#E3 · Purgué Samba pero winbind sigue instalado|caso E3]]
+> > · *"Sigue algo en el puerto 445"* → [[Fase_2.7_Resolucion_Problemas#E5 · Algo sigue escuchando en el puerto 445|caso E5]]
 > Antes de construir, debemos demoler lo viejo. Ejecuta estos comandos para liberar los puertos y limpiar la caché:
 >
 > > [!info] 📚 Diccionario de Comandos: Para entender la sintaxis exacta y ver ejemplos de `apt`, `systemctl` y `rm`, consulta el [[Diccionario_Comandos_Sistema]].
@@ -54,6 +59,10 @@
 > > 2. **Un comodín borra lo que caza, no lo que querías.** En un servidor se escribe la lista de lo que se va a borrar — y se lee antes de pulsar Enter. Fíjate en que `apt` te muestra esa lista **antes** de actuar: es tu última oportunidad de ver que se lleva algo que no esperabas.
 
 > [!example] Paso 1B: Comprueba que la demolición ha funcionado
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"`smbd` sigue `active (running)`"* → [[Fase_2.7_Resolucion_Problemas#E4 · En el Paso 1B smbd sigue activo|caso E4]]
+> > · *"Sigue algo en el puerto 445"* → [[Fase_2.7_Resolucion_Problemas#E5 · Algo sigue escuchando en el puerto 445|caso E5]]
 > **Hazlo AHORA, antes del Paso 2.** Es tu única oportunidad: el Paso 2 vuelve a instalar Samba, y a partir de ahí ya no podrás comprobar si la purga funcionó.
 >
 > No des por hecho que un comando ha hecho su trabajo porque no dio error. Las tres comprobaciones:
@@ -79,6 +88,10 @@
 > > Los puertos **139** y **445** que acabas de liberar, ¿de quién eran y quién los va a querer en la Fase 4? Contéstalo en tu entrada.
 
 > [!example] Paso 2: Instalación de Dependencias Críticas
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"`apt update` no descarga nada"* → [[Fase_2.7_Resolucion_Problemas#E1 · apt update no descarga nada o no hay internet|caso E1]]
+> > · *"No sale la pantalla azul de Kerberos"* → [[Fase_2.7_Resolucion_Problemas#E9 · La pantalla azul de Kerberos no aparece|caso E9]] *(**no es un error**)*
 > Instalamos las herramientas que permiten a Linux "disfrazarse" de servidor Windows. Este comando necesita el adaptador **NAT** funcionando, ya que descarga paquetes de internet:
 > ```bash
 > sudo apt update && sudo apt install -y acl attr samba samba-ad-dc samba-ad-provision krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config wireguard resolvconf
@@ -118,6 +131,11 @@
 > > El paquete `resolvconf` que acabas de instalar puede entrar en conflicto con el servicio de DNS que Ubuntu trae por defecto (`systemd-resolved`). De momento no haremos nada; el script de la Fase 4 se encarga de resolver este conflicto automáticamente.
 
 > [!example] Paso 3: Configuración de la Identidad (FQDN)
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"Abro `/etc/hosts` y está VACÍO"* → [[Fase_2.7_Resolucion_Problemas#E6 · El fichero de identidades de red está vacío|caso E6]] — **le pasa a todo el mundo en Ubuntu 26.04**
+> > · *"`hostname -f` no devuelve el nombre completo"* → [[Fase_2.7_Resolucion_Problemas#E7 · hostname -f no devuelve el nombre completo|caso E7]]
+> > · *"`hostname -I` no muestra `10.10.10.10`"* → [[Fase_2.7_Resolucion_Problemas#E8 · hostname -I no muestra la IP 10.10.10.10|caso E8]]
 > Debemos decirle al servidor quién es. Primero comprobamos que la IP estática de la Fase 1 sigue activa:
 > ```bash
 > hostname -I
