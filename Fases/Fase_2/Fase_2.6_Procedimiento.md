@@ -166,7 +166,6 @@
 > Déjalo **exactamente así**, tenga lo que tenga:
 > ```
 > 127.0.0.1       localhost
-> 127.0.1.1       UbuntuServer
 > 10.10.10.10     UbuntuServer.BOOCHANLAB.LOCAL   UbuntuServer
 >
 > ::1     localhost ip6-localhost ip6-loopback
@@ -174,6 +173,19 @@
 > ff02::2 ip6-allrouters
 > ```
 > Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
+>
+> > [!danger] 🛑 Si ves una línea `127.0.1.1 UbuntuServer`, BÓRRALA
+> > Ubuntu la pone por defecto en muchas instalaciones. Aquí **sobra, y hace daño**.
+> >
+> > `hostname -f` resuelve el nombre y se queda con **la primera coincidencia**. Si la del `127.0.1.1` va antes, encuentra esa —que solo lleva el nombre corto— y **nunca llega a la del `10.10.10.10`**. Resultado: te devuelve `UbuntuServer` en vez del nombre completo.
+> >
+> > Y hay algo peor que el síntoma: dejaría el nombre de tu servidor apuntando a una dirección de **bucle local**. Un controlador de dominio anunciado en `127.0.1.1` **no lo alcanza nadie desde la red** — es el mismo problema que el `--host-ip` de la Fase 4.
+> >
+> > ```bash
+> > sudo sed -i '/^127\.0\.1\.1/d' /etc/hosts
+> > ```
+> >
+> > Es lo que recomienda la propia documentación de Samba para un controlador de dominio. **Probado ejecutando: con esa línea, `hostname -f` falla; sin ella, funciona.**
 >
 > > [!danger] ⚠️ Si el fichero estaba vacío, no era un detalle sin importancia
 > > `127.0.0.1 localhost` es cómo un sistema Linux **se encuentra a sí mismo**. Sin esa línea, cualquier programa que intente conectarse a `localhost` falla, y los errores que da no mencionan `/etc/hosts` por ninguna parte.

@@ -183,7 +183,6 @@ Si la fecha es **anterior al día en que instalaste** el sistema, viene así de 
 
 ```
 127.0.0.1       localhost
-127.0.1.1       UbuntuServer
 10.10.10.10     UbuntuServer.BOOCHANLAB.LOCAL   UbuntuServer
 
 ::1     localhost ip6-localhost ip6-loopback
