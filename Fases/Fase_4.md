@@ -31,10 +31,12 @@
 | **4** | [[Fase_4.4_Donde_Estamos]] | Antes de empezar — de dónde vienes y a dónde llegas |
 | **5** | [[Fase_4.5_Fundamento_Teorico]] | Antes de teclear — los conceptos |
 | **6** | [[Fase_4.6_Procedimiento]] | **Con la VM delante — aquí está el trabajo** |
-| **7** | [[Fase_4.7_Resolucion_Problemas]] | Cuando algo no salga — búscate por el síntoma |
-| **8** | [[Fase_4.8_Punto_de_Control]] | Al terminar, con la grabación aún en marcha |
-| **9** | [[Fase_4.9_Preguntas]] | Después de la instantánea — trabajo de mesa |
-| **10** | [[Fase_4.10_Auditoria_y_Cierre]] | Lo último — la checklist antes de seguir |
+| **7** | [[Fase_4.7_Resolucion_Problemas]] | Cuando algo no salga — 10 incidentes reales, búscate por el síntoma |
+| **8.a** | [[Fase_4.8.a_Verificacion]] | 🔍 Al terminar el 6 — comprobar **antes** de guardar · va en el vídeo 1 |
+| **8.b** | [[Fase_4.8.b_Punto_de_Control]] | 💾 **Entrega 3** — instantánea y copia al disco externo |
+| **9** | [[Fase_4.9_Preguntas]] | Trabajo de mesa — las preguntas críticas |
+| **10.a** | [[Fase_4.10.a_Laboratorio_de_Averias]] | 🔨 **Entrega 2** — romper el dominio seis veces · **en 2 sesiones** |
+| **10.b** | [[Fase_4.10.b_Auditoria_y_Cierre]] | Lo último — la checklist antes de la Fase 5 |
 
 > [!tip] 💡 Cómo se recorre
 > - Los apartados **1, 2 y 3** se leen **antes de encender nada**: son las reglas del juego.
