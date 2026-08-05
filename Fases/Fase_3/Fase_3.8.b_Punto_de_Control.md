@@ -1,4 +1,4 @@
-## Fase 3 · Apartado 8.b — 💾 Punto de control
+## Fase 3 · Apartado 8.b — 💾 Punto de control y copia de seguridad
 
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Conectividad VPN (WireGuard)**
 > 🧭 Índice de la fase: [[Fase_3]]
@@ -42,11 +42,68 @@
 
 ---
 
+## 💾 PARTE 2 — La copia de seguridad en tu disco externo
+
+> [!danger] 🛑 Una copia que vive en el mismo sitio que el original NO es una copia
+> La instantánea que acabas de tomar **vive dentro de VirtualBox**. Si el programa se corrompe, si formatean el equipo del aula o si falla el disco duro, **se va todo con ella**: máquina e instantáneas.
+>
+> Sacar la información fuera es lo que convierte esto en una copia de seguridad de verdad.
+
+### **1 · Exporta la máquina**
+
+Con la VM **apagada**, en VirtualBox:
+
+`Archivo` → **`Exportar servicio virtualizado`** → selecciona `UbuntuServer` → formato **OVF 2.0** → guarda.
+
+O por comando:
+```
+VBoxManage export "UbuntuServer" --output "E:\SOR\Bloque_2\Fases\Fase_3\B2-F3-conectividad-vpn.ova"
+```
+*(Cambia `E:` por la letra de tu disco externo.)*
+
+### **2 · Dónde va y cómo se llama**
+
+**Estructura de carpetas en el disco** — la misma que la del material:
+
+```
+SOR/
+└── Bloque_2/
+    └── Fases/
+        └── Fase_3/
+            └── B2-F3-conectividad-vpn.ova
+```
+
+**El nombre y la ruta no son orientativos.** Cuando en unas semanas tengas ocho copias, la estructura es lo único que te permitirá encontrar la que buscas.
+
+### **3 · Comprueba que existe de verdad**
+
+Abre la carpeta del disco y **mira el tamaño del fichero**. Debe rondar los 5-8 GB.
+
+> [!warning] ⏱️ Tarda varios minutos. Pausa la grabación
+> Arranca la exportación **grabando**, pausa mientras trabaja, y reanuda para enseñar **el fichero ya creado en el disco**.
+>
+> Es lo mismo que haces con una instalación larga: se ve el principio y se ve el resultado.
+
+> [!info] 🎓 Por qué exportamos y no copiamos la carpeta
+> Podrías copiar la carpeta `VirtualBox VMs/UbuntuServer/` al disco y funcionaría. Pero un `.ova` es **un solo fichero, comprimido y autocontenido**: se importa con doble clic en cualquier VirtualBox, incluso de otro sistema operativo.
+>
+> Y ocupa bastante menos, porque comprime el disco virtual.
+
+> [!question] 🔮 Para qué te va a servir esto
+> Más adelante se te va a pedir **destruir tu servidor y recuperarlo desde esta copia**. No es una amenaza: es la única forma de saber si una copia de seguridad sirve.
+>
+> **Una copia que nunca se ha restaurado no es una copia: es una suposición.**
+
+---
+
 ### ✅ Checklist de este apartado
 
 - [ ] VM apagada con `sudo poweroff`, **grabándolo**.
 - [ ] 💾 Instantánea **`Fase 3 terminada`** tomada.
 - [ ] Comprobada con `VBoxManage snapshot "UbuntuServer" list`.
+- [ ] 💿 **`B2-F3-conectividad-vpn.ova` exportado** a `SOR/Bloque_2/Fases/Fase_3/` de tu disco externo.
+- [ ] Tamaño del fichero comprobado (5-8 GB).
+- [ ] Todo ello grabado en el vídeo **`B2 · F3 · Punto de control`**.
 
 ---
 
