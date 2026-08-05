@@ -67,12 +67,29 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 > sudo poweroff
 > ```
 >
-> **Qué acabas de borrar, y por qué no es peligroso:**
+> **Qué acabas de borrar, y qué pasa con cada cosa:**
 >
 > | Fichero | Qué es | Qué pasa al arrancar |
 > | :--- | :--- | :--- |
-> | `/etc/ssh/ssh_host_*` | La **identidad criptográfica** del servidor. La huella que tu cliente SSH memorizó la primera vez que dijiste `yes` | El servicio SSH genera unas nuevas, distintas, al arrancar |
-> | `/etc/machine-id` | El identificador único de esa instalación de Linux | `systemd` lo regenera solo |
+> | `/etc/ssh/ssh_host_*` | La **identidad criptográfica** del servidor. La huella que tu cliente SSH memorizó la primera vez que dijiste `yes` | 🔴 **NO se regeneran solas.** El clon arrancará sin SSH |
+> | `/etc/machine-id` | El identificador único de esa instalación de Linux | ✅ `systemd` lo regenera solo, con un valor nuevo |
+>
+> > [!danger] 🔴 LEE ESTO O DEJARÁS A TU COMPAÑERO SIN SERVIDOR
+> > **Las claves de host NO se recrean al arrancar.** Es una creencia extendida y es **falsa** en Ubuntu 26.04. Está comprobado ejecutándolo: se borran, se reinicia la máquina entera, y siguen sin estar. `sshd` **no arranca**.
+> >
+> > **Por qué mucha gente cree lo contrario:** porque existe un servicio, `sshd-keygen.service`, que hace justo eso… pero solo en el **primerísimo arranque** de una imagen recién fabricada. En una máquina ya instalada, el sistema lo salta:
+> > ```
+> > sshd-keygen.service ... skipped, unmet condition check ConditionFirstBoot=yes
+> > ```
+> >
+> > **Consecuencia práctica:** el `.ova` que le des a tu compañero **llegará sin identidad SSH**, y él no podrá entrar por SSH hasta crearla. Está previsto y es parte del ejercicio — pero tiene que saberlo, y por eso lo pone aquí en rojo.
+> >
+> > **Se arregla en un comando**, y lo hará él en el Paso 6.
+>
+> > [!info] 🏭 Y así es exactamente como funciona en la vida real
+> > Una plantilla de servidor **se entrega despersonalizada a propósito**. La identidad no viaja en la imagen: se crea en el destino, en lo que Microsoft llama la fase de **especialización** de Sysprep.
+> >
+> > Lo que acabas de hacer es la mitad *"generalizar"*. La mitad *"especializar"* la hace quien recibe la máquina.
 >
 > > [!danger] ⚠️ Si NO lo haces, los dos servidores son la misma máquina para el mundo
 > > Y no en sentido figurado: tienen **la misma clave privada de host**. Cualquiera que tenga el clon puede **suplantar a tu servidor** en la red y tu propio SSH no notaría nada raro, porque la huella cuadraría.
@@ -183,26 +200,47 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 > > ssh boochan@10.10.10.10
 > > ```
 > > **¿A cuál de las dos has entrado?** No hay forma de saberlo desde fuera. Puede responderte una, la otra, o ir alternando.
+>
+> > [!bug] 🔌 Y hay una segunda sorpresa: el clon no acepta SSH
+> > Prueba a entrar y verás algo así:
+> > ```
+> > kex_exchange_identification: read: Connection reset by peer
+> > ```
+> > **No es un fallo tuyo.** Es la consecuencia directa del Paso 1: el clon **no tiene claves de host**, así que `sshd` no puede presentarse y corta la conversación.
 > >
-> > Y si antes ya habías entrado por SSH a `10.10.10.10`, es muy probable que te salte esto:
-> > ```
-> > @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-> > @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
-> > @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-> > ```
-> > **Ese aviso no es un error: es SSH haciendo su trabajo.** Está diciéndote que la máquina que hay en esa IP **no es la misma** que conociste. Exactamente lo que pasaría en un ataque de suplantación. Aquí lo has provocado tú, y por eso puedes entenderlo sin miedo.
+> > Fíjate en lo que dice el mensaje: *"connection reset"* no es ni `refused` ni `timed out`. **Has llegado, te han contestado, y la conversación se ha roto a mitad.** Un tercer sabor de fallo, y te dice que el problema no es de red sino del propio servicio.
+> >
+> > Por eso el Paso 6 se hace **desde la ventana de VirtualBox**: hasta arreglarlo, no hay otra forma de entrar.
 >
 > **Grábalo. Explícalo en voz alta.** Este momento es el ejercicio entero.
 
 > [!example] Paso 6: Arréglalo — dale identidad propia al clon
-> Deja **solo la máquina importada** encendida (apaga la tuya para no confundirte) y trabaja **desde la ventana de VirtualBox**, no por SSH.
+> Deja **solo la máquina importada** encendida (apaga la tuya para no confundirte) y trabaja **desde la ventana de VirtualBox**. Por SSH todavía no se puede: es lo primero que vas a arreglar.
 >
-> **a) Nombre nuevo:**
+> **a) Devuélvele una identidad criptográfica** *(la mitad "especializar" de la plantilla)*:
+> ```bash
+> sudo ssh-keygen -A
+> sudo systemctl restart ssh
+> systemctl is-active ssh
+> ```
+>
+> - **✅ Bien:** `active`. La `-A` significa *"genera todas las claves de host que falten"*, con los tipos y nombres estándar.
+> - **❌ Mal:** `failed` → mira `sudo systemctl status ssh`.
+>
+> Y **apunta la huella**, que la vas a comparar en el apartado c):
+> ```bash
+> sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+> ```
+>
+> > [!info] 💡 Esta clave es nueva y no se parece en nada a la del original
+> > No la has copiado ni recuperado: la acabas de **fabricar**. Dos máquinas nacidas de la misma plantilla, con identidades distintas. Eso es justo lo que se buscaba.
+>
+> **b) Nombre nuevo:**
 > ```bash
 > sudo hostnamectl set-hostname UbuntuServer-Clon
 > ```
 >
-> **b) IP nueva** — edita la configuración de red:
+> **c) IP nueva** — edita la configuración de red:
 > ```bash
 > sudo nano /etc/netplan/00-installer-config.yaml
 > ```
@@ -220,7 +258,7 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 > > [!warning] ⚠️ En YAML se indenta con **espacios**, nunca con tabuladores
 > > Si pulsas `Tab` en `nano`, netplan rechazará el fichero. Y ojo: **el rechazo no rompe la red** —sigue valiendo la configuración anterior—, así que parecerá que ha funcionado. Por eso se ejecuta `netplan get` después: si sale `Command failed:`, no has guardado nada.
 >
-> **c) Comprueba que la identidad SSH es distinta.** En cada una de las dos máquinas:
+> **d) Comprueba que las dos identidades son distintas.** En cada una de las dos máquinas:
 > ```bash
 > sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
 > ```
@@ -255,10 +293,13 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 > [!warning] Tabla de errores
 > | Error | Qué pasa | Cómo evitarlo |
 > | :--- | :--- | :--- |
+> | Ponerle al clon el nombre que se te ocurra | Veinte máquinas huérfanas en el aula | **`B2-F1-<tu credencial>`** |
 > | Clonar la VM en vez de la instantánea | Clonas el estado actual, no el punto guardado | Clic derecho **sobre `Fase 1 terminada`** |
 > | Usar `Clon enlazado` | No arranca en el ordenador de tu compañero | **Clon completo**, siempre que salga del equipo |
-> | Copiar solo el `.vdi` | La máquina no lleva su configuración | La **carpeta entera**, o `.ova` |
+> | Copiar solo el `.vdi` | La máquina no lleva su configuración | Exportar a **`.ova`** |
 > | No borrar `ssh_host_*` | Los dos servidores son la misma identidad criptográfica | Paso 1, **antes** de clonar |
+> | Esperar a que las claves se regeneren solas | El clon arranca sin SSH y crees que está roto | `sudo ssh-keygen -A` en el Paso 6 |
+> | Editar `50-cloud-init.yaml` | Creas un fichero vacío y la IP no cambia | Es **`00-installer-config.yaml`** |
 > | No regenerar las MAC | Dos tarjetas idénticas en la misma red | Marcarlo en el asistente de clonado |
 > | Dejar el clon encendido | Fallos incomprensibles en fases posteriores | Apagarlo al terminar |
 
@@ -275,10 +316,11 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 
 - [ ] **Predicción escrita** en la entrada **antes** de encender las dos máquinas.
 - [ ] `ssh_host_*` y `machine-id` limpiados **antes** de clonar.
-- [ ] Clon completo creado **desde la instantánea `Fase 1 terminada`**, con MAC nuevas.
-- [ ] Entregado a un compañero y recibido el suyo.
+- [ ] Clon completo creado **desde la instantánea `Fase 1 terminada`**, llamado **`B2-F1-<tu credencial>`** y con MAC nuevas.
+- [ ] Exportado a **`B2-F1-<tu credencial>.ova`** y entregado a un compañero; recibido el suyo.
 - [ ] Clon del compañero importado y arrancado.
 - [ ] 💥 **El choque grabado y explicado en voz alta.**
+- [ ] Comprobado que el clon **no acepta SSH** (`Connection reset by peer`) y arreglado con `sudo ssh-keygen -A`.
 - [ ] Clon renombrado a `UbuntuServer-Clon` y con IP `10.10.10.11`.
 - [ ] Huellas SSH de las dos máquinas comprobadas y **distintas**.
 - [ ] Las dos IP responden a la vez desde el anfitrión.
