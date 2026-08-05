@@ -45,7 +45,7 @@
 > > ```bash
 > > sudo ufw status
 > > ```
-> > Si responde `Status: inactive`, no hay nada que hacer — el tráfico WireGuard pasará sin problema. Si en algún momento activas `ufw` (buena práctica en un servidor real), recuerda permitir el puerto `51820/udp` y el `2222/tcp` con `sudo ufw allow 51820/udp` y `sudo ufw allow 2222/tcp`.
+> > Si responde `Status: inactive`, no hay nada que hacer — el tráfico WireGuard pasará sin problema. Si en algún momento activas `ufw` (buena práctica en un servidor real), recuerda permitir el puerto `51820/udp` y el `2222/tcp` con `sudo ufw allow 51820/udp` y `sudo ufw allow 2222/tcp`. (posible práctica futura)
 
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
