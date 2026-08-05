@@ -196,12 +196,21 @@ if [ "$FALLOS" -eq 0 ] && [ "$AVISOS" -eq 0 ]; then
     echo " VEREDICTO: FASE 3 SUPERADA" | tee -a "$INFORME"
 elif [ "$FALLOS" -eq 0 ]; then
     echo " VEREDICTO: FASE 3 SUPERADA CON $AVISOS AVISO(S)" | tee -a "$INFORME"
-    echo " Los avisos suelen ser el cliente desconectado. Revisalos." | tee -a "$INFORME"
+    echo " Un aviso no impide seguir, pero LEELO: mira arriba cual es." | tee -a "$INFORME"
+    echo " Si acabas de reiniciar el tunel, espera 30 s y repite:" | tee -a "$INFORME"
+    echo " el cliente tarda unos segundos en volver a saludar." | tee -a "$INFORME"
 else
     echo " VEREDICTO: FASE 3 NO SUPERADA - $FALLOS FALLO(S)" | tee -a "$INFORME"
     echo " Busca cada caso (E1-E6) en Fase_3.7_Resolucion_Problemas." | tee -a "$INFORME"
 fi
 echo "============================================================" | tee -a "$INFORME"
+# El script corre con sudo, asi que el informe nace siendo de root y el
+# alumno no podria manejarlo con comodidad para subirlo a su repositorio.
+# Se lo devolvemos al usuario que lanzo el sudo.
+if [ -n "$SUDO_USER" ]; then
+    chown "$SUDO_USER":"$SUDO_USER" "$INFORME" 2>/dev/null
+fi
+
 echo ""
 echo "Informe guardado en: $(pwd)/$INFORME"
 echo "Subelo a tu repositorio junto con la entrada de apuntes."
