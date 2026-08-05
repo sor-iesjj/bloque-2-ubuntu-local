@@ -94,9 +94,20 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 >
 > 1. Selecciona tu VM → pestaña **`Instantáneas`**.
 > 2. **Clic derecho sobre `Fase 1 terminada`** → **`Clonar…`**
-> 3. Nombre: **`Boochan-<TuNombre>-Fase1`** — por ejemplo `Boochan-Lucia-Fase1`.
+> 3. Nombre: **`B2-F1-<tu credencial>`**
 > 4. **Política de MAC:** que genere **direcciones MAC nuevas para todos los adaptadores**.
 > 5. Tipo de clon: **`Clon completo`**.
+>
+> > [!danger] 🏷️ El nombre del clon NO te lo inventas
+> > **`B2-F1-<tu credencial>`** · Bloque · Fase · **quién eres**.
+> >
+> > **Tu credencial es lo que va antes de la `@`** en tu correo del centro `@alu.edu.gva.es`. Es única en todo el instituto: por eso identifica tu máquina sin ambigüedad.
+> >
+> > **Ejemplo:** si tu correo es `lgarcia3@alu.edu.gva.es`, tu clon se llama **`B2-F1-lgarcia3`**.
+> >
+> > **Por qué importa:** en cuanto haya veinte clones circulando por el aula, el nombre es lo único que dice **de quién es cada uno** y **de qué fase**. Un `Boochan-clon` o un `UbuntuServer copia` es una máquina huérfana.
+> >
+> > Es el mismo criterio que ya usas para los vídeos (`B2 · F1 · …`) y para la copia del disco (`B2-F1-infraestructura-virtual.ova`): **bloque, fase, y qué o quién**.
 >
 > > [!warning] ⚠️ Clic derecho sobre **la instantánea**, no sobre la máquina
 > > Si lo haces sobre la VM en la lista principal, clonas el **estado actual**, no el punto guardado. Puede parecer lo mismo hoy y no serlo mañana.
@@ -109,19 +120,28 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 > > [!question] 🔬 Compruébalo tú
 > > Mira lo que ocupa la carpeta del clon y compárala con la de tu VM original. **Anota los dos números.** ¿Por qué el clon puede ser bastante más pequeño que el original si son la misma máquina?
 
-> [!example] Paso 3: Empaquétalo y dáselo a tu compañero
-> Dos formas. Las dos valen; elige según cómo lo vayáis a mover:
+> [!example] Paso 3: Empaquétalo en un `.ova` y dáselo a tu compañero
+> `Archivo` → **`Exportar servicio virtualizado`** → elige el clon → formato **OVF 2.0** → guarda como:
 >
-> **a) ZIP de la carpeta** — para pendrive o carpeta compartida del aula. Lo más rápido.
-> Comprime la **carpeta entera** del clon (`VirtualBox VMs/Boochan-<Nombre>-Fase1/`).
+> ```
+> B2-F1-<tu credencial>.ova
+> ```
 >
-> > [!danger] ⚠️ La CARPETA entera, nunca solo el `.vdi`
-> > Es el error nº1 de este paso. El `.vdi` suelto no lleva la configuración de la máquina —RAM, adaptadores, orden de arranque— y, si hubiera instantáneas, ni siquiera lleva el estado que crees.
+> Ese fichero es lo que le das a tu compañero: por pendrive, por la carpeta compartida del aula o por Teams.
 >
-> **b) Exportar a `.ova`** — para colgarlo en Teams o mandarlo por la red.
-> `Archivo` → **`Exportar servicio virtualizado`** → elige el clon → formato **OVF 2.0** → guarda el `.ova`.
+> > [!info] 📦 Se usa `.ova` y solo `.ova`. Por qué
+> > Se podría comprimir la carpeta del clon en un ZIP, y funcionaría. **No lo hacemos**, por tres razones:
+> >
+> > | | ZIP de la carpeta | **`.ova`** |
+> > | :--- | :--- | :--- |
+> > | Qué es | Muchos ficheros comprimidos | **Un solo fichero**, autocontenido |
+> > | Al importar | Hay que buscar el `.vbox` dentro | Doble clic |
+> > | Identificadores | **Choca** si el original está en el mismo VirtualBox | Se **regeneran solos** |
+> >
+> > Y la razón de fondo: **es el mismo formato de la copia de seguridad** que ya hiciste en [[Fase_1.8.b_Punto_de_Control]]. Un formato menos que aprender, y el que usarías con alguien de fuera de tu aula.
 >
-> Un `.ova` es **un solo fichero**, comprimido, y al importarlo VirtualBox regenera identificadores solo. Tarda más en generarse, pero es lo que darías a alguien de fuera.
+> > [!danger] ⚠️ Si alguna vez copias la carpeta a mano, la CARPETA entera — nunca solo el `.vdi`
+> > Es el error nº1 de quien se salta el `.ova`. El `.vdi` suelto **no lleva la configuración de la máquina** —RAM, adaptadores, orden de arranque— y, si hubiera instantáneas, ni siquiera lleva el estado que crees.
 >
 > > [!tip] 💡 Si pesa demasiado, quítale el aire antes
 > > El disco arrastra como ocupado todo lo que borraste alguna vez. Dentro de la VM, **antes de apagarla**:
@@ -135,15 +155,16 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 > > Escribir ceros sobre el espacio libre suena absurdo, pero es justo lo que permite que la compresión lo reduzca. Suele quitar 1-2 GB. **Anota el tamaño antes y después.**
 
 > [!example] Paso 4: Importa el de tu compañero
-> Ya tienes el fichero del otro. En **tu** VirtualBox:
+> Ya tienes su `B2-F1-<credencial>.ova`. En **tu** VirtualBox:
 >
-> - **Si es un ZIP:** descomprímelo en tu carpeta `VirtualBox VMs/` y luego `Máquina` → **`Añadir…`** → selecciona el fichero **`.vbox`** de dentro.
-> - **Si es un `.ova`:** `Archivo` → **`Importar servicio virtualizado`** → selecciónalo → y **antes de darle a importar**, en las opciones marca que **regenere las direcciones MAC**.
+> `Archivo` → **`Importar servicio virtualizado`** → selecciónalo → y **antes de darle a importar**, en las opciones marca que **regenere las direcciones MAC**.
+>
+> Fíjate en que el nombre que aparece es **el de tu compañero**, no el tuyo. Así sabrás siempre cuál es cuál en la lista de máquinas.
 >
 > > [!bug] Si dice que ya existe un disco con ese UUID
-> > Solo te pasará si intentas registrar **tu propio** clon en el mismo VirtualBox donde está el original: dos discos no pueden compartir identificador.
+> > Solo te pasará si intentas importar **tu propio** `.ova` en el mismo VirtualBox donde está el original: dos discos no pueden compartir identificador.
 > >
-> > Con el de tu compañero no ocurre. Y si te pasa con el tuyo, la vía limpia es importar el `.ova`, que asigna identificadores nuevos.
+> > Con el de tu compañero no ocurre.
 >
 > **No lo enciendas todavía.** Antes, lee el paso 5.
 
@@ -183,15 +204,21 @@ Vas a **empaquetar tu servidor y dárselo a un compañero**. Él te dará el suy
 >
 > **b) IP nueva** — edita la configuración de red:
 > ```bash
-> sudo nano /etc/netplan/50-cloud-init.yaml
+> sudo nano /etc/netplan/00-installer-config.yaml
 > ```
 > Cambia **`10.10.10.10/24`** por **`10.10.10.11/24`** en el adaptador `enp0s8`. Guarda (`Ctrl+O`, `Enter`, `Ctrl+X`) y aplica:
 > ```bash
 > sudo netplan apply
+> sudo netplan get
 > ```
 >
+> - **✅ Bien:** `netplan apply` no dice nada y `ip -brief addr show enp0s8` devuelve `10.10.10.11/24`.
+>
+> > [!warning] ⚠️ El fichero se llama `00-installer-config.yaml`
+> > No `50-cloud-init.yaml`, que es lo que verás en muchos tutoriales de internet: es de versiones anteriores de Ubuntu. Si copias el nombre a ciegas, `nano` te abrirá un fichero **vacío y nuevo**, guardarás en él y no cambiará nada. Y no entenderás por qué.
+>
 > > [!warning] ⚠️ En YAML se indenta con **espacios**, nunca con tabuladores
-> > Si pulsas `Tab` en `nano`, netplan rechazará el fichero con un error de sintaxis. Respeta la sangría que ya hay.
+> > Si pulsas `Tab` en `nano`, netplan rechazará el fichero. Y ojo: **el rechazo no rompe la red** —sigue valiendo la configuración anterior—, así que parecerá que ha funcionado. Por eso se ejecuta `netplan get` después: si sale `Command failed:`, no has guardado nada.
 >
 > **c) Comprueba que la identidad SSH es distinta.** En cada una de las dos máquinas:
 > ```bash
