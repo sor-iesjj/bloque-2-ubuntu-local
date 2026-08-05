@@ -123,6 +123,10 @@
 > Y verifica que la línea `PrivateKey` coincide **carácter por carácter** con la salida del punto 1. Un solo carácter de más al copiar y pegar, y el túnel no levanta.
 
 > [!example] Paso 3: Configuración del Lado Cliente
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"Cerré la ventana y perdí lo escrito"* → [[Fase_3.7_Resolucion_Problemas#E6 · Cerré la ventana y perdí la configuración|caso E6]]
+> > · *"Activo la VPN y pierdo internet"* → [[Fase_3.7_Resolucion_Problemas#E5 · Activo la VPN y me quedo sin internet|caso E5]]
 > El túnel VPN necesita dos extremos configurados. En el proyecto final, el "cliente" será la **VM Windows 11** que crearás en una fase posterior de este itinerario. Como esa VM todavía no existe, tienes dos caminos válidos para completar y probar esta fase ahora mismo:
 >
 > > [!tip] 💡 Opción A (recomendada): usa tu propio PC físico como cliente de prueba
@@ -146,7 +150,6 @@
 > [Interface]
 > PrivateKey = <SE_RELLENA_AUTOMÁTICAMENTE_por_WireGuard>
 > Address = 10.20.20.2/32
-> DNS = 10.20.20.1
 >
 > [Peer]
 > PublicKey = <LLAVE_PÚBLICA_DEL_SERVIDOR_del_Paso_1>
@@ -155,6 +158,24 @@
 > PersistentKeepalive = 25
 > ```
 >
+> > [!danger] 🛑 Aquí NO va todavía una línea `DNS`
+> > Verás en muchos manuales —y en versiones anteriores de esta práctica— una línea `DNS = 10.20.20.1` dentro de `[Interface]`. **Ahora sería un error.**
+> >
+> > Esa línea le dice a tu ordenador: *"mientras el túnel esté activo, pregunta los nombres al servidor"*. Y tiene todo el sentido… **a partir de la Fase 4**, cuando Samba levante su DNS interno.
+> >
+> > **Pero hoy, en `10.20.20.1` no hay ningún servidor DNS.** Si la pones y activas el túnel, tu equipo enviará las consultas a un sitio donde no contesta nadie: **dejarás de navegar mientras la VPN esté conectada**. El síntoma es de los que despistan — *"activo la VPN y se me cae internet"* — porque nada apunta al fichero que lo causó.
+> >
+> > Es el mismo error de orden que evita el script de la Fase 4: **no apuntes el DNS a un servicio que todavía no existe.** La línea se añade en la **Fase 8**, cuando el cliente tenga que resolver nombres del dominio `BOOCHANLAB.LOCAL`.
+>
+> > [!important] 💾 **4. Pulsa `Guardar`.** Y NO actives el túnel todavía
+> > El botón está abajo a la derecha del cuadro de configuración. Sin pulsarlo, **la configuración que acabas de escribir se pierde** al cerrar la ventana.
+> >
+> > Después de guardar verás el túnel en la lista, con un botón **`Activar`**. **No lo pulses aún.**
+> >
+> > **¿Por qué no?** Porque un túnel tiene dos extremos y **el servidor todavía no sabe quién eres**: aún no le has dado tu clave pública. Si activas ahora, WireGuard lo intentará, el servidor descartará tus paquetes por venir de un desconocido, y verás un túnel "activo" que no transmite nada — de los fallos más confusos que hay, porque la interfaz dice que todo va bien.
+> >
+> > Primero el Paso 4 (darle tu llave al servidor). **Activarás al final, y te lo diré.**
+
 > > [!important] 💡 ¿Y el `Endpoint`? Aquí es distinto a la versión cloud
 > > En BoochanV2/V3 el `Endpoint` era la IP pública del servidor en internet. Aquí, como todo vive dentro de VirtualBox, el `Endpoint` es simplemente la IP de la **Red Solo Anfitrión** del servidor: `10.10.10.10:51820`. El `PersistentKeepalive` sigue siendo una buena práctica a mantener (evita que ciertos firewalls o el propio sistema operativo den por "muerta" una conexión inactiva), aunque en una red local su necesidad real sea menor que atravesando el NAT de un proveedor cloud.
 
@@ -179,6 +200,12 @@
 > > El cliente sí lo necesita, porque alguien tiene que dar el primer paso y saber a qué puerta llamar.
 
 > [!example] Paso 4: Intercambio de Llaves y Activación
+>
+> > [!bug] 🚩 Si algo falla aquí
+> > · *"`Address already in use`"* → [[Fase_3.7_Resolucion_Problemas#E1 · Address already in use al levantar el túnel|caso E1]]
+> > · *"Dice activo pero no pasa nada"* → [[Fase_3.7_Resolucion_Problemas#E3 · El túnel dice activo pero no pasa nada|caso E3]] — **el más traicionero**
+> > · *"No hay ping a `10.20.20.1`"* → [[Fase_3.7_Resolucion_Problemas#E2 · No hay ping entre el servidor y el cliente|caso E2]]
+> > · *"No encuentra el `Endpoint`"* → [[Fase_3.7_Resolucion_Problemas#E4 · El cliente no encuentra el Endpoint|caso E4]]
 > Vuelve a la sesión SSH del servidor y completa el archivo `wg0.conf` con la llave pública del cliente que anotaste en el Paso 3:
 > ```bash
 > sudo nano /etc/wireguard/wg0.conf
@@ -206,7 +233,12 @@
 > sudo systemctl enable wg-quick@wg0
 > ```
 >
-> **En el cliente (tu PC físico, si elegiste la Opción A):** Activa el túnel haciendo clic en el botón **"Activar"** de la aplicación WireGuard.
+> [!success] ▶️ **AHORA SÍ: activa el túnel en el cliente**
+> Los dos extremos ya se conocen. Ve a la aplicación WireGuard de tu PC físico y pulsa **`Activar`**.
+>
+> El indicador pasa a **verde** y aparecen contadores de tráfico. Si no cambia nada, revisa el [[Fase_3.7_Resolucion_Problemas]].
+>
+> **El orden importa y es el mismo siempre:** primero se configuran los dos lados, después se levanta. Un túnel activado a medias no da error — simplemente no pasa nada por él.
 >
 > Verifica que el túnel está activo. En el servidor:
 > ```bash
