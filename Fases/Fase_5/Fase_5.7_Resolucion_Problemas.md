@@ -53,11 +53,11 @@ grep -E "^passwd:|^group:" /etc/nsswitch.conf   # ¿Linux le pregunta?
 
 **Arreglo.** Según lo que falle:
 
-| Qué falla | Arreglo |
-| :--- | :--- |
-| No aparece en `samba-tool user list` | El usuario no se creó. Repite el Paso 3 |
-| `winbind` no está `active` | `sudo systemctl enable --now winbind` |
-| Falta `winbind` en `nsswitch.conf` | Vuelve al Paso 1 y añádelo a las dos líneas |
+| Qué falla                            | Arreglo                                     |
+| :----------------------------------- | :------------------------------------------ |
+| No aparece en `samba-tool user list` | El usuario no se creó. Repite el Paso 3     |
+| `winbind` no está `active`           | `sudo systemctl enable --now winbind`       |
+| Falta `winbind` en `nsswitch.conf`   | Vuelve al Paso 1 y añádelo a las dos líneas |
 
 > [!summary] Qué aprendes
 > Que **"existir" y "ser visible" son dos cosas distintas**, y que hay una pieza entre medias haciendo de intérprete.
