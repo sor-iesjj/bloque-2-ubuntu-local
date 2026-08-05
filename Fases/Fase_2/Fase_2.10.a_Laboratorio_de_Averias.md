@@ -48,6 +48,8 @@
 > | **🎓 La lección** | La idea que te llevas |
 >
 > **Predecir es lo más importante.** Acertar no puntúa; haber pensado, sí.
+>
+> **Y al final hay tres averías CRÍTICAS y opcionales**, que destruyen de verdad y de las que a veces solo se sale restaurando la instantánea. Están marcadas en rojo.
 
 ---
 
@@ -377,6 +379,315 @@ Debe devolver `enabled`.
 > Es la misma idea que la avería 2 del laboratorio de la Fase 3, con otro servicio. **No es casualidad: es un patrón que se repite en toda la administración de sistemas.**
 
 ---
+
+---
+
+# 🔴 **AVERÍAS CRÍTICAS** *(opcionales — solo si te atreves)*
+
+> [!danger] 🛑 LEE ESTO ENTERO ANTES DE TOCAR NADA
+> Las cinco averías anteriores se revierten con un comando. **Estas tres, no.**
+>
+> Aquí vas a **destruir de verdad** partes del servidor. Se recuperan, pero hace falta saber cómo — y en un caso, **la única salida es la instantánea**.
+>
+> **Son opcionales.** Nadie suspende por no hacerlas. Pero si las haces, entiendes en una tarde lo que a mucha gente le cuesta una avería real en el trabajo.
+
+> [!important] ✅ Requisitos antes de empezar
+> 1. **Instantánea `Fase 2 terminada` hecha y comprobada:**
+>    ```
+>    VBoxManage snapshot "UbuntuServer" list
+>    ```
+> 2. **Copia `.ova` en tu disco externo.** Es tu segunda red de seguridad.
+> 3. **Sabes entrar por la ventana de VirtualBox.** No por SSH: **por la ventana**. Vas a necesitarla.
+
+---
+
+## 🌳 ANTES DE EMPEZAR: CÓMO FUNCIONAN LAS INSTANTÁNEAS
+
+> [!info] 🎓 Es un árbol, no una pila
+> Tus instantáneas están encadenadas así:
+>
+> ```
+> Sistema base
+>  └── Fase 1 terminada
+>       └── Fase 2 terminada
+>            └── Fase 3 terminada
+> ```
+>
+> **Restaurar una anterior NO borra las posteriores.** Vuelves atrás en el árbol, pero las ramas siguen ahí y puedes avanzar de nuevo cuando quieras.
+>
+> Lo único que se pierde es **el trabajo no guardado** desde la última instantánea. En un laboratorio de averías, eso es justo lo que quieres tirar.
+
+> [!warning] ⚠️ Al restaurar, VirtualBox te preguntará algo
+> Sale un aviso ofreciéndose a **guardar el estado actual** antes de restaurar. En este laboratorio, di que **no**: ese estado es precisamente el que has roto.
+>
+> Las instantáneas **con nombre** no se tocan nunca.
+
+> [!question] 🔬 Compruébalo tú, que es gratis
+> **Antes** de restaurar nada:
+> ```
+> VBoxManage snapshot "UbuntuServer" list
+> ```
+> Anota lo que sale. Restaura `Fase 2 terminada`. Y vuelve a ejecutarlo.
+>
+> **La lista es la misma.** No has perdido ninguna instantánea. Verlo con tus ojos vale más que creerme.
+
+---
+
+## 🔴 **CRÍTICA 1 · PURGAR SAMBA ENTERO**
+
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** eliminar Samba y **todos** los paquetes del dominio, incluidos `samba-ad-dc` y `samba-ad-provision`.
+>
+> **Qué dejará de funcionar, en cadena:**
+> 1. Desaparece `samba-tool`, la herramienta con la que se crea el dominio
+> 2. Desaparece el servicio `samba-ad-dc`
+> 3. Desaparecen los ficheros de esquema de Active Directory
+> 4. **La Fase 4 pasa a ser imposible**, y su error no dirá que falta un paquete
+> 5. El servidor sigue funcionando perfectamente: red, SSH, todo
+>
+> **Por qué provocamos esta:** porque **le pasó de verdad a alguien en este curso**. Un diagnóstico equivocado —creer que la purga del Paso 1A había fallado— llevó a purgar de nuevo lo que el Paso 2 acababa de instalar. El servidor parecía sano y la fase siguiente era ya imposible.
+
+> [!question] 🤔 Predice antes de ejecutar
+> 1. ¿Se caerá el servidor?
+> 2. ¿Podrás seguir entrando por SSH?
+> 3. ¿Cómo te darías cuenta de que falta algo, si todo sigue funcionando?
+
+### **1 · Romper**
+```bash
+sudo apt purge -y samba samba-common samba-common-bin samba-ad-dc samba-ad-provision winbind
+```
+
+### **2 · Comprobar**
+```bash
+which samba-tool
+dpkg -s samba-ad-dc 2>&1 | head -2
+systemctl is-active ssh
+ping -c2 google.com
+```
+
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `which samba-tool` | **Nada** | La herramienta del dominio ya no existe |
+| `dpkg -s samba-ad-dc` | `no está instalado` | El paquete se fue |
+| `systemctl is-active ssh` | **`active`** | Sigues pudiendo entrar |
+| `ping google.com` | **Responde** | La red está intacta |
+
+**El verificador dirá:** `[FALLO] C1`.
+
+> 💡 **Fíjate:** el servidor está perfecto. **Solo que la Fase 4 ya no se puede hacer.**
+
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Hoy** | **Nada visible.** Todo responde |
+| **En la Fase 4** | `samba-tool: command not found`, o un error de esquema que no menciona paquetes |
+| **Si además tomaste instantánea** | Guardaste este estado como bueno. **Cada vez que restaures, volverás aquí** |
+
+### **4 · Reparar — PLAN A**
+```bash
+sudo apt update
+sudo apt install -y acl attr samba samba-ad-dc samba-ad-provision krb5-user winbind libpam-winbind libnss-winbind libpam-krb5 krb5-config
+```
+
+**Cómo confirmar:**
+```bash
+which samba-tool
+dpkg -s samba-ad-dc samba-ad-provision | grep -E '^Package|^Status'
+```
+
+> [!warning] ⚠️ Esta reparación NECESITA INTERNET
+> Se descargan paquetes. Si la red no funciona, **este plan no sirve** — y ahí entra la crítica 3.
+>
+> Volverá a salir la pantalla azul de Kerberos: `BOOCHANLAB.LOCAL`, **en mayúsculas**.
+
+### **5 · Reparar — PLAN B, si el A falla**
+Restaura la instantánea **`Fase 2 terminada`** y repite la fase desde el Paso 2.
+
+> [!summary] 🎓 La lección
+> **Un servidor puede estar perfectamente sano y ser inservible para su propósito.** Red, SSH, disco, memoria: todo bien. Y la función para la que existe, imposible.
+>
+> Por eso la verificación de una fase no comprueba *"¿arranca?"* sino *"¿tiene lo que la fase siguiente necesita?"*.
+
+---
+
+## 🔴 **CRÍTICA 2 · ROMPER LA RED Y APLICARLO**
+
+> [!danger] 🛑 Esta avería TE ECHA DEL SERVIDOR
+> Vas a perder la conexión SSH. **No es un fallo del ejercicio: es el ejercicio.**
+>
+> **Antes de empezar, ten la ventana de VirtualBox abierta y comprueba que puedes hacer login en ella.** Va a ser tu única puerta.
+
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** dejar la configuración de red sin la tarjeta `enp0s8` y aplicarla.
+>
+> **Qué dejará de funcionar, en cadena:**
+> 1. Al aplicar, el sistema retira la dirección `10.10.10.10`
+> 2. **Tu sesión SSH se corta en el acto**
+> 3. El servidor **sigue encendido y funcionando**: solo ha perdido esa dirección
+> 4. Desde tu equipo, `ping 10.10.10.10` deja de responder
+> 5. La única forma de entrar es **la ventana de VirtualBox**, que no usa la red
+>
+> **Por qué provocamos esta:** porque es **el accidente más común** administrando servidores remotos, y porque enseña que **siempre tiene que haber una vía de acceso que no dependa de lo que estás tocando**.
+
+> [!question] 🤔 Predice antes de ejecutar
+> 1. ¿Se apagará el servidor?
+> 2. ¿Podrás recuperarlo, y por dónde?
+> 3. Si el servidor estuviera en otro edificio, **¿qué harías?**
+
+### **1 · Romper**
+
+**Paso 1 — copia de seguridad primero** *(esto es lo que hace un profesional)*:
+```bash
+sudo cp /etc/netplan/00-installer-config.yaml /tmp/netplan.bak
+```
+
+**Paso 2 — quita el bloque de `enp0s8`:**
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+Borra las líneas de `enp0s8` y su dirección. Guarda.
+
+> [!info] 💡 Hasta aquí NO ha pasado nada
+> Has editado un fichero, pero **la red sigue funcionando**. Un fichero de configuración no cambia el sistema hasta que alguien lo aplica.
+>
+> Compruébalo: `ip a` sigue mostrando `10.10.10.10`. **Todavía estás a tiempo.**
+
+**Paso 3 — aplícalo:**
+```bash
+sudo netplan apply
+```
+
+**Aquí pierdes la sesión SSH.**
+
+### **2 · Comprobar** *(desde la ventana de VirtualBox)*
+
+Entra con `boochan` / `P@ssw0rd` en la ventana y ejecuta:
+```bash
+ip -4 addr show
+systemctl is-active ssh
+```
+
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `ip -4 addr show` | **Sin `10.10.10.10`** | La dirección se ha retirado |
+| `systemctl is-active ssh` | **`active`** | 🤯 **SSH funciona.** Lo que falta es la dirección por la que llegabas |
+
+> 💡 **Esa es la clave:** el servicio no se ha caído. **Se ha caído el camino.**
+
+**El verificador dirá:** `[FALLO] A1`.
+
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Inmediato** | Pierdes el acceso remoto. El servidor sigue vivo |
+| **Si fuera un servidor real en un centro de datos** | No hay "ventana de VirtualBox". Se resuelve con acceso físico, consola serie o KVM — y si no lo tienes contratado, **con un viaje** |
+| **Si además hubieras restringido SSH al túnel** | Dos puertas cerradas a la vez |
+
+### **4 · Reparar** *(desde la ventana de VirtualBox)*
+```bash
+sudo cp /tmp/netplan.bak /etc/netplan/00-installer-config.yaml
+sudo netplan apply
+ip -4 addr show
+```
+
+**Cómo confirmar:** vuelve a aparecer `10.10.10.10`, y desde tu equipo:
+```
+ssh boochan@10.10.10.10
+```
+
+> [!summary] 🎓 La lección
+> **Nunca toques la red por la única vía que tienes para entrar** sin tener otra puerta abierta y comprobada.
+>
+> Y algo más fino: **editar un fichero no cambia nada; aplicarlo, sí.** Entre las dos cosas hay una ventana para darse cuenta del error — la única que vas a tener.
+
+---
+
+## 🔴 **CRÍTICA 3 · LAS DOS A LA VEZ (el punto sin retorno)**
+
+> [!danger] 🛑 De esta avería NO se sale sin la instantánea
+> Es la única del curso donde **no hay reparación manual posible**. Léela entera aunque no la hagas.
+
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** purgar Samba **y después** romper la red.
+>
+> **Qué dejará de funcionar, en cadena:**
+> 1. Sin Samba, la Fase 4 es imposible → la reparación es `apt install`
+> 2. Pero `apt install` **descarga de internet**
+> 3. Y sin red, no hay descarga
+> 4. **La reparación de la primera avería depende de lo que rompió la segunda**
+> 5. Puedes entrar por la ventana de VirtualBox, sí — **pero no hay nada que puedas hacer desde ahí**
+>
+> **Por qué provocamos esta:** porque enseña que **las averías no se suman: se multiplican**. Dos problemas que por separado se arreglan en cinco minutos, juntos son irrecuperables.
+
+> [!question] 🤔 Predice antes de ejecutar
+> 1. Si puedes entrar por la ventana de VirtualBox, **¿por qué no puedes arreglarlo?**
+> 2. ¿En qué orden habría que reparar las dos cosas?
+> 3. Y la pregunta buena: **¿se puede?**
+
+### **1 · Romper**
+```bash
+sudo apt purge -y samba samba-ad-dc samba-ad-provision
+sudo cp /etc/netplan/00-installer-config.yaml /tmp/netplan.bak
+sudo nano /etc/netplan/00-installer-config.yaml    # quita enp0s8
+sudo netplan apply
+```
+
+### **2 · Comprobar** *(desde la ventana de VirtualBox)*
+```bash
+which samba-tool          # nada
+ip -4 addr show           # sin 10.10.10.10
+ping -c2 google.com       # ¿hay internet?
+```
+
+> [!info] 🤔 Aquí depende de qué hayas roto exactamente
+> Si solo quitaste `enp0s8`, la tarjeta **NAT** sigue dando internet y **sí podrías reinstalar**. Repáralo en este orden: **primero la red, después los paquetes**.
+>
+> Si te llevaste también la NAT, **no hay internet**, y entonces sí: no hay nada que hacer.
+
+### **3 · Reparar — el orden importa**
+
+**Si conservas internet:**
+```bash
+sudo cp /tmp/netplan.bak /etc/netplan/00-installer-config.yaml
+sudo netplan apply
+sudo apt update && sudo apt install -y samba samba-ad-dc samba-ad-provision
+```
+**Primero el camino, después la carga.** Al revés no funciona.
+
+**Si NO hay internet:** restaura la instantánea **`Fase 2 terminada`**. No hay plan B.
+
+### **4 · Y aquí entra tu copia de seguridad**
+
+> [!danger] 💾 Si además hubieras perdido las instantáneas
+> Un disco que falla, un VirtualBox corrupto, un equipo del aula formateado. Entonces la única salida es **el `.ova` de tu disco externo**.
+>
+> Importas la máquina y vuelves al final de la Fase 2. **Eso es exactamente para lo que la exportaste.**
+>
+> Y si no la exportaste: **has perdido el curso hasta aquí.**
+
+> [!summary] 🎓 La lección
+> **Las averías no se suman: se multiplican.** Dos fallos de cinco minutos, juntos, pueden ser irreparables.
+>
+> Y hay un orden de reparación que no es negociable: **primero se restaura el camino, después la carga**. Intentar reinstalar sin red es perder el tiempo con mucha confianza.
+>
+> Por eso se hace copia **de cada fase**, y por eso vive **fuera de la máquina**.
+
+---
+
+> [!success] ✅ Al terminar las críticas
+> ```bash
+> sudo ./verificar_fase2.sh
+> ```
+> Todo en verde. Si no, restaura `Fase 2 terminada` sin pensarlo más: **para eso está**.
+
+> [!question] 📝 Lo que va a tu entrada de apuntes *(si has hecho las críticas)*
+> 1. En la crítica 2, el servidor seguía funcionando y SSH estaba activo. **¿Por qué no podías entrar?**
+> 2. ¿Por qué en la crítica 3 hay que reparar la red **antes** que los paquetes?
+> 3. Restauraste una instantánea anterior. **¿Se perdieron las posteriores?** Compruébalo y explica qué es un árbol de instantáneas.
+> 4. Describe una situación en la que **ni la instantánea te salvaría**, y qué te salvaría entonces.
+
 
 > [!important] 🎯 La lección que une las averías 1, 2, 3 y 5
 > En las cuatro, **el servidor sigue funcionando perfectamente**. Entras por SSH, todo responde, ningún registro se queja.

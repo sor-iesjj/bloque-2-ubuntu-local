@@ -30,6 +30,7 @@
 >
 > **El laboratorio**
 > - [ ] Las **cinco averías** hechas, con su predicción escrita antes.
+> - [ ] *(Opcional)* Alguna de las **tres críticas**, con la recuperación documentada.
 > - [ ] Verificador en verde al terminar.
 >
 > **La entrega**
