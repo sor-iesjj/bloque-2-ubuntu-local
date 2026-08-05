@@ -12,16 +12,16 @@
 > **⏱️ Tiempo estimado:** ~2 horas (creación de VM + teoría + práctica + retos + troubleshooting)  
 > **Requisitos:** VirtualBox instalado en el equipo | ISO de Windows 11 | 4 GB RAM libres para la nueva VM | 40 GB de disco libres | Samba completo (Fases 1-7)
 >
-> **📦 Entrega:** una entrada de apuntes + un vídeo + la instantánea `Fase 8 terminada`
+> **📦 Entrega:** una entrada de apuntes + **tres vídeos** + **dos instantáneas** `Fase 8 terminada` (cliente y servidor) + **dos copias** `.ova`
 
 ---
 
 ## 🧭 Índice de la fase
 
-> [!warning] 📖 Esta fase va en diez documentos, no en uno
+> [!warning] 📖 Esta fase va en doce documentos, no en uno
 > Cada apartado es un fichero aparte, dentro de la carpeta `Fase_8/`. **Se leen en orden**, pero puedes volver a cualquiera sin perderte: al final de cada uno tienes la navegación.
 >
-> **La fase completa es UNA sola entrega:** una entrada de apuntes y un vídeo, no diez.
+> **La fase son TRES entregas de vídeo** —procedimiento, punto de control y laboratorio de averías— sobre **una sola entrada de apuntes**.
 
 | # | Apartado | Cuándo se lee |
 | :--- | :--- | :--- |
@@ -32,15 +32,23 @@
 | **5** | [[Fase_8.5_Fundamento_Teorico]] | Antes de teclear — los conceptos |
 | **6** | [[Fase_8.6_Procedimiento]] | **Con la VM delante — aquí está el trabajo** |
 | **7** | [[Fase_8.7_Resolucion_Problemas]] | Cuando algo no salga — búscate por el síntoma |
-| **8** | [[Fase_8.8_Punto_de_Control]] | Al terminar, con la grabación aún en marcha |
+| **8.a** | [[Fase_8.8.a_Verificacion]] | 🔍 Al terminar — **la prueba que quedó pendiente en la Fase 7** |
+| **8.b** | [[Fase_8.8.b_Punto_de_Control]] | 💾 Después de verificar — instantáneas de **las dos** máquinas |
 | **9** | [[Fase_8.9_Preguntas]] | Después de la instantánea — trabajo de mesa |
-| **10** | [[Fase_8.10_Auditoria_y_Cierre]] | Lo último — la checklist antes de seguir |
+| **10.a** | [[Fase_8.10.a_Laboratorio_de_Averias]] | 🔨 Romper la integración a propósito, y repararla |
+| **10.b** | [[Fase_8.10.b_Auditoria_y_Cierre]] | Lo último — la checklist antes de la Auditoría Final |
 
 > [!tip] 💡 Cómo se recorre
 > - Los apartados **1, 2 y 3** se leen **antes de encender nada**: son las reglas del juego.
 > - El **4 y el 5** te preparan: contexto y conceptos.
 > - El **6 es el trabajo**. El **7** solo si algo falla.
-> - Los apartados **8, 9 y 10** cierran, **en ese orden**: primero aseguras la máquina, luego escribes, luego compruebas que no te dejas nada.
+> - El **8.a y el 8.b van en ese orden y no se intercambian**: primero se comprueba, después se guarda.
+> - El **9** es trabajo de mesa, y el **10.a** es donde de verdad se aprende.
+
+> [!success] 🎯 Esta fase es el examen de las siete anteriores
+> Todo lo que has construido desde la Fase 1 era una promesa. **Aquí se comprueba desde donde importa: el lado del usuario.**
+>
+> Y por eso, cuando algo falle aquí, la causa casi nunca estará en esta fase. Aprender a rastrearla hacia atrás es el objetivo.
 
 ---
 
@@ -49,4 +57,4 @@
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_8.1_Que_Se_Evalua]]
 
-**Siguiente al terminar los diez apartados:** la Auditoría Final.
+**Siguiente al terminar los doce apartados:** la Auditoría Final.

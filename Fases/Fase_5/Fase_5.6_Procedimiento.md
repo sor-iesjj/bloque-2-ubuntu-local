@@ -7,121 +7,233 @@
 
 ---
 
-> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
-> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
-> 1. **Crea la entrada de apuntes** de esta fase (`b2-f5-gestion-de-identidades.md`) con su estructura, vacía.
-> 2. **Léete los 4 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
-> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+> [!abstract] 🏢 A partir de aquí trabajas para una empresa
+> Se acabó el `user1` y el `user2`. Vas a dar de alta a **los doce trabajadores de Boochan S.L.**, repartidos en **seis departamentos**.
 >
-> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+> **Ten abierta la ficha del escenario mientras trabajas:** [[Escenario_Boochan_SL]]. Ahí están los nombres, los UID y los GID exactos, y es la fuente de verdad de las fases 5 a 8.
+
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> 1. **Crea la entrada de apuntes** de esta fase (`b2-f5-gestion-de-identidades.md`) con su estructura, vacía.
+> 2. **Léete los 5 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 3. **Lee [[Escenario_Boochan_SL]]** entero. Si no sabes quién es quién, no sabes qué estás haciendo.
+> 4. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+>
+> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**.
+
+---
 
 > [!example] Paso 1: Configuración del Traductor (nsswitch.conf)
-> Antes de crear usuarios, debemos decirle a Linux que "pregunte también a Winbind" cuando alguien busque un usuario o un grupo. Sin este paso, el servidor no reconocerá a los usuarios del dominio aunque existan:
+> Antes de crear a nadie, hay que decirle a Linux que **pregunte también a Winbind** cuando alguien busque un usuario o un grupo. Sin este paso, el servidor no reconocerá a los trabajadores del dominio aunque existan:
 > ```bash
 > sudo nano /etc/nsswitch.conf
 > ```
 >
 > > [!info] 📚 Recurso: Si no recuerdas cómo usar este editor, repasa la [[Guía_Editor_Nano]].
-> Busca las líneas que empiezan por `passwd:` y `group:` y añade la palabra `winbind` al final de cada una, dejándolas así:
+>
+> Busca las líneas que empiezan por `passwd:` y `group:` y añade la palabra `winbind` al final de cada una:
 > ```
 > passwd:         files systemd winbind
 > group:          files systemd winbind
 > ```
 > Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
 >
+> Y asegúrate de que el traductor está vivo **y arrancará solo**:
+> ```bash
+> sudo systemctl enable --now winbind
+> systemctl is-active winbind
+> systemctl is-enabled winbind
+> ```
+>
 > > [!tip] 💡 ¿Qué hace este cambio?
-> > El archivo `nsswitch.conf` es la "guía de consulta" de Linux. Le dice dónde buscar cuando alguien pregunta "¿quién es el usuario X?". Al añadir `winbind`, le estamos diciendo: "Si no lo encuentras en los archivos locales, pregúntale a Winbind, que conoce a todos los usuarios del dominio Windows".
+> > `nsswitch.conf` es la **guía de consulta** de Linux: le dice dónde buscar cuando alguien pregunta *"¿quién es este usuario?"*. Al añadir `winbind`, le estás diciendo: *"si no lo encuentras en los ficheros locales, pregúntale a Winbind, que conoce a todo el dominio"*.
 
-> [!example] Paso 2: Creación de Grupos y sus Atributos Unix
-> Creamos los dos grupos del proyecto. El grupo `policia` tendrá acceso a las carpetas protegidas y `bomberos` servirá para demostrar que los usuarios sin permisos no ven esas carpetas:
+---
+
+> [!example] Paso 2: Los seis departamentos (grupos con GID)
+> Cada departamento de la empresa es un **grupo del dominio**. Y cada grupo necesita un **número de Linux (GID)** para que el sistema de ficheros pueda usarlo en la Fase 7.
 >
-> > [!info] 📚 Diccionario de Comandos: Para entender la sintaxis de `samba-tool` al crear grupos y usuarios, consulta el [[Diccionario_Comandos_Sistema]].
+> > [!info] 📚 Diccionario de Comandos: la sintaxis de `samba-tool` está en el [[Diccionario_Comandos_Sistema]].
 >
+> **Empieza creando los dos primeros a mano**, entendiendo cada parte:
 > ```bash
-> # Creamos el grupo "policia" en el dominio
-> sudo samba-tool group add policia
-> # Le asignamos un GID (Group ID) de Linux
-> sudo samba-tool group addunixattrs policia 3001
+> # Departamento de Facturación
+> sudo samba-tool group add facturacion
+> sudo samba-tool group addunixattrs facturacion 3001
 >
-> # Creamos el grupo "bomberos" en el dominio
-> sudo samba-tool group add bomberos
-> # Le asignamos un GID diferente
-> sudo samba-tool group addunixattrs bomberos 3002
+> # Departamento de Contabilidad
+> sudo samba-tool group add contabilidad
+> sudo samba-tool group addunixattrs contabilidad 3002
 > ```
 >
-> > [!tip] 💡 ¿Qué hace el comando `addunixattrs`?
-> > - **`group addunixattrs`:** Es el comando que "traduce" el grupo de Windows al mundo Linux, dándole un número de identidad (GID) que el sistema de archivos puede entender. Sin este número, Linux simplemente ignoraría al grupo.
-
-> [!example] Paso 3: Creación de Usuarios con Mapeo Correcto
-> Creamos dos usuarios: `user1` pertenecerá al grupo `policia` y `user2` al grupo `bomberos`. Esto nos permitirá demostrar en la Fase 7 que cada uno ve carpetas diferentes:
-> ```bash
-> # Creamos user1 asignando su UID y el GID del grupo policia
-> sudo samba-tool user create user1 'P@ssw0rd' --uid-number=10001 --gid-number=3001
->
-> # Creamos user2 asignando su UID y el GID del grupo bomberos
-> sudo samba-tool user create user2 'P@ssw0rd' --uid-number=10002 --gid-number=3002
->
-> # Añadimos cada usuario a su grupo correspondiente
-> sudo samba-tool group addmembers policia user1
-> sudo samba-tool group addmembers bomberos user2
-> ```
->
-> > [!important] 💡 ¿Por qué usar `--uid-number`?
-> > **Corrección Crítica:** Usar `--uid-number` asegura que el mapeo entre el usuario de Active Directory y el usuario de Linux sea exacto y permanente. Sin este parámetro, el sistema podría asignar IDs aleatorios y perderíamos el control de los permisos.
->
-> > [!danger] 🛑 Este es el parámetro que decide si la Fase 7 funcionará
-> > Sin `--uid-number`, el comando **se ejecuta igual de bien**: crea el usuario, no da ningún error y todo parece correcto. La diferencia es que el número lo elige la máquina.
+> > [!tip] 💡 Son DOS comandos porque son dos mundos
+> > - **`group add`** crea el grupo en **Active Directory**. Windows ya lo ve.
+> > - **`group addunixattrs`** le pone un **GID**, que es lo que entiende **Linux**.
 > >
-> > En la **Fase 7** darás permisos sobre carpetas usando `3001` y `3002`. Si tus usuarios no llevan exactamente esos números, esos permisos no alcanzarán a nadie — y el error que verás allí hablará de accesos denegados, no de esta línea.
-> >
-> > **En Unix, un usuario no es su nombre: es su número.** Lo comprobarás tú mismo en el laboratorio de averías.
-
-> [!example] Paso 4: El primer latido — ¿el sistema los reconoce?
-> Esto **no es la verificación de la fase**: es solo el pulso, para saber si lo que acabas de crear existe también para Linux.
-> ```bash
-> id user1
-> id user2
-> ```
-> Tienen que devolver **`uid=10001 gid=3001`** y **`uid=10002 gid=3002`**.
+> > Sin el segundo, el grupo existe en el dominio y el sistema de ficheros no puede darle permisos. **Es un grupo invisible para la mitad de tu servidor.**
 >
-> | Qué sale | Qué significa |
-> | :--- | :--- |
-> | Los números correctos | Vas bien. Sigue al apartado 8.a |
-> | `no such user` | El traductor no está haciendo su trabajo → [[Fase_5.7_Resolucion_Problemas#E1 · id user1 no devuelve nada\|caso E1]] |
-> | **Otros números** | Se crearon sin los parámetros → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse\|caso E7]] |
+> **Y ahora los cuatro que faltan, con un bucle:**
+> ```bash
+> for g in comercial:3003 logistica:3004 rrhh:3005 becarios:3006; do
+>     NOMBRE="${g%:*}"
+>     GID="${g#*:}"
+>     echo ">>> Creando grupo $NOMBRE con GID $GID"
+>     sudo samba-tool group add "$NOMBRE"
+>     sudo samba-tool group addunixattrs "$NOMBRE" "$GID"
+> done
+> ```
+>
+> > [!important] 📖 Antes de ejecutarlo, léelo. Y explícalo en el vídeo
+> > Tienes que ser capaz de decir en voz alta:
+> > 1. Qué contiene la variable `g` en cada vuelta.
+> > 2. Qué hacen `${g%:*}` y `${g#*:}` *(pista: uno se queda con lo de antes de los dos puntos y el otro con lo de después).*
+> > 3. **Por qué está el `echo`**: para que, si algo falla, sepas en qué vuelta iba.
+> >
+> > **Un bucle que no entiendes es un comando que no deberías ejecutar.** Es la misma norma del script de la Fase 4.
+>
+> > [!info] 🎓 Por qué los dos primeros a mano y el resto con bucle
+> > Porque así es como se trabaja de verdad: **haces una vez a mano lo que vas a repetir**, compruebas que sale bien, y solo entonces lo automatizas.
+> >
+> > Automatizar antes de entender es la forma más rápida de crear seis grupos mal configurados en lugar de uno.
+>
+> **Comprueba los seis:**
+> ```bash
+> sudo samba-tool group list | sort
+> for g in facturacion contabilidad comercial logistica rrhh becarios; do getent group "$g"; done
+> ```
+> - **✅ Bien:** los seis aparecen con sus GID `3001` a `3006`, en orden.
+
+---
+
+> [!example] Paso 3: Los doce trabajadores (usuarios con UID)
+> Mismo método: **los dos primeros a mano**, el resto con un bucle.
+>
+> ```bash
+> # Hiroshi Nohara - Facturación
+> sudo samba-tool user create hiroshi.nohara 'P@ssw0rd' \
+>      --uid-number=10001 --gid-number=3001 \
+>      --given-name=Hiroshi --surname=Nohara
+> sudo samba-tool group addmembers facturacion hiroshi.nohara
+>
+> # Nene Sakurada - Facturación
+> sudo samba-tool user create nene.sakurada 'P@ssw0rd' \
+>      --uid-number=10002 --gid-number=3001 \
+>      --given-name=Nene --surname=Sakurada
+> sudo samba-tool group addmembers facturacion nene.sakurada
+> ```
+>
+> > [!danger] 🛑 `--uid-number` es el parámetro que decide si la Fase 7 funcionará
+> > Sin él, el comando **se ejecuta igual de bien**: crea el usuario, no da ningún error y todo parece correcto. La diferencia es que **el número lo elige la máquina**.
+> >
+> > En la **Fase 7** darás permisos usando los GID `3001` a `3006`. Si tus trabajadores no llevan exactamente los números del escenario, esos permisos **no alcanzarán a nadie** — y el error que verás allí hablará de accesos denegados, no de esta línea.
+> >
+> > **En Unix, una persona no es su nombre: es su número.**
+>
+> > [!tip] 💡 ¿Y `--given-name` y `--surname`?
+> > Son el nombre y los apellidos que verá Windows en la pantalla de inicio de sesión y en RSAT. **No son obligatorios y sí importan**: un directorio lleno de `hiroshi.nohara` sin nombre real es un directorio que nadie quiere administrar.
+>
+> **Y ahora los diez que faltan:**
+> ```bash
+> for u in \
+>   "misae.nohara:10003:3002:contabilidad:Misae:Nohara" \
+>   "toru.kazama:10004:3002:contabilidad:Toru:Kazama" \
+>   "masao.sato:10005:3003:comercial:Masao:Sato" \
+>   "ai.suotome:10006:3003:comercial:Ai:Suotome" \
+>   "bo.suzuki:10007:3004:logistica:Bo:Suzuki" \
+>   "midori.yoshinaga:10008:3004:logistica:Midori:Yoshinaga" \
+>   "ume.matsuzaka:10009:3005:rrhh:Ume:Matsuzaka" \
+>   "bunta.takakura:10010:3005:rrhh:Bunta:Takakura" \
+>   "shinnosuke.nohara:10011:3006:becarios:Shinnosuke:Nohara" \
+>   "himawari.nohara:10012:3006:becarios:Himawari:Nohara" ; do
+>     IFS=':' read -r LOGIN UID_N GID_N GRUPO NOMBRE APELLIDO <<< "$u"
+>     echo ">>> Creando $LOGIN (uid=$UID_N) en $GRUPO"
+>     sudo samba-tool user create "$LOGIN" 'P@ssw0rd' \
+>          --uid-number="$UID_N" --gid-number="$GID_N" \
+>          --given-name="$NOMBRE" --surname="$APELLIDO"
+>     sudo samba-tool group addmembers "$GRUPO" "$LOGIN"
+> done
+> ```
+>
+> > [!important] 📖 Otra vez: léelo antes de ejecutarlo
+> > En el vídeo tienes que explicar:
+> > 1. Qué hace **`IFS=':' read -r ...`** *(pista: parte cada línea por los dos puntos y reparte los trozos en seis variables).*
+> > 2. Por qué la contraseña va entre **comillas simples** *(pista: la `@` y el `$` en una contraseña sin comillas pueden acabar muy mal).*
+> > 3. Qué pasaría si dos líneas tuvieran **el mismo UID**.
+>
+> > [!warning] ⚠️ Si el bucle falla a mitad, NO lo relances a ciegas
+> > `samba-tool user create` **no es idempotente**: los que ya existan darán error. Mira primero qué se creó:
+> > ```bash
+> > sudo samba-tool user list | sort
+> > ```
+> > Y crea solo los que falten, a mano → [[Fase_5.7_Resolucion_Problemas#E4 · Ya existe el grupo o el usuario|caso E4]].
+>
+> > [!tip] 💡 Sobre la contraseña única
+> > Los doce llevan `P@ssw0rd` porque esto es un laboratorio. **En una empresa real, cada persona tendría la suya y estaría obligada a cambiarla en el primer inicio de sesión** (`--must-change-at-next-login`).
+> >
+> > Anótalo en tu entrada: **saber qué estás simplificando es parte de entenderlo.**
+
+---
+
+> [!example] Paso 4: Comprobar la plantilla al completo
+> ```bash
+> for u in hiroshi.nohara nene.sakurada misae.nohara toru.kazama \
+>          masao.sato ai.suotome bo.suzuki midori.yoshinaga \
+>          ume.matsuzaka bunta.takakura shinnosuke.nohara himawari.nohara; do
+>     printf '%-20s ' "$u"; id "$u" 2>/dev/null || echo "NO SE ENCUENTRA"
+> done
+> ```
+>
+> - **✅ Bien:** los doce aparecen con los UID **`10001`** a **`10012`** y sus GID correspondientes, **exactamente** los del escenario.
+> - **❌ Mal:**
+>   - `NO SE ENCUENTRA` → [[Fase_5.7_Resolucion_Problemas#E1 · id user1 no devuelve nada|caso E1]]
+>   - **Otros números** → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse|caso E7]]
+>
+> > [!info] 🎓 Este bucle es tu primera herramienta de auditoría
+> > No crea nada: **comprueba**. Y en dos segundos te dice si doce identidades están bien, cosa que a mano te llevaría doce comandos y dos despistes.
+> >
+> > Guárdalo. Vas a repetirlo en cada fase que venga.
+
+---
+
+> [!example] Paso 5: El primer latido — ¿los grupos tienen a quien deben?
+> Esto **no es la verificación de la fase**: es el pulso mínimo antes de seguir.
+> ```bash
+> for g in facturacion contabilidad comercial logistica rrhh becarios; do
+>     echo "--- $g"; sudo samba-tool group listmembers "$g"
+> done
+> ```
+> - **✅ Bien:** **dos personas en cada departamento**, las del escenario.
 >
 > > [!bug] 🛑 ¿Estás seguro de que esto lo ha contestado el SERVIDOR?
-> > Si administras por SSH, comprueba dónde estás antes de dar nada por bueno:
-> > ```bash
-> > hostname
-> > ```
-> > Tiene que responder `ubuntuserver` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
+> > Si administras por SSH: `hostname` tiene que responder `ubuntuserver` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
 
 ---
 
 ### ✅ Checklist de esta parte
 
-- [ ] `/etc/nsswitch.conf` con `winbind` al final de las líneas `passwd` **y** `group`.
-- [ ] Grupo `policia` creado **con GID 3001**.
-- [ ] Grupo `bomberos` creado **con GID 3002**.
-- [ ] `user1` creado **con `--uid-number=10001 --gid-number=3001`**.
-- [ ] `user2` creado **con `--uid-number=10002 --gid-number=3002`**.
-- [ ] Los dos `addmembers` ejecutados: `user1`→`policia`, `user2`→`bomberos`.
-- [ ] `id user1` e `id user2` devuelven **exactamente** los números de arriba.
+- [ ] `/etc/nsswitch.conf` con `winbind` en las líneas `passwd` **y** `group`.
+- [ ] `winbind` en **`active`** y **`enabled`**.
+- [ ] Los **seis grupos** creados, con GID **`3001`** a **`3006`**.
+- [ ] Los **doce usuarios** creados, con UID **`10001`** a **`10012`**.
+- [ ] Cada usuario **añadido a su grupo** con `addmembers`.
+- [ ] Los dos bucles **leídos y entendidos** antes de ejecutarlos.
+- [ ] `id` de los doce devuelve **exactamente** los números del escenario.
+- [ ] Cada departamento tiene **dos miembros**.
 - [ ] 🛑 **Instantánea NO tomada todavía.**
 
 ---
 
 > [!danger] 🛑 AQUÍ NO HAS TERMINADO LA FASE
-> Los usuarios existen y `id` responde. **Y aun así el trabajo puede estar mal hecho sin que nada te avise:** los grupos pueden no estar en los dos mundos, los números pueden no ser los tuyos, y `winbind` puede estar funcionando hoy y no arrancar mañana.
+> Los doce trabajadores existen y `id` responde. **Y aun así el trabajo puede estar mal hecho sin que nada te avise:**
 >
-> Ninguna de esas tres cosas da un error. Se comprueban en el [[Fase_5.8.a_Verificacion|apartado 8.a]], que es de obligado cumplimiento y son diez minutos.
+> - Un UID que no es el del escenario → los permisos de la Fase 7 no le alcanzarán.
+> - Un usuario en el grupo equivocado → verá lo que no debe, o no verá lo suyo.
+> - `winbind` funcionando hoy y sin arrancar mañana → los doce desaparecen al reiniciar.
 >
-> **Si tomas la instantánea ahora, guardas el fallo dentro de tu punto de retorno** — y cada vez que restaures, volverá.
+> **Ninguna de esas tres cosas da un error.** Se comprueban en el [[Fase_5.8.a_Verificacion|apartado 8.a]], que es de obligado cumplimiento.
 >
 > **Orden correcto:** [[Fase_5.8.a_Verificacion|8.a · verificar]] → [[Fase_5.8.b_Punto_de_Control|8.b · guardar la instantánea]]. Nunca al revés.
 
-> ¿Algo no ha salido? → [[Fase_5.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E8`), no leas el documento entero.
+> ¿Algo no ha salido? → [[Fase_5.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E8`).
 
 ---
 
