@@ -124,7 +124,7 @@ sudo ss -tlnp | grep ":22 "
 | `systemctl is-active ssh` | Que el servicio está en marcha | `active` |
 | `ss -tlnp` | Que **alguien escucha** en el puerto 22 | Una línea con `0.0.0.0:22` |
 
-- **❌ Mal:** el nombre no es `UbuntuServer` → [[Fase_1.7_Resolucion_Problemas#E12 · El servidor no se llama como debería|caso E12]]. Nadie escucha en el 22 → SSH no está instalado o no arrancó.
+- **❌ Mal:** el nombre no es `UbuntuServer` → [[Fase_1.7_Resolucion_Problemas#E12 · Mi servidor no se llama UbuntuServer|caso E12]]. Nadie escucha en el 22 → SSH no está instalado o no arrancó.
 
 > [!info] 🎓 `is-active` y `ss` no dicen lo mismo, y por eso están los dos
 > En Ubuntu 26.04, SSH funciona por **activación por socket**: `systemd` es quien escucha en el puerto 22, y solo arranca el programa `sshd` cuando alguien llama de verdad.
@@ -140,7 +140,7 @@ grep XKBLAYOUT /etc/default/keyboard
 ```
 
 - **✅ Bien:** `XKBLAYOUT="es"`
-- **❌ Mal:** cualquier otra cosa → [[Fase_1.7_Resolucion_Problemas#E2 · El teclado escribe caracteres que no son|caso E2]]
+- **❌ Mal:** cualquier otra cosa → [[Fase_1.7_Resolucion_Problemas#E2 · No me sale la arroba ni el punto y coma|caso E2]]
 
 > [!warning] ⚠️ Esto no lo puedes comprobar por SSH
 > Por SSH el teclado que manda es **el de tu Windows**, no el del servidor. El mapa del servidor solo se nota **en la ventana de VirtualBox**.

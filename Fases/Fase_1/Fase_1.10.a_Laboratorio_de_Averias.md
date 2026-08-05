@@ -411,7 +411,7 @@ sudo ss -tlnp | grep ":22 "
 > 2. Al regenerarlas, el servidor tiene **una identidad nueva**
 > 3. Tu Windows, que recordaba la anterior, **se niega a conectarse** y te avisa de un posible ataque
 >
-> **Por qué provocamos esta:** porque provoca a propósito el [[Fase_1.7_Resolucion_Problemas#E11 · SSH me avisa de que la clave del servidor ha cambiado|caso E11]] del catálogo de errores, y porque es exactamente lo que te encontrarás al clonar una máquina en [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar|la 6.f]].
+> **Por qué provocamos esta:** porque provoca a propósito el [[Fase_1.7_Resolucion_Problemas#E11 · Aviso REMOTE HOST IDENTIFICATION HAS CHANGED|caso E11]] del catálogo de errores, y porque es exactamente lo que te encontrarás al clonar una máquina en [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar|la 6.f]].
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. Si borras las claves y reinicias el servicio, ¿se regenerarán solas?
