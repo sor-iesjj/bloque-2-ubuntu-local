@@ -18,7 +18,27 @@
 > *   **Llave Pública:** Se puede compartir (es como la dirección de tu casa).
 > *   **Llave Privada:** Es el secreto absoluto. Solo quien posee la llave privada puede descifrar el tráfico que le llega.
 
-> [!note] 4. Dos redes, dos propósitos: no confundas `10.10.10.0/24` con `10.20.20.0/24`
+> [!danger] 4. El *handshake*: la ÚNICA prueba de que un túnel funciona
+> Un saludo criptográfico entre los dos extremos. Cada pocos minutos, cliente y servidor se demuestran mutuamente que tienen las llaves correctas y acuerdan las claves con las que van a cifrar el rato siguiente.
+>
+> **Por qué es la única prueba que vale:** WireGuard **descarta en silencio** todo paquete que no venga de alguien a quien reconoce. No contesta, no da error, no registra nada. Es una decisión de diseño: para quien no tenga la llave, tu servidor **no existe**.
+>
+> **Consecuencia práctica:** puedes tener la interfaz `wg0` levantada, el puerto 51820 abierto y el fichero de configuración impecable… **y que no pase ni un byte.** Todo dirá "activo" y nada funcionará.
+>
+> Por eso, cuando ejecutes `sudo wg show`, el campo que importa es este:
+> ```
+> latest handshake: 29 seconds ago
+> ```
+>
+> | Qué ves | Qué significa |
+> | :--- | :--- |
+> | `latest handshake` con **pocos segundos o minutos** | ✅ Los dos extremos **se reconocen**. El túnel funciona |
+> | **No aparece la línea** | ❌ **Nunca se han saludado.** Las llaves no cuadran |
+> | Aparece pero **va envejeciendo** (30 s → 2 min → 5 min) | ⚠️ Se saludaron y **han dejado de hablarse** |
+>
+> **Apréndete esta idea, porque vale para todo el módulo:** *"el servicio está activo"* lo dice el propio servicio de sí mismo. **El handshake lo firman los dos.**
+
+> [!note] 5. Dos redes, dos propósitos: no confundas `10.10.10.0/24` con `10.20.20.0/24`
 > En este proyecto conviven dos rangos de IP distintos y no deben mezclarse:
 > *   **`10.10.10.0/24`** — la Red Solo Anfitrión "física" de VirtualBox (servidor = `10.10.10.10`). Es el cable de red virtual.
 > *   **`10.20.20.0/24`** — la red virtual del **túnel WireGuard** (servidor = `10.20.20.1`, cliente = `10.20.20.2`). Es un cable dentro del cable: una capa de cifrado que viaja encapsulada dentro de la primera.
@@ -32,6 +52,7 @@
 > - **Peer:** Cada uno de los extremos de la conexión (el servidor y la futura VM cliente Windows 11 son "Peers").
 > - **Endpoint:** Dónde encontrar al peer para llamarle la primera vez. ⚠️ **Solo existe en la configuración del CLIENTE**, apuntando al servidor (`10.10.10.10:51820`). En el fichero del servidor **no se pone nunca** — ver el aviso del Paso 4.
 > - **PersistentKeepalive:** Latido periódico para que un firewall no dé la conexión por muerta. También **solo en el cliente**.
+> - **Handshake:** El saludo criptográfico entre los dos extremos. **Es la única prueba de que el túnel funciona de verdad** — ver el punto 4.
 
 ---
 

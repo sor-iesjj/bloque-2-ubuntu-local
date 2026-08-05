@@ -245,6 +245,22 @@
 > # Muestra el estado del túnel y los peers conectados
 > sudo wg show
 > ```
+>
+> **Y ahora busca esta línea**, que es la que importa:
+> ```
+> latest handshake: 29 seconds ago
+> ```
+>
+> - **✅ Bien:** aparece, con **pocos segundos o minutos**. Los dos extremos se reconocen.
+> - **❌ Mal:** **no aparece ninguna línea de `latest handshake`** → nunca se han saludado, las llaves no cuadran → [[Fase_3.7_Resolucion_Problemas]].
+>
+> > [!danger] 🤝 Sin handshake no hay túnel, aunque todo diga "activo"
+> > Es el concepto del [[Fase_3.5_Fundamento_Teorico|punto 4 del fundamento teórico]], y aquí lo ves por primera vez con tus datos.
+> >
+> > WireGuard **descarta en silencio** los paquetes de quien no reconoce: puedes tener `wg0` levantada, el puerto abierto y el fichero perfecto, **y que no pase ni un byte**. No hay error, no hay aviso, no hay registro.
+> >
+> > **`latest handshake` es el único dato que no miente**, porque lo firman los dos extremos. Todo lo demás lo dice el servidor de sí mismo.
+>
 > Y desde el cliente:
 > ```bash
 > # Si recibes respuestas, el túnel funciona correctamente
@@ -261,9 +277,15 @@
 > > ssh boochan@10.10.10.10
 > > ```
 > >
-> > **¿Por qué no ahora?** Porque acabas de construir ese túnel hace cinco minutos y aún no sabes si aguanta un reinicio. Si cierras la vía directa y el túnel no levanta al arrancar, **te quedas sin ninguna forma de entrar** salvo la ventana de VirtualBox. Cerrar la única puerta que te queda antes de comprobar que la nueva es fiable es de los errores más caros que existen en administración de sistemas.
+> > **¿Por qué no ahora?** Por tres motivos:
 > >
-> > **¿Cuándo entonces?** En la **[[Auditoria_Final]]**, que es donde toca: allí se revisan **todas las puertas que abriste durante el proyecto** y se cierran las que sobran, con el procedimiento completo y —esto importa— **con la forma de recuperar el acceso si algo sale mal**.
+> > 1. **Acabas de construir ese túnel hace cinco minutos** y aún no sabes si aguanta un reinicio. Si cierras la vía directa y el túnel no levanta al arrancar, **te quedas sin ninguna forma de entrar** salvo la ventana de VirtualBox.
+> > 2. **Te quedan cinco fases más de administrar este servidor.** Cerrarlo ahora te complica todo el camino que queda: cada instantánea que restaures, cada cambio de cliente, cada llave mal copiada te deja fuera.
+> > 3. **Un servidor se endurece cuando está terminado**, no a mitad de construcción. Igual que no se pone la alarma en una casa a la que todavía le faltan puertas.
+> >
+> > **¿Cuándo entonces?** En la **[[Auditoria_Final]]**, que es donde toca: allí se revisan **todas las puertas que abriste durante el proyecto** y se cierran las que sobran, junto con el firewall `ufw`. Con el procedimiento completo, con la comprobación **antes** de cerrar la sesión actual y —esto importa— **con la forma de recuperar el acceso si algo sale mal**.
+> >
+> > Eso se llama **endurecimiento** *(hardening)*, y es una fase del trabajo, no un paso suelto.
 > >
 > > Apúntalo en tu entrada de apuntes: *"queda pendiente restringir SSH al túnel — se hará en la Auditoría Final"*. Un administrador anota las puertas que deja abiertas.
 >
@@ -334,16 +356,10 @@
 
 ### 🔒 ¿Y cerrar el acceso directo por `10.10.10.10`?
 
-> [!info] Aquí no. Eso es hardening, y tiene su fase
-> El túnel ya funciona y lo has verificado con el `latest handshake`. **Ese era el objetivo de esta fase y está cumplido.**
+> [!info] 👆 Ya te lo he contestado, en el Paso 4
+> **No se cierra en esta fase.** Los tres motivos y cuándo se hace los tienes arriba, en el aviso del Paso 4.
 >
-> Cerrar el SSH directo para que solo se pueda entrar por el túnel es **endurecimiento del servidor**, y se hace en la **Auditoría Final**, junto con el firewall `ufw` y el resto del cierre de seguridad. Por tres motivos:
->
-> 1. **Vas a necesitar administrar el servidor durante cinco fases más.** Cerrarlo ahora te complica todo el camino que queda.
-> 2. **Si pierdes el túnel, te quedas fuera.** Basta con restaurar una instantánea, cambiar de cliente o equivocarte en una llave. Con cinco fases por delante, eso es una tarde perdida.
-> 3. **Un servidor se endurece cuando está terminado**, no a mitad de construcción. Igual que no se pone la alarma en una casa a la que todavía le faltan puertas.
->
-> Lo verás completo en la Auditoría Final: cómo se hace, cómo se comprueba **antes** de cerrar la sesión actual, y cómo revertirlo si algo sale mal.
+> Si has llegado aquí preguntándotelo otra vez, es buena señal: significa que has entendido que tener dos puertas abiertas es algo que hay que resolver. **Y se resuelve — en la [[Auditoria_Final]].**
 
 
 
