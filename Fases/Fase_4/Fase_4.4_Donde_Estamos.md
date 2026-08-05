@@ -26,7 +26,7 @@
 > 7. Listar usuarios creados automáticamente: `samba-tool user list` (verás Administrator, krbtgt, etc.)
 >
 > **Resultado Final:** Dominio `BOOCHANLAB.LOCAL` completamente provisionado y operativo. El servidor es ahora un verdadero Controlador de Dominio profesional, listo para que la futura VM Windows 11 se una a él.
-> **Siguiente:** Fase 5 (Usuarios) — crearás usuarios del dominio (user1, user2) con mapeados correctos a Linux (UIDs/GIDs).
+> **Siguiente:** Fase 5 (Gestión de Identidades) — darás de alta a los **doce trabajadores de Boochan S.L.** en seis departamentos, con sus UID y GID mapeados a Linux. El escenario completo está en [[Escenario_Boochan_SL]].
 
 ---
 

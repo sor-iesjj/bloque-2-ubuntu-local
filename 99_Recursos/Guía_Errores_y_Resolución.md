@@ -431,7 +431,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 5.1 — `id user1` no devuelve nada o dice "no such user"
+### Error 5.1 — `id hiroshi.nohara` no devuelve nada o dice "no such user"
 
 > [!bug] Cuándo se produce
 > Al verificar el Punto de Control, cuando el resultado esperado (`uid=10001`, `gid=3001`) no aparece.
@@ -486,10 +486,10 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 > [!example] Resolución
 > ```bash
-> sudo samba-tool group delete policia
-> sudo samba-tool group delete bomberos
-> sudo samba-tool user delete user1
-> sudo samba-tool user delete user2
+> sudo samba-tool group delete facturacion
+> sudo samba-tool group delete becarios
+> sudo samba-tool user delete hiroshi.nohara
+> sudo samba-tool user delete misae.nohara
 > ```
 > Después vuelve a ejecutar los pasos de creación desde el principio.
 
@@ -498,7 +498,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 ### Error 5.4 — Error de esquema LDAP al ejecutar `addunixattrs`
 
 > [!bug] Cuándo se produce
-> Al ejecutar `sudo samba-tool group addunixattrs policia 3001`, el terminal devuelve un error con palabras como "no such attribute", "schema" o "LDAP".
+> Al ejecutar `sudo samba-tool group addunixattrs facturacion 3001`, el terminal devuelve un error con palabras como "no such attribute", "schema" o "LDAP".
 
 > [!caution] ¿Hay que preocuparse?
 > **Sí.** El dominio fue provisionado sin soporte para atributos Unix (RFC 2307). Hay que reprovisionar.
@@ -543,8 +543,8 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 >    ```
 >    Las líneas de los discos virtuales deben tener exactamente este formato:
 >    ```
->    /samba_p1.img  /srv/samba/prueba1  ext4  loop,defaults  0  0
->    /samba_p3.img  /srv/samba/prueba3  ext4  loop,defaults  0  0
+>    /samba_p1.img  /srv/samba/departamentos/comercial  ext4  loop,defaults  0  0
+>    /samba_p3.img  /srv/samba/departamentos/facturacion  ext4  loop,defaults  0  0
 >    ```
 > 4. Antes de reiniciar, verifica que la sintaxis es correcta:
 >    ```bash
@@ -622,10 +622,10 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 6.6 — `chown root:policia` falla con "invalid group"
+### Error 6.6 — `chown root:facturacion` falla con "invalid group"
 
 > [!bug] Cuándo se produce
-> Al ejecutar `sudo chown root:policia /srv/samba/prueba3` con el servicio `winbind` inactivo.
+> Al ejecutar `sudo chown root:facturacion /srv/samba/departamentos/facturacion` con el servicio `winbind` inactivo.
 
 > [!warning] ¿Hay que preocuparse?
 > Sí. La carpeta quedará con grupo `root` y los permisos de la Fase 7 no funcionarán correctamente.
@@ -637,11 +637,11 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 >    ```
 > 2. Verifica que el grupo es reconocible:
 >    ```bash
->    getent group policia
+>    getent group facturacion
 >    ```
 > 3. Repite el comando:
 >    ```bash
->    sudo chown root:policia /srv/samba/prueba3
+>    sudo chown root:facturacion /srv/samba/departamentos/facturacion
 >    ```
 
 ---
@@ -658,7 +658,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > [!example] Resolución
 > Verifica que el sistema de archivos soporta ACLs (en ext4 viene activado por defecto, pero conviene comprobarlo):
 > ```bash
-> getfacl /srv/samba/prueba3
+> getfacl /srv/samba/departamentos/facturacion
 > ```
 > Si el comando falla directamente, revisa que el disco esté montado sin opciones que deshabiliten explícitamente `acl` en el `/etc/fstab`.
 
@@ -679,7 +679,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 ### Error 7.3 — `samba-ad-dc` no arranca tras editar `smb.conf`
 
 > [!bug] Cuándo se produce
-> Después de añadir los bloques `[prueba1]` y `[prueba3]`, al ejecutar `sudo systemctl restart samba-ad-dc` el servicio queda en estado `failed`.
+> Después de añadir los bloques `[comercial]` y `[facturacion]`, al ejecutar `sudo systemctl restart samba-ad-dc` el servicio queda en estado `failed`.
 
 > [!warning] ¿Hay que preocuparse?
 > No es grave. Hay un error de sintaxis en el fichero que Samba identifica con precisión.
@@ -698,7 +698,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 7.4 — Secciones `[prueba1]` o `[prueba3]` duplicadas en `smb.conf`
+### Error 7.4 — Secciones `[comercial]` o `[facturacion]` duplicadas en `smb.conf`
 
 > [!bug] Cuándo se produce
 > Si el script de la Fase 4 ya había añadido esas secciones y se añaden de nuevo sin comprobarlo primero.
@@ -773,7 +773,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 > [!example] Resolución
 > ```cmd
-> net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1 /user:BOOCHANLAB\user1 /persistent:yes
+> net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /user:BOOCHANLAB\hiroshi.nohara /persistent:yes
 > ```
 
 ---

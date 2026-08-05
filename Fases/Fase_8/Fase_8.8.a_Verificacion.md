@@ -7,16 +7,16 @@
 
 ---
 
-> [!danger] 🛑 PRIMERO SE VERIFICA. DESPUÉS SE GUARDA
-> Aquí compruebas. En el [[Fase_8.8.b_Punto_de_Control|apartado 8.b]] guardas.
-
 > [!success] 🎯 Esta verificación es distinta a todas las anteriores
-> Las siete fases anteriores comprobaban **lo que acababas de hacer**. Esta comprueba **todo lo que llevas construido desde la Fase 1**, y lo hace desde donde de verdad importa: **el lado del usuario**.
+> Las siete fases anteriores comprobaban **lo que acababas de hacer**. Esta comprueba **todo lo que llevas construido desde la Fase 1**, y lo hace desde donde de verdad importa: **el lado del trabajador**.
 >
-> Un cliente Windows que se une al dominio, autentica con Kerberos y ve exactamente las carpetas que le corresponden es la prueba de que las ocho fases están bien. **Y si algo falla aquí, casi nunca es culpa de esta fase.**
+> **Y si algo falla aquí, casi nunca es culpa de esta fase.**
 
 > [!warning] 🖥️ Estos comandos van en el CLIENTE WINDOWS
 > Salvo los que digan expresamente *"en el servidor"*. Abre el **Símbolo del sistema** o **PowerShell**, y para algunos hace falta **como Administrador**.
+
+> [!info] 📋 Ten delante la matriz
+> Los puntos 5, 6 y 7 se juzgan contra [[Escenario_Boochan_SL]]. **Sin la tabla delante no puedes saber si el resultado es correcto.**
 
 ### **1 · EL CLIENTE ESTÁ EN LA RED DEL LABORATORIO**
 
@@ -37,28 +37,27 @@ nslookup ubuntuserver.boochanlab.local 10.10.10.10
 
 - **✅ Bien:** las dos devuelven **`10.10.10.10`**.
 - **❌ Mal:**
-  - No resuelve → el DNS del cliente no apunta al servidor → [[Fase_8.7_Resolucion_Problemas#E2 · No se encuentra el dominio aunque hay red|caso E2]]
+  - No resuelve → [[Fase_8.7_Resolucion_Problemas#E2 · No se encuentra el dominio aunque hay red|caso E2]]
   - Devuelve una **`10.0.2.x`** → **el fallo de la Fase 4**, aquí y ahora
 
 > [!danger] 🛑 Si la segunda devuelve una `10.0.2.x`, esto es la Fase 4 volviendo
 > Es el fallo del que te avisaba el [[Fase_4.7_Resolucion_Problemas#E5 · El dominio se anuncia en una IP que no es la 10.10.10.10|caso E5 de la Fase 4]]: el dominio anunciado en la tarjeta NAT.
 >
-> Aquel día no dio ningún error. **Han pasado tres semanas y aparece ahora**, con un mensaje que no menciona ni las tarjetas ni el DNS. Se arregla **en el servidor**, no aquí.
+> Aquel día no dio ningún error. **Han pasado semanas y aparece ahora**, con un mensaje que no menciona ni las tarjetas ni el DNS. Se arregla **en el servidor**.
 
-### **3 · EL EQUIPO ESTÁ UNIDO AL DOMINIO**
+### **3 · EL EQUIPO ESTÁ UNIDO Y SABES QUIÉN ERES**
 
 ```cmd
 systeminfo | findstr /i "Dominio Domain"
 whoami
+whoami /groups | findstr /i "boochanlab"
 ```
 
-- **✅ Bien:** el dominio es `BOOCHANLAB.LOCAL`, y `whoami` devuelve **`boochanlab\user1`**.
-- **❌ Mal:**
-  - Sale un grupo de trabajo → la unión no se completó
-  - `whoami` devuelve un usuario **local** → has iniciado sesión con la cuenta equivocada
+- **✅ Bien:** dominio `BOOCHANLAB.LOCAL`, `whoami` devuelve **`boochanlab\<trabajador>`**, y en los grupos aparece **su departamento**.
+- **❌ Mal:** un usuario **local** → cierra sesión y entra con una cuenta del dominio.
 
 > [!warning] ⚠️ Si has entrado con el usuario local, lo demás no vale nada
-> Todas las comprobaciones de permisos que vienen ahora dependen de **quién eres**. Cierra sesión y entra como `BOOCHANLAB\user1` antes de seguir.
+> Todo lo que viene depende de **quién eres**. Y el `whoami /groups` es la forma de confirmar en qué departamento estás **antes** de juzgar lo que ves.
 
 ### **4 · LA AUTENTICACIÓN ES KERBEROS, Y EL RELOJ ESTÁ EN HORA**
 
@@ -67,90 +66,141 @@ klist
 w32tm /stripchart /computer:10.10.10.10 /samples:3 /dataonly
 ```
 
-- **✅ Bien:** `klist` muestra tickets, incluido uno de `krbtgt/BOOCHANLAB.LOCAL`, y el desfase horario es de **pocos segundos**.
-- **❌ Mal:** desfase de más de **300 segundos** → Kerberos rechazará la autenticación → [[Fase_8.7_Resolucion_Problemas#E3 · Relacion de confianza o credenciales incorrectas|caso E3]].
+- **✅ Bien:** `klist` muestra tickets, incluido `krbtgt/BOOCHANLAB.LOCAL`, y el desfase es de **pocos segundos**.
+- **❌ Mal:** más de **300 segundos** → Kerberos rechazará la autenticación → [[Fase_8.7_Resolucion_Problemas#E3 · Relacion de confianza o credenciales incorrectas|caso E3]].
 
 > [!info] 🎓 `klist` te enseña la Fase 4 funcionando
-> Esos tickets son el **reino Kerberos** que aprovisionaste hace semanas, emitiendo credenciales de verdad para un cliente de verdad. Míralos con calma: es la parte más abstracta del proyecto hecha visible.
->
-> Y fíjate en que solo aparecen si te conectas **por nombre**, no por IP. Por IP, Windows usa NTLM —más antiguo y sin tickets—, que es justo lo que el dominio venía a sustituir.
+> Esos tickets son el **reino Kerberos** que aprovisionaste hace semanas, emitiendo credenciales de verdad. Y solo aparecen si te conectas **por nombre**, no por IP: por IP, Windows cae a NTLM.
 
-### **5 · 🔴 LA PRUEBA QUE QUEDÓ PENDIENTE EN LA FASE 7**
+---
 
-**Esta es la comprobación más importante de la fase, y hay que hacerla DOS VECES, con dos usuarios distintos.**
+## **5 · 🔴 LAS SIETE PRUEBAS DE LA MATRIZ**
 
-**5A — Con `BOOCHANLAB\user1`** *(pertenece al grupo `policia`)*:
+**Aquí se comprueba, por fin, todo el proyecto.** Cada prueba se hace **iniciando sesión con el trabajador que toca**, y hay que cerrar sesión entre una y otra.
+
+> [!important] 🔁 La pertenencia a grupos se lee AL INICIAR SESIÓN
+> No basta con cambiar de usuario en un `net use`. **Cierra sesión de verdad** entre cada prueba, o arrastrarás los permisos del anterior.
+
+### **5.1 — `shinnosuke.nohara` (becario) NO ve contabilidad**
+
+Inicia sesión como `BOOCHANLAB\shinnosuke.nohara`:
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
-- **✅ Bien:** aparecen **`prueba1` y `prueba3`**, y puedes entrar en las dos.
+- **✅ Bien:** aparece **`becarios` y nada más**. Ni `contabilidad`, ni `comun`, ni ninguna otra.
+- **❌ Mal:** si ve cualquier otra → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]], y el fallo está en la **Fase 7**.
 
-**5B — Cierra sesión, entra con `BOOCHANLAB\user2`** *(NO pertenece al grupo)* y repite:
+### **5.2 — El becario NO puede borrar nada de lo suyo**
+
+Con la misma sesión:
+```cmd
+dir \\UbuntuServer.BOOCHANLAB.LOCAL\becarios
+echo prueba > \\UbuntuServer.BOOCHANLAB.LOCAL\becarios\intento.txt
+```
+- **✅ Bien:** el `dir` **funciona** *(puede leer)* y el `echo` **falla con acceso denegado** *(no puede escribir)*.
+- **❌ Mal:** si el fichero se crea → falta el `chmod 2750` del Paso 3.b de la Fase 7.
+
+> [!info] 🎓 Leer sí, tocar no
+> Un becario llega la semana que viene y se va en tres meses. **Puede consultar y aprender; no puede destruir el material del que aprende.** Eso es mínimo privilegio, no desconfianza.
+
+### **5.3 — `masao.sato` (comercial) SÍ abre una factura**
+
+Cierra sesión y entra como `BOOCHANLAB\masao.sato`:
+```cmd
+net view \\UbuntuServer.BOOCHANLAB.LOCAL
+type \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion\factura-001.txt
+```
+- **✅ Bien:** ve `facturacion`, `comercial`, `logistica` y `comun`; y **lee** el contenido de la factura.
+
+### **5.4 — 🔴 Pero NO puede borrarla**
+
+Con la misma sesión:
+```cmd
+del \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion\factura-001.txt
+```
+- **✅ Bien:** **acceso denegado.**
+- **❌ Mal:** si la borra, comercial tiene `w` sobre facturación y **no debería** → revisa el `getfacl` en el servidor: tiene que poner `group:comercial:r-x`, sin la `w`.
+
+> [!success] 🎯 Esta es la prueba más importante del proyecto entero
+> **Ver y modificar son cosas distintas.** Un comercial necesita saber si su cliente ha pagado; **no puede tocar la factura**.
+>
+> Si pudiera, **el mismo que cobra la comisión podría cambiar el importe facturado**. No es un detalle técnico: es control interno, y acabas de demostrarlo funcionando.
+
+### **5.5 — `misae.nohara` (contabilidad) SÍ escribe en facturación**
+
+Cierra sesión y entra como `BOOCHANLAB\misae.nohara`:
+```cmd
+echo Ajuste contable Q1 > \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion\ajuste-Q1.txt
+dir \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion
+```
+- **✅ Bien:** el fichero **se crea**. Contabilidad y facturación son el mismo circuito de dinero.
+
+### **5.6 — 🔴 Pero contabilidad NO ve RRHH**
+
+Con la misma sesión:
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
-- **✅ Bien:** aparece **`prueba1`** y **`prueba3` NO aparece siquiera en la lista**.
-- **❌ Mal:** si `user2` **ve** `prueba3` → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]], y el fallo está en la **Fase 7**.
+- **✅ Bien:** ve `facturacion`, `contabilidad`, `comercial`, `logistica` y `comun`. **`rrhh` no aparece.**
+- **❌ Mal:** si aparece → alguien le dio un permiso que no está en la matriz.
 
-> [!success] 🎯 Estas son las dos casillas que anotaste en la Fase 7
-> El apartado 8.a de aquella fase te pidió apuntarlas como pendientes, porque **desde el servidor no había forma de comprobarlas**. Hoy las tachas.
+> [!success] 🎯 La regla que parece una contradicción y no lo es
+> El departamento que ve **todo el dinero de la empresa** no puede ver **los sueldos de sus compañeros**.
 >
-> Y fíjate en la diferencia entre las dos cosas que estás probando:
-> - Que `user2` **no pueda entrar** → eso son los permisos. Se veía desde Ubuntu.
-> - Que `user2` **no sepa que existe** → eso es el ABE. **Solo se ve desde aquí.**
->
-> **Denegar el acceso y ocultar la existencia son dos capas distintas de seguridad.** Acabas de comprobar las dos, cada una desde donde se puede.
+> Contabilidad necesita el **importe total** a pagar, no el expediente de cada persona. **Acceso a lo que necesitas para tu trabajo, y nada más.** Eso es el principio de mínimo privilegio, y es la regla más importante de toda la matriz.
 
-### **6 · LAS CUOTAS DE LA FASE 6, DESDE EL LADO DEL USUARIO**
+### **5.7 — El sticky bit de la carpeta común**
 
-Con `user1`, abre la unidad mapeada y mira sus propiedades en el Explorador, o:
+Con `misae.nohara`, deja un fichero en la común:
 ```cmd
-net use
-dir Z:
+echo De Misae > \\UbuntuServer.BOOCHANLAB.LOCAL\comun\de-misae.txt
 ```
-
-- **✅ Bien:** `Z:` está conectada y Windows muestra la carpeta con **5 GB de capacidad**, no con el tamaño del disco del servidor.
-
-> [!info] 🎓 La cuota de la Fase 6, vista por quien la sufre
-> Windows enseña esos 5 GB como si fuera un disco. El usuario no sabe —ni le importa— que por debajo hay un fichero `.img` montado en un servidor Linux. **Ve un disco de 5 GB y punto.**
->
-> Eso es exactamente lo que buscabas: una abstracción que funciona.
-
-### **7 · ESCRIBIR DE VERDAD**
-
+Cierra sesión, entra como `BOOCHANLAB\nene.sakurada` e intenta borrarlo:
 ```cmd
-echo prueba > Z:\prueba_user1.txt
-dir Z:
+type \\UbuntuServer.BOOCHANLAB.LOCAL\comun\de-misae.txt
+del  \\UbuntuServer.BOOCHANLAB.LOCAL\comun\de-misae.txt
 ```
+- **✅ Bien:** **lo lee** pero **no lo borra**.
+- **❌ Mal:** si lo borra → falta el sticky bit → revisa que `comun` esté en `1777`.
 
-- **✅ Bien:** el fichero se crea.
-- **❌ Mal:** acceso denegado → [[Fase_8.7_Resolucion_Problemas#E7 · El usuario entra pero no puede escribir|caso E7]], y el fallo está en la Fase 5 o en la 7.
+> [!info] 🎓 Puedes crear, puedes leer, no puedes destruir lo ajeno
+> Es el mecanismo de `/tmp`, aplicado a la carpeta donde escriben seis departamentos. **Evita el problema clásico de las carpetas compartidas:** que alguien borre por prisa el trabajo de otro.
 
-**Y compruébalo desde el servidor**, que es donde se ve lo interesante:
+---
+
+### **6 · LO QUE HAS CREADO, VISTO DESDE EL SERVIDOR**
+
+Vuelve al **servidor Ubuntu** y mira el fichero que creó `misae.nohara` desde Windows:
 ```bash
-ls -l /srv/samba/prueba1/prueba_user1.txt
-getfacl -p /srv/samba/prueba1/prueba_user1.txt
+ls -l  /srv/samba/departamentos/facturacion/ajuste-Q1.txt
+ls -ln /srv/samba/departamentos/facturacion/ajuste-Q1.txt
+getfacl -p /srv/samba/departamentos/facturacion/ajuste-Q1.txt
 ```
 
-> [!success] 🎯 Mira de quién es ese fichero
-> Lo ha creado un usuario desde **Windows**, y en el servidor **Linux** aparece a nombre de `user1`, con `uid=10001`. El mismo número que pusiste a mano en la Fase 5.
+- **✅ Bien:** aparece a nombre de **`misae.nohara`** con **`uid=10003`**, el grupo heredado por el setgid, y **la ACL heredada** con `comercial` y `contabilidad`.
+
+> [!success] 🎯 Todo el proyecto, en una sola salida de `ls`
+> Un fichero creado desde **Windows**, guardado en un disco **Linux**, a nombre de una identidad del **dominio**, con el número que pusiste **a mano en la Fase 5**, sobre un volumen con **cuota de la Fase 6**, y con los permisos **heredados de la Fase 7**.
 >
-> **Eso es todo el proyecto funcionando a la vez:** el dominio autenticando (Fase 4), winbind traduciendo la identidad (Fase 5), el disco con cuota recibiendo el fichero (Fase 6), las ACL aplicándose (Fase 7) y el cliente escribiendo (Fase 8).
->
-> **Bórralo después:**
-> ```cmd
-> del Z:\prueba_user1.txt
-> ```
+> Cinco fases funcionando a la vez en un fichero de texto de 20 bytes. Míralo con calma.
+
+### **7 · LIMPIA LO QUE HAS CREADO**
+
+```cmd
+del \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion\ajuste-Q1.txt
+del \\UbuntuServer.BOOCHANLAB.LOCAL\comun\de-misae.txt
+```
+*(Con un usuario que tenga permiso para borrarlos: `misae.nohara`.)*
 
 ---
 
 ## 🤖 Confirmación automática *(opcional, y después de hacerlo a mano)*
 
 > [!warning] 🛑 Este verificador es de PowerShell, no de bash
-> Es el único del proyecto que se ejecuta **en Windows**, porque es la única fase cuyo trabajo ocurre en el cliente.
+> Es el único del proyecto que se ejecuta **en Windows**.
 
 > [!example] Cómo se descarga y se ejecuta
-> En el cliente, **PowerShell como Administrador**:
+> En el cliente, **PowerShell**:
 > ```powershell
 > cd $env:USERPROFILE
 > curl.exe -O https://raw.githubusercontent.com/sor-iesjj/bloque-2-ubuntu-local/main/99_Recursos/verificar_fase8.ps1
@@ -158,41 +208,43 @@ getfacl -p /srv/samba/prueba1/prueba_user1.txt
 > Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 > .\verificar_fase8.ps1
 > ```
->
-> **Léelo antes de ejecutarlo**, igual que has hecho con todos los demás.
 
-> [!danger] 🔴 Hay que ejecutarlo DOS VECES, una con cada usuario
-> El script **no puede juzgar el ABE por su cuenta**: el resultado correcto depende de con quién hayas iniciado sesión.
+> [!danger] 🔴 Hay que ejecutarlo con VARIOS trabajadores
+> El script **lleva la matriz dentro** y sabe qué debe ver cada uno. Ejecútalo **como mínimo** con estos tres:
 >
 > | Sesión | Qué tiene que decir |
 > | :--- | :--- |
-> | `BOOCHANLAB\user1` | `E2` en verde: **SE VE** `prueba3` |
-> | `BOOCHANLAB\user2` | `E2` en verde: **NO se ve** `prueba3` |
+> | `shinnosuke.nohara` | Ve **solo** `becarios`, y **no puede escribir** en él |
+> | `masao.sato` | Ve `facturacion` pero **no** `contabilidad` ni `rrhh` |
+> | `misae.nohara` | Ve casi todo, pero **no** `rrhh` ni `becarios` |
 >
-> **Guarda los dos informes** y súbelos al repositorio. Esa pareja de ficheros **es la prueba de la Fase 7**.
+> Cada ejecución guarda su propio informe: `verificacion-fase-8-<usuario>.txt`. **Sube los tres al repositorio.** Esa colección **es la prueba de la Fase 7**.
 
 > [!question] 🤔 Para tu entrada de apuntes
-> 1. Pega **las dos salidas del `net view`**, la de `user1` y la de `user2`, una debajo de otra.
-> 2. Explica **por qué el script no puede decidir solo** si el ABE funciona.
-> 3. Y la difícil: **¿por qué esta comprobación no se pudo hacer en la Fase 7?**
+> 1. Pega **las tres salidas de `net view`**, una por trabajador, una debajo de otra.
+> 2. El script comprueba dos cosas por usuario: **lo que ve y lo que NO ve**. ¿Por qué la segunda es la importante?
+> 3. La difícil: **¿por qué esta comprobación no se pudo hacer en la Fase 7?**
 
 ---
 
 ### ✅ Checklist de este apartado
 
-- [ ] Cliente con IP `10.10.10.20` y `ping 10.10.10.10` respondiendo.
-- [ ] `nslookup ubuntuserver.boochanlab.local` → **`10.10.10.10`**, y NO una `10.0.2.x`.
-- [ ] Equipo unido a `BOOCHANLAB.LOCAL` y `whoami` → **`boochanlab\user1`**.
-- [ ] `klist` muestra tickets de Kerberos.
-- [ ] Desfase horario con el servidor **por debajo de 5 minutos**.
-- [ ] 🔴 Con **`user1`**: `net view` muestra **`prueba1` y `prueba3`**.
-- [ ] 🔴 Con **`user2`**: `net view` muestra `prueba1` y **NO `prueba3`**.
-- [ ] Unidad `Z:` mapeada, mostrando **5 GB**.
-- [ ] Fichero creado desde Windows y **comprobado en el servidor con `uid=10001`**.
-- [ ] Fichero de prueba **borrado**.
-- [ ] *(Opcional)* Verificador ejecutado **dos veces**, con los dos informes guardados.
+- [ ] Cliente con IP `10.10.10.20` y `ping` al servidor.
+- [ ] `nslookup ubuntuserver.boochanlab.local` → **`10.10.10.10`**, NO una `10.0.2.x`.
+- [ ] Equipo unido a `BOOCHANLAB.LOCAL`, y `whoami /groups` muestra el departamento.
+- [ ] `klist` con tickets de Kerberos y desfase horario **por debajo de 5 minutos**.
+- [ ] 🔴 **5.1** `shinnosuke.nohara` ve **solo** `becarios`.
+- [ ] 🔴 **5.2** El becario **lee** pero **no escribe** en su carpeta.
+- [ ] 🔴 **5.3** `masao.sato` **abre** una factura.
+- [ ] 🔴 **5.4** `masao.sato` **NO puede borrarla**.
+- [ ] 🔴 **5.5** `misae.nohara` **sí escribe** en facturación.
+- [ ] 🔴 **5.6** `misae.nohara` **NO ve** `rrhh`.
+- [ ] 🔴 **5.7** Un usuario **no puede borrar** en `comun` el fichero de otro.
+- [ ] Comprobado en el servidor que el fichero creado desde Windows lleva **`uid=10003`** y la ACL heredada.
+- [ ] Ficheros de prueba **borrados**.
+- [ ] *(Opcional)* Verificador ejecutado con **tres trabajadores**, con sus tres informes.
 
-> [!success] ✅ Con todo en verde, pasa al [[Fase_8.8.b_Punto_de_Control|apartado 8.b]] y guarda la instantánea.
+> [!success] ✅ Con todo en verde, pasa al [[Fase_8.8.b_Punto_de_Control|apartado 8.b]] y guarda las instantáneas.
 
 ---
 

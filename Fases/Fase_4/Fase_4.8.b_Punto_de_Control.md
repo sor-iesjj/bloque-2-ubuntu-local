@@ -22,6 +22,21 @@ Con la grabación todavía en marcha, apaga la máquina:
 sudo poweroff
 ```
 
+
+
+> [!danger] 🛑 La VM tiene que estar APAGADA DEL TODO. No "guardada"
+> No vale cerrar la ventana eligiendo **`Guardar el estado de la máquina`**. Tiene que apagarse de verdad, con `sudo poweroff` o con `Apagar por ACPI`.
+>
+> **Por qué:** una instantánea tomada con la máquina encendida guarda también **el contenido de la RAM** — y con ella, **el reloj congelado**. Al restaurarla dentro de unas semanas, el servidor despierta creyendo que sigue siendo hoy.
+>
+> Y **Kerberos rechaza cualquier autenticación con más de 5 minutos de desfase**: restaurarías un dominio intacto, unas credenciales correctas, y **nadie podría entrar**. Con un error que habla de contraseñas, no de relojes.
+>
+> **Cómo distinguirlas:** en el árbol de VirtualBox llevan un icono distinto y arrastran un fichero `.sav` de varios cientos de MB. Compruébalo:
+> ```
+> VBoxManage snapshot "UbuntuServer" list --details
+> ```
+
+
 En VirtualBox: selecciona la VM → **`Instantáneas`** → **`Tomar`** → nómbrala **`Fase 4 terminada`**.
 
 Por comando, si el botón no aparece:
@@ -102,7 +117,8 @@ Abre la carpeta del disco y **mira el tamaño**. Debe rondar los 6-9 GB — más
 
 ### ✅ Checklist de este apartado
 
-- [ ] VM apagada con `sudo poweroff`, **grabándolo**.
+- [ ] VM apagada con `sudo poweroff` —**apagada, no "estado guardado"**— y grabándolo.
+- [ ] Comprobado que la instantánea **no arrastra estado de RAM** (`list --details`).
 - [ ] 💾 Instantánea **`Fase 4 terminada`** tomada.
 - [ ] `VBoxManage snapshot "UbuntuServer" list` muestra **toda la cadena**.
 - [ ] 💿 **`B2-F4-aprovisionamiento-del-dominio.ova`** exportado a `SOR/Bloque_2/Fases/Fase_4/` de tu disco externo.

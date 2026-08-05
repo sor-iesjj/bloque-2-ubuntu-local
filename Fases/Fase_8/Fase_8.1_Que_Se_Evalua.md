@@ -20,7 +20,7 @@
 > | `CE.06.c` | Se ha descrito la funcionalidad de los servicios que permiten compartir recursos en red. | Explicar qué hacen SMB, LDAP y Kerberos en esta unión |
 > | `CE.06.d` | Se han instalado y configurado servicios para compartir recursos en red. | Unir el Windows 11 al dominio y montar los recursos compartidos |
 > | `CE.06.e` | Se ha accedido a sistemas de archivos en red desde equipos con diferentes sistemas operativos. | Abrir desde el Explorador de Windows las carpetas que sirve el Samba de Ubuntu |
-> | `CE.06.i` | Se ha comprobado el funcionamiento de los servicios instalados. | Iniciar sesión como `user1` del dominio y comprobar que ve lo suyo y no lo ajeno |
+> | `CE.06.i` | Se ha comprobado el funcionamiento de los servicios instalados. | Iniciar sesión como `masao.sato` del dominio y comprobar que ve lo suyo y no lo ajeno |
 > | `CE.02.c` | Se han configurado y gestionado cuentas de equipo. | **Unir el PC al dominio crea una cuenta de equipo**, no de usuario. Es el único sitio del itinerario donde se ve |
 > | `CE.04.e` | Se ha utilizado el entorno gráfico para compartir recursos. | Toda la parte de Windows: el Explorador, no la consola |
 >

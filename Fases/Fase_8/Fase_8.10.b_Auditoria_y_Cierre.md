@@ -33,12 +33,21 @@
 
 ## **3 · 🔴 LA PRUEBA DE LA FASE 7**
 
-- [ ] Verificación hecha **con un usuario con permiso**: ve su carpeta y entra.
-- [ ] Verificación hecha **con un usuario sin permiso**: **la carpeta no aparece siquiera** en el listado de red.
-- [ ] Las **dos salidas de `net view`** pegadas en la entrada de apuntes.
+Las **siete pruebas de la matriz**, cada una con el trabajador que le toca:
+
+- [ ] **5.1** `shinnosuke.nohara` ve **solo** `becarios`.
+- [ ] **5.2** El becario **lee** pero **no puede escribir** en su carpeta.
+- [ ] **5.3** `masao.sato` **abre** una factura.
+- [ ] **5.4** `masao.sato` **NO puede borrarla**.
+- [ ] **5.5** `misae.nohara` **sí escribe** en facturación.
+- [ ] **5.6** `misae.nohara` **NO ve** `rrhh`.
+- [ ] **5.7** Un usuario **no puede borrar** en `comun` el fichero de otro.
+- [ ] Las **tres salidas de `net view`** pegadas en la entrada de apuntes.
 
 > [!success] 🎯 Esto es lo que quedó pendiente en la Fase 7
-> Allí se te pidió anotarlo como pendiente porque **desde el servidor no se podía comprobar**. Si las dos casillas de arriba están marcadas, la Fase 7 queda cerrada de verdad.
+> Allí se te pidió anotarlo como pendiente porque **desde el servidor no se podía comprobar**. Si las siete casillas de arriba están marcadas, la Fase 7 queda cerrada de verdad.
+>
+> Y fíjate en lo que demuestra cada pareja: **5.3 + 5.4** son *ver ≠ modificar*. **5.1 + 5.6** son *no puedes ni saber que existe*. **5.2 y 5.7** son *puedes mirar, no destruir*.
 >
 > Si la segunda falla, el fallo **está en la Fase 7**, no aquí → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]].
 

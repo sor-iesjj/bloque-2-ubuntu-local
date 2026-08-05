@@ -17,7 +17,7 @@
 > | :--- | :--- |
 > | No se encuentra el dominio | Fase 4 *(el dominio en la tarjeta NAT)* o el DNS del cliente |
 > | Usuario o contraseña incorrectos | El **reloj**, no la contraseña |
-> | `user2` ve la carpeta protegida | **Fase 7** *(falta el ABE)* |
+> | `shinnosuke.nohara` ve la carpeta protegida | **Fase 7** *(falta el ABE)* |
 > | El usuario no puede escribir | Fase 5 *(los UID)* o Fase 7 *(la máscara)* |
 >
 > **Esta fase es el examen de todo lo anterior.** Por eso los casos de abajo te mandan constantemente a fases previas: no es un defecto del material, es cómo funciona un sistema real.
@@ -33,7 +33,7 @@
 | `Error de relación de confianza` / credenciales incorrectas | [[#E3 · Relacion de confianza o credenciales incorrectas\|E3]] 🕐 |
 | La unidad `Z:` desaparece al reiniciar | [[#E4 · La unidad Z desaparece al reiniciar\|E4]] |
 | RSAT no se descarga | [[#E5 · RSAT no se descarga\|E5]] |
-| **`user2` VE la carpeta protegida** | [[#E6 · Un usuario ve una carpeta que no deberia ver\|E6]] ⚠️ |
+| **`shinnosuke.nohara` VE la carpeta protegida** | [[#E6 · Un usuario ve una carpeta que no deberia ver\|E6]] ⚠️ |
 | El usuario entra pero no puede escribir | [[#E7 · El usuario entra pero no puede escribir\|E7]] |
 | Puedo iniciar sesión con el servidor APAGADO | [[#E8 · Puedo iniciar sesion con el servidor apagado\|E8]] |
 
@@ -109,7 +109,7 @@ ipconfig /all | findstr /i "DNS"
 ### E3 · Relación de confianza o credenciales incorrectas
 
 > [!bug] Síntoma
-> Escribes `BOOCHANLAB\user1` y `P@ssw0rd`, que **son correctos**, y Windows responde:
+> Escribes `BOOCHANLAB\masao.sato` y `P@ssw0rd`, que **son correctos**, y Windows responde:
 > ```
 > El nombre de usuario o la contraseña son incorrectos
 > ```
@@ -157,7 +157,7 @@ net use
 
 **Arreglo.**
 ```cmd
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1 /user:BOOCHANLAB\user1 /persistent:yes
+net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /user:BOOCHANLAB\masao.sato /persistent:yes
 ```
 
 > [!summary] Qué aprendes
@@ -190,18 +190,18 @@ nslookup www.microsoft.com
 
 ---
 
-### E6 · `user2` ve la carpeta que no debería ver
+### E6 · `shinnosuke.nohara` ve la carpeta que no debería ver
 
 > [!bug] Síntoma
-> Inicias sesión con `BOOCHANLAB\user2`, que **no** pertenece al grupo `policia`, abres `\\UbuntuServer.BOOCHANLAB.LOCAL` y **`prueba3` aparece en la lista**.
+> Inicias sesión con `BOOCHANLAB\shinnosuke.nohara`, que **no** pertenece al grupo `comercial`, abres `\\UbuntuServer.BOOCHANLAB.LOCAL` y **`facturacion` aparece en la lista**.
 >
 > Al intentar abrirla, acceso denegado — correcto. Pero **la ve**.
 
-**Hipótesis.** Falta `access based share enum = yes` en la sección `[prueba3]` del `smb.conf` **del servidor**. El problema no está en el cliente: está en la Fase 7.
+**Hipótesis.** Falta `access based share enum = yes` en la sección `[facturacion]` del `smb.conf` **del servidor**. El problema no está en el cliente: está en la Fase 7.
 
 **Comprobación.** En el **servidor Ubuntu**:
 ```bash
-testparm -s --section-name=prueba3
+testparm -s --section-name=facturacion
 ```
 - **✅ Bien:** `access based share enum = Yes` y `hide unreadable = Yes`.
 - **❌ Mal:** falta alguna.
@@ -212,7 +212,7 @@ sudo nano /etc/samba/smb.conf
 sudo testparm
 sudo systemctl restart samba-ad-dc
 ```
-Después, en el cliente, **cierra sesión y vuelve a entrar** con `user2` para comprobarlo.
+Después, en el cliente, **cierra sesión y vuelve a entrar** con `shinnosuke.nohara` para comprobarlo.
 
 > [!danger] 🎯 Enhorabuena: acabas de encontrar el fallo invisible de la Fase 7
 > **Esta es exactamente la prueba que quedó pendiente allí.** El apartado 8.a de la Fase 7 te pidió que anotaras dos comprobaciones para hacer hoy, porque **desde el servidor no había forma de verificar esto**.
@@ -229,25 +229,25 @@ Después, en el cliente, **cierra sesión y vuelve a entrar** con `user2` para c
 ### E7 · El usuario entra pero no puede escribir
 
 > [!bug] Síntoma
-> `user1` inicia sesión, ve `prueba3`, entra… y al crear un fichero: *"Acceso denegado"*.
+> `masao.sato` inicia sesión, ve `facturacion`, entra… y al crear un fichero: *"Acceso denegado"*.
 
 **Hipótesis.** Tres candidatas, **todas del servidor**:
 1. La **máscara** de la ACL está recortando el permiso.
-2. `user1` ya no pertenece al grupo `policia`.
+2. `masao.sato` ya no pertenece al grupo `comercial`.
 3. Los **UID** de la Fase 5 no son los que deberían.
 
 **Comprobación.** En el **servidor**:
 ```bash
-getfacl -p /srv/samba/prueba3
-id -nG user1
-id user1
+getfacl -p /srv/samba/departamentos/facturacion
+id -nG masao.sato
+id masao.sato
 ```
 
 | Qué encuentras | Dónde está el fallo |
 | :--- | :--- |
 | `#effective:r--` en la línea del grupo | Fase 7 → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica\|caso E6]] |
-| `user1` no sale en `policia` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E6 · El usuario no está en su grupo\|caso E6]] |
-| `id user1` da un UID que no es `10001` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario\|caso E7]] |
+| `masao.sato` no sale en `comercial` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E6 · El usuario no está en su grupo\|caso E6]] |
+| `id masao.sato` da un UID que no es `10001` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario\|caso E7]] |
 
 > [!summary] Qué aprendes
 > Que **el cliente casi nunca es el culpable.** Windows te está informando fielmente de lo que el servidor le deja hacer.
@@ -259,13 +259,13 @@ id user1
 ### E8 · Puedo iniciar sesión con el servidor apagado
 
 > [!bug] Síntoma
-> Apagas el servidor, inicias sesión en el cliente con `BOOCHANLAB\user1`… **y entra**. ¿No debería fallar?
+> Apagas el servidor, inicias sesión en el cliente con `BOOCHANLAB\masao.sato`… **y entra**. ¿No debería fallar?
 
 **Hipótesis.** Ninguna: **es el comportamiento correcto.** Windows guarda unas **credenciales en caché** de los últimos usuarios que entraron, para que un portátil fuera de la oficina siga siendo utilizable.
 
 **Comprobación.** Con el servidor apagado, entra y prueba a usar los recursos:
 ```cmd
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1
+net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
 ```
 - **Entrar en Windows:** funciona *(caché)*.
 - **Acceder a las carpetas del servidor:** falla. No hay servidor.

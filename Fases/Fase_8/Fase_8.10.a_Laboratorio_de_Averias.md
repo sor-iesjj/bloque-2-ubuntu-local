@@ -57,23 +57,23 @@
 > **Por qué provocamos esta:** porque la respuesta **no es la que esperas**. El cliente va a seguir dejándote entrar, y eso confunde a mucha gente.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Podrás iniciar sesión con `BOOCHANLAB\user1`?
+> 1. ¿Podrás iniciar sesión con `BOOCHANLAB\masao.sato`?
 > 2. ¿Podrás acceder a la unidad `Z:`?
-> 3. ¿Podrás iniciar sesión con `user2`, que **nunca** ha entrado en este equipo?
+> 3. ¿Podrás iniciar sesión con `shinnosuke.nohara`, que **nunca** ha entrado en este equipo?
 
 ### **1 · Romper**
 En el **servidor**:
 ```bash
 sudo poweroff
 ```
-Y en el cliente, **cierra sesión y vuelve a entrar** con `BOOCHANLAB\user1`.
+Y en el cliente, **cierra sesión y vuelve a entrar** con `BOOCHANLAB\masao.sato`.
 
 ### **2 · Comprobar**
 En el cliente:
 ```cmd
 whoami
 ping 10.10.10.10
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1
+net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
 klist
 ```
 
@@ -81,14 +81,14 @@ klist
 
 | Qué pruebas | Qué pasa | Por qué |
 | :--- | :--- | :--- |
-| Iniciar sesión con `user1` | **Funciona** | Credenciales **en caché** |
+| Iniciar sesión con `masao.sato` | **Funciona** | Credenciales **en caché** |
 | `ping` al servidor | Falla | Está apagado |
 | Acceder a `Z:` | Falla | No hay servidor que sirva la carpeta |
 | `klist` | Tickets viejos o vacío | No se pueden pedir nuevos |
-| Iniciar sesión con `user2` | **Falla** | Nunca entró aquí: no está en la caché |
+| Iniciar sesión con `shinnosuke.nohara` | **Falla** | Nunca entró aquí: no está en la caché |
 
 > [!important] ✍️ Aquí anota tú lo que veas
-> **Prueba a entrar con `user2` con el servidor apagado** y copia el mensaje exacto. Y responde: ¿por qué uno sí y el otro no?
+> **Prueba a entrar con `shinnosuke.nohara` con el servidor apagado** y copia el mensaje exacto. Y responde: ¿por qué uno sí y el otro no?
 
 ### **3 · Consecuencias**
 Un usuario diría *"puedo entrar pero no me funciona nada"*. Y tendría razón: **iniciar sesión y usar los recursos son dos cosas distintas**, y solo la primera sobrevive sin servidor.
@@ -96,7 +96,7 @@ Un usuario diría *"puedo entrar pero no me funciona nada"*. Y tendría razón: 
 ### **4 · Reparar**
 Enciende el servidor, espera a que arranque **del todo**, y en el cliente:
 ```cmd
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1 /persistent:yes
+net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /persistent:yes
 klist purge
 ```
 *(Cierra sesión y vuelve a entrar para obtener tickets nuevos.)*
@@ -189,10 +189,10 @@ Get-Date
 ```
 
 ### **2 · Comprobar**
-Cierra sesión e intenta entrar con `BOOCHANLAB\user2`, o desde una sesión abierta:
+Cierra sesión e intenta entrar con `BOOCHANLAB\shinnosuke.nohara`, o desde una sesión abierta:
 ```cmd
 klist purge
-net use Y: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1 /user:BOOCHANLAB\user1
+net use Y: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /user:BOOCHANLAB\masao.sato
 w32tm /stripchart /computer:10.10.10.10 /samples:2 /dataonly
 ```
 
@@ -229,31 +229,31 @@ w32tm /stripchart /computer:10.10.10.10 /samples:2 /dataonly
 
 ---
 
-# **AVERÍA 4 · 🔴 SACAR A `user1` DEL GRUPO** *(y ver el ABE en directo)*
+# **AVERÍA 4 · 🔴 SACAR A `masao.sato` DEL GRUPO** *(y ver el ABE en directo)*
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** sacar a `user1` del grupo `policia` **desde el servidor**, y mirar qué le pasa a su vista de la red.
+> **Qué vamos a provocar:** sacar a `masao.sato` del grupo `comercial` **desde el servidor**, y mirar qué le pasa a su vista de la red.
 >
 > **Por qué provocamos esta:** porque es **la demostración en vivo de la Fase 7**. No vas a leer que el ABE funciona: **vas a ver desaparecer una carpeta de la pantalla.**
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Desaparecerá `prueba3` de la vista de `user1` inmediatamente?
+> 1. ¿Desaparecerá `facturacion` de la vista de `masao.sato` inmediatamente?
 > 2. ¿Hará falta cerrar sesión?
 > 3. ¿Cambiará algo en el servidor, en los permisos de la carpeta?
 
 ### **1 · Romper**
-Antes de nada, **con `user1` en el cliente**, deja la foto del "antes":
+Antes de nada, **con `masao.sato` en el cliente**, deja la foto del "antes":
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
 Y ahora, en el **servidor**:
 ```bash
-sudo samba-tool group removemembers policia user1
-id -nG user1
+sudo samba-tool group removemembers comercial masao.sato
+id -nG masao.sato
 ```
 
 ### **2 · Comprobar**
-En el cliente, **cierra sesión y vuelve a entrar** con `user1` *(la pertenencia a grupos se lee al iniciar sesión)*:
+En el cliente, **cierra sesión y vuelve a entrar** con `masao.sato` *(la pertenencia a grupos se lee al iniciar sesión)*:
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
@@ -262,8 +262,8 @@ net view \\UbuntuServer.BOOCHANLAB.LOCAL
 
 | Dónde | Qué verás |
 | :--- | :--- |
-| Antes, con `user1` en `policia` | `prueba1` **y** `prueba3` |
-| Después | **Solo `prueba1`** |
+| Antes, con `masao.sato` en `comercial` | `comercial` **y** `facturacion` |
+| Después | **Solo `comercial`** |
 | Permisos de la carpeta, en el servidor | **Sin cambios** |
 
 > [!success] 🎯 Acabas de ver el ABE funcionando
@@ -282,14 +282,14 @@ En un caso real, esto es lo que pasa cuando alguien cambia de departamento: **de
 ### **4 · Reparar**
 En el servidor:
 ```bash
-sudo samba-tool group addmembers policia user1
-id -nG user1
+sudo samba-tool group addmembers comercial masao.sato
+id -nG masao.sato
 ```
 Y en el cliente, cerrando sesión y volviendo a entrar:
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
-- **✅ Reparado:** `prueba3` vuelve a aparecer.
+- **✅ Reparado:** `facturacion` vuelve a aparecer.
 
 > [!success] 🎓 La lección
 > Que **los permisos se dan a grupos, no a personas**, y que ahí está toda la potencia: mover a alguien de grupo cambia lo que ve en toda la infraestructura, sin tocar ni un permiso.
@@ -307,7 +307,7 @@ net view \\UbuntuServer.BOOCHANLAB.LOCAL
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. Al sacar el equipo del dominio, ¿desaparecerá su cuenta del servidor?
-> 2. ¿Podrás volver a entrar con `user1` mientras está fuera?
+> 2. ¿Podrás volver a entrar con `masao.sato` mientras está fuera?
 > 3. ¿Qué hará falta para volver a unirlo?
 
 ### **1 · Romper**
@@ -335,7 +335,7 @@ sudo samba-tool computer list
 | Dónde | Qué verás |
 | :--- | :--- |
 | `systeminfo` | Grupo de trabajo `WORKGROUP` |
-| Iniciar sesión con `user1` | **Imposible**: ya no hay dominio |
+| Iniciar sesión con `masao.sato` | **Imposible**: ya no hay dominio |
 | `samba-tool computer list` | La cuenta del equipo **puede seguir ahí**, huérfana |
 
 ### **3 · Consecuencias**
@@ -349,7 +349,7 @@ Y comprueba:
 systeminfo | findstr /i "Dominio Domain"
 klist
 ```
-Después, entra con `BOOCHANLAB\user1` y pasa el verificador.
+Después, entra con `BOOCHANLAB\masao.sato` y pasa el verificador.
 
 > [!success] 🎓 La lección
 > Que **un equipo también tiene una identidad en el dominio**, no solo los usuarios. Tiene su cuenta, su contraseña —que rota sola— y su relación de confianza.
@@ -416,7 +416,7 @@ ping 10.10.10.10
 
 ## ✅ Al terminar: comprueba que has dejado todo como estaba
 
-En el cliente, **con `user1`**:
+En el cliente, **con `masao.sato`**:
 ```powershell
 .\verificar_fase8.ps1
 ```
@@ -445,7 +445,7 @@ sudo ./verificar_fase5.sh
 - [ ] **Sesión 1:** averías **1, 2 y 3**, y verificador en verde al cerrar.
 - [ ] **Sesión 2:** verificador **antes** de empezar, y después las averías **4, 5 y 6**.
 - [ ] **Predicción escrita antes** de cada una, **incluyendo en qué máquina crees que estará el problema**.
-- [ ] Anotado por qué `user1` pudo entrar sin servidor y `user2` no *(avería 1)*.
+- [ ] Anotado por qué `masao.sato` pudo entrar sin servidor y `shinnosuke.nohara` no *(avería 1)*.
 - [ ] Copiado **el mensaje de error literal** de la avería 3, y comentado que no menciona la hora.
 - [ ] 🔴 Copiadas **las dos salidas de `net view`** de la avería 4, antes y después.
 - [ ] Anotado que en la avería 6 **el icono de red de Windows no avisaba de nada**.

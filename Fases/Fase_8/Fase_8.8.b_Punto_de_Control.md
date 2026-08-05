@@ -8,7 +8,9 @@
 ---
 
 > [!danger] 🛑 Requisito: la verificación del 8.a en verde
-> Y en particular **las dos pruebas del punto 5**, con `user1` y con `user2`. Si `user2` ve `prueba3`, tienes un fallo de la Fase 7 sin arreglar: no lo guardes dentro de la instantánea.
+> Y en particular **las siete pruebas de la matriz** del punto 5. Si `shinnosuke.nohara` ve `contabilidad`, o `misae.nohara` ve `rrhh`, o `masao.sato` puede borrar una factura, **tienes un fallo de la Fase 7 sin arreglar**.
+>
+> No lo guardes dentro de la instantánea: cada vez que restaures, volverá.
 
 > [!warning] ⚠️ Esta fase tiene DOS máquinas, y hay que guardar las dos
 > Hasta ahora todas las instantáneas eran del servidor. **Aquí el trabajo está en el cliente Windows**, pero el conjunto solo funciona si las dos máquinas están en el estado correcto **a la vez**.

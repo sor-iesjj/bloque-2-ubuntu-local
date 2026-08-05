@@ -61,11 +61,11 @@
 
 > [!example] Paso 4: Primer Inicio de Sesión con Usuario del Dominio
 > > [!caution] ⚠️ El servidor debe estar encendido y la Red Solo Anfitrión conectada
-> > Al iniciar sesión con `BOOCHANLAB\user1`, Windows necesita contactar con el servidor en `10.10.10.10` para validar las credenciales. Comprueba que la VM del servidor está arrancada y que el Adaptador 1 (Red Solo Anfitrión) del cliente sigue conectado (icono de red sin aspa roja) antes de introducir el usuario y la contraseña.
+> > Al iniciar sesión con `BOOCHANLAB\masao.sato`, Windows necesita contactar con el servidor en `10.10.10.10` para validar las credenciales. Comprueba que la VM del servidor está arrancada y que el Adaptador 1 (Red Solo Anfitrión) del cliente sigue conectado (icono de red sin aspa roja) antes de introducir el usuario y la contraseña.
 >
 > En la pantalla de inicio de sesión de Windows, introduce las credenciales del usuario del dominio. Fíjate en el formato correcto:
 >
-> - **Usuario:** `BOOCHANLAB\user1`  *(el nombre NetBIOS del dominio, una barra invertida `\`, y el nombre de usuario)*
+> - **Usuario:** `BOOCHANLAB\masao.sato`  *(el nombre NetBIOS del dominio, una barra invertida `\`, y el nombre de usuario)*
 > - **Contraseña:** `P@ssw0rd`
 >
 > > [!warning] ⚠️ La barra invertida `\`, no la barra normal `/`
@@ -82,16 +82,34 @@
 >
 > Una vez instalado, encontrarás las herramientas buscando **"Usuarios y equipos de Active Directory"** en el menú Inicio.
 
-> [!example] Paso 6: Mapeo de Carpetas de Red
-> Con el usuario del dominio iniciado, conecta las carpetas del servidor como si fueran discos locales. Abre el **Símbolo del sistema (CMD)** y ejecuta:
+> [!example] Paso 6: Mapeo de la carpeta de tu departamento
+> Con el usuario del dominio iniciado, conecta **la carpeta de su departamento** como si fuera un disco local. Con `masao.sato`, que es de comercial:
 > ```cmd
-> net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\prueba1 /user:BOOCHANLAB\user1
+> net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /persistent:yes
 > ```
+> Y la carpeta común, que es de todos:
+> ```cmd
+> net use Y: \\UbuntuServer.BOOCHANLAB.LOCAL\comun /persistent:yes
+> ```
+>
+> > [!warning] ⚠️ Fíjate en que NO lleva `/user:`
+> > Ya has iniciado sesión como `masao.sato`: **Windows usa tu identidad actual**, con su ticket de Kerberos. Poner `/user:` te pediría credenciales otra vez y podría acabar autenticando por NTLM.
+> >
+> > Y **el `/persistent:yes` no es opcional**: sin él, la unidad desaparece al cerrar sesión → [[Fase_8.7_Resolucion_Problemas#E4 · La unidad Z desaparece al reiniciar|caso E4]].
+>
+> > [!info] 🎓 Cada trabajador monta lo suyo
+> > `hiroshi.nohara` mapearía `facturacion`; `ume.matsuzaka`, `rrhh`. **La letra de unidad es local a cada persona**, y lo que hay detrás depende de quién ha iniciado sesión.
+> >
+> > Prueba a mapear una carpeta que **no** te corresponde y mira qué pasa:
+> > ```cmd
+> > net use W: \\UbuntuServer.BOOCHANLAB.LOCAL\rrhh
+> > ```
+> > Con `masao.sato` tiene que **fallar**. Anota el mensaje.
 >
 > > [!tip] 💡 ¿Qué hace este comando?
 > > - **`Z:`**: Asigna una letra de unidad libre (como un disco duro más).
-> > - **`\\UbuntuServer.BOOCHANLAB.LOCAL\prueba1`**: Es la ruta UNC (la dirección de la carpeta en la red). Usamos el nombre del servidor en lugar de la IP para que Windows use Kerberos (el sistema de tickets seguro) en lugar de un protocolo más antiguo y menos fiable.
-> > - **`/user:BOOCHANLAB\user1`**: Especifica con qué identidad del dominio queremos entrar.
+> > - **`\\UbuntuServer.BOOCHANLAB.LOCAL\comercial`**: Es la ruta UNC (la dirección de la carpeta en la red). Usamos el nombre del servidor en lugar de la IP para que Windows use Kerberos (el sistema de tickets seguro) en lugar de un protocolo más antiguo y menos fiable.
+> > - **`/user:BOOCHANLAB\masao.sato`**: Especifica con qué identidad del dominio queremos entrar.
 
 ---
 

@@ -52,7 +52,7 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 > **Sintaxis:** `mkdir [-modificadores] [rutas]`
 
 > [!example] Ejemplos de uso (Fase 6):
-> - `sudo mkdir -p /srv/samba/prueba1`: Crea la carpeta `prueba1`. El modificador `-p` (parents) asegura que si `/srv/samba` no existe, también se creará automáticamente sin dar error.
+> - `sudo mkdir -p /srv/samba/departamentos/comercial`: Crea la carpeta `comercial`. El modificador `-p` (parents) asegura que si `/srv/samba` no existe, también se creará automáticamente sin dar error.
 
 ### `cp` (Copy)
 > **Descripción:** Sirve para copiar archivos o directorios de un lugar a otro.
@@ -73,8 +73,8 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 
 > [!example] Ejemplos de uso (Fases 4 y 6):
 > - `sudo chmod +x provision_boochan.sh`: Añade el permiso de eXecución al script (Fase 4).
-> - `sudo chown root:policia /srv/samba/prueba3`: Cambia el dueño a `root` y el grupo propietario a `policia` (Fase 6).
-> - `sudo chmod 2770 /srv/samba/prueba3`: Da permisos totales (77) al propietario y al grupo, nada al resto (0), y aplica el bit setgid (2) para que los archivos hereden el grupo (Fase 6).
+> - `sudo chown root:facturacion /srv/samba/departamentos/facturacion`: Cambia el dueño a `root` y el grupo propietario a `facturacion` (Fase 6).
+> - `sudo chmod 2770 /srv/samba/departamentos/facturacion`: Da permisos totales (77) al propietario y al grupo, nada al resto (0), y aplica el bit setgid (2) para que los archivos hereden el grupo (Fase 6).
 
 ### `chattr` (Change Attribute)
 > **Descripción:** Modifica atributos especiales a bajo nivel en sistemas de archivos Linux.
@@ -102,8 +102,8 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 > **Sintaxis:** `setfacl -m [usuario/grupo]:[nombre]:[permisos] [ruta]`
 
 > [!example] Ejemplos de uso (Fase 7):
-> - `sudo setfacl -m g:policia:rwx /srv/samba/prueba3`: Da permiso para Leer (r), Escribir (w) y Ejecutar (x) específicamente al Grupo (g) `policia` en esa carpeta.
-> - `sudo setfacl -d -m g:policia:rwx /srv/samba/prueba3`: La `-d` (Default) añade "Herencia" y exige que todos los archivos nuevos hereden esto automáticamente.
+> - `sudo setfacl -m g:facturacion:rwx /srv/samba/departamentos/facturacion`: Da permiso para Leer (r), Escribir (w) y Ejecutar (x) específicamente al Grupo (g) `facturacion` en esa carpeta.
+> - `sudo setfacl -d -m g:facturacion:rwx /srv/samba/departamentos/facturacion`: La `-d` (Default) añade "Herencia" y exige que todos los archivos nuevos hereden esto automáticamente.
 
 ---
 
@@ -115,9 +115,9 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 
 > [!example] Ejemplos de uso de Provisiones y Usuarios (Fase 4 y 5):
 > - `sudo samba-tool domain provision --use-rfc2307 --realm=BOOCHANLAB.LOCAL --domain=BOOCHANLAB --interactive`: Este comando inicia un "wizard" (asistente interactivo) para convertir un pequeño servidor Linux en el Controlador Maestro del dominio `BOOCHANLAB.LOCAL`. En BoochanV1 se ejecuta automáticamente a través del script `provision_boochan.sh`.
-> - `sudo samba-tool group add policia`: Da de alta el grupo "policia" en el dominio.
-> - `sudo samba-tool group addunixattrs policia 3001`: Inyecta la traducción (RFC2307) para que Linux asocie el grupo "policia" con el número **3001**. Indispensable.
-> - `sudo samba-tool user create user1 'P@ssw0rd' --uid-number=10001 --gid-number=3001`: Crea un empleado y, a la vez, lo casa con el sistema numérico de seguridad interno del Kernel.
+> - `sudo samba-tool group add facturacion`: Da de alta el grupo "facturacion" en el dominio.
+> - `sudo samba-tool group addunixattrs facturacion 3001`: Inyecta la traducción (RFC2307) para que Linux asocie el grupo "facturacion" con el número **3001**. Indispensable.
+> - `sudo samba-tool user create hiroshi.nohara 'P@ssw0rd' --uid-number=10001 --gid-number=3001`: Crea un empleado y, a la vez, lo casa con el sistema numérico de seguridad interno del Kernel.
 > - `sudo samba-tool domain level show`: Te indica si estás emulando la estructura base de un Windows Server 2008 o 2012.
 > - `sudo samba-tool user list`: Lista todos los usuarios del dominio, incluidos los que Samba crea automáticamente al provisionar (`Administrator`, `krbtgt`, `Guest`).
 
