@@ -16,16 +16,27 @@
 > [!success] Objetivo de esta Fase
 > Integrar el servicio **winbind** (el "traductor") en el servidor para que Linux reconozca a los usuarios de Windows como ciudadanos de primer nivel del sistema de archivos. Cada usuario y grupo tendrá un UID/GID permanente, y cualquier archivo creado podrá ser compartido y editado por sus compañeros de grupo con permisos claros.
 
-> [!tip] Hoja de Ruta
-> 1. Configurar **nsswitch.conf** para añadir winbind en las búsquedas de usuarios y grupos (el servidor preguntará a Samba primero)
-> 2. Crear dos grupos del dominio: `policia` (GID 3001) y `bomberos` (GID 3002) — para demostrar después segregación de datos
-> 3. Crear dos usuarios: `user1` (UID 10001, grupo policia) y `user2` (UID 10002, grupo bomberos) — con sus atributos RFC 2307
-> 4. Verificar que `id user1` e `id user2` devuelven los UIDs y GIDs esperados
-> 5. Probar creación de archivo: verificar que los permisos y propietarios se asignan correctamente en ext4
-> 6. Comprobar que `getent passwd user1` y `getent group policia` muestran los usuarios del dominio como si fueran locales
+> [!abstract] 🏢 A partir de aquí, el laboratorio tiene nombre: **Boochan S.L.**
+> Se acabaron los `user1` y `user2`. Vas a dar de alta a **una plantilla entera**: seis departamentos y doce trabajadores, con nombres, apellidos y un puesto.
 >
-> **Resultado Final:** El servidor reconoce a los usuarios del dominio como entidades Linux válidas, con UIDs/GIDs estables y heredables. Los archivos que creen llevarán sus identidades de forma permanente.
-> **Siguiente:** Fase 6 (Almacenamiento Virtual) — crearás discos virtuales con cuotas para controlar que no llenen el servidor.
+> **Todo el escenario —nombres, UID, GID y la matriz de permisos que aplicarás en la Fase 7— está en [[Escenario_Boochan_SL]].** Léelo antes de empezar: es la fuente de verdad de las fases 5 a 8.
+
+> [!tip] Hoja de Ruta
+> 1. Configurar **nsswitch.conf** para añadir winbind en las búsquedas de usuarios y grupos.
+> 2. Crear los **seis departamentos** como grupos del dominio, con GID **3001** a **3006**: `facturacion`, `contabilidad`, `comercial`, `logistica`, `rrhh` y `becarios`.
+> 3. Crear los **doce trabajadores**, con UID **10001** a **10012** y sus atributos RFC 2307 — los dos primeros a mano, el resto con un bucle que tendrás que leer y explicar.
+> 4. Asignar cada trabajador **a su departamento**.
+> 5. Verificar que `id` devuelve **exactamente** los números del escenario para los doce.
+> 6. Comprobar que cada departamento tiene **dos personas** y que los becarios **no están en ningún otro grupo**.
+>
+> **Resultado Final:** el servidor reconoce a los doce trabajadores como entidades Linux válidas, con UID/GID estables. Todavía no hay carpetas ni permisos — eso llega en las fases 6 y 7.
+>
+> **Siguiente:** Fase 6 (Almacenamiento Virtual) — crearás las carpetas de cada departamento sobre discos con cuota.
+
+> [!info] 🎓 Por qué doce personas y no dos
+> Con dos usuarios se puede demostrar que winbind traduce. **Con doce en seis departamentos se puede demostrar algo mucho más importante:** que los permisos se dan a **grupos**, y que mover a alguien de grupo cambia lo que ve sin tocar ni una carpeta.
+>
+> Y hay una razón práctica: en la **Fase 8** vas a iniciar sesión con usuarios distintos para comprobar que cada uno ve **solo lo suyo**. Con dos usuarios, esa prueba no demuestra nada.
 
 ---
 

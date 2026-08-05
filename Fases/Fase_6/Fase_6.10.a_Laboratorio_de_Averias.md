@@ -63,12 +63,12 @@
 # **AVERÍA 1 · DESMONTAR EL DISCO CON DATOS DENTRO**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** guardar un fichero en `prueba1`, desmontar el disco y ver qué pasa con él.
+> **Qué vamos a provocar:** guardar un fichero en `facturacion`, desmontar el disco y ver qué pasa con él.
 >
 > **Por qué provocamos esta:** porque es **la llamada de teléfono más frecuente** que recibe un administrador de almacenamiento: *"se han borrado los archivos de la carpeta compartida"*. Casi nunca se han borrado.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. Tras desmontar, ¿existirá la carpeta `/srv/samba/prueba1`?
+> 1. Tras desmontar, ¿existirá la carpeta `/srv/samba/departamentos/facturacion`?
 > 2. ¿Estará dentro el fichero que has creado?
 > 3. ¿Se habrá borrado?
 >
@@ -77,20 +77,20 @@
 ### **1 · Romper**
 Primero deja una huella reconocible:
 ```bash
-echo "Este fichero vive DENTRO del disco virtual" | sudo tee /srv/samba/prueba1/importante.txt
-ls -l /srv/samba/prueba1/
+echo "Este fichero vive DENTRO del disco virtual" | sudo tee /srv/samba/departamentos/facturacion/importante.txt
+ls -l /srv/samba/departamentos/facturacion/
 ```
 Y ahora desmonta:
 ```bash
-sudo umount /srv/samba/prueba1
+sudo umount /srv/samba/departamentos/facturacion
 ```
 
 ### **2 · Comprobar**
 ```bash
-ls -la /srv/samba/prueba1/
-df -h | grep prueba1
-mountpoint /srv/samba/prueba1
-ls -l /samba_p1.img
+ls -la /srv/samba/departamentos/facturacion/
+df -h | grep facturacion
+mountpoint /srv/samba/departamentos/facturacion
+ls -l /samba_deptos.img
 ```
 
 **Cómo se interpreta lo que sale:**
@@ -100,12 +100,12 @@ ls -l /samba_p1.img
 | `ls -la` | **La carpeta existe, y está VACÍA** | Estás viendo la carpeta del sistema, no el disco |
 | `df` | Ya no aparece | El disco no está montado |
 | `mountpoint` | `is not a mountpoint` | Confirmado |
-| `ls -l /samba_p1.img` | **Sigue midiendo 5 GB** | **Tus datos están ahí dentro, intactos** |
+| `ls -l /samba_deptos.img` | **Sigue midiendo 5 GB** | **Tus datos están ahí dentro, intactos** |
 
 > [!danger] 🤯 Fíjate en lo que acaba de pasar
 > La carpeta **no ha desaparecido**. El fichero **no se ha borrado**. Lo único que ha pasado es que has quitado el disco de detrás de la puerta, y ahora ves la puerta vacía.
 >
-> Si en este momento alguien copiara ficheros nuevos en `/srv/samba/prueba1`, irían al **disco del sistema**. Y al volver a montar, desaparecerían de la vista — tapados debajo del montaje.
+> Si en este momento alguien copiara ficheros nuevos en `/srv/samba/departamentos/facturacion`, irían al **disco del sistema**. Y al volver a montar, desaparecerían de la vista — tapados debajo del montaje.
 
 ### **3 · Consecuencias**
 Un usuario diría *"se han borrado 5 GB de datos"*. Un administrador que se lo crea puede llegar a restaurar una copia de seguridad encima **sobre datos que estaban perfectamente**, y ahí sí se pierde información.
@@ -113,7 +113,7 @@ Un usuario diría *"se han borrado 5 GB de datos"*. Un administrador que se lo c
 ### **4 · Reparar**
 ```bash
 sudo mount -a
-ls -l /srv/samba/prueba1/
+ls -l /srv/samba/departamentos/facturacion/
 ```
 - **✅ Reparado:** `importante.txt` vuelve a estar ahí, con su contenido.
 
@@ -138,15 +138,15 @@ ls -l /srv/samba/prueba1/
 
 ### **1 · Romper**
 ```bash
-sudo umount /srv/samba/prueba1
-echo "Fichero fantasma: escrito con el disco desmontado" | sudo tee /srv/samba/prueba1/fantasma.txt
-ls -l /srv/samba/prueba1/
+sudo umount /srv/samba/departamentos/facturacion
+echo "Fichero fantasma: escrito con el disco desmontado" | sudo tee /srv/samba/departamentos/facturacion/fantasma.txt
+ls -l /srv/samba/departamentos/facturacion/
 sudo mount -a
 ```
 
 ### **2 · Comprobar**
 ```bash
-ls -l /srv/samba/prueba1/
+ls -l /srv/samba/departamentos/facturacion/
 ```
 
 **Cómo se interpreta lo que sale:**
@@ -158,22 +158,22 @@ ls -l /srv/samba/prueba1/
 
 Y ahora **destápalo**:
 ```bash
-sudo umount /srv/samba/prueba1
-ls -l /srv/samba/prueba1/
+sudo umount /srv/samba/departamentos/facturacion
+ls -l /srv/samba/departamentos/facturacion/
 sudo mount -a
 ```
 
 > [!important] ✍️ Aquí anota tú lo que veas
-> **Copia en tu entrada de apuntes las dos listas de ficheros**, con el disco montado y desmontado. Y responde: si esa carpeta escondida acumulase 20 GB, ¿lo verías con `df -h /srv/samba/prueba1`?
+> **Copia en tu entrada de apuntes las dos listas de ficheros**, con el disco montado y desmontado. Y responde: si esa carpeta escondida acumulase 20 GB, ¿lo verías con `df -h /srv/samba/departamentos/facturacion`?
 
 ### **3 · Consecuencias**
 Espacio ocupado en el disco del sistema que **no aparece en ningún sitio** donde lo busques. Es una de las causas más desconcertantes de *"el disco está lleno y no encuentro qué lo llena"*, y puede tirar un servidor entero.
 
 ### **4 · Reparar**
 ```bash
-sudo umount /srv/samba/prueba1
-sudo rm -f /srv/samba/prueba1/fantasma.txt
-ls -la /srv/samba/prueba1/
+sudo umount /srv/samba/departamentos/facturacion
+sudo rm -f /srv/samba/departamentos/facturacion/fantasma.txt
+ls -la /srv/samba/departamentos/facturacion/
 sudo mount -a
 sudo ./verificar_fase6.sh
 ```
@@ -189,7 +189,7 @@ sudo ./verificar_fase6.sh
 # **AVERÍA 3 · LLENAR LA CUOTA**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** llenar `prueba1` hasta el tope, con el servidor teniendo espacio de sobra.
+> **Qué vamos a provocar:** llenar `facturacion` hasta el tope, con el servidor teniendo espacio de sobra.
 >
 > **Por qué provocamos esta:** porque es **la fase entera en un comando**. Vas a ver un `No space left on device` mientras `df -h /` dice que hay gigas libres.
 
@@ -200,12 +200,12 @@ sudo ./verificar_fase6.sh
 
 ### **1 · Romper**
 ```bash
-sudo dd if=/dev/zero of=/srv/samba/prueba1/relleno.tmp bs=1M count=6000
+sudo dd if=/dev/zero of=/srv/samba/departamentos/facturacion/relleno.tmp bs=1M count=6000
 ```
 
 ### **2 · Comprobar**
 ```bash
-df -h | grep prueba1
+df -h | grep facturacion
 df -h /
 sudo systemctl is-active samba-ad-dc
 ```
@@ -215,7 +215,7 @@ sudo systemctl is-active samba-ad-dc
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
 | El `dd` | **Falla** a los ~5 GB | La cuota ha hecho su trabajo |
-| `df` de `prueba1` | **100 %** | Esa carpeta está llena |
+| `df` de `facturacion` | **100 %** | Esa carpeta está llena |
 | `df /` | **Con espacio libre** | El servidor está perfectamente |
 | `samba-ad-dc` | `active` | El dominio ni se ha enterado |
 
@@ -224,8 +224,8 @@ Los usuarios de esa carpeta no pueden guardar nada más. **Y el resto del servid
 
 ### **4 · Reparar**
 ```bash
-sudo rm -f /srv/samba/prueba1/relleno.tmp
-df -h | grep prueba1
+sudo rm -f /srv/samba/departamentos/facturacion/relleno.tmp
+df -h | grep facturacion
 ```
 - **✅ Reparado:** la carpeta vuelve a estar casi vacía.
 
@@ -239,9 +239,9 @@ df -h | grep prueba1
 # **AVERÍA 4 · 🔴 LA CARPETA QUE PIERDE SU GRUPO**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** devolver `prueba3` al grupo `root`, como si el `chown` hubiera fallado.
+> **Qué vamos a provocar:** devolver `contabilidad` al grupo `root`, como si el `chown` hubiera fallado.
 >
-> **Por qué provocamos esta:** porque es **el fallo silencioso de la fase**, el [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta prueba3 pertenece a root y no a policia|caso E6]], provocado a propósito.
+> **Por qué provocamos esta:** porque es **el fallo silencioso de la fase**, el [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]], provocado a propósito.
 >
 > No da ningún error. La carpeta se monta, se escribe y se lee igual. Y **rompe la Fase 7** dentro de una semana.
 
@@ -255,19 +255,19 @@ df -h | grep prueba1
 ### **1 · Romper**
 Primero **mira y anota** lo que hay ahora:
 ```bash
-ls -ld /srv/samba/prueba3
+ls -ld /srv/samba/departamentos/contabilidad
 ```
 Y ahora rómpelo:
 ```bash
-sudo chown root:root /srv/samba/prueba3
+sudo chown root:root /srv/samba/departamentos/contabilidad
 ```
 
 ### **2 · Comprobar**
 ```bash
-ls -ld /srv/samba/prueba3
-stat -c '%U %G %a' /srv/samba/prueba3
-df -h | grep prueba3
-sudo touch /srv/samba/prueba3/prueba_escritura.txt
+ls -ld /srv/samba/departamentos/contabilidad
+stat -c '%U %G %a' /srv/samba/departamentos/contabilidad
+df -h | grep contabilidad
+sudo touch /srv/samba/departamentos/contabilidad/prueba_escritura.txt
 sudo ./verificar_fase6.sh
 ```
 
@@ -286,17 +286,17 @@ sudo ./verificar_fase6.sh
 > Si no hubieras pasado el verificador, habrías guardado la instantánea tan tranquilo.
 
 ### **3 · Consecuencias**
-En la **Fase 7** protegerás esta carpeta para que solo la vea el grupo `policia`. Con el grupo puesto a `root`, esa protección **no alcanza a nadie**: o no entra ningún usuario del dominio, o la restricción no filtra nada. Y el error hablará de accesos denegados, sin mencionar esta fase.
+En la **Fase 7** protegerás esta carpeta para que solo la vea el grupo `contabilidad`. Con el grupo puesto a `root`, esa protección **no alcanza a nadie**: o no entra ningún usuario del dominio, o la restricción no filtra nada. Y el error hablará de accesos denegados, sin mencionar esta fase.
 
 ### **4 · Reparar**
 ```bash
-sudo rm -f /srv/samba/prueba3/prueba_escritura.txt
-sudo chown root:policia /srv/samba/prueba3
-sudo chmod 2770 /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+sudo rm -f /srv/samba/departamentos/contabilidad/prueba_escritura.txt
+sudo chown root:contabilidad /srv/samba/departamentos/contabilidad
+sudo chmod 2770 /srv/samba/departamentos/contabilidad
+ls -ld /srv/samba/departamentos/contabilidad
 sudo ./verificar_fase6.sh
 ```
-- **✅ Reparado:** `root policia`, permisos `2770`, y el verificador en `FASE 6 SUPERADA`.
+- **✅ Reparado:** `root contabilidad`, permisos `2770`, y el verificador en `FASE 6 SUPERADA`.
 
 > [!success] 🎓 La lección
 > **El fallo que no da error es el caro.** Van cuatro fases con la misma idea, en cuatro disfraces distintos.
@@ -308,7 +308,7 @@ sudo ./verificar_fase6.sh
 # **AVERÍA 5 · QUITAR EL BIT SETGID**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** cambiar `2770` por `770` en `prueba3`.
+> **Qué vamos a provocar:** cambiar `2770` por `770` en `contabilidad`.
 >
 > **Por qué provocamos esta:** porque enseña qué hace ese cuarto dígito que casi nadie mira, y porque el daño **solo aparece con los ficheros que se creen a partir de ahora**.
 
@@ -319,16 +319,16 @@ sudo ./verificar_fase6.sh
 
 ### **1 · Romper**
 ```bash
-sudo chmod 770 /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+sudo chmod 770 /srv/samba/departamentos/contabilidad
+ls -ld /srv/samba/departamentos/contabilidad
 ```
 
 ### **2 · Comprobar**
 Fíjate en la letra que ha cambiado y crea un fichero nuevo:
 ```bash
-ls -ld /srv/samba/prueba3
-sudo touch /srv/samba/prueba3/sin_setgid.txt
-ls -l /srv/samba/prueba3/
+ls -ld /srv/samba/departamentos/contabilidad
+sudo touch /srv/samba/departamentos/contabilidad/sin_setgid.txt
+ls -l /srv/samba/departamentos/contabilidad/
 sudo ./verificar_fase6.sh
 ```
 
@@ -337,7 +337,7 @@ sudo ./verificar_fase6.sh
 | Dónde miras | Antes | Ahora |
 | :--- | :--- | :--- |
 | `ls -ld` | `drwxrw**s**---` | `drwxrw**x**---` |
-| Grupo del fichero nuevo | `policia` | El grupo de quien lo creó |
+| Grupo del fichero nuevo | `contabilidad` | El grupo de quien lo creó |
 | El verificador | OK | **FALLO en `D3`** |
 
 > [!important] ✍️ Aquí anota tú lo que veas
@@ -348,9 +348,9 @@ Una carpeta compartida que se va llenando de ficheros que **los demás miembros 
 
 ### **4 · Reparar**
 ```bash
-sudo rm -f /srv/samba/prueba3/sin_setgid.txt
-sudo chmod 2770 /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+sudo rm -f /srv/samba/departamentos/contabilidad/sin_setgid.txt
+sudo chmod 2770 /srv/samba/departamentos/contabilidad
+ls -ld /srv/samba/departamentos/contabilidad
 sudo ./verificar_fase6.sh
 ```
 - **✅ Reparado:** vuelve la **`s`** y el verificador da `FASE 6 SUPERADA`.
@@ -391,17 +391,17 @@ Copia de seguridad primero — **siempre, antes de tocar un fichero de arranque*
 ```bash
 sudo cp /etc/fstab /etc/fstab.bak
 ```
-Y ahora quita la palabra `loop` de la línea de `prueba3`:
+Y ahora quita la palabra `loop` de la línea de `contabilidad`:
 ```bash
-sudo sed -i 's|\(/samba_p3.img.*\)loop,defaults|\1defaults|' /etc/fstab
+sudo sed -i 's|\(/samba_comun.img.*\)loop,defaults|\1defaults|' /etc/fstab
 grep samba /etc/fstab
 ```
 
 ### **2 · Comprobar**
 ```bash
-sudo umount /srv/samba/prueba3
+sudo umount /srv/samba/departamentos/contabilidad
 sudo mount -a
-df -h | grep prueba3
+df -h | grep contabilidad
 sudo ./verificar_fase6.sh
 ```
 
@@ -410,7 +410,7 @@ sudo ./verificar_fase6.sh
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
 | `mount -a` | **Un mensaje de error** | El paracaídas ha funcionado |
-| `df` | `prueba3` no aparece | No ha podido montarse |
+| `df` | `contabilidad` no aparece | No ha podido montarse |
 | El verificador | **FALLO en `C2-ter`** | Y te dice que no reinicies |
 
 > [!success] 🎯 Esto es lo que tenías que ver
@@ -460,7 +460,7 @@ sudo ./verificar_fase6.sh
 > [!warning] ⚠️ Comprueba que no te dejas ficheros de prueba
 > Las averías crean `importante.txt`, `fantasma.txt`, `relleno.tmp`, `prueba_escritura.txt` y `sin_setgid.txt`.
 > ```bash
-> ls -la /srv/samba/prueba1/ /srv/samba/prueba3/
+> ls -la /srv/samba/departamentos/facturacion/ /srv/samba/departamentos/contabilidad/
 > ```
 > `importante.txt` puedes dejarlo —sirve para la Fase 7—, **pero el resto tiene que estar borrado**, y sobre todo `relleno.tmp`: son 5 GB.
 

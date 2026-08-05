@@ -7,118 +7,210 @@
 
 ---
 
-> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
-> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
-> 1. **Crea la entrada de apuntes** de esta fase (`b2-f6-almacenamiento-virtual.md`) con su estructura, vacía.
-> 2. **Léete los 6 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
-> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+> [!abstract] 🏢 Hoy le das sitio a la empresa
+> En la Fase 5 diste de alta a los doce trabajadores de **Boochan S.L.** Hoy les creas **dónde guardar su trabajo**: una carpeta por departamento, más una común para intercambiar ficheros.
 >
-> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+> **Ten abierta la ficha del escenario:** [[Escenario_Boochan_SL]].
 
-> [!example] Paso 1: Creación de los Puntos de Montaje
-> Antes de crear los discos virtuales, necesitamos las carpetas donde se "conectarán". Creamos las carpetas para las dos unidades de almacenamiento del proyecto:
+> [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
+> 1. **Crea la entrada de apuntes** de esta fase (`b2-f6-almacenamiento-virtual.md`), vacía.
+> 2. **Léete los 7 pasos** del procedimiento enteros.
+> 3. **Comprueba que tienes sitio:** `df -h /` debe mostrar **al menos 11 GB libres**.
+> 4. Ten **OBS** listo y comprueba **pantalla y micrófono**.
+
+---
+
+> [!info] 🗺️ Lo que vas a montar, de un vistazo
+> ```
+> /srv/samba/
+> ├── departamentos/      ← disco virtual de 8 GB   (/samba_deptos.img)
+> │   ├── facturacion/    root:facturacion   2770
+> │   ├── contabilidad/   root:contabilidad  2770
+> │   ├── comercial/      root:comercial     2770
+> │   ├── logistica/      root:logistica     2770
+> │   ├── rrhh/           root:rrhh          2770
+> │   └── becarios/       root:becarios      2770
+> └── comun/              ← disco virtual de 2 GB   (/samba_comun.img)
+>                           root:root          1777
+> ```
+>
+> > [!question] 🤔 ¿Por qué dos discos y no siete?
+> > Porque **siete discos de 5 GB serían 35 GB** y tu servidor tiene 20. Pero además, porque no haría falta: los seis departamentos pueden compartir un volumen.
+> >
+> > **Lo que sí tiene sentido es separar la carpeta común**, y el motivo es puro oficio: una carpeta donde todo el mundo escribe **se convierte en un vertedero**. Con su propio disco de 2 GB, cuando se llene **solo se llena ella** — y contabilidad sigue trabajando.
+> >
+> > **Aislar lo que se puede descontrolar** es una decisión de diseño, no una limitación.
+
+---
+
+> [!example] Paso 1: Los puntos de montaje
 > ```bash
-> sudo mkdir -p /srv/samba/prueba1
-> sudo mkdir -p /srv/samba/prueba3
+> sudo mkdir -p /srv/samba/departamentos
+> sudo mkdir -p /srv/samba/comun
+> ls -la /srv/samba/
 > ```
 >
 > > [!tip] 💡 ¿Qué hace `-p`?
-> > El parámetro `-p` (de *parents*) crea todas las carpetas del camino que no existan. Si `/srv/samba/` no existiera, lo crearía también automáticamente. Sin `-p`, daría error si la carpeta padre no existe.
+> > Crea **todas las carpetas del camino** que no existan. Sin `-p`, `mkdir` daría error porque `/srv/samba/` todavía no existe.
 
-> [!example] Paso 2: Creación de los Archivos de Disco Virtual
-> Creamos dos archivos que actuarán como discos duros independientes:
->
-> > [!info] 📚 Diccionario de Comandos: Para entender cómo funciona el comando `dd` creando discos virtuales, consulta el [[Diccionario_Comandos_Sistema]].
+---
+
+> [!example] Paso 2: Los dos discos virtuales
+> > [!info] 📚 Diccionario de Comandos: cómo funciona `dd` creando discos virtuales, en el [[Diccionario_Comandos_Sistema]].
 >
 > ```bash
-> # Disco virtual para "prueba1" (carpeta compartida general)
-> sudo dd if=/dev/zero of=/samba_p1.img bs=1M count=5120
+> # Disco de los departamentos: 8 GB
+> sudo dd if=/dev/zero of=/samba_deptos.img bs=1M count=8192 status=progress
 >
-> # Disco virtual para "prueba3" (carpeta protegida con permisos en la Fase 7)
-> sudo dd if=/dev/zero of=/samba_p3.img bs=1M count=5120
+> # Disco de la carpeta común: 2 GB
+> sudo dd if=/dev/zero of=/samba_comun.img bs=1M count=2048 status=progress
 > ```
-> Este comando tarda aproximadamente **1-2 minutos** por cada disco. Verás el progreso en pantalla.
+> El primero tarda **2-3 minutos**; el segundo, menos de uno.
 >
-> > [!caution] ⚠️ Comprueba el disco virtual (.vdi) de la VM antes de empezar
-> > Estos dos archivos de 5GB se guardan dentro del disco duro virtual (.vdi/.vmdk) que VirtualBox asignó a tu máquina en la Fase 1. Si el disco de la VM tiene poco espacio libre, `dd` fallará a mitad de escritura con "No space left on device". Verifica antes con `df -h /` que tienes al menos 11 GB libres.
+> > [!caution] ⚠️ Comprueba el espacio ANTES de lanzarlo
+> > Estos dos ficheros ocupan **10 GB dentro del disco virtual de tu VM**. Si no caben, `dd` fallará a mitad de escritura dejando un fichero incompleto:
+> > ```bash
+> > df -h /
+> > ```
+> > Necesitas **al menos 11 GB libres** → si no, [[Fase_6.7_Resolucion_Problemas#E4 · dd falla por falta de espacio|caso E4]].
 >
-> > [!tip] 💡 ¿Qué hace este comando?
-> > - **`if=/dev/zero`:** El origen de los datos es un generador infinito de ceros.
-> > - **`of=/samba_p1.img`:** El archivo de destino que se convertirá en nuestro disco.
-> > - **`bs=1M`:** "Block Size". Escribimos en bloques de 1 Megabyte.
-> > - **`count=5120`:** Multiplicamos 1MB x 5120 para obtener exactamente 5 Gigabytes.
+> > [!tip] 💡 ¿Qué hace cada parte?
+> > - **`if=/dev/zero`:** el origen es un generador infinito de ceros.
+> > - **`of=/samba_deptos.img`:** el fichero que será nuestro disco.
+> > - **`bs=1M count=8192`:** 8192 bloques de 1 MB = **8 GB exactos**.
+> > - **`status=progress`:** enseña el avance. Sin esto, `dd` no dice nada en tres minutos y parece colgado.
 
-> [!example] Paso 3: Formateo y Preparación
-> Ahora le damos "formato" a cada archivo para que Linux pueda guardar archivos dentro:
+---
+
+> [!example] Paso 3: Darles formato
+> Un fichero de ceros no es un disco todavía: hay que crear dentro un **sistema de ficheros**.
 > ```bash
-> # Formateamos el disco de prueba1
-> sudo mkfs.ext4 /samba_p1.img
->
-> # Formateamos el disco de prueba3
-> sudo mkfs.ext4 /samba_p3.img
+> sudo mkfs.ext4 /samba_deptos.img
+> sudo mkfs.ext4 /samba_comun.img
 > ```
+>
+> > [!info] 🎓 Un disco pasa por tres estados y no se salta ninguno
+> > **Existir** (`dd`) → **tener formato** (`mkfs`) → **estar montado** (`mount`).
+> >
+> > Es exactamente lo mismo que harías con un disco duro nuevo: particionar, formatear y asignarle una letra o un punto de montaje. **Aquí lo haces a mano, y por eso lo entiendes.**
 
-> [!example] Paso 4: Montaje Persistente (fstab)
-> Editamos la tabla de discos del sistema para que ambos discos se monten automáticamente al reiniciar:
+---
+
+> [!example] Paso 4: Montaje persistente (fstab)
 > ```bash
 > sudo nano /etc/fstab
 > ```
 >
-> > [!info] 📚 Recurso: Si no recuerdas cómo usar este editor, repasa la [[Guía_Editor_Nano]].
-> Añade estas dos líneas **al final del archivo** (sin borrar nada de lo que ya hay):
+> > [!info] 📚 Recurso: si no recuerdas cómo usar este editor, repasa la [[Guía_Editor_Nano]].
+>
+> Añade estas **dos líneas al final** del fichero, sin borrar nada de lo que ya hay:
 > ```
-> /samba_p1.img  /srv/samba/prueba1  ext4  loop,defaults  0  0
-> /samba_p3.img  /srv/samba/prueba3  ext4  loop,defaults  0  0
+> /samba_deptos.img  /srv/samba/departamentos  ext4  loop,defaults  0  0
+> /samba_comun.img   /srv/samba/comun          ext4  loop,defaults  0  0
 > ```
-> Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`). Ahora monta los discos sin necesidad de reiniciar:
+> Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`), y monta sin reiniciar:
 > ```bash
 > sudo mount -a
+> df -h | grep srv
 > ```
 >
 > > [!caution] ⚠️ La palabra `loop` es obligatoria
-> > Si olvidas escribir `loop` en las opciones del fstab, Linux intentará tratar el archivo como una partición física real y el servidor **entrará en pánico al arrancar**. Comprueba dos veces que la has escrito.
+> > Sin ella, Linux intenta tratar el fichero como una **partición física real** y el arranque puede quedarse colgado. Compruébalo dos veces antes de seguir.
 >
-> > [!important] 🪂 El Paracaídas Púrpura (Comprobación de Vida)
-> > Ejecutar `sudo mount -a` es tu paracaídas. Este comando simula el arranque del servidor leyendo el archivo `fstab`. Si la terminal **no devuelve ningún texto** (silencio), ¡enhorabuena! Tu sintaxis es perfecta. Si devuelve **texto rojo o un aviso de error**, tienes un fallo tipográfico grave. **¡BAJO NINGÚN CONCEPTO REINICIES!** Vuelve a editar el `fstab` hasta que `sudo mount -a` no devuelva errores, o de lo contrario tu máquina virtual dejará de arrancar.
+> > [!important] 🪂 EL PARACAÍDAS: `sudo mount -a`
+> > Este comando **ensaya el arranque sin arrancar**: lee el `fstab` entero e intenta montar todo lo que dice.
+> >
+> > - **Silencio absoluto** = tu sintaxis es correcta.
+> > - **Cualquier mensaje** = tienes un fallo. **BAJO NINGÚN CONCEPTO REINICIES** hasta arreglarlo, o la máquina se quedará en modo emergencia → [[Fase_6.7_Resolucion_Problemas#E1 · El servidor no arranca tras editar el fstab|caso E1]].
+> >
+> > **`/etc/fstab` es de los poquísimos ficheros de Linux donde una errata impide arrancar el sistema.** Por eso existe este ensayo, y por eso se hace siempre.
 
-> [!example] Paso 5: Permisos de Acceso
-> Asignamos los permisos correctos para que los usuarios del dominio puedan escribir en las carpetas:
+---
+
+> [!example] Paso 5: Las seis carpetas de departamento
+> Cada departamento tiene su carpeta, propiedad de **su grupo**. Empieza por las dos primeras **a mano**:
 > ```bash
-> # prueba1: accesible por todos los usuarios del dominio
-> sudo chown root:root /srv/samba/prueba1
-> sudo chmod 777 /srv/samba/prueba1
+> sudo mkdir -p /srv/samba/departamentos/facturacion
+> sudo chown root:facturacion /srv/samba/departamentos/facturacion
+> sudo chmod 2770 /srv/samba/departamentos/facturacion
+> ls -ld /srv/samba/departamentos/facturacion
 >
-> # prueba3: solo accesible por el grupo "policia" (lo protegeremos en la Fase 7)
-> sudo chown root:policia /srv/samba/prueba3
-> sudo chmod 2770 /srv/samba/prueba3
+> sudo mkdir -p /srv/samba/departamentos/contabilidad
+> sudo chown root:contabilidad /srv/samba/departamentos/contabilidad
+> sudo chmod 2770 /srv/samba/departamentos/contabilidad
+> ls -ld /srv/samba/departamentos/contabilidad
 > ```
-> > [!caution] ⚠️ Verifica que el grupo `policia` fue reconocido
-> > Si el servicio `winbind` no estaba activo, el `chown` falla con `invalid group: 'policia'` y la carpeta queda mal configurada sin aviso visible. Compruébalo:
-> > ```bash
-> > ls -la /srv/samba/ | grep prueba3
-> > ```
-> > La columna de grupo debe mostrar `policia`, no `root`. Si muestra `root`, arranca winbind y repite:
-> > ```bash
-> > sudo systemctl enable winbind --now
-> > sudo chown root:policia /srv/samba/prueba3
-> > ```
 >
-> > [!tip] 💡 ¿Qué es el `chmod 2770`?
-> > - **`2`:** Es el **bit setgid**. Hace que todos los archivos nuevos creados dentro de la carpeta hereden automáticamente el grupo `policia`, en lugar del grupo personal de quien lo creó. Así todos los archivos de la carpeta siempre pertenecen al grupo correcto.
-> > - **`770`:** El propietario y el grupo tienen acceso total (rwx), pero el resto del mundo no tiene ningún acceso (---).
-
-> [!example] Paso 6: El primer latido — ¿está todo en su sitio?
-> Esto **no es la verificación de la fase**: es el pulso mínimo antes de seguir.
+> > [!danger] 🛑 Mira el `ls -ld` DESPUÉS de cada `chown`. No es opcional
+> > La columna del grupo tiene que decir **`facturacion`**, no `root`.
+> >
+> > Si `winbind` no estaba levantado, el `chown` falla con `invalid group` — **o peor, la carpeta se queda a nombre de `root` y todo parece correcto**. Ese es el fallo silencioso de esta fase → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]].
+> >
+> > **Que un comando no proteste no significa que hiciera lo que querías.**
+>
+> **Y ahora las cuatro que faltan, con un bucle:**
 > ```bash
-> df -h | grep prueba
-> ls -ld /srv/samba/prueba1 /srv/samba/prueba3
+> for d in comercial logistica rrhh becarios; do
+>     echo ">>> Creando carpeta de $d"
+>     sudo mkdir -p "/srv/samba/departamentos/$d"
+>     sudo chown "root:$d" "/srv/samba/departamentos/$d"
+>     sudo chmod 2770 "/srv/samba/departamentos/$d"
+> done
+> ls -ld /srv/samba/departamentos/*
+> ```
+>
+> > [!important] 📖 Comprueba las seis de golpe
+> > ```bash
+> > stat -c '%n  %U:%G  %a' /srv/samba/departamentos/*
+> > ```
+> > Las seis tienen que decir **`root:<su grupo>  2770`**. Si alguna dice `root:root`, el `chown` no funcionó.
+>
+> > [!tip] 💡 ¿Qué es el `2770`?
+> > - **`2`** → el **bit setgid**: todo lo que se cree dentro **hereda el grupo de la carpeta**, en vez del grupo personal de quien lo crea. Sin él, una carpeta "de facturación" se llena de ficheros que el resto de facturación no puede tocar.
+> > - **`770`** → dueño y grupo con acceso total; **el resto del mundo, nada**.
+> >
+> > Fíjate en que `ls -ld` muestra una **`s`** donde iría la `x` del grupo: `drwxrws---`. **Esa `s` es el setgid**, y saber leerla es parte del trabajo.
+
+---
+
+> [!example] Paso 6: La carpeta común, con sticky bit
+> Esta es distinta: **todos escriben en ella**, pero cada uno solo puede borrar **lo suyo**.
+> ```bash
+> sudo chown root:root /srv/samba/comun
+> sudo chmod 1777 /srv/samba/comun
+> ls -ld /srv/samba/comun
+> ```
+>
+> - **✅ Bien:** `ls -ld` muestra **`drwxrwxrwt`** — fíjate en la **`t`** del final.
+>
+> > [!info] 🎓 El sticky bit: el `1` de `1777`
+> > Con permisos `777` normales, **cualquiera puede borrar el fichero de cualquiera**. En una carpeta compartida entre seis departamentos, eso es una bomba: alguien borra por error el trabajo de otro y no hay forma de saber quién fue.
+> >
+> > El **sticky bit** cambia una sola regla: **dentro de esta carpeta, solo puedes borrar lo que es tuyo** (o si eres `root`). Puedes crear, puedes leer lo de los demás, y no puedes destruirlo.
+> >
+> > **Es exactamente el mecanismo de `/tmp`**, que lleva décadas funcionando así por el mismo motivo. Compruébalo:
+> > ```bash
+> > ls -ld /tmp
+> > ```
+> > Verás la misma `t`.
+>
+> > [!question] 🤔 Para tu entrada de apuntes
+> > El setgid del Paso 5 y el sticky bit de este paso **son los dos el cuarto dígito** de los permisos. ¿Qué hace cada uno? ¿Por qué la carpeta común lleva `t` y las de departamento llevan `s`?
+
+---
+
+> [!example] Paso 7: El primer latido — ¿está todo en su sitio?
+> Esto **no es la verificación de la fase**: es el pulso mínimo.
+> ```bash
+> df -h | grep srv
+> stat -c '%n  %U:%G  %a' /srv/samba/departamentos/* /srv/samba/comun
 > ```
 >
 > | Qué tiene que salir | Si no sale |
 > | :--- | :--- |
-> | Dos líneas de **5,0G** en `df` | [[Fase_6.7_Resolucion_Problemas#E2 · df -h no muestra los discos\|caso E2]] |
-> | `prueba3` a nombre de **`root policia`** | [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta prueba3 pertenece a root y no a policia\|caso E6]] |
-> | Permisos **`drwxrws---`** en `prueba3` *(con la `s`)* | [[Fase_6.7_Resolucion_Problemas#E7 · Los ficheros nuevos no heredan el grupo\|caso E7]] |
+> | Dos líneas en `df`: **8,0G** y **2,0G** | [[Fase_6.7_Resolucion_Problemas#E2 · df -h no muestra los discos\|caso E2]] |
+> | Seis carpetas **`root:<su grupo>  2770`** | [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento\|caso E6]] |
+> | `comun` con **`root:root  1777`** | Repite el Paso 6 |
 >
 > > [!bug] 🛑 ¿Estás seguro de que esto lo ha contestado el SERVIDOR?
 > > Si administras por SSH: `hostname` tiene que responder `ubuntuserver` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
@@ -127,30 +219,31 @@
 
 ### ✅ Checklist de esta parte
 
-- [ ] Las dos carpetas de montaje creadas con `mkdir -p`.
-- [ ] Los dos `.img` creados con `dd`, de **5 GB** cada uno.
-- [ ] Los dos formateados con `mkfs.ext4`.
-- [ ] Las **dos líneas** añadidas al `/etc/fstab`, **con la palabra `loop`**.
+- [ ] Los dos puntos de montaje creados.
+- [ ] `/samba_deptos.img` de **8 GB** y `/samba_comun.img` de **2 GB**, los dos formateados en `ext4`.
+- [ ] Las **dos líneas** del `/etc/fstab`, **con la palabra `loop`**.
 - [ ] 🛑 `sudo mount -a` ejecutado y **en silencio**.
-- [ ] `prueba1` → `chmod 777`.
-- [ ] `prueba3` → `chown root:policia` **verificado con `ls -ld`** y `chmod 2770`.
-- [ ] 🛑 **Instantánea NO tomada todavía. Y NO has reiniciado.**
+- [ ] `df -h` muestra los dos volúmenes montados.
+- [ ] Las **seis carpetas** de departamento con **`root:<su grupo>` y `2770`**, verificado con `stat`.
+- [ ] La **`s`** visible en `ls -ld` de las seis.
+- [ ] `comun` con **`root:root` y `1777`**, y la **`t`** visible.
+- [ ] 🛑 **Instantánea NO tomada. Y NO has reiniciado.**
 
 ---
 
-> [!danger] 🛑 AQUÍ NO HAS TERMINADO LA FASE. Y esta vez el riesgo es el arranque
+> [!danger] 🛑 AQUÍ NO HAS TERMINADO LA FASE. Y el riesgo es el arranque
 > Los discos están montados y las carpetas tienen permisos. **Y aun así puede haber dos problemas que no ves:**
 >
 > 1. **Un `fstab` con una errata.** No lo notarás hasta que la máquina no arranque — y no eliges tú cuándo se reinicia.
-> 2. **El grupo de `prueba3` puesto a `root`.** No da ningún error y tumba la Fase 7.
+> 2. **Una carpeta a nombre de `root`** en vez de su departamento. No da ningún error y **tumba la Fase 7**.
 >
-> Ninguno de los dos se detecta mirando si "todo funciona". Se comprueban en el [[Fase_6.8.a_Verificacion|apartado 8.a]], que es de obligado cumplimiento.
+> Se comprueban en el [[Fase_6.8.a_Verificacion|apartado 8.a]], que es de obligado cumplimiento.
 >
-> **No apagues ni reinicies antes de pasar por ahí.** Y no tomes la instantánea: guardarías el fallo dentro de tu punto de retorno.
+> **No apagues ni reinicies antes de pasar por ahí.**
 >
-> **Orden correcto:** [[Fase_6.8.a_Verificacion|8.a · verificar]] → [[Fase_6.8.b_Punto_de_Control|8.b · guardar la instantánea]]. Nunca al revés.
+> **Orden correcto:** [[Fase_6.8.a_Verificacion|8.a · verificar]] → [[Fase_6.8.b_Punto_de_Control|8.b · guardar]]. Nunca al revés.
 
-> ¿Algo no ha salido? → [[Fase_6.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E8`), no leas el documento entero.
+> ¿Algo no ha salido? → [[Fase_6.7_Resolucion_Problemas]] — **búscate por el síntoma** (casos `E1` a `E8`).
 
 ---
 

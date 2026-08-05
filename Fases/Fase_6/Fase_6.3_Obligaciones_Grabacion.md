@@ -58,7 +58,7 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 
 - ⏸️ **Puedes pausar** durante los `dd`, que tardan 1-2 minutos cada uno.
 - Que se vea el `fstab` **antes y después** del cambio.
-- Después del `chown` de `prueba3`, **enseña el `ls -ld`** y di si el grupo es `policia` o `root`. Es el fallo silencioso de la fase.
+- Después del `chown` de `contabilidad`, **enseña el `ls -ld`** y di si el grupo es `contabilidad` o `root`. Es el fallo silencioso de la fase.
 - Y sin cortar, **las seis comprobaciones del apartado 8.a**, incluida la prueba de la cuota con el `dd` de 6 GB.
 - **La prueba de la cuota explícala despacio:** que se vea el `df -h /` con espacio libre mientras la carpeta está al 100 %. Es la fase entera en una pantalla.
 

@@ -4,15 +4,16 @@
 # =============================================================================
 # Modulo: SOR - Sistemas Operativos en Red · 2.º SMR · IES Jorge Juan (Alicante)
 #
-# QUE HACE: comprueba que los discos virtuales existen, estan montados, se
-#           montaran solos tras reiniciar y tienen los permisos correctos.
-#           No modifica NADA. Solo lee.
+# QUE HACE: comprueba que los dos discos virtuales existen, estan montados, se
+#           montaran solos tras reiniciar, y que las 7 carpetas de Boochan S.L.
+#           tienen los permisos correctos. No modifica NADA. Solo lee.
 #
 # USO:
 #   chmod +x verificar_fase6.sh
 #   sudo ./verificar_fase6.sh
 #
 # El informe se guarda en verificacion-fase-6.txt, en la carpeta actual.
+# Escenario completo: 99_Recursos/Escenario_Boochan_SL.md
 # =============================================================================
 
 # Sin 'set -e' A PROPOSITO: si una comprobacion falla queremos seguir con el
@@ -21,6 +22,12 @@
 INFORME="verificacion-fase-6.txt"
 FALLOS=0
 AVISOS=0
+
+BASE="/srv/samba/departamentos"
+COMUN="/srv/samba/comun"
+IMG_DEPTOS="/samba_deptos.img"
+IMG_COMUN="/samba_comun.img"
+DEPARTAMENTOS="facturacion contabilidad comercial logistica rrhh becarios"
 
 V='\033[0;32m'; R='\033[0;31m'; A='\033[0;33m'; N='\033[0m'
 ok()    { echo -e "${V}[OK]   ${N} $1"; echo "[OK]    $1" >> "$INFORME"; }
@@ -36,8 +43,9 @@ fi
 {
   echo "============================================================"
   echo " VERIFICACION DE LA FASE 6 - BoochanV1"
+  echo " Escenario: Boochan S.L. - 6 carpetas de departamento + comun"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
-  echo " Servidor: $(hostname) / $(hostname -f 2>/dev/null)"
+  echo " Servidor: $(hostname)"
   echo "============================================================"
 } > "$INFORME"
 cat "$INFORME"
@@ -45,34 +53,37 @@ cat "$INFORME"
 # =============================================================================
 # BLOQUE A - LO QUE VIENE DE LA FASE 5
 # =============================================================================
-# Los permisos de este apartado se dan al grupo 'policia'. Si el grupo no se ve,
-# el chown falla y la carpeta queda a nombre de root SIN QUE NADIE AVISE.
+# Los permisos de este apartado se dan a los grupos de departamento. Si un
+# grupo no se ve, el chown falla y la carpeta queda a nombre de root SIN AVISO.
 echo "" | tee -a "$INFORME"
-echo "--- A. Las identidades de la Fase 5 siguen en pie ---" | tee -a "$INFORME"
+echo "--- A. Los departamentos de la Fase 5 ---" | tee -a "$INFORME"
 
 if systemctl is-active winbind >/dev/null 2>&1; then
     ok "A1. winbind activo"
 else
-    fallo "A1. winbind NO esta activo - el sistema no vera el grupo 'policia'"
+    fallo "A1. winbind NO esta activo - el sistema no vera los grupos de departamento"
     info "     Arreglo: sudo systemctl enable --now winbind"
 fi
 
-if getent group policia >/dev/null 2>&1; then
-    ok "A2. El grupo 'policia' es visible (GID $(getent group policia | cut -d: -f3))"
+FALTAN=""
+for d in $DEPARTAMENTOS; do
+    getent group "$d" >/dev/null 2>&1 || FALTAN="$FALTAN $d"
+done
+if [ -z "$FALTAN" ]; then
+    ok "A2. Los 6 grupos de departamento son visibles"
 else
-    fallo "A2. El grupo 'policia' NO se ve - el chown de prueba3 no puede funcionar"
-    info "     Esto es un problema de la Fase 5. Arreglalo alli antes de seguir."
+    fallo "A2. No se ven estos grupos:$FALTAN"
+    info "     Problema de la Fase 5. Arreglalo alli antes de seguir."
 fi
 
 # =============================================================================
-# BLOQUE B - LOS FICHEROS DE DISCO EXISTEN Y TIENEN EL TAMANO CORRECTO
+# BLOQUE B - LOS DOS DISCOS VIRTUALES
 # =============================================================================
 echo "" | tee -a "$INFORME"
 echo "--- B. Los discos virtuales ---" | tee -a "$INFORME"
 
 comprueba_img() {
-    local IMG="$1"
-    local ETIQUETA="$2"
+    local IMG="$1" MB_MIN="$2" MB_MAX="$3" ETIQUETA="$4"
 
     if [ ! -f "$IMG" ]; then
         fallo "$ETIQUETA. No existe $IMG"
@@ -82,10 +93,10 @@ comprueba_img() {
 
     local MB
     MB=$(( $(stat -c %s "$IMG") / 1024 / 1024 ))
-    if [ "$MB" -ge 5000 ] && [ "$MB" -le 5240 ]; then
-        ok "$ETIQUETA. $IMG existe y mide ${MB} MB (~5 GB)"
+    if [ "$MB" -ge "$MB_MIN" ] && [ "$MB" -le "$MB_MAX" ]; then
+        ok "$ETIQUETA. $IMG existe y mide ${MB} MB"
     else
-        fallo "$ETIQUETA. $IMG mide ${MB} MB, deberian ser ~5120"
+        fallo "$ETIQUETA. $IMG mide ${MB} MB, fuera del rango esperado ($MB_MIN-$MB_MAX)"
         info "     El 'dd' se corto a medias. Mira el caso E4 del apartado 7."
     fi
 
@@ -98,26 +109,17 @@ comprueba_img() {
     fi
 }
 
-comprueba_img "/samba_p1.img" "B1"
-comprueba_img "/samba_p3.img" "B2"
+comprueba_img "$IMG_DEPTOS" 8000 8400 "B1"
+comprueba_img "$IMG_COMUN"  2000 2150 "B2"
 
 # =============================================================================
 # BLOQUE C - MONTAJE: AHORA Y TRAS REINICIAR
 # =============================================================================
-# 'Montado' y 'se montara solo' son dos preguntas distintas. Un disco montado a
-# mano desaparece en el proximo arranque y los datos parecen borrados.
 echo "" | tee -a "$INFORME"
 echo "--- C. Montaje ---" | tee -a "$INFORME"
 
 comprueba_montaje() {
-    local PUNTO="$1"
-    local IMG="$2"
-    local ETIQUETA="$3"
-
-    if [ ! -d "$PUNTO" ]; then
-        fallo "$ETIQUETA. No existe el punto de montaje $PUNTO"
-        return
-    fi
+    local PUNTO="$1" IMG="$2" ETIQUETA="$3"
 
     if mountpoint -q "$PUNTO"; then
         ok "$ETIQUETA. $PUNTO esta montado AHORA"
@@ -126,25 +128,21 @@ comprueba_montaje() {
         info "     Lo que escribas ahi NO va al disco virtual. Arreglo: sudo mount -a"
     fi
 
-    # La linea del fstab es lo unico que hace persistente el montaje.
     if grep -q "^[^#]*$IMG[[:space:]]\+$PUNTO" /etc/fstab 2>/dev/null; then
         ok "$ETIQUETA-bis. $PUNTO tiene su linea en /etc/fstab (sobrevive al reinicio)"
-
-        # Sin la opcion 'loop', el arranque puede quedarse colgado.
         if grep "^[^#]*$IMG[[:space:]]\+$PUNTO" /etc/fstab | grep -q "loop"; then
             ok "$ETIQUETA-ter. La linea lleva la opcion 'loop'"
         else
             fallo "$ETIQUETA-ter. La linea de $PUNTO NO lleva 'loop'"
-            info "     Sin 'loop' Linux trata el fichero como un disco fisico."
-            info "     NO REINICIES hasta arreglarlo. Mira el caso E1 del apartado 7."
+            info "     NO REINICIES hasta arreglarlo. Caso E1 del apartado 7."
         fi
     else
         fallo "$ETIQUETA-bis. $PUNTO no aparece en /etc/fstab - hoy funciona, manana no"
     fi
 }
 
-comprueba_montaje "/srv/samba/prueba1" "/samba_p1.img" "C1"
-comprueba_montaje "/srv/samba/prueba3" "/samba_p3.img" "C2"
+comprueba_montaje "$BASE"  "$IMG_DEPTOS" "C1"
+comprueba_montaje "$COMUN" "$IMG_COMUN"  "C2"
 
 # C3. El paracaidas: 'mount -a' en seco. Si esto falla, el arranque tambien.
 if mount -a --fake >/dev/null 2>&1; then
@@ -155,66 +153,105 @@ else
 fi
 
 # =============================================================================
-# BLOQUE D - PERMISOS: DONDE ESTA EL FALLO SILENCIOSO DE ESTA FASE
+# BLOQUE D - LAS SEIS CARPETAS DE DEPARTAMENTO
 # =============================================================================
+# Aqui esta el fallo silencioso: si winbind no veia el grupo cuando se ejecuto
+# el chown, la carpeta quedo a nombre de root. No da error y rompe la Fase 7.
 echo "" | tee -a "$INFORME"
-echo "--- D. Permisos de las carpetas ---" | tee -a "$INFORME"
+echo "--- D. Carpetas de departamento ---" | tee -a "$INFORME"
 
-# D1. prueba1: abierta a todos los usuarios del dominio.
-if [ -d /srv/samba/prueba1 ]; then
-    PERM1=$(stat -c %a /srv/samba/prueba1)
-    if [ "$PERM1" = "777" ]; then
-        ok "D1. /srv/samba/prueba1 con permisos 777"
-    else
-        fallo "D1. /srv/samba/prueba1 tiene permisos $PERM1, deberian ser 777"
+N=0
+for d in $DEPARTAMENTOS; do
+    N=$((N+1))
+    RUTA="$BASE/$d"
+
+    if [ ! -d "$RUTA" ]; then
+        fallo "D$N. No existe la carpeta $RUTA"
+        continue
     fi
-fi
 
-# D2. EL MAS IMPORTANTE DE LA FASE. Si winbind no veia el grupo cuando se
-#     ejecuto el chown, la carpeta quedo a nombre de root. No da ningun error
-#     y la Fase 7 no podra proteger nada.
-if [ -d /srv/samba/prueba3 ]; then
-    GRUPO3=$(stat -c %G /srv/samba/prueba3)
-    if [ "$GRUPO3" = "policia" ]; then
-        ok "D2. /srv/samba/prueba3 pertenece al grupo 'policia'"
-    else
-        fallo "D2. /srv/samba/prueba3 pertenece a '$GRUPO3', deberia ser 'policia'"
+    GRUPO=$(stat -c %G "$RUTA")
+    PERM=$(stat -c %a "$RUTA")
+
+    if [ "$GRUPO" != "$d" ]; then
+        fallo "D$N. $RUTA pertenece al grupo '$GRUPO', deberia ser '$d'"
         info "     El chown fallo (probablemente winbind estaba parado) y nadie aviso."
-        info "     FUNCIONA HOY y ROMPERA LA FASE 7. Mira el caso E6 del apartado 7."
-    fi
-
-    # D3. El bit setgid (el '2' de 2770) hace que lo que se cree dentro herede
-    #     el grupo. Sin el, cada fichero nuevo sale con el grupo de su autor.
-    PERM3=$(stat -c %a /srv/samba/prueba3)
-    if [ "$PERM3" = "2770" ]; then
-        ok "D3. /srv/samba/prueba3 con permisos 2770 (setgid puesto)"
-    elif [ "$PERM3" = "770" ]; then
-        fallo "D3. /srv/samba/prueba3 tiene 770: FALTA EL BIT SETGID"
-        info "     Los ficheros nuevos no heredaran el grupo 'policia'."
-        info "     Arreglo: sudo chmod 2770 /srv/samba/prueba3"
+        info "     FUNCIONA HOY y ROMPERA LA FASE 7. Caso E6 del apartado 7."
+    elif [ "$PERM" = "2770" ]; then
+        ok "D$N. $d -> grupo '$GRUPO', permisos 2770 (setgid puesto)"
+    elif [ "$PERM" = "770" ]; then
+        fallo "D$N. $d tiene 770: FALTA EL BIT SETGID"
+        info "     Los ficheros nuevos no heredaran el grupo '$d'."
+        info "     Arreglo: sudo chmod 2770 $RUTA"
     else
-        fallo "D3. /srv/samba/prueba3 tiene permisos $PERM3, deberian ser 2770"
-    fi
-fi
-
-# =============================================================================
-# BLOQUE E - LA CUOTA HACE SU TRABAJO
-# =============================================================================
-# El objetivo de la fase: que cada carpeta tenga un limite propio de 5 GB
-# INDEPENDIENTE del disco del servidor.
-echo "" | tee -a "$INFORME"
-echo "--- E. El limite de cada carpeta ---" | tee -a "$INFORME"
-
-for P in /srv/samba/prueba1 /srv/samba/prueba3; do
-    if mountpoint -q "$P"; then
-        TAM=$(df -BM --output=size "$P" 2>/dev/null | tail -1 | tr -dc '0-9')
-        if [ -n "$TAM" ] && [ "$TAM" -ge 4500 ] && [ "$TAM" -le 5240 ]; then
-            ok "E. $P tiene su propio limite de ~5 GB"
-        else
-            aviso "E. $P declara ${TAM} MB - revisa que sea el disco virtual y no el del sistema"
-        fi
+        fallo "D$N. $d tiene permisos $PERM, deberian ser 2770"
     fi
 done
+
+# =============================================================================
+# BLOQUE E - LA CARPETA COMUN Y SU STICKY BIT
+# =============================================================================
+# Sin el sticky bit, cualquiera puede borrar el fichero de cualquiera. Es el
+# mecanismo de /tmp, y aqui protege el trabajo de seis departamentos.
+echo "" | tee -a "$INFORME"
+echo "--- E. La carpeta comun ---" | tee -a "$INFORME"
+
+if [ -d "$COMUN" ]; then
+    PERM_C=$(stat -c %a "$COMUN")
+    if [ "$PERM_C" = "1777" ]; then
+        ok "E1. $COMUN con permisos 1777 (sticky bit puesto)"
+    elif [ "$PERM_C" = "777" ]; then
+        fallo "E1. $COMUN tiene 777: FALTA EL STICKY BIT"
+        info "     Cualquiera puede borrar el fichero de cualquiera."
+        info "     Arreglo: sudo chmod 1777 $COMUN"
+    else
+        fallo "E1. $COMUN tiene permisos $PERM_C, deberian ser 1777"
+    fi
+
+    # La 't' final es la marca visible del sticky bit en ls -ld.
+    if ls -ld "$COMUN" | cut -c1-10 | grep -q "t$"; then
+        ok "E2. La 't' del sticky bit se ve en ls -ld"
+    else
+        fallo "E2. No se ve la 't' en $(ls -ld "$COMUN" | cut -c1-10)"
+    fi
+else
+    fallo "E1. No existe $COMUN"
+fi
+
+# =============================================================================
+# BLOQUE F - CADA VOLUMEN CON SU LIMITE
+# =============================================================================
+echo "" | tee -a "$INFORME"
+echo "--- F. Los limites de cada volumen ---" | tee -a "$INFORME"
+
+comprueba_tamano() {
+    local PUNTO="$1" MIN="$2" MAX="$3" ETIQUETA="$4" NOMBRE="$5"
+    if mountpoint -q "$PUNTO"; then
+        local TAM
+        TAM=$(df -BM --output=size "$PUNTO" 2>/dev/null | tail -1 | tr -dc '0-9')
+        if [ -n "$TAM" ] && [ "$TAM" -ge "$MIN" ] && [ "$TAM" -le "$MAX" ]; then
+            ok "$ETIQUETA. $NOMBRE tiene su propio limite (~${TAM} MB)"
+        else
+            aviso "$ETIQUETA. $NOMBRE declara ${TAM} MB - revisa que sea el disco virtual"
+        fi
+    fi
+}
+
+comprueba_tamano "$BASE"  7000 8400 "F1" "El volumen de departamentos"
+comprueba_tamano "$COMUN" 1700 2150 "F2" "La carpeta comun"
+
+# F3. Que sean volumenes DISTINTOS es el objetivo: que llenar uno no afecte
+#     al otro. Si comparten dispositivo, la separacion no existe.
+if mountpoint -q "$BASE" && mountpoint -q "$COMUN"; then
+    DEV1=$(df --output=source "$BASE"  | tail -1)
+    DEV2=$(df --output=source "$COMUN" | tail -1)
+    if [ "$DEV1" != "$DEV2" ]; then
+        ok "F3. Son volumenes distintos: llenar la comun no afecta a los departamentos"
+    else
+        fallo "F3. Los dos puntos usan el MISMO dispositivo ($DEV1)"
+        info "     La separacion no existe: un usuario podria dejar sin sitio a todos."
+    fi
+fi
 
 # =============================================================================
 # VEREDICTO
@@ -235,10 +272,10 @@ echo "============================================================" | tee -a "$I
 {
   echo ""
   echo "ESTE SCRIPT NO HA COMPROBADO:"
-  echo "  - Que el limite de 5 GB frene de verdad (hay que llenarlo)"
-  echo "  - Que exista la instantanea 'Fase 6 terminada'"
-  echo "  - Que exista la copia .ova en tu disco externo"
-  echo "Esas tres se verifican A MANO. Las tienes en el apartado 8.a."
+  echo "  - Que el limite frene de verdad (hay que llenarlo con dd)"
+  echo "  - Que el sticky bit impida borrar lo ajeno (hay que probarlo)"
+  echo "  - Que exista la instantanea 'Fase 6 terminada' ni la copia .ova"
+  echo "Esas se verifican A MANO. Las tienes en el apartado 8.a."
 } | tee -a "$INFORME"
 
 if [ -n "$SUDO_USER" ]; then

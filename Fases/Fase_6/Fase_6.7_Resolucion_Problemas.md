@@ -16,7 +16,7 @@
 > | | Cuál | Cómo se manifiesta |
 > | :--- | :--- | :--- |
 > | **El ruidoso** | [[#E1 · El servidor no arranca tras editar el fstab\|E1]] | El servidor **no arranca**. Imposible no verlo |
-> | **El silencioso** | [[#E6 · La carpeta prueba3 pertenece a root y no a policia\|E6]] | Todo funciona. **La Fase 7 se cae** |
+> | **El silencioso** | [[#E6 · Una carpeta pertenece a root y no a su departamento\|E6]] | Todo funciona. **La Fase 7 se cae** |
 >
 > El primero da miedo y se arregla en cinco minutos. El segundo no da miedo y cuesta una tarde. **Léete los dos.**
 
@@ -30,8 +30,8 @@
 | `df -h` no muestra los discos de 5 GB | [[#E2 · df -h no muestra los discos\|E2]] |
 | `wrong fs type` al montar | [[#E3 · wrong fs type al montar\|E3]] |
 | `dd` falla: `No space left on device` | [[#E4 · dd falla por falta de espacio\|E4]] |
-| `chown: invalid group: 'policia'` | [[#E5 · invalid group policia\|E5]] |
-| **Todo va bien pero prueba3 es de `root`** | [[#E6 · La carpeta prueba3 pertenece a root y no a policia\|E6]] ⚠️ |
+| `chown: invalid group: 'contabilidad'` | [[#E5 · invalid group contabilidad\|E5]] |
+| **Todo va bien pero contabilidad es de `root`** | [[#E6 · Una carpeta pertenece a root y no a su departamento\|E6]] ⚠️ |
 | Los ficheros nuevos no heredan el grupo | [[#E7 · Los ficheros nuevos no heredan el grupo\|E7]] |
 | Tras reiniciar, los discos no están montados | [[#E8 · Tras reiniciar los discos no estan montados\|E8]] |
 
@@ -67,8 +67,8 @@
    ```
    Las dos líneas correctas son exactamente:
    ```
-   /samba_p1.img  /srv/samba/prueba1  ext4  loop,defaults  0  0
-   /samba_p3.img  /srv/samba/prueba3  ext4  loop,defaults  0  0
+   /samba_deptos.img  /srv/samba/departamentos/facturacion  ext4  loop,defaults  0  0
+   /samba_comun.img  /srv/samba/departamentos/contabilidad  ext4  loop,defaults  0  0
    ```
 5. **Antes de reiniciar**, comprueba en seco:
    ```bash
@@ -99,8 +99,8 @@
 
 **Comprobación.**
 ```bash
-ls -l /samba_p1.img /samba_p3.img      # ¿existen los ficheros?
-mountpoint /srv/samba/prueba1          # ¿es un punto de montaje?
+ls -l /samba_deptos.img /samba_comun.img      # ¿existen los ficheros?
+mountpoint /srv/samba/departamentos/facturacion          # ¿es un punto de montaje?
 grep samba /etc/fstab                  # ¿está declarado?
 ```
 
@@ -113,7 +113,7 @@ df -h | grep prueba
 > [!summary] Qué aprendes
 > Que **una carpeta y un punto de montaje se ven exactamente igual.** `ls` no distingue si detrás hay un disco o no; `mountpoint` y `df` sí.
 >
-> Es un error clásico y caro: se copian datos a `/srv/samba/prueba1` con el disco desmontado, luego se monta encima… **y los datos desaparecen de la vista.** No se han borrado: están debajo del montaje, tapados.
+> Es un error clásico y caro: se copian datos a `/srv/samba/departamentos/facturacion` con el disco desmontado, luego se monta encima… **y los datos desaparecen de la vista.** No se han borrado: están debajo del montaje, tapados.
 
 ---
 
@@ -121,21 +121,21 @@ df -h | grep prueba
 
 > [!bug] Síntoma
 > ```
-> mount: /srv/samba/prueba1: wrong fs type, bad option, bad superblock...
+> mount: /srv/samba/departamentos/facturacion: wrong fs type, bad option, bad superblock...
 > ```
 
 **Hipótesis.** El fichero `.img` no llegó a formatearse, o el `mkfs.ext4` se ejecutó sobre un fichero incompleto.
 
 **Comprobación.** Pregúntale al sistema qué hay dentro del fichero:
 ```bash
-sudo blkid /samba_p1.img
+sudo blkid /samba_deptos.img
 ```
 - **✅ Bien:** dice `TYPE="ext4"`.
 - **❌ Mal:** no devuelve nada → no tiene sistema de ficheros.
 
 **Arreglo.**
 ```bash
-sudo mkfs.ext4 /samba_p1.img
+sudo mkfs.ext4 /samba_deptos.img
 sudo mount -a
 ```
 
@@ -150,7 +150,7 @@ sudo mount -a
 
 > [!bug] Síntoma
 > ```
-> dd: error writing '/samba_p3.img': No space left on device
+> dd: error writing '/samba_comun.img': No space left on device
 > ```
 
 **Hipótesis.** El disco virtual de la VM —el `.vdi` que creaste en la Fase 1— **se ha quedado sin sitio**. Estás pidiendo 10 GB en dos ficheros sobre un disco de 20 GB que ya lleva el sistema y el dominio dentro.
@@ -158,12 +158,12 @@ sudo mount -a
 **Comprobación.**
 ```bash
 df -h /
-ls -lh /samba_p1.img /samba_p3.img
+ls -lh /samba_deptos.img /samba_comun.img
 ```
 
 **Arreglo.** Primero, **borra el fichero a medias**, que ocupa sin servir:
 ```bash
-sudo rm -f /samba_p3.img
+sudo rm -f /samba_comun.img
 df -h /
 ```
 Si aun así no hay 11 GB libres, tienes dos caminos:
@@ -171,34 +171,34 @@ Si aun así no hay 11 GB libres, tienes dos caminos:
 - **Ampliar el disco de la VM** desde VirtualBox *(la VM apagada, `Herramientas` → `Medios`)*.
 
 > [!summary] Qué aprendes
-> Que **un disco virtual no es magia: sale del disco real.** Los 5 GB de `prueba1` no aparecen de la nada — se los quitas al `.vdi`, que a su vez se los quita a tu disco físico.
+> Que **un disco virtual no es magia: sale del disco real.** Los 5 GB de `facturacion` no aparecen de la nada — se los quitas al `.vdi`, que a su vez se los quita a tu disco físico.
 >
 > Es la misma idea que la sobreventa de almacenamiento en la nube, y la razón de que un proveedor te cobre por gigabyte: **abajo del todo siempre hay un disco de verdad con un límite de verdad.**
 
 ---
 
-### E5 · `invalid group: 'policia'`
+### E5 · `invalid group: 'contabilidad'`
 
 > [!bug] Síntoma
 > ```
-> chown: invalid group: 'root:policia'
+> chown: invalid group: 'root:contabilidad'
 > ```
 
 **Hipótesis.** El sistema **no ve** el grupo. No es que no exista: es que `winbind` está parado o `nsswitch.conf` no le pregunta. El grupo vive en el dominio, no en `/etc/group`.
 
 **Comprobación.**
 ```bash
-getent group policia
+getent group contabilidad
 systemctl is-active winbind
 ```
 
 **Arreglo.**
 ```bash
 sudo systemctl enable --now winbind
-getent group policia
-sudo chown root:policia /srv/samba/prueba3
+getent group contabilidad
+sudo chown root:contabilidad /srv/samba/departamentos/contabilidad
 ```
-Si `getent` sigue sin devolver nada, el problema es de la Fase 5 → [[Fase_5.7_Resolucion_Problemas#E1 · id user1 no devuelve nada|caso E1 de la Fase 5]].
+Si `getent` sigue sin devolver nada, el problema es de la Fase 5 → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1 de la Fase 5]].
 
 > [!summary] Qué aprendes
 > Que **las fases se apoyan unas en otras de formas que no son evidentes.** Aquí estás dando permisos sobre carpetas —tema de la Fase 6— y el fallo está en el traductor de identidades de la Fase 5.
@@ -207,42 +207,42 @@ Si `getent` sigue sin devolver nada, el problema es de la Fase 5 → [[Fase_5.7_
 
 ---
 
-### E6 · La carpeta `prueba3` pertenece a `root` y no a `policia`
+### E6 · La carpeta `contabilidad` pertenece a `root` y no a `contabilidad`
 
 > [!bug] Síntoma
 > **Ninguno.** Los comandos pasaron, no hubo errores, la carpeta existe.
 >
 > Pero al mirarla:
 > ```bash
-> ls -ld /srv/samba/prueba3
-> drwxrws--- 2 root root 4096 ... /srv/samba/prueba3
+> ls -ld /srv/samba/departamentos/contabilidad
+> drwxrws--- 2 root root 4096 ... /srv/samba/departamentos/contabilidad
 > ```
-> Pone `root root`, y debería poner `root policia`.
+> Pone `root root`, y debería poner `root contabilidad`.
 
 **Hipótesis.** Cuando ejecutaste el `chown`, `winbind` no estaba levantado. Y aquí está lo grave: **si el `chown` se hizo en dos pasos o el grupo se resolvió a medias, la carpeta se queda con el grupo por defecto sin que el resultado final proteste.**
 
 **Comprobación.**
 ```bash
-ls -ld /srv/samba/prueba3
-stat -c '%U %G %a' /srv/samba/prueba3
-getent group policia
+ls -ld /srv/samba/departamentos/contabilidad
+stat -c '%U %G %a' /srv/samba/departamentos/contabilidad
+getent group contabilidad
 ```
-- **✅ Bien:** `root policia 2770`.
+- **✅ Bien:** `root contabilidad 2770`.
 - **❌ Mal:** cualquier otra cosa en la columna del grupo.
 
 **Arreglo.**
 ```bash
 sudo systemctl is-active winbind
-getent group policia
-sudo chown root:policia /srv/samba/prueba3
-sudo chmod 2770 /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+getent group contabilidad
+sudo chown root:contabilidad /srv/samba/departamentos/contabilidad
+sudo chmod 2770 /srv/samba/departamentos/contabilidad
+ls -ld /srv/samba/departamentos/contabilidad
 ```
 
 > [!danger] ⚠️ Por qué esto es el fallo caro de la fase
 > La carpeta **funciona**. Se puede montar, escribir y leer. `df` la muestra. Nada indica que haya un problema.
 >
-> El problema llega en la **Fase 7**, cuando protejas `prueba3` para que solo la vea el grupo `policia`. Si la carpeta pertenece a `root`, esa protección **no se aplica a nadie**: o no entra ningún usuario, o entran todos. Y el error que verás allí hablará de permisos denegados, sin mencionar esta fase.
+> El problema llega en la **Fase 7**, cuando protejas `contabilidad` para que solo la vea el grupo `contabilidad`. Si la carpeta pertenece a `root`, esa protección **no se aplica a nadie**: o no entra ningún usuario, o entran todos. Y el error que verás allí hablará de permisos denegados, sin mencionar esta fase.
 >
 > **Y hay una segunda trampa:** si tomas la instantánea con la carpeta mal, el fallo queda guardado dentro de tu punto de retorno.
 
@@ -256,22 +256,22 @@ ls -ld /srv/samba/prueba3
 ### E7 · Los ficheros nuevos no heredan el grupo
 
 > [!bug] Síntoma
-> La carpeta es del grupo `policia`, pero al crear un fichero dentro, el fichero sale con **otro grupo** — el personal de quien lo creó.
+> La carpeta es del grupo `contabilidad`, pero al crear un fichero dentro, el fichero sale con **otro grupo** — el personal de quien lo creó.
 
 **Hipótesis.** Falta el **bit setgid**: la carpeta tiene permisos `770` en lugar de `2770`.
 
 **Comprobación.**
 ```bash
-stat -c %a /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+stat -c %a /srv/samba/departamentos/contabilidad
+ls -ld /srv/samba/departamentos/contabilidad
 ```
 - **✅ Bien:** `2770`, y en `ls -ld` aparece una **`s`** donde iría la `x` del grupo: `drwxrws---`.
 - **❌ Mal:** `770`, y en `ls -ld` una `x` normal: `drwxrwx---`.
 
 **Arreglo.**
 ```bash
-sudo chmod 2770 /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+sudo chmod 2770 /srv/samba/departamentos/contabilidad
+ls -ld /srv/samba/departamentos/contabilidad
 ```
 
 > [!info] 🎓 Para qué sirve de verdad el setgid
@@ -296,7 +296,7 @@ ls -ld /srv/samba/prueba3
 **Comprobación.**
 ```bash
 grep samba /etc/fstab
-mountpoint /srv/samba/prueba1
+mountpoint /srv/samba/departamentos/facturacion
 ```
 
 **Arreglo.** Añade las dos líneas al `fstab` *(Paso 4 del procedimiento)* y **comprueba en seco antes de volver a reiniciar**:
@@ -306,10 +306,10 @@ df -h | grep prueba
 ```
 
 > [!danger] ⚠️ Y comprueba si has escrito datos con el disco desmontado
-> Si trabajaste en `/srv/samba/prueba1` sin el disco montado, esos ficheros están en el **disco del sistema**, y al montar encima quedan **tapados**. Para verlos hay que desmontar:
+> Si trabajaste en `/srv/samba/departamentos/facturacion` sin el disco montado, esos ficheros están en el **disco del sistema**, y al montar encima quedan **tapados**. Para verlos hay que desmontar:
 > ```bash
-> sudo umount /srv/samba/prueba1
-> ls -la /srv/samba/prueba1
+> sudo umount /srv/samba/departamentos/facturacion
+> ls -la /srv/samba/departamentos/facturacion
 > ```
 
 > [!summary] Qué aprendes

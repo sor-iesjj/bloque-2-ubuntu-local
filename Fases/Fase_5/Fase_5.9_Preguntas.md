@@ -8,11 +8,26 @@
 ---
 
 > [!help] Preguntas Críticas (Autoevaluación)
-> 1. ¿Por qué es mejor y más profesional dar permisos a un grupo que a un usuario individual?
+> 1. ¿Por qué es mejor y más profesional dar permisos a **un grupo** que a un usuario individual? Contesta pensando en qué pasa el día que `masao.sato` cambia de departamento.
 > 2. ¿Qué es el servicio **winbind** y por qué decimos que es el "traductor" del sistema?
-> 3. 🔬 **Reto práctico:** Ejecuta `id user1` e `id user2` en el servidor. Anota el UID y GID de cada uno. Ahora crea un archivo vacío dentro de `/srv/samba/prueba1/` con `sudo -u 'BOOCHANLAB\user1' touch /srv/samba/prueba1/test_user1.txt` y ejecuta `ls -la /srv/samba/prueba1/`. ¿A qué usuario y grupo pertenece el archivo? ¿Coincide con los IDs que anotaste?
-> 4. 🔬 **Reto práctico:** Intenta crear un usuario sin especificar UID: `sudo samba-tool user create user3 'P@ssw0rd'`. Luego ejecuta `id user3`. ¿Qué UID recibe? ¿Puedes predecir qué UID tendrá el próximo usuario sin especificarlo? ¿Por qué esto es un problema en un servidor de producción con permisos de carpetas?
-> 5. ¿Cómo verificarías en la terminal que un usuario de Samba es reconocido por el comando `ls -l`?
+> 3. 🔬 **Reto práctico:** ejecuta `id hiroshi.nohara` e `id misae.nohara`. Anota UID y GID de cada uno. Ahora crea un fichero en su nombre y mira de quién es:
+>    ```bash
+>    sudo mkdir -p /tmp/pruebas_fase5
+>    sudo -u 'BOOCHANLAB\hiroshi.nohara' touch /tmp/pruebas_fase5/hola.txt
+>    ls -l  /tmp/pruebas_fase5/
+>    ls -ln /tmp/pruebas_fase5/
+>    ```
+>    ¿A qué usuario y grupo pertenece? ¿Coincide con lo que anotaste? **¿Y qué diferencia hay entre lo que enseña `ls -l` y lo que enseña `ls -ln`?**
+> 4. 🔬 **Reto práctico:** crea un usuario **sin** especificar UID y mira qué número le toca:
+>    ```bash
+>    sudo samba-tool user create prueba.temporal 'P@ssw0rd'
+>    id prueba.temporal
+>    sudo samba-tool user delete prueba.temporal
+>    ```
+>    ¿Podrías predecir qué UID tendría el siguiente? ¿Por qué eso es un problema en un servidor donde hay permisos sobre carpetas?
+> 5. **Los becarios.** `shinnosuke.nohara` y `himawari.nohara` están solo en el grupo `becarios`. En la Fase 7 no van a poder acceder a nada más. **¿Qué habría pasado si por error los hubieras metido también en `contabilidad`?** ¿Cuándo te habrías dado cuenta?
+> 6. **La pregunta del escenario:** contabilidad lleva las cuentas de toda la empresa, pero **no tiene acceso a RRHH**. Léelo en [[Escenario_Boochan_SL]] y explica con tus palabras por qué esa decisión es correcta, aunque parezca contradictoria.
+> 7. Has creado seis grupos y doce usuarios, y **la mitad con un bucle**. ¿Qué ventaja tiene automatizarlo? ¿Y qué riesgo, si el bucle estuviera mal escrito?
 
 ---
 

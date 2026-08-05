@@ -247,7 +247,7 @@ id user1
 | :--- | :--- |
 | `#effective:r--` en la línea del grupo | Fase 7 → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica\|caso E6]] |
 | `user1` no sale en `policia` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E6 · El usuario no está en su grupo\|caso E6]] |
-| `id user1` da un UID que no es `10001` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse\|caso E7]] |
+| `id user1` da un UID que no es `10001` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario\|caso E7]] |
 
 > [!summary] Qué aprendes
 > Que **el cliente casi nunca es el culpable.** Windows te está informando fielmente de lo que el servidor le deja hacer.

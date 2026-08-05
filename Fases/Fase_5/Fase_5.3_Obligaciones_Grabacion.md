@@ -52,14 +52,14 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 **2A — Gestión de identidades** · `B2 · F5 · Gestión de identidades`
 
 > [!danger] 🔢 La parte que más puntúa NO es crear los usuarios
-> Es **enseñar que llevan los números correctos**. Cuando ejecutes `id user1`, detente y di en voz alta qué número esperabas ver y cuál ves.
+> Es **enseñar que llevan los números correctos**. Cuando ejecutes `id hiroshi.nohara`, detente y di en voz alta qué número esperabas ver y cuál ves.
 >
 > Explica también, con tus palabras, **por qué llevan `--uid-number`** y qué pasaría sin él. Si eso no se oye en el vídeo, se corrige como si no lo supieras.
 
 - Que se vea el `nsswitch.conf` **antes y después** del cambio.
 - Los grupos y los usuarios creados, con sus comandos completos a la vista.
 - Y sin cortar, **las seis comprobaciones del apartado 8.a**, una a una, diciendo qué esperas ver **antes** de ejecutar cada una.
-- **La comprobación 4 —`id user1`— explícala despacio.** Es la que evita que la Fase 7 falle.
+- **La comprobación 4 —`id hiroshi.nohara`— explícala despacio.** Es la que evita que la Fase 7 falle.
 
 **2B — Laboratorio de averías** · `B2 · F5 · Laboratorio de averías`
 - **Tu predicción, en voz alta, ANTES de cada rotura.** Es lo que más se valora de este vídeo.

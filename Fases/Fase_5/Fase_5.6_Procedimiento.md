@@ -8,7 +8,7 @@
 ---
 
 > [!abstract] 🏢 A partir de aquí trabajas para una empresa
-> Se acabó el `user1` y el `user2`. Vas a dar de alta a **los doce trabajadores de Boochan S.L.**, repartidos en **seis departamentos**.
+> Se acabó el `hiroshi.nohara` y el `misae.nohara`. Vas a dar de alta a **los doce trabajadores de Boochan S.L.**, repartidos en **seis departamentos**.
 >
 > **Ten abierta la ficha del escenario mientras trabajas:** [[Escenario_Boochan_SL]]. Ahí están los nombres, los UID y los GID exactos, y es la fuente de verdad de las fases 5 a 8.
 
@@ -184,8 +184,8 @@
 >
 > - **✅ Bien:** los doce aparecen con los UID **`10001`** a **`10012`** y sus GID correspondientes, **exactamente** los del escenario.
 > - **❌ Mal:**
->   - `NO SE ENCUENTRA` → [[Fase_5.7_Resolucion_Problemas#E1 · id user1 no devuelve nada|caso E1]]
->   - **Otros números** → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse|caso E7]]
+>   - `NO SE ENCUENTRA` → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1]]
+>   - **Otros números** → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario|caso E7]]
 >
 > > [!info] 🎓 Este bucle es tu primera herramienta de auditoría
 > > No crea nada: **comprueba**. Y en dos segundos te dice si doce identidades están bien, cosa que a mano te llevaría doce comandos y dos despistes.

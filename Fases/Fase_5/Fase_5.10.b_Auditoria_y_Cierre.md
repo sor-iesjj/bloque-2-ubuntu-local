@@ -20,22 +20,37 @@
 - [ ] `systemctl is-enabled winbind` → **`enabled`**.
 - [ ] `/etc/nsswitch.conf` con `winbind` en las líneas `passwd` **y** `group`.
 
-## **2 · LOS GRUPOS**
+## **2 · LOS SEIS DEPARTAMENTOS**
 
-- [ ] `getent group policia` → GID **`3001`**.
-- [ ] `getent group bomberos` → GID **`3002`**.
-- [ ] `sudo samba-tool group listmembers policia` incluye a **`user1`**.
-- [ ] `sudo samba-tool group listmembers bomberos` incluye a **`user2`**.
+- [ ] `facturacion` → GID **`3001`** · `contabilidad` → **`3002`** · `comercial` → **`3003`**
+- [ ] `logistica` → GID **`3004`** · `rrhh` → **`3005`** · `becarios` → **`3006`**
+- [ ] Cada uno con **exactamente dos miembros**, los del escenario.
 
-## **3 · 🔴 LAS IDENTIDADES UNIX**
+```bash
+for g in facturacion contabilidad comercial logistica rrhh becarios; do
+    echo "--- $g  (GID $(getent group $g | cut -d: -f3))"
+    sudo samba-tool group listmembers "$g"
+done
+```
 
-- [ ] `id user1` → **`uid=10001 gid=3001`**, exactamente.
-- [ ] `id user2` → **`uid=10002 gid=3002`**, exactamente.
-- [ ] Los dos UID son **distintos entre sí**.
-- [ ] `sudo samba-tool user list` **no** muestra `user3` ni `user4` *(los del laboratorio)*.
+## **3 · 🔴 LAS DOCE IDENTIDADES UNIX**
 
-> [!danger] ⚠️ Si alguna de las dos primeras casillas falla, PARA AQUÍ
-> No es un detalle: es el fallo que hace fracasar la Fase 7 sin dar ninguna pista. Arréglalo ahora con el [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse|caso E7]] y vuelve a tomar la instantánea.
+- [ ] Los **doce** trabajadores con UID **`10001`** a **`10012`**, **exactamente** los de [[Escenario_Boochan_SL]].
+- [ ] Cada uno con el **GID de su departamento**.
+- [ ] **Ningún UID repetido.**
+- [ ] Los dos becarios **solo** en `becarios`, en ningún departamento operativo.
+- [ ] `sudo samba-tool user list` **no** muestra `prueba.temporal` ni `duplicado.temporal` *(los del laboratorio)*.
+
+```bash
+for u in hiroshi.nohara nene.sakurada misae.nohara toru.kazama \
+         masao.sato ai.suotome bo.suzuki midori.yoshinaga \
+         ume.matsuzaka bunta.takakura shinnosuke.nohara himawari.nohara; do
+    printf '%-20s ' "$u"; id "$u" 2>/dev/null || echo "NO SE ENCUENTRA"
+done
+```
+
+> [!danger] ⚠️ Si algún UID no es el del escenario, PARA AQUÍ
+> No es un detalle: es el fallo que hace fracasar la Fase 7 sin dar ninguna pista. Arréglalo ahora con el [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario|caso E7]] y vuelve a tomar la instantánea.
 
 ## **4 · LA BASE DE LA FASE 4 SIGUE EN PIE**
 

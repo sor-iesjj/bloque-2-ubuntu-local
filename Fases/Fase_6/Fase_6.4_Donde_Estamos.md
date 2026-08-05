@@ -17,15 +17,15 @@
 > Crear **discos virtuales independientes** (Loop Devices) con tamaños limitados (5GB cada uno) para que el servidor tenga **cuotas físicas infranqueables**. Si un disco llena, solo ese "usuario" o "departamento" se ve afectado — el resto del servidor continúa funcionando.
 
 > [!tip] Hoja de Ruta
-> 1. Crear carpetas de montaje en `/srv/samba/` para los discos virtuales (`prueba1` y `prueba3`)
+> 1. Crear carpetas de montaje en `/srv/samba/` para los discos virtuales (`facturacion` y `contabilidad`)
 > 2. Generar dos archivos imagen de 5GB cada uno con `dd` (archivo binario lleno de ceros)
 > 3. Formatear cada imagen con el sistema de archivos ext4
 > 4. Editar `/etc/fstab` para que los discos se monten automáticamente al reiniciar (con la palabra clave `loop`)
 > 5. Montar los discos con `mount -a` (sin reiniciar)
-> 6. Asignar permisos: `prueba1` accesible para todos (777), `prueba3` solo para el grupo `policia` (2770)
+> 6. Asignar permisos: `facturacion` accesible para todos (777), `contabilidad` solo para el grupo `contabilidad` (2770)
 > 7. Verificar con `df -h` que aparecen los discos de 5GB; intentar llenarlos para comprobar que la barrera física es infranqueable
 >
-> **Resultado Final:** Dos discos virtuales independientes montados en `/srv/samba/prueba1` y `/srv/samba/prueba3`, cada uno con límite físico de 5GB. El servidor está protegido contra llenado de disco.
+> **Resultado Final:** Dos discos virtuales independientes montados en `/srv/samba/departamentos/facturacion` y `/srv/samba/departamentos/contabilidad`, cada uno con límite físico de 5GB. El servidor está protegido contra llenado de disco.
 > **Siguiente:** Fase 7 (Seguridad Avanzada) — aplicarás ACLs y ABE para controlar quién ve y accede a cada carpeta.
 
 ---

@@ -11,7 +11,7 @@
 > 1. ¿Por qué un **Loop Device** es más seguro que una cuota de software tradicional?
 > 2. ¿Qué representa exactamente el parámetro `bs=1M` en el comando `dd`?
 > 3. ¿Qué pasaría con los archivos de los usuarios si el servidor se reinicia y no hemos configurado el `fstab`?
-> 4. 🔬 **Reto práctico:** Intenta llenar el disco virtual ejecutando: `dd if=/dev/zero of=/srv/samba/prueba1/lleno.img bs=1M count=6000 2>&1`. ¿Qué mensaje de error aparece cuando el disco se queda sin espacio? Borra el archivo con `rm /srv/samba/prueba1/lleno.img` y comprueba con `df -h` que el espacio se ha liberado. Acabas de ver en acción la cuota física — y por qué el resto del servidor no se ve afectado.
+> 4. 🔬 **Reto práctico:** Intenta llenar el disco virtual ejecutando: `dd if=/dev/zero of=/srv/samba/departamentos/facturacion/lleno.img bs=1M count=6000 2>&1`. ¿Qué mensaje de error aparece cuando el disco se queda sin espacio? Borra el archivo con `rm /srv/samba/departamentos/facturacion/lleno.img` y comprueba con `df -h` que el espacio se ha liberado. Acabas de ver en acción la cuota física — y por qué el resto del servidor no se ve afectado.
 > 5. 🔬 **Reto práctico:** Ejecuta `df -h | grep samba`. ¿Cuánto espacio queda libre en cada disco? Ahora ejecuta `df -h /` (la raíz del sistema). ¿Qué ocurriría con la raíz si no hubieras usado Loop Devices y los usuarios hubieran llenado el disco del servidor?
 
 ---

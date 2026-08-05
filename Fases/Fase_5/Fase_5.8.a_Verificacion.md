@@ -51,7 +51,7 @@ systemctl is-enabled winbind
 
 - **✅ Bien:** `active` y `enabled`.
 - **❌ Mal:**
-  - `inactive` → [[Fase_5.7_Resolucion_Problemas#E1 · id user1 no devuelve nada|caso E1]]
+  - `inactive` → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1]]
   - `disabled` → [[Fase_5.7_Resolucion_Problemas#E8 · Tras reiniciar los usuarios han desaparecido|caso E8]]
 
 > [!warning] ⚠️ `active` sin `enabled` es una bomba de relojería
@@ -81,8 +81,8 @@ done
 
 - **✅ Bien:** los doce, con UID **`10001`** a **`10012`** y sus GID, **exactamente** como en [[Escenario_Boochan_SL]].
 - **❌ Mal:**
-  - `NO SE ENCUENTRA` → [[Fase_5.7_Resolucion_Problemas#E1 · id user1 no devuelve nada|caso E1]]
-  - **Otros números** → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse|caso E7]]
+  - `NO SE ENCUENTRA` → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1]]
+  - **Otros números** → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario|caso E7]]
 
 > [!danger] 🛑 ESTA ES LA COMPROBACIÓN MÁS IMPORTANTE DE LA FASE
 > Que `id` responda **no basta**. Tiene que responder **con los números del escenario**.

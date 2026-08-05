@@ -13,7 +13,7 @@
 > No saltes a la solución. **La comprobación es la parte que te enseña a diagnosticar**, y es la que vas a necesitar el día que el fallo no esté en ninguna lista.
 
 > [!danger] 🛑 Esta fase tiene un fallo que NO da ningún error
-> Es el **[[#E7 · Los UID no son los que yo puse|caso E7]]**: los usuarios existen, `id` responde, todo parece correcto — pero con números distintos a los que pusiste. **Los permisos de la Fase 7 se te caerán sin que nada apunte aquí.**
+> Es el **[[#E7 · Los UID no son los del escenario|caso E7]]**: los usuarios existen, `id` responde, todo parece correcto — pero con números distintos a los que pusiste. **Los permisos de la Fase 7 se te caerán sin que nada apunte aquí.**
 >
 > Si solo vas a leer un caso de esta página, lee ese.
 
@@ -23,22 +23,22 @@
 
 | Lo que ves | Caso |
 | :--- | :--- |
-| `id user1` no devuelve nada | [[#E1 · id user1 no devuelve nada\|E1]] |
+| `id hiroshi.nohara` no devuelve nada | [[#E1 · Un usuario no aparece con id\|E1]] |
 | El usuario existe en el dominio pero Linux no lo ve | [[#E2 · El usuario existe en el dominio pero Linux no lo ve\|E2]] |
 | `Password too weak` / la contraseña no se acepta | [[#E3 · La contraseña no se acepta\|E3]] |
 | `Group already exists` o `User already exists` | [[#E4 · Ya existe el grupo o el usuario\|E4]] |
 | Error de esquema LDAP en `addunixattrs` | [[#E5 · addunixattrs da error de esquema LDAP\|E5]] |
 | El usuario no aparece en su grupo | [[#E6 · El usuario no está en su grupo\|E6]] |
-| **Todo funciona pero los UID no son los míos** | [[#E7 · Los UID no son los que yo puse\|E7]] ⚠️ |
+| **Todo funciona pero los UID no son los míos** | [[#E7 · Los UID no son los del escenario\|E7]] ⚠️ |
 | Funciona hoy; tras reiniciar, los usuarios desaparecen | [[#E8 · Tras reiniciar los usuarios han desaparecido\|E8]] |
 
 ---
 
-### E1 · `id user1` no devuelve nada
+### E1 · Un usuario no aparece con id
 
 > [!bug] Síntoma
 > ```
-> id: 'user1': no such user
+> id: 'hiroshi.nohara': no such user
 > ```
 > O el comando no devuelve absolutamente nada.
 
@@ -46,7 +46,7 @@
 
 **Comprobación.** Separa las dos preguntas — *"¿existe?"* y *"¿lo veo?"*:
 ```bash
-sudo samba-tool user list | grep user1      # ¿existe en el dominio?
+sudo samba-tool user list | grep hiroshi.nohara      # ¿existe en el dominio?
 systemctl is-active winbind                 # ¿el traductor está vivo?
 grep -E "^passwd:|^group:" /etc/nsswitch.conf   # ¿Linux le pregunta?
 ```
@@ -69,7 +69,7 @@ grep -E "^passwd:|^group:" /etc/nsswitch.conf   # ¿Linux le pregunta?
 ### E2 · El usuario existe en el dominio pero Linux no lo ve
 
 > [!bug] Síntoma
-> `sudo samba-tool user list` **sí** muestra `user1`, pero `id user1` sigue diciendo que no existe.
+> `sudo samba-tool user list` **sí** muestra `hiroshi.nohara`, pero `id hiroshi.nohara` sigue diciendo que no existe.
 
 **Hipótesis.** Winbind está en medio y no hace su trabajo: o no habla con el dominio, o `nsswitch.conf` no le pasa la pregunta.
 
@@ -77,12 +77,12 @@ grep -E "^passwd:|^group:" /etc/nsswitch.conf   # ¿Linux le pregunta?
 ```bash
 wbinfo -p                    # ¿winbind responde?
 wbinfo -u                    # ¿ve los usuarios del dominio?
-getent passwd user1          # ¿el sistema lo resuelve por la vía normal?
+getent passwd hiroshi.nohara          # ¿el sistema lo resuelve por la vía normal?
 ```
 
 | Resultado | Dónde está el problema |
 | :--- | :--- |
-| `wbinfo -u` **sí** lista a `user1`, `getent` **no** | En `nsswitch.conf`: winbind sabe, pero nadie le pregunta |
+| `wbinfo -u` **sí** lista a `hiroshi.nohara`, `getent` **no** | En `nsswitch.conf`: winbind sabe, pero nadie le pregunta |
 | `wbinfo -u` **tampoco** lo lista | En winbind: no está hablando con el dominio |
 | `wbinfo -p` falla | El servicio está muerto |
 
@@ -103,7 +103,7 @@ wbinfo -u
 
 > [!bug] Síntoma
 > ```
-> ERROR: Failed to add user 'user1': Password does not meet complexity requirements
+> ERROR: Failed to add user 'hiroshi.nohara': Password does not meet complexity requirements
 > ```
 
 **Hipótesis.** Active Directory trae una **política de contraseñas activada de fábrica**: longitud mínima y mezcla de mayúsculas, minúsculas, números y símbolos.
@@ -129,9 +129,9 @@ sudo samba-tool domain passwordsettings show
 
 > [!bug] Síntoma
 > ```
-> ERROR: Unable to add group 'policia': Group 'policia' already exists
+> ERROR: Unable to add group 'facturacion': Group 'facturacion' already exists
 > ```
-> Lo mismo con `user1` o `user2`.
+> Lo mismo con `hiroshi.nohara` o `misae.nohara`.
 
 **Hipótesis.** Lo creaste en un intento anterior. **El comando no es idempotente**: ejecutarlo dos veces no da el mismo resultado que ejecutarlo una.
 
@@ -139,15 +139,15 @@ sudo samba-tool domain passwordsettings show
 ```bash
 sudo samba-tool group list
 sudo samba-tool user list
-getent group policia
-id user1
+getent group facturacion
+id hiroshi.nohara
 ```
 
 **Arreglo.** Si lo que existe **ya está bien** (el `getent` y el `id` devuelven los números correctos), **no toques nada**: el paso ya estaba hecho. Solo si está mal:
 ```bash
-sudo samba-tool group delete policia
-sudo samba-tool group add policia
-sudo samba-tool group addunixattrs policia 3001
+sudo samba-tool group delete facturacion
+sudo samba-tool group add facturacion
+sudo samba-tool group addunixattrs facturacion 3001
 ```
 
 > [!summary] Qué aprendes
@@ -160,7 +160,7 @@ sudo samba-tool group addunixattrs policia 3001
 ### E5 · `addunixattrs` da error de esquema LDAP
 
 > [!bug] Síntoma
-> Al ejecutar `sudo samba-tool group addunixattrs policia 3001`:
+> Al ejecutar `sudo samba-tool group addunixattrs facturacion 3001`:
 > ```
 > ERROR: ... no such attribute ... gidNumber
 > ```
@@ -191,24 +191,24 @@ grep -i rfc2307 /etc/samba/smb.conf
 ### E6 · El usuario no está en su grupo
 
 > [!bug] Síntoma
-> `id user1` responde con su UID y su GID, pero al mirar los grupos:
+> `id hiroshi.nohara` responde con su UID y su GID, pero al mirar los grupos:
 > ```bash
-> id -nG user1
+> id -nG hiroshi.nohara
 > ```
-> no aparece `policia`.
+> no aparece `facturacion`.
 
 **Hipótesis.** Se creó el usuario con `--gid-number=3001`, pero **no se ejecutó** el `samba-tool group addmembers`. Son dos cosas distintas y hacen falta las dos.
 
 **Comprobación.**
 ```bash
-sudo samba-tool group listmembers policia
-id -nG user1
+sudo samba-tool group listmembers facturacion
+id -nG hiroshi.nohara
 ```
 
 **Arreglo.**
 ```bash
-sudo samba-tool group addmembers policia user1
-id -nG user1
+sudo samba-tool group addmembers facturacion hiroshi.nohara
+id -nG hiroshi.nohara
 ```
 
 > [!info] 🎓 Entonces, ¿para qué sirve cada cosa?
@@ -222,14 +222,14 @@ id -nG user1
 
 ---
 
-### E7 · Los UID no son los que yo puse
+### E7 · Los UID no son los del escenario
 
 > [!bug] Síntoma
 > **Ninguno.** Y ese es el problema.
 >
-> `id user1` responde, el usuario existe, todo va bien. Pero devuelve algo así:
+> `id hiroshi.nohara` responde, el usuario existe, todo va bien. Pero devuelve algo así:
 > ```
-> uid=3000019(user1) gid=100(users)
+> uid=3000019(hiroshi.nohara) gid=100(users)
 > ```
 > en lugar de `uid=10001 gid=3001`.
 
@@ -237,25 +237,25 @@ id -nG user1
 
 **Comprobación.**
 ```bash
-id user1
-id user2
-getent group policia
+id hiroshi.nohara
+id misae.nohara
+getent group facturacion
 ```
 - **✅ Bien:** `uid=10001 gid=3001` y `uid=10002 gid=3002`, exactamente.
 - **❌ Mal:** cualquier otro número.
 
 **Arreglo.** Asigna los atributos Unix a mano y reinicia el traductor para que se entere:
 ```bash
-sudo samba-tool user addunixattrs user1 10001
+sudo samba-tool user addunixattrs hiroshi.nohara 10001
 sudo systemctl restart winbind
-id user1
+id hiroshi.nohara
 ```
 Si sigue sin cuadrar, borra el usuario y créalo otra vez **con los parámetros completos** del Paso 3.
 
 > [!danger] ⚠️ Por qué esto es el fallo caro de la fase
 > Un UID asignado automáticamente **funciona perfectamente hoy**. El usuario entra, crea ficheros, todo normal.
 >
-> El problema llega en la **Fase 7**, cuando pongas permisos sobre carpetas usando esos números. Y sobre todo si alguna vez restauras una instantánea o rehaces el dominio: **los números automáticos pueden salir distintos la segunda vez**, y entonces los ficheros de `user1` pasan a pertenecer a un usuario que no existe. Verás `10001` como propietario en lugar de un nombre, y nadie podrá acceder a sus datos.
+> El problema llega en la **Fase 7**, cuando pongas permisos sobre carpetas usando esos números. Y sobre todo si alguna vez restauras una instantánea o rehaces el dominio: **los números automáticos pueden salir distintos la segunda vez**, y entonces los ficheros de `hiroshi.nohara` pasan a pertenecer a un usuario que no existe. Verás `10001` como propietario en lugar de un nombre, y nadie podrá acceder a sus datos.
 >
 > **En el mundo Unix, un usuario NO es su nombre: es su número.** El nombre es una etiqueta que se le pone encima.
 
@@ -269,9 +269,9 @@ Si sigue sin cuadrar, borra el usuario y créalo otra vez **con los parámetros 
 ### E8 · Tras reiniciar, los usuarios han desaparecido
 
 > [!bug] Síntoma
-> Ayer `id user1` funcionaba. Hoy, tras encender la máquina:
+> Ayer `id hiroshi.nohara` funcionaba. Hoy, tras encender la máquina:
 > ```
-> id: 'user1': no such user
+> id: 'hiroshi.nohara': no such user
 > ```
 > Y tú no has tocado nada.
 
@@ -288,7 +288,7 @@ systemctl is-enabled winbind
 ```bash
 sudo systemctl enable --now winbind
 systemctl is-enabled winbind
-id user1
+id hiroshi.nohara
 ```
 
 > [!summary] Qué aprendes

@@ -67,14 +67,14 @@
 > **Qué dejará de funcionar, en cadena:**
 > 1. Se para el traductor
 > 2. Linux deja de poder convertir "usuario del dominio" en "usuario que entiendo"
-> 3. `id user1` empieza a decir que no existe
+> 3. `id hiroshi.nohara` empieza a decir que no existe
 > 4. Y los usuarios **siguen ahí**, perfectamente creados, en la base de datos del dominio
 >
 > **Por qué provocamos esta:** porque el síntoma —*"se han borrado los usuarios"*— es **falso**. No se ha borrado nada. Y quien no lo sepa, empezará a recrearlos encima.
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. ¿Seguirá funcionando tu conexión SSH?
-> 2. ¿Seguirá `samba-tool user list` mostrando a `user1`?
+> 2. ¿Seguirá `samba-tool user list` mostrando a `hiroshi.nohara`?
 > 3. ¿Se habrá borrado algo?
 >
 > **Escribe tus tres respuestas antes de seguir.**
@@ -87,9 +87,9 @@ sudo systemctl stop winbind
 ### **2 · Comprobar**
 ```bash
 systemctl is-active winbind
-id user1
-sudo samba-tool user list | grep user1
-getent passwd user1
+id hiroshi.nohara
+sudo samba-tool user list | grep hiroshi.nohara
+getent passwd hiroshi.nohara
 ```
 
 **Cómo se interpreta lo que sale:**
@@ -97,8 +97,8 @@ getent passwd user1
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
 | `is-active` | `inactive` | El traductor está parado |
-| `id user1` | `no such user` | Linux no puede resolverlo |
-| `samba-tool user list` | **Aparece `user1`** | El usuario **existe**. No se ha perdido nada |
+| `id hiroshi.nohara` | `no such user` | Linux no puede resolverlo |
+| `samba-tool user list` | **Aparece `hiroshi.nohara`** | El usuario **existe**. No se ha perdido nada |
 | `getent passwd` | Nada | La vía normal tampoco lo encuentra |
 
 **Y tu sesión SSH sigue funcionando**, porque `boochan` es un usuario **local**, no del dominio.
@@ -110,9 +110,9 @@ Un servidor con todos sus usuarios intactos y **ninguno utilizable**. Nadie podr
 ```bash
 sudo systemctl start winbind
 sleep 3
-id user1
+id hiroshi.nohara
 ```
-- **✅ Reparado:** `id user1` vuelve a devolver `uid=10001 gid=3001`.
+- **✅ Reparado:** `id hiroshi.nohara` vuelve a devolver `uid=10001 gid=3001`.
 
 > [!success] 🎓 La lección
 > **"No existe" y "no lo veo" son cosas distintas**, y el sistema te dice siempre la segunda.
@@ -145,8 +145,8 @@ grep -E "^passwd:|^group:" /etc/nsswitch.conf
 ```bash
 systemctl is-active winbind
 wbinfo -u
-id user1
-getent passwd user1
+id hiroshi.nohara
+getent passwd hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```
 
@@ -156,13 +156,13 @@ sudo ./verificar_fase5.sh
 | :--- | :--- | :--- |
 | `is-active` | **`active`** | El traductor está **perfecto** |
 | `wbinfo -u` | **Lista los usuarios** | Y además está hablando con el dominio |
-| `id user1` | `no such user` | Pero nadie le pregunta a él |
+| `id hiroshi.nohara` | `no such user` | Pero nadie le pregunta a él |
 | El verificador | **FALLO en `B3`/`B4`** | Señala el fichero exacto |
 
 > [!danger] 🤯 Compara esto con la avería 1
 > **El mismo síntoma. Otra causa.** En la 1, winbind estaba muerto. Aquí está vivo y respondiendo — solo que Linux no le consulta.
 >
-> Si te limitas a mirar `id user1`, las dos averías son idénticas. **`wbinfo` es lo que las separa**, porque pregunta por un camino distinto.
+> Si te limitas a mirar `id hiroshi.nohara`, las dos averías son idénticas. **`wbinfo` es lo que las separa**, porque pregunta por un camino distinto.
 
 ### **3 · Consecuencias**
 Idénticas a la avería 1 de cara al usuario: nadie del dominio puede entrar. Pero quien diagnostique mirando el servicio dirá *"winbind está bien"* y se quedará atascado, porque está mirando la pieza equivocada.
@@ -171,7 +171,7 @@ Idénticas a la avería 1 de cara al usuario: nadie del dominio puede entrar. Pe
 ```bash
 sudo mv /etc/nsswitch.conf.bak /etc/nsswitch.conf
 grep -E "^passwd:|^group:" /etc/nsswitch.conf
-id user1
+id hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```
 - **✅ Reparado:** las dos líneas vuelven a terminar en `winbind` y el verificador en `FASE 5 SUPERADA`.
@@ -186,25 +186,25 @@ sudo ./verificar_fase5.sh
 # **AVERÍA 3 · EL USUARIO QUE YA NO PERTENECE A SU GRUPO**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** sacar a `user1` del grupo `policia` dentro del dominio.
+> **Qué vamos a provocar:** sacar a `hiroshi.nohara` del grupo `facturacion` dentro del dominio.
 >
 > **Por qué provocamos esta:** porque es la avería que **prepara la Fase 7**. Allí los permisos se darán al grupo; un usuario fuera del grupo tendrá una cuenta perfecta y no verá sus carpetas.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Seguirá existiendo `user1`?
-> 2. ¿Cambiará algo en `id -u user1`?
-> 3. ¿Y en `id -nG user1`?
+> 1. ¿Seguirá existiendo `hiroshi.nohara`?
+> 2. ¿Cambiará algo en `id -u hiroshi.nohara`?
+> 3. ¿Y en `id -nG hiroshi.nohara`?
 
 ### **1 · Romper**
 ```bash
-sudo samba-tool group removemembers policia user1
+sudo samba-tool group removemembers facturacion hiroshi.nohara
 ```
 
 ### **2 · Comprobar**
 ```bash
-id -u user1
-id -nG user1
-sudo samba-tool group listmembers policia
+id -u hiroshi.nohara
+id -nG hiroshi.nohara
+sudo samba-tool group listmembers facturacion
 sudo ./verificar_fase5.sh
 ```
 
@@ -212,23 +212,23 @@ sudo ./verificar_fase5.sh
 
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
-| `id -u user1` | **`10001`** | El usuario está perfecto |
-| `id -nG user1` | Ya no sale `policia` | Pero ha perdido su pertenencia |
-| `listmembers` | Lista vacía o sin `user1` | El dominio tampoco lo cuenta |
+| `id -u hiroshi.nohara` | **`10001`** | El usuario está perfecto |
+| `id -nG hiroshi.nohara` | Ya no sale `facturacion` | Pero ha perdido su pertenencia |
+| `listmembers` | Lista vacía o sin `hiroshi.nohara` | El dominio tampoco lo cuenta |
 
 > [!important] ✍️ Aquí anota tú lo que veas
-> **Copia en tu entrada de apuntes qué devuelve `id -nG user1` antes y después.** Y responde: si en la Fase 7 dieras permiso a `policia` sobre una carpeta, ¿qué vería `user1`?
+> **Copia en tu entrada de apuntes qué devuelve `id -nG hiroshi.nohara` antes y después.** Y responde: si en la Fase 7 dieras permiso a `facturacion` sobre una carpeta, ¿qué vería `hiroshi.nohara`?
 
 ### **3 · Consecuencias**
 Una cuenta que funciona, entra y autentica — y **no accede a nada de lo suyo**. El usuario diría *"no tengo permisos"*, el administrador miraría los permisos de la carpeta, los vería correctos, y no encontraría nada raro. El problema no está en la carpeta: está en quién es él.
 
 ### **4 · Reparar**
 ```bash
-sudo samba-tool group addmembers policia user1
-id -nG user1
+sudo samba-tool group addmembers facturacion hiroshi.nohara
+id -nG hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```
-- **✅ Reparado:** `policia` vuelve a aparecer y el verificador da `FASE 5 SUPERADA`.
+- **✅ Reparado:** `facturacion` vuelve a aparecer y el verificador da `FASE 5 SUPERADA`.
 
 > [!success] 🎓 La lección
 > **Los permisos no se dan a personas: se dan a grupos.** Y por eso un problema de permisos casi nunca se arregla mirando el fichero — se arregla mirando **a qué grupos pertenece quien se queja**.
@@ -242,37 +242,37 @@ sudo ./verificar_fase5.sh
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** crear un usuario **sin** `--uid-number`, como lo haría quien copia un comando de internet.
 >
-> **Por qué provocamos esta:** porque es **el fallo silencioso de la fase**, el [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los que yo puse|caso E7]], provocado a propósito y en condiciones controladas.
+> **Por qué provocamos esta:** porque es **el fallo silencioso de la fase**, el [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario|caso E7]], provocado a propósito y en condiciones controladas.
 >
 > No da ningún error. El usuario se crea, funciona, entra. Y arrastra un número que tú no elegiste.
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. ¿Se creará el usuario sin protestar?
-> 2. ¿Devolverá `id user3` algo?
+> 2. ¿Devolverá `id prueba.temporal` algo?
 > 3. ¿Qué número crees que le tocará?
 >
 > **La 3 es la importante.** Escríbela antes de mirar.
 
 ### **1 · Romper**
 ```bash
-sudo samba-tool user create user3 'P@ssw0rd'
+sudo samba-tool user create prueba.temporal 'P@ssw0rd'
 ```
 *(Fíjate en lo que NO lleva: ni `--uid-number` ni `--gid-number`.)*
 
 ### **2 · Comprobar**
 ```bash
-sudo samba-tool user list | grep user3
-id user3
-id user1
+sudo samba-tool user list | grep prueba.temporal
+id prueba.temporal
+id hiroshi.nohara
 ```
 
 **Cómo se interpreta lo que sale:**
 
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
-| `samba-tool user list` | **Aparece `user3`** | Se creó sin ningún error |
-| `id user3` | Un UID **enorme y raro** *(o nada)* | Se lo ha inventado el sistema |
-| `id user1` | `10001` | El tuyo, el que elegiste |
+| `samba-tool user list` | **Aparece `prueba.temporal`** | Se creó sin ningún error |
+| `id prueba.temporal` | Un UID **enorme y raro** *(o nada)* | Se lo ha inventado el sistema |
+| `id hiroshi.nohara` | `10001` | El tuyo, el que elegiste |
 
 > [!danger] 🤯 Fíjate en lo que acaba de pasar
 > **No ha habido ni un solo error.** Ni un aviso, ni una línea en el registro. El comando ha funcionado exactamente igual de bien que el del Paso 3 del procedimiento.
@@ -285,11 +285,11 @@ Un usuario con un número asignado por la máquina. Hoy funciona. Pero ese núme
 ### **4 · Reparar**
 Este usuario sobra: bórralo, que es lo que harías en un servidor real con una cuenta creada por error.
 ```bash
-sudo samba-tool user delete user3
-sudo samba-tool user list | grep user3
+sudo samba-tool user delete prueba.temporal
+sudo samba-tool user list | grep prueba.temporal
 sudo ./verificar_fase5.sh
 ```
-- **✅ Reparado:** `user3` ya no aparece y el verificador da `FASE 5 SUPERADA`.
+- **✅ Reparado:** `prueba.temporal` ya no aparece y el verificador da `FASE 5 SUPERADA`.
 
 > [!success] 🎓 La lección
 > **El fallo que no da error es el caro.** Es la misma idea de la Fase 4 con el dominio anunciado en la tarjeta equivocada, y volverá a aparecer.
@@ -301,25 +301,25 @@ sudo ./verificar_fase5.sh
 # **AVERÍA 5 · DOS PERSONAS CON EL MISMO NÚMERO**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** crear un usuario nuevo con **el mismo UID que `user1`**.
+> **Qué vamos a provocar:** crear un usuario nuevo con **el mismo UID que `hiroshi.nohara`**.
 >
 > **Por qué provocamos esta:** porque enseña qué es de verdad una identidad en Unix. Y porque el sistema **te va a dejar hacerlo sin rechistar**.
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. ¿Te dejará el sistema poner un UID repetido?
-> 2. Si `user4` crea un fichero, ¿de quién dirá `ls -l` que es?
+> 2. Si `duplicado.temporal` crea un fichero, ¿de quién dirá `ls -l` que es?
 
 ### **1 · Romper**
 ```bash
-sudo samba-tool user create user4 'P@ssw0rd' --uid-number=10001 --gid-number=3001
+sudo samba-tool user create duplicado.temporal 'P@ssw0rd' --uid-number=10001 --gid-number=3001
 sudo systemctl restart winbind
 ```
 
 ### **2 · Comprobar**
 ```bash
-id -u user1
-id -u user4
-sudo -u user1 touch /tmp/prueba_identidad 2>/dev/null || sudo touch /tmp/prueba_identidad
+id -u hiroshi.nohara
+id -u duplicado.temporal
+sudo -u hiroshi.nohara touch /tmp/prueba_identidad 2>/dev/null || sudo touch /tmp/prueba_identidad
 ls -ln /tmp/prueba_identidad
 ls -l /tmp/prueba_identidad
 ```
@@ -333,19 +333,19 @@ ls -l /tmp/prueba_identidad
 | `ls -l` | **Un solo nombre** | El nombre es una traducción, y solo cabe uno |
 
 > [!important] ✍️ Aquí anota tú lo que veas
-> **Copia en tu entrada de apuntes qué nombre muestra `ls -l`.** ¿Sale `user1` o `user4`? ¿Y por qué crees que sale ese y no el otro?
+> **Copia en tu entrada de apuntes qué nombre muestra `ls -l`.** ¿Sale `hiroshi.nohara` o `duplicado.temporal`? ¿Y por qué crees que sale ese y no el otro?
 
 ### **3 · Consecuencias**
 Dos cuentas distintas, con dos contraseñas distintas, que para el sistema de ficheros **son la misma persona**. Cualquiera de las dos puede leer, modificar y borrar los ficheros de la otra. Y ninguna auditoría podría distinguir quién hizo qué: los registros guardan el número.
 
 ### **4 · Reparar**
 ```bash
-sudo samba-tool user delete user4
+sudo samba-tool user delete duplicado.temporal
 sudo rm -f /tmp/prueba_identidad
-id -u user1
+id -u hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```
-- **✅ Reparado:** `user4` ya no existe y el verificador da `FASE 5 SUPERADA`.
+- **✅ Reparado:** `duplicado.temporal` ya no existe y el verificador da `FASE 5 SUPERADA`.
 
 > [!success] 🎓 La lección
 > **En Unix, un usuario no es su nombre: es su número.** El nombre es una etiqueta que se consulta en una tabla para mostrártelo bonito.
@@ -362,7 +362,7 @@ sudo ./verificar_fase5.sh
 > **Por qué provocamos esta:** porque es la avería que no se ve haciendo comprobaciones normales. Todo está bien… hasta que apagas.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. Tras el `disable`, ¿seguirá funcionando `id user1` **ahora**?
+> 1. Tras el `disable`, ¿seguirá funcionando `id hiroshi.nohara` **ahora**?
 > 2. ¿Lo detectaría una comprobación que solo mirase `is-active`?
 
 ### **1 · Romper**
@@ -374,7 +374,7 @@ systemctl is-enabled winbind
 
 ### **2 · Comprobar**
 ```bash
-id user1
+id hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```
 
@@ -382,7 +382,7 @@ sudo ./verificar_fase5.sh
 | :--- | :--- |
 | `is-active` | **`active`** — winbind funciona perfectamente |
 | `is-enabled` | **`disabled`** — no arrancará la próxima vez |
-| `id user1` | **Responde bien** — hoy no pasa nada |
+| `id hiroshi.nohara` | **Responde bien** — hoy no pasa nada |
 | El verificador | **FALLO en `B2`** |
 
 **Y ahora compruébalo de verdad:** reinicia la máquina.
@@ -392,7 +392,7 @@ sudo reboot
 Cuando vuelva, entra y mira:
 ```bash
 systemctl is-active winbind
-id user1
+id hiroshi.nohara
 ```
 
 ### **3 · Consecuencias**
@@ -402,7 +402,7 @@ Un servidor de identidades que funciona hasta el primer corte de luz. Y el prime
 ```bash
 sudo systemctl enable --now winbind
 systemctl is-enabled winbind
-id user1
+id hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```
 - **✅ Reparado:** `enabled`, y el verificador en `FASE 5 SUPERADA`.
@@ -427,11 +427,11 @@ sudo ./verificar_fase5.sh
 > Restaura `Fase 5 terminada` y vuelves al punto bueno. **Para eso la tomaste antes de empezar.**
 
 > [!warning] ⚠️ Comprueba que no te dejas usuarios de prueba
-> Las averías 4 y 5 crean `user3` y `user4`. **Los dos tienen que estar borrados** antes de pasar a la Fase 6, o te los encontrarás en los permisos de la Fase 7 sin acordarte de dónde salieron:
+> Las averías 4 y 5 crean `prueba.temporal` y `duplicado.temporal`. **Los dos tienen que estar borrados** antes de pasar a la Fase 6, o te los encontrarás en los permisos de la Fase 7 sin acordarte de dónde salieron:
 > ```bash
 > sudo samba-tool user list
 > ```
-> Solo deben aparecer los usuarios del sistema, `user1` y `user2`.
+> Solo deben aparecer los usuarios del sistema, `hiroshi.nohara` y `misae.nohara`.
 
 ---
 
@@ -441,10 +441,10 @@ sudo ./verificar_fase5.sh
 - [ ] **Sesión 2:** verificador **antes** de empezar, y después las averías **4, 5 y 6**.
 - [ ] **Predicción escrita antes** de cada una, en la entrada de apuntes.
 - [ ] Anotada la diferencia entre la avería 1 y la 2, **con el papel de `wbinfo`**.
-- [ ] Anotado qué devuelve `id -nG user1` antes y después de la avería 3.
+- [ ] Anotado qué devuelve `id -nG hiroshi.nohara` antes y después de la avería 3.
 - [ ] Anotado **qué nombre muestra `ls -l`** en la avería 5, y por qué.
 - [ ] Reinicio hecho en la avería 6, y comprobado el resultado.
-- [ ] `user3` y `user4` **borrados**.
+- [ ] `prueba.temporal` y `duplicado.temporal` **borrados**.
 - [ ] Verificador pasado al final: `FASE 5 SUPERADA`.
 - [ ] Todo grabado en el vídeo **`B2 · F5 · Laboratorio de averías`**, con un timestamp por avería.
 

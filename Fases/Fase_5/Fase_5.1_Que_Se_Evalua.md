@@ -15,8 +15,8 @@
 >
 > | Código | Criterio de evaluación | Dónde lo demuestras aquí |
 > | :--- | :--- | :--- |
-> | `CE.02.a` | Se han configurado y gestionado cuentas de usuario. | Crear `user1` y `user2` con `samba-tool user create` |
-> | `CE.02.d` | Se ha distinguido el propósito de los grupos, sus tipos y ámbitos. | Explicar por qué existen `policia` y `bomberos` como grupos y no como usuarios sueltos |
+> | `CE.02.a` | Se han configurado y gestionado cuentas de usuario. | Crear `hiroshi.nohara` y `misae.nohara` con `samba-tool user create` |
+> | `CE.02.d` | Se ha distinguido el propósito de los grupos, sus tipos y ámbitos. | Explicar por qué existen `facturacion` y `contabilidad` como grupos y no como usuarios sueltos |
 > | `CE.02.e` | Se han configurado y gestionado grupos. | Crear los grupos del dominio con su GID asignado |
 > | `CE.02.f` | Se ha gestionado la pertenencia de usuarios a grupos. | Meter cada usuario en su grupo y comprobarlo con `id` |
 > | `CE.02.g` | Se han identificado las características de usuarios y grupos predeterminados y especiales. | Reconocer los que Samba crea solo (`Administrator`, `Domain Users`…) y no tocarlos |
