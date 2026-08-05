@@ -49,10 +49,17 @@
 
 # **AVERÍA 1 · BAJAR EL TÚNEL**
 
-> [!abstract] 🎯 Objetivo
-> Entender la diferencia entre **un servicio configurado** y **un servicio funcionando** — dos cosas que se confunden constantemente y que viven en sitios distintos: el disco y la memoria.
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** detener el servicio de WireGuard **dejando su configuración intacta**.
 >
-> **Por qué importa:** cuando algo no va, la primera reacción es abrir el fichero de configuración. Y muchas veces el fichero está perfecto: lo que pasa es que **nadie lo está ejecutando**. Saber distinguirlo te ahorra revisar durante media hora algo que no tiene ningún fallo.
+> **Qué dejará de funcionar, en cadena:**
+> 1. Desaparece la interfaz `wg0` del sistema
+> 2. Al desaparecer, **nadie escucha en el puerto UDP 51820**
+> 3. Sin nadie escuchando, el cliente no puede completar el saludo criptográfico
+> 4. Sin saludo, **las direcciones `10.20.20.1` y `10.20.20.2` dejan de existir**
+> 5. Todo lo que viajara por el túnel queda inalcanzable
+>
+> **Por qué provocamos esta:** porque el fichero `wg0.conf` **sigue perfecto** mientras nada de eso funciona. Es la avería que separa *"está configurado"* de *"está funcionando"*.
 
 > [!question] 🤔 Predice antes de ejecutar
 > Al bajar el túnel:
@@ -119,10 +126,16 @@ Debe volver a aparecer la interfaz, y al cabo de unos segundos el `latest handsh
 
 # **AVERÍA 2 · QUITAR LA PERSISTENCIA**
 
-> [!abstract] 🎯 Objetivo
-> Descubrir que **hay averías que no producen ningún síntoma hoy**, y que solo aparecen al reiniciar.
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** quitarle al servicio el arranque automático, **sin detenerlo**.
 >
-> **Por qué importa:** es el tipo de fallo más caro que existe en administración de sistemas. No lo detectas probando —porque todo funciona—, solo lo detectas **comprobando el estado**. Y si no lo compruebas, lo descubres el día del reinicio, que siempre es el peor día.
+> **Qué dejará de funcionar, en cadena:**
+> 1. **Ahora mismo: nada.** El servicio sigue corriendo y el túnel va perfecto
+> 2. Lo que cambia es que `systemd` **ya no lo lanzará en el próximo arranque**
+> 3. Al reiniciar: no hay `wg0`, no hay puerto `51820`, no hay túnel
+> 4. Y si para entonces SSH solo escucha por la VPN, **no hay forma de entrar al servidor**
+>
+> **Por qué provocamos esta:** porque es **invisible**. Ninguna prueba de funcionamiento la detecta — solo una comprobación de estado. Es la avería más cara que existe, y llega siempre en el peor momento: después de un corte de luz.
 
 > [!question] 🤔 Predice antes de ejecutar
 > Al desactivar el arranque automático del túnel:
@@ -187,10 +200,18 @@ Debe devolver **`enabled`**.
 
 # **AVERÍA 3 · ROMPER LA MÁSCARA DEL CLIENTE**
 
-> [!abstract] 🎯 Objetivo
-> Ver con tus propios ojos que **hay errores de configuración que no rompen nada… todavía**. El sistema funciona igual de bien, y el fallo espera agazapado a que aparezca un segundo cliente.
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** cambiar el rango de direcciones que el servidor asocia a ese cliente, de `/32` (una sola) a `/24` (256).
 >
-> **Por qué importa:** es el fallo que produce las incidencias imposibles de diagnosticar — las de *"a veces va y a veces no"*, sin patrón y sin ningún error en ningún registro.
+> **Qué dejará de funcionar, en cadena:**
+> 1. El servidor instala una ruta: *"todo lo que vaya a `10.20.20.0/24`, mándalo a este cliente"*
+> 2. **Con un solo cliente: nada falla.** Es el único candidato posible
+> 3. En la **Fase 8** añadirás un segundo cliente, y **los dos reclamarán el mismo rango**
+> 4. El sistema no puede tener dos rutas idénticas: se queda con **la última**
+> 5. El tráfico destinado a un cliente **se envía al otro**, y este lo descarta
+> 6. Resultado: uno de los dos deja de responder — **y cuál, cambia según quién saludó el último**
+>
+> **Por qué provocamos esta:** porque es un error que **no da ningún error**. No aparece en ningún registro, no rompe nada hoy, y estalla dos fases más tarde.
 
 > [!warning] 💾 Antes de tocar, copia de seguridad
 > Es lo que hace un administrador antes de editar cualquier fichero de configuración:
@@ -264,10 +285,17 @@ Debe poner **`10.20.20.2/32`**.
 
 # **AVERÍA 4 · METER UN `Endpoint` EN EL SERVIDOR**
 
-> [!abstract] 🎯 Objetivo
-> Fijar la regla que estructura **cualquier** configuración de WireGuard: en cada fichero, `[Interface]` habla **de ti** y `[Peer]` habla **del otro**.
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** fijar a mano en el servidor la dirección del cliente, en lugar de dejar que la aprenda.
 >
-> **Por qué importa:** los dos ficheros —servidor y cliente— se parecen muchísimo, y confundirlos es el error número uno de esta tecnología. Entender la regla te evita copiar bloques al fichero equivocado durante el resto de tu vida profesional.
+> **Qué dejará de funcionar, en cadena:**
+> 1. El servidor deja de anotar **de dónde llegó** el último saludo del cliente
+> 2. Pasa a enviar siempre a la dirección escrita en el fichero
+> 3. **Mientras el cliente esté en esa IP: funciona.** El fallo queda oculto
+> 4. En cuanto el cliente cambia de red —otro Wi-Fi, otro puerto, una reconexión— el servidor **sigue enviando al sitio viejo**
+> 5. El túnel se rompe **y no se recupera solo**: hay que editar el servidor a mano
+>
+> **Por qué provocamos esta:** porque los dos ficheros se parecen muchísimo y es facilísimo pegar el bloque en el que no es. Aquí ves **qué se pierde exactamente** al hacerlo.
 
 > [!question] 🤔 Predice antes de ejecutar
 > El cliente lleva una línea `Endpoint`. Parece razonable que el servidor también la tenga.
@@ -331,10 +359,17 @@ Debe devolver **`0`**.
 
 # **AVERÍA 5 · ABRIR LOS PERMISOS DEL FICHERO**
 
-> [!abstract] 🎯 Objetivo
-> Comprobar que **un fallo de seguridad no se parece en nada a un fallo de funcionamiento**. Todo va perfecto y el sistema está expuesto.
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** relajar los permisos del fichero que contiene **la clave privada del servidor**, de `600` a `644`.
 >
-> **Por qué importa:** si esperas a que algo deje de funcionar para revisarlo, **los fallos de seguridad no los encuentras nunca**. Por eso existen las auditorías como actividad separada del mantenimiento.
+> **Qué dejará de funcionar, en cadena:**
+> 1. **El túnel: nada.** Sigue funcionando exactamente igual
+> 2. El fichero pasa a ser **legible por cualquier usuario** del sistema
+> 3. Pero el directorio `/etc/wireguard` sigue cerrado, así que **hoy nadie llega a leerlo**
+> 4. En cuanto el fichero **salga de esa carpeta** —una copia de seguridad, un `cp`, un clon de la máquina— la clave queda al alcance de cualquiera
+> 5. Quien la tenga puede **hacerse pasar por tu servidor** en la red
+>
+> **Por qué provocamos esta:** porque un fallo de seguridad **no se parece a una avería**. Nada se rompe, nada avisa. Si esperas a que algo deje de ir, este no lo encuentras jamás.
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. ¿Afecta al funcionamiento del túnel cambiar los permisos del fichero?
@@ -431,10 +466,17 @@ Debe mostrar **`-rw-------`**: solo `root` lo lee.
 
 # **AVERÍA 6 · DESCONECTAR EL CLIENTE**
 
-> [!abstract] 🎯 Objetivo
-> Entender **cómo se entera un servidor de que alguien se ha ido**. Respuesta corta: no se entera. Solo sabe cuánto hace que no le hablan.
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** interrumpir el extremo cliente, **sin tocar nada en el servidor**.
 >
-> **Por qué importa:** casi ningún sistema en red tiene una desconexión limpia. Lo que hay es **silencio**, y alguien decidiendo cuánto silencio es demasiado. Entenderlo cambia cómo lees cualquier panel de monitorización.
+> **Qué dejará de funcionar, en cadena:**
+> 1. El cliente deja de enviar los saludos periódicos (`PersistentKeepalive`)
+> 2. En el servidor, el `latest handshake` **empieza a envejecer**
+> 3. El bloque `peer` **sigue estando ahí**, con su clave y su rango: eso viene del fichero, no de la conexión
+> 4. El tráfico hacia `10.20.20.2` sale del servidor y **no llega a ninguna parte**
+> 5. **El servidor nunca recibe aviso de la desconexión**
+>
+> **Por qué provocamos esta:** para ver que un servidor **no sabe quién está conectado**. Solo sabe **cuánto hace que no le hablan**, y alguien tuvo que decidir cuánto silencio es demasiado.
 
 > [!question] 🤔 Predice antes de ejecutar
 > Al desactivar el túnel en Windows:
