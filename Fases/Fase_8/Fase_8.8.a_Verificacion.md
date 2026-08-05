@@ -90,7 +90,7 @@ net view \\UbuntuServer.BOOCHANLAB.LOCAL
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
 - **✅ Bien:** aparece **`prueba1`** y **`prueba3` NO aparece siquiera en la lista**.
-- **❌ Mal:** si `user2` **ve** `prueba3` → [[Fase_8.7_Resolucion_Problemas#E6 · user2 ve la carpeta que no deberia ver|caso E6]], y el fallo está en la **Fase 7**.
+- **❌ Mal:** si `user2` **ve** `prueba3` → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]], y el fallo está en la **Fase 7**.
 
 > [!success] 🎯 Estas son las dos casillas que anotaste en la Fase 7
 > El apartado 8.a de aquella fase te pidió apuntarlas como pendientes, porque **desde el servidor no había forma de comprobarlas**. Hoy las tachas.

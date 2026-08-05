@@ -10,9 +10,21 @@
 > [!help] Preguntas Críticas (Autoevaluación)
 > 1. ¿Por qué un **Loop Device** es más seguro que una cuota de software tradicional?
 > 2. ¿Qué representa exactamente el parámetro `bs=1M` en el comando `dd`?
-> 3. ¿Qué pasaría con los archivos de los usuarios si el servidor se reinicia y no hemos configurado el `fstab`?
-> 4. 🔬 **Reto práctico:** Intenta llenar el disco virtual ejecutando: `dd if=/dev/zero of=/srv/samba/departamentos/facturacion/lleno.img bs=1M count=6000 2>&1`. ¿Qué mensaje de error aparece cuando el disco se queda sin espacio? Borra el archivo con `rm /srv/samba/departamentos/facturacion/lleno.img` y comprueba con `df -h` que el espacio se ha liberado. Acabas de ver en acción la cuota física — y por qué el resto del servidor no se ve afectado.
-> 5. 🔬 **Reto práctico:** Ejecuta `df -h | grep samba`. ¿Cuánto espacio queda libre en cada disco? Ahora ejecuta `df -h /` (la raíz del sistema). ¿Qué ocurriría con la raíz si no hubieras usado Loop Devices y los usuarios hubieran llenado el disco del servidor?
+> 3. ¿Qué pasaría con los ficheros de los seis departamentos si el servidor se reinicia y no has configurado el `fstab`?
+> 4. **La decisión de diseño:** los seis departamentos comparten un volumen de 8 GB y la carpeta común tiene el suyo de 2 GB, aparte. **¿Por qué se separó precisamente esa?** Contéstalo pensando en qué pasaría si compartiera disco con contabilidad.
+> 5. 🔬 **Reto práctico:** llena la carpeta común y mira quién se entera:
+>    ```bash
+>    sudo dd if=/dev/zero of=/srv/samba/comun/lleno.img bs=1M count=3000
+>    df -h /srv/samba/comun /srv/samba/departamentos /
+>    sudo rm /srv/samba/comun/lleno.img
+>    ```
+>    ¿Qué mensaje da el `dd`? ¿Qué decían los otros dos `df` mientras tanto? **Acabas de ver la cuota en acción, y por qué la empresa siguió trabajando.**
+> 6. 🔬 **Reto práctico:** compara los dos tipos de carpeta que has creado:
+>    ```bash
+>    ls -ld /srv/samba/departamentos/facturacion /srv/samba/comun /tmp
+>    ```
+>    Una lleva **`s`** y las otras dos llevan **`t`**. ¿Qué hace cada una? ¿Y por qué `/tmp` lleva la misma que tu carpeta común?
+> 7. **El cuarto dígito:** `2770` y `1777` se parecen mucho y hacen cosas distintas. Explica con tus palabras qué aporta el `2` y qué aporta el `1`, **y por qué no se podrían intercambiar** entre las carpetas de departamento y la común.
 
 ---
 

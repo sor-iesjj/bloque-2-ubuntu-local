@@ -16,7 +16,7 @@
 > | Código | Criterio de evaluación | Dónde lo demuestras aquí |
 > | :--- | :--- | :--- |
 > | `CE.04.a` | Se ha reconocido la diferencia entre permiso y derecho. | La distinción entre lo que el sistema de archivos **permite** (ACL) y lo que el usuario **puede ver que existe** (ABE). Es la pregunta de examen clásica |
-> | `CE.04.b` | Se han identificado los recursos del sistema que se van a compartir y en qué condiciones. | Decidir qué carpeta ve `policia`, cuál ve `bomberos` y cuál no ve nadie |
+> | `CE.04.b` | Se han identificado los recursos del sistema que se van a compartir y en qué condiciones. | Decidir qué carpeta ve `comercial`, cuál ve `bomberos` y cuál no ve nadie |
 > | `CE.04.c` | Se han asignado permisos a los recursos del sistema que se van a compartir. | `setfacl` sobre las carpetas compartidas |
 > | `CE.04.f` | Se han establecido niveles de seguridad para controlar el acceso del cliente a los recursos compartidos. | Access Based Enumeration en `smb.conf`: que el recurso ni siquiera aparezca a quien no tiene acceso |
 >

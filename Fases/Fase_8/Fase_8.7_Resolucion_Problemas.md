@@ -33,7 +33,7 @@
 | `Error de relación de confianza` / credenciales incorrectas | [[#E3 · Relacion de confianza o credenciales incorrectas\|E3]] 🕐 |
 | La unidad `Z:` desaparece al reiniciar | [[#E4 · La unidad Z desaparece al reiniciar\|E4]] |
 | RSAT no se descarga | [[#E5 · RSAT no se descarga\|E5]] |
-| **`user2` VE la carpeta protegida** | [[#E6 · user2 ve la carpeta que no deberia ver\|E6]] ⚠️ |
+| **`user2` VE la carpeta protegida** | [[#E6 · Un usuario ve una carpeta que no deberia ver\|E6]] ⚠️ |
 | El usuario entra pero no puede escribir | [[#E7 · El usuario entra pero no puede escribir\|E7]] |
 | Puedo iniciar sesión con el servidor APAGADO | [[#E8 · Puedo iniciar sesion con el servidor apagado\|E8]] |
 

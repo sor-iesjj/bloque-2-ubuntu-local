@@ -40,7 +40,7 @@
 > [!success] 🎯 Esto es lo que quedó pendiente en la Fase 7
 > Allí se te pidió anotarlo como pendiente porque **desde el servidor no se podía comprobar**. Si las dos casillas de arriba están marcadas, la Fase 7 queda cerrada de verdad.
 >
-> Si la segunda falla, el fallo **está en la Fase 7**, no aquí → [[Fase_8.7_Resolucion_Problemas#E6 · user2 ve la carpeta que no deberia ver|caso E6]].
+> Si la segunda falla, el fallo **está en la Fase 7**, no aquí → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]].
 
 ## **4 · ACCESO A LOS RECURSOS**
 

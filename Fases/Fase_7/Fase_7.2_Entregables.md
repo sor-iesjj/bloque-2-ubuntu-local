@@ -28,9 +28,11 @@
 > **Son tres momentos distintos del trabajo, no tres formas de contar lo mismo.** El 2 se graba en dos sesiones y sigue siendo un solo vídeo.
 
 > [!warning] ✍️ Esta fase tiene un entregable que se completa en la SIGUIENTE
-> En tu entrada de apuntes tienes que dejar anotadas **dos pruebas pendientes**, que tacharás en la Fase 8 con el cliente Windows delante:
-> 1. Con `user1` *(del grupo `policia`)*: `prueba3` **aparece** en el listado de red y se puede entrar.
-> 2. Con `user2` *(que no lo es)*: `prueba3` **no aparece siquiera**.
+> En tu entrada de apuntes tienes que dejar anotadas **cuatro pruebas pendientes**, que tacharás en la Fase 8 con el cliente Windows delante:
+> 1. `shinnosuke.nohara` *(becario)* **no ve** `contabilidad` en el listado de red.
+> 2. `shinnosuke.nohara` **no puede borrar** nada en su propia carpeta.
+> 3. `masao.sato` *(comercial)* **abre** una factura pero **no puede borrarla**.
+> 4. `misae.nohara` *(contabilidad)* **no ve** `rrhh`.
 >
 > No es un adorno: **la invisibilidad no se puede comprobar desde el servidor**, y una entrega que dé esta fase por verificada del todo está afirmando algo que no ha probado.
 

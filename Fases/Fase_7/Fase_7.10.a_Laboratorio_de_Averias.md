@@ -38,42 +38,47 @@
 > [!important] 🗓️ Esto va en DOS SESIONES, no en una
 > | Sesión | Averías | Qué tienen en común |
 > | :--- | :--- | :--- |
-> | **1.ª** | **1 · 2 · 3** | Los **permisos**: lo que se aplica y lo que no |
+> | **1.ª** | **0 · 1 · 2 · 3** | Los **permisos**: lo que se aplica, lo que no, y lo que sobra |
 > | **2.ª** | **4 · 5 · 6** | La **publicación**: Samba, el dominio y la invisibilidad |
 >
-> **Sigue siendo UN SOLO vídeo**, `B2 · F7 · Laboratorio de averías`, con sus seis timestamps.
+> **Sigue siendo UN SOLO vídeo**, `B2 · F7 · Laboratorio de averías`, con sus siete timestamps.
 >
 > **Al empezar la segunda sesión**, pasa el verificador antes de romper nada.
 
-> [!tip] 💡 Las seis averías siguen siempre el mismo guion
+> [!tip] 💡 Las averías siguen siempre el mismo guion
 > **🎯 Objetivo** → **🤔 Predice** → **1. Romper** → **2. Comprobar** → **3. Consecuencias** → **4. Reparar** → **🎓 La lección**
 >
 > **Predecir es lo más importante.** Acertar no puntúa; haber pensado, sí.
 
 ---
 
-# **AVERÍA 1 · QUITAR LA ACL DEL GRUPO**
+# **AVERÍA 0 · 🔴 EL PERMISO QUE SOBRA**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** eliminar el permiso del grupo `policia` sobre `prueba3`, dejando la carpeta y el grupo intactos.
+> **Qué vamos a provocar:** dar a `comercial` acceso a la carpeta de **RRHH**. Un permiso que **no está en la matriz**.
 >
-> **Por qué provocamos esta:** para ver el fallo **ruidoso** de los permisos y tenerlo como referencia. Las averías 2 y 3 producen el mismo daño **sin ningún ruido**, y solo se aprecia la diferencia habiendo visto esta primero.
+> **Por qué va la primera:** porque es el fallo más grave que puede tener una política de permisos, y **el único que nadie te va a reportar nunca**.
+
+> [!danger] 🛑 Un permiso de MÁS es peor que uno de menos
+> **El de menos se nota enseguida:** alguien no puede trabajar, te llama, lo arreglas en dos minutos.
+>
+> **El de más no lo nota nadie.** Nadie llama para decir *"oye, puedo entrar en un sitio donde no debería"*. Se descubre el día que alguien lee lo que no tenía que leer — o no se descubre nunca.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Cambiará algo en `ls -ld`?
-> 2. ¿Seguirá `user1` perteneciendo al grupo?
-> 3. ¿Podrá `user1` escribir en la carpeta?
+> 1. ¿Se quejará el sistema al dar un permiso que no está en la política?
+> 2. ¿Notará algo `ume.matsuzaka`, que trabaja en RRHH?
+> 3. ¿Lo detectará el verificador? ¿Cómo podría saber que ese permiso sobra?
 
 ### **1 · Romper**
 ```bash
-sudo setfacl -x g:policia /srv/samba/prueba3
+sudo setfacl -m g:comercial:rx /srv/samba/departamentos/rrhh
+sudo setfacl -d -m g:comercial:rx /srv/samba/departamentos/rrhh
 ```
 
 ### **2 · Comprobar**
 ```bash
-getfacl -p /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
-id -nG user1
+getfacl -p /srv/samba/departamentos/rrhh
+sudo -u 'BOOCHANLAB\masao.sato' ls /srv/samba/departamentos/rrhh
 sudo ./verificar_fase7.sh
 ```
 
@@ -81,9 +86,82 @@ sudo ./verificar_fase7.sh
 
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
-| `getfacl` | Ya no está `group:policia` | El permiso se ha ido |
+| El `setfacl` | **Ni un mensaje** | El sistema no sabe cuál es tu política |
+| `getfacl` | `group:comercial:r-x` en RRHH | El permiso está puesto |
+| El `ls` como `masao.sato` | **Funciona** | Un comercial leyendo nóminas |
+| El verificador | **FALLO en el bloque `C`** | Lo detecta porque **conoce la matriz** |
+
+> [!danger] 🤯 Fíjate en por qué el verificador SÍ puede detectarlo
+> El sistema no tiene ni idea de cuál es la política de Boochan S.L.: para él, `comercial` leyendo RRHH es tan válido como cualquier otra cosa.
+>
+> **El verificador lo detecta porque lleva la matriz escrita dentro**, en dos listas: `CRUCES` *(lo que debe existir)* y `PROHIBIDOS` *(lo que no)*. Ábrelo y míralas:
+> ```bash
+> grep -A 12 "^CRUCES=" verificar_fase7.sh
+> grep -A 10 "^PROHIBIDOS=" verificar_fase7.sh
+> ```
+>
+> **Una política que no está escrita en ningún sitio no se puede auditar.** Y si no se puede auditar, no existe.
+
+### **3 · Consecuencias**
+El departamento comercial puede leer nóminas, contratos y expedientes personales. **Nadie se entera**, porque nadie tiene motivo para mirarlo: los de RRHH no ven quién entra, y los de comercial no van a avisar.
+
+En una empresa real esto no es un error técnico: es una **brecha de datos personales**, con su multa correspondiente.
+
+### **4 · Reparar**
+```bash
+sudo setfacl -x g:comercial /srv/samba/departamentos/rrhh
+sudo setfacl -d -x g:comercial /srv/samba/departamentos/rrhh
+getfacl -p /srv/samba/departamentos/rrhh
+sudo ./verificar_fase7.sh
+```
+- **✅ Reparado:** RRHH vuelve a no tener ningún grupo ajeno, y `FASE 7 SUPERADA`.
+
+> [!important] ✍️ Aquí anota tú lo que veas
+> **Copia el `getfacl` de RRHH antes y después.** Y contesta: **¿cómo detectarías este fallo en un servidor que no fuera tuyo, sin tener la matriz delante?**
+>
+> *(Pista incómoda: no podrías. Solo podrías listar quién tiene acceso a qué y preguntarle a alguien si eso es lo correcto.)*
+
+> [!success] 🎓 La lección
+> **El sistema aplica permisos; no juzga políticas.** `setfacl` hace exactamente lo que le pides, y lo que le pides puede ser un disparate.
+>
+> Y de ahí sale la idea más importante de toda la fase: **una política de permisos tiene que estar escrita fuera del sistema** —en un documento como [[Escenario_Boochan_SL]]— para poder comparar lo que hay contra lo que debería haber.
+>
+> Sin ese documento, la única respuesta posible a *"¿están bien los permisos de este servidor?"* es **"no lo sé"**.
+
+---
+
+# **AVERÍA 1 · QUITAR LA ACL DEL GRUPO**
+
+> [!abstract] 🎯 Objetivo de esta avería
+> **Qué vamos a provocar:** eliminar el permiso del grupo `comercial` sobre `facturacion`, dejando la carpeta y el grupo intactos.
+>
+> **Por qué provocamos esta:** para ver el fallo **ruidoso** de los permisos y tenerlo como referencia. Las averías 2 y 3 producen el mismo daño **sin ningún ruido**, y solo se aprecia la diferencia habiendo visto esta primero.
+
+> [!question] 🤔 Predice antes de ejecutar
+> 1. ¿Cambiará algo en `ls -ld`?
+> 2. ¿Seguirá `masao.sato` perteneciendo al grupo?
+> 3. ¿Podrá `masao.sato` escribir en la carpeta?
+
+### **1 · Romper**
+```bash
+sudo setfacl -x g:comercial /srv/samba/departamentos/facturacion
+```
+
+### **2 · Comprobar**
+```bash
+getfacl -p /srv/samba/departamentos/facturacion
+ls -ld /srv/samba/departamentos/facturacion
+id -nG masao.sato
+sudo ./verificar_fase7.sh
+```
+
+**Cómo se interpreta lo que sale:**
+
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `getfacl` | Ya no está `group:comercial` | El permiso se ha ido |
 | `ls -ld` | **Casi igual que antes** | Los permisos clásicos no han cambiado |
-| `id -nG user1` | Sigue en `policia` | El usuario está bien; el permiso no |
+| `id -nG masao.sato` | Sigue en `comercial` | El usuario está bien; el permiso no |
 | El verificador | **FALLO en `B1`** | Lo detecta |
 
 > [!important] ✍️ Fíjate en el `ls -ld`
@@ -92,15 +170,15 @@ sudo ./verificar_fase7.sh
 > **Anota en tu entrada si lo has visto**, porque es la única pista que da `ls` de que hay permisos avanzados detrás. Quien no sepa que ese `+` existe, no sabrá que tiene que mirar el `getfacl`.
 
 ### **3 · Consecuencias**
-Los usuarios de `policia` pierden el acceso por la vía de la ACL. Quedan solo los permisos clásicos de grupo — que aquí siguen funcionando, y por eso el daño real depende de cómo esté montado el conjunto.
+Los usuarios de `comercial` pierden el acceso por la vía de la ACL. Quedan solo los permisos clásicos de grupo — que aquí siguen funcionando, y por eso el daño real depende de cómo esté montado el conjunto.
 
 ### **4 · Reparar**
 ```bash
-sudo setfacl -m g:policia:rwx /srv/samba/prueba3
-getfacl -p /srv/samba/prueba3
+sudo setfacl -m g:comercial:rx /srv/samba/departamentos/facturacion
+getfacl -p /srv/samba/departamentos/facturacion
 sudo ./verificar_fase7.sh
 ```
-- **✅ Reparado:** vuelve `group:policia:rwx` y el verificador da `FASE 7 SUPERADA`.
+- **✅ Reparado:** vuelve `group:comercial:r-x` y el verificador da `FASE 7 SUPERADA`.
 
 > [!success] 🎓 La lección
 > Que **hay dos sistemas de permisos conviviendo** sobre la misma carpeta: los clásicos de Unix (`rwx` para dueño, grupo y otros) y las ACL, que permiten dar permisos a **varios** grupos y usuarios distintos.
@@ -114,21 +192,21 @@ sudo ./verificar_fase7.sh
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** bajar la máscara de la ACL, dejando el permiso del grupo **escrito y visible** pero sin efecto.
 >
-> **Por qué provocamos esta:** porque es **la trampa más fina de toda la fase**. El permiso sigue ahí, se lee `rwx`, y no funciona. Es el [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica|caso E6]].
+> **Por qué provocamos esta:** porque es **la trampa más fina de toda la fase**. El permiso sigue ahí, se lee `r-x`, y no funciona. Es el [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica|caso E6]].
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Seguirá apareciendo `group:policia:rwx` en el `getfacl`?
+> 1. ¿Seguirá apareciendo `group:comercial:r-x` en el `getfacl`?
 > 2. ¿Podrá escribir alguien del grupo?
 > 3. ¿Qué crees que va a cambiar en la salida?
 
 ### **1 · Romper**
 ```bash
-sudo setfacl -m m::r-- /srv/samba/prueba3
+sudo setfacl -m m::r-- /srv/samba/departamentos/facturacion
 ```
 
 ### **2 · Comprobar**
 ```bash
-getfacl -p /srv/samba/prueba3
+getfacl -p /srv/samba/departamentos/facturacion
 sudo ./verificar_fase7.sh
 ```
 
@@ -136,15 +214,15 @@ sudo ./verificar_fase7.sh
 
 | Dónde miras | Qué verás |
 | :--- | :--- |
-| La línea del grupo | `group:policia:rwx` — **igual que antes** |
+| La línea del grupo | `group:comercial:r-x` — **igual que antes** |
 | Al final de esa línea | `#effective:r--` — **esto es nuevo** |
 | La línea `mask::` | `mask::r--` |
 | El verificador | **FALLO en `B2`** |
 
 > [!danger] 🤯 Fíjate en lo que acaba de pasar
-> **Pone `rwx` y significa `r--`.** El permiso está escrito, es correcto, y no se aplica.
+> **Pone `r-x` y significa `r--`.** El permiso está escrito, es correcto, y no se aplica.
 >
-> Si leyeras esta ACL con prisa —y todo el mundo lee las ACL con prisa— verías `group:policia:rwx` y darías el problema por descartado. **La información que lo desmiente está a la derecha, en una columna que casi nadie mira.**
+> Si leyeras esta ACL con prisa —y todo el mundo lee las ACL con prisa— verías `group:comercial:r-x` y darías el problema por descartado. **La información que lo desmiente está a la derecha, en una columna que casi nadie mira.**
 
 > [!important] ✍️ Aquí anota tú lo que veas
 > **Copia la línea completa en tu entrada de apuntes**, con su `#effective`. Y responde: si un compañero te enseña esta salida diciendo *"el permiso está puesto y no funciona"*, ¿qué le dirías en diez segundos?
@@ -154,8 +232,8 @@ Nadie del grupo puede escribir, y la ACL parece correcta. El diagnóstico se va 
 
 ### **4 · Reparar**
 ```bash
-sudo setfacl -m m::rwx /srv/samba/prueba3
-getfacl -p /srv/samba/prueba3
+sudo setfacl -m m::rwx /srv/samba/departamentos/facturacion
+getfacl -p /srv/samba/departamentos/facturacion
 sudo ./verificar_fase7.sh
 ```
 - **✅ Reparado:** desaparece el `#effective` y el verificador da `FASE 7 SUPERADA`.
@@ -182,19 +260,19 @@ sudo ./verificar_fase7.sh
 ### **1 · Romper**
 Primero deja un fichero **de antes**, para comparar:
 ```bash
-sudo touch /srv/samba/prueba3/antes.txt
-getfacl -p /srv/samba/prueba3/antes.txt | grep policia
+sudo touch /srv/samba/departamentos/facturacion/antes.txt
+getfacl -p /srv/samba/departamentos/facturacion/antes.txt | grep comercial
 ```
 Y ahora quita la herencia:
 ```bash
-sudo setfacl -k /srv/samba/prueba3
+sudo setfacl -k /srv/samba/departamentos/facturacion
 ```
 
 ### **2 · Comprobar**
 ```bash
-getfacl -p /srv/samba/prueba3
-sudo touch /srv/samba/prueba3/despues.txt
-getfacl -p /srv/samba/prueba3/despues.txt | grep policia
+getfacl -p /srv/samba/departamentos/facturacion
+sudo touch /srv/samba/departamentos/facturacion/despues.txt
+getfacl -p /srv/samba/departamentos/facturacion/despues.txt | grep comercial
 sudo ./verificar_fase7.sh
 ```
 
@@ -202,7 +280,7 @@ sudo ./verificar_fase7.sh
 
 | Qué miras | Resultado |
 | :--- | :--- |
-| ACL de la carpeta | **Sigue teniendo** `group:policia:rwx` |
+| ACL de la carpeta | **Sigue teniendo** `group:comercial:r-x` |
 | Líneas `default:` | **Han desaparecido** |
 | `antes.txt` | **Tiene** el permiso del grupo |
 | `despues.txt` | **NO lo tiene** |
@@ -218,10 +296,10 @@ Una carpeta compartida que **se va degradando sola**. Los ficheros antiguos acce
 
 ### **4 · Reparar**
 ```bash
-sudo setfacl -d -m g:policia:rwx /srv/samba/prueba3
-sudo setfacl -R -m g:policia:rwx /srv/samba/prueba3
-sudo rm -f /srv/samba/prueba3/antes.txt /srv/samba/prueba3/despues.txt
-getfacl -p /srv/samba/prueba3
+sudo setfacl -d -m g:comercial:rx /srv/samba/departamentos/facturacion
+sudo setfacl -R -m g:comercial:rx /srv/samba/departamentos/facturacion
+sudo rm -f /srv/samba/departamentos/facturacion/antes.txt /srv/samba/departamentos/facturacion/despues.txt
+getfacl -p /srv/samba/departamentos/facturacion
 sudo ./verificar_fase7.sh
 ```
 - **✅ Reparado:** vuelven las líneas `default:` y el verificador da `FASE 7 SUPERADA`.
@@ -239,12 +317,12 @@ sudo ./verificar_fase7.sh
 # **AVERÍA 4 · 🔴 QUITAR LA INVISIBILIDAD (ABE)**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** desactivar `access based share enum` en `[prueba3]`.
+> **Qué vamos a provocar:** desactivar `access based share enum` en `[facturacion]`.
 >
-> **Por qué provocamos esta:** porque es **el fallo invisible de la fase**, el [[Fase_7.7_Resolucion_Problemas#E5 · La carpeta protegida se ve desde Windows|caso E5]]. Desde el servidor **no vas a notar absolutamente nada**, y ese es justo el ejercicio.
+> **Por qué provocamos esta:** porque es **el fallo invisible de la fase**, el [[Fase_7.7_Resolucion_Problemas#E5 · Una carpeta protegida se ve desde Windows|caso E5]]. Desde el servidor **no vas a notar absolutamente nada**, y ese es justo el ejercicio.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Podrá `user2` entrar en la carpeta después de esto?
+> 1. ¿Podrá `shinnosuke.nohara` entrar en la carpeta después de esto?
 > 2. ¿Podrá **verla** en el listado de red?
 > 3. ¿Habrá algún comando en el servidor que te diga que algo va mal?
 
@@ -253,7 +331,7 @@ Copia de seguridad primero — **siempre, antes de tocar `smb.conf`**:
 ```bash
 sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
 sudo sed -i 's/^\( *access based share enum *=\) *yes/\1 no/I' /etc/samba/smb.conf
-sudo testparm -s --section-name=prueba3 | grep -i "access based"
+sudo testparm -s --section-name=facturacion | grep -i "access based"
 ```
 Y aplica el cambio, **validando antes**:
 ```bash
@@ -263,10 +341,10 @@ sudo systemctl restart samba-ad-dc
 
 ### **2 · Comprobar**
 ```bash
-getfacl -p /srv/samba/prueba3
-ls -ld /srv/samba/prueba3
+getfacl -p /srv/samba/departamentos/facturacion
+ls -ld /srv/samba/departamentos/facturacion
 systemctl is-active samba-ad-dc
-testparm -s --section-name=prueba3
+testparm -s --section-name=facturacion
 sudo ./verificar_fase7.sh
 ```
 
@@ -281,12 +359,12 @@ sudo ./verificar_fase7.sh
 | El verificador | **FALLO en `D1`** | Es lo único que avisa |
 
 > [!danger] 🤯 Fíjate en lo que NO ha pasado
-> **Nada.** El acceso sigue perfectamente protegido: `user2` no puede entrar en la carpeta. Los permisos son correctos, las ACL son correctas, el servicio funciona.
+> **Nada.** El acceso sigue perfectamente protegido: `shinnosuke.nohara` no puede entrar en la carpeta. Los permisos son correctos, las ACL son correctas, el servicio funciona.
 >
-> Lo único que has roto es que ahora `user2` **ve que la carpeta existe**. Y eso no se puede comprobar desde Ubuntu por ningún medio: hace falta un cliente Windows mirando el listado de red.
+> Lo único que has roto es que ahora `shinnosuke.nohara` **ve que la carpeta existe**. Y eso no se puede comprobar desde Ubuntu por ningún medio: hace falta un cliente Windows mirando el listado de red.
 
 ### **3 · Consecuencias**
-Un usuario sin autorización ve una lista de carpetas con nombres como `prueba3` —o, en un servidor real, `nominas`, `expedientes`, `direccion`—. No puede abrirlas, pero **ya sabe qué hay, dónde está y a quién pedírselo**.
+Un usuario sin autorización ve una lista de carpetas con nombres como `facturacion` —o, en un servidor real, `nominas`, `expedientes`, `direccion`—. No puede abrirlas, pero **ya sabe qué hay, dónde está y a quién pedírselo**.
 
 Y hay algo peor: el administrador cree que la protección está completa, porque desde su lado **lo parece**.
 
@@ -295,7 +373,7 @@ Y hay algo peor: el administrador cree que la protección está completa, porque
 sudo mv /etc/samba/smb.conf.bak /etc/samba/smb.conf
 sudo testparm
 sudo systemctl restart samba-ad-dc
-testparm -s --section-name=prueba3 | grep -i "access based"
+testparm -s --section-name=facturacion | grep -i "access based"
 sudo ./verificar_fase7.sh
 ```
 - **✅ Reparado:** vuelve `= Yes` y el verificador da `FASE 7 SUPERADA`.
@@ -327,7 +405,7 @@ sudo ./verificar_fase7.sh
 ### **1 · Romper**
 ```bash
 sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
-echo "[prueba3" | sudo tee -a /etc/samba/smb.conf
+echo "[facturacion" | sudo tee -a /etc/samba/smb.conf
 tail -3 /etc/samba/smb.conf
 ```
 *(Fíjate en lo que falta: el corchete de cierre.)*
@@ -377,7 +455,7 @@ sudo ./verificar_fase7.sh
 # **AVERÍA 6 · EL RECURSO DUPLICADO**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** declarar `[prueba3]` dos veces en `smb.conf`, con configuraciones distintas.
+> **Qué vamos a provocar:** declarar `[facturacion]` dos veces en `smb.conf`, con configuraciones distintas.
 >
 > **Por qué provocamos esta:** porque produce el síntoma más frustrante que existe: **cambias algo, reinicias, y no pasa nada.** Es el [[Fase_7.7_Resolucion_Problemas#E7 · Secciones duplicadas en smb.conf|caso E7]].
 
@@ -391,18 +469,18 @@ sudo ./verificar_fase7.sh
 sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
 sudo tee -a /etc/samba/smb.conf > /dev/null <<'EOF'
 
-[prueba3]
-    path = /srv/samba/prueba3
+[facturacion]
+    path = /srv/samba/departamentos/facturacion
     read only = no
     access based share enum = no
 EOF
-grep -n "^\[prueba3\]" /etc/samba/smb.conf
+grep -n "^\[facturacion\]" /etc/samba/smb.conf
 ```
 
 ### **2 · Comprobar**
 ```bash
 sudo testparm
-testparm -s --section-name=prueba3
+testparm -s --section-name=facturacion
 sudo ./verificar_fase7.sh
 ```
 
@@ -410,13 +488,13 @@ sudo ./verificar_fase7.sh
 
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
-| `grep -n` | **Dos líneas** con `[prueba3]` | Está duplicada |
+| `grep -n` | **Dos líneas** con `[facturacion]` | Está duplicada |
 | `testparm` | **No da error grave** | La sintaxis es correcta |
 | `testparm -s --section-name` | La configuración **de la última** | Samba se queda con una |
 | El verificador | **FALLO en `C4`** | Lo cuenta y lo dice |
 
 > [!important] ✍️ Aquí anota tú lo que veas
-> **Compara lo que dice `testparm -s --section-name=prueba3` con lo que tú escribiste al principio en el `smb.conf`.** ¿Coinciden? ¿Qué opciones se han perdido por el camino?
+> **Compara lo que dice `testparm -s --section-name=facturacion` con lo que tú escribiste al principio en el `smb.conf`.** ¿Coinciden? ¿Qué opciones se han perdido por el camino?
 
 ### **3 · Consecuencias**
 Una configuración que dice una cosa y un servicio que hace otra. El administrador edita la primera sección, reinicia, no pasa nada; vuelve a editarla, reinicia, no pasa nada. **Y el fichero, leído de arriba abajo, parece correcto.**
@@ -424,7 +502,7 @@ Una configuración que dice una cosa y un servicio que hace otra. El administrad
 ### **4 · Reparar**
 ```bash
 sudo mv /etc/samba/smb.conf.bak /etc/samba/smb.conf
-grep -n "^\[prueba3\]" /etc/samba/smb.conf
+grep -n "^\[facturacion\]" /etc/samba/smb.conf
 sudo testparm
 sudo systemctl restart samba-ad-dc
 sudo ./verificar_fase7.sh
@@ -449,7 +527,7 @@ sudo ./verificar_fase7.sh
 
 > [!warning] ⚠️ Comprueba que no te dejas restos
 > ```bash
-> ls -la /srv/samba/prueba3/
+> ls -la /srv/samba/departamentos/facturacion/
 > ls -l /etc/samba/smb.conf*
 > ```
 > No deben quedar `antes.txt`, `despues.txt` ni ficheros `.bak` sueltos. **Un `.bak` olvidado no rompe nada, pero un servidor con seis copias de seguridad de la configuración es un servidor que nadie entiende.**
@@ -458,9 +536,10 @@ sudo ./verificar_fase7.sh
 
 ### ✅ Checklist de este apartado
 
-- [ ] **Sesión 1:** averías **1, 2 y 3**, y `FASE 7 SUPERADA` al cerrar.
+- [ ] **Sesión 1:** averías **0, 1, 2 y 3**, y `FASE 7 SUPERADA` al cerrar.
 - [ ] **Sesión 2:** verificador **antes** de empezar, y después las averías **4, 5 y 6**.
 - [ ] **Predicción escrita antes** de cada una, en la entrada de apuntes.
+- [ ] 🔴 Anotado el `getfacl` de **RRHH antes y después** de la avería 0, y por qué el verificador sí puede detectar un permiso que sobra.
 - [ ] Anotado si viste el **`+`** de `ls -ld` en la avería 1.
 - [ ] Copiada la línea con **`#effective`** de la avería 2.
 - [ ] Anotado que en la avería 3 los ficheros **de antes y de después** salían distintos.
@@ -469,7 +548,7 @@ sudo ./verificar_fase7.sh
 - [ ] Comparada la configuración efectiva con la escrita, en la avería 6.
 - [ ] Restos borrados: ficheros de prueba y `.bak`.
 - [ ] Verificador pasado al final: `FASE 7 SUPERADA`.
-- [ ] Todo grabado en el vídeo **`B2 · F7 · Laboratorio de averías`**, con un timestamp por avería.
+- [ ] Todo grabado en el vídeo **`B2 · F7 · Laboratorio de averías`**, con un timestamp por avería (siete).
 
 ---
 

@@ -58,16 +58,19 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 
 - ⏸️ **Puedes pausar** durante los `dd`, que tardan 1-2 minutos cada uno.
 - Que se vea el `fstab` **antes y después** del cambio.
-- Después del `chown` de `contabilidad`, **enseña el `ls -ld`** y di si el grupo es `contabilidad` o `root`. Es el fallo silencioso de la fase.
-- Y sin cortar, **las seis comprobaciones del apartado 8.a**, incluida la prueba de la cuota con el `dd` de 6 GB.
-- **La prueba de la cuota explícala despacio:** que se vea el `df -h /` con espacio libre mientras la carpeta está al 100 %. Es la fase entera en una pantalla.
+- Después de cada `chown`, **enseña el `ls -ld`** y di si el grupo es el del departamento o `root`. Es el fallo silencioso de la fase.
+- **El bucle de las cuatro carpetas: léelo en voz alta antes de ejecutarlo.** Un bucle que no entiendes es un comando que no deberías ejecutar.
+- Al llegar a la carpeta común, **explica por qué lleva `1777` y no `2770`**, y enseña la `t` en el `ls -ld`.
+- Y sin cortar, **las siete comprobaciones del apartado 8.a**, incluida la prueba de la cuota.
+- **La prueba de la cuota explícala despacio:** que se vea la común al **100 %** mientras `departamentos` y `/` siguen con sitio. **Es la fase entera en una pantalla**, y es la razón de que sean dos discos y no uno.
 
 **2B — Laboratorio de averías** · `B2 · F6 · Laboratorio de averías`
 - **Tu predicción, en voz alta, ANTES de cada rotura.** Es lo que más se valora de este vídeo.
 - Acertar no puntúa. **Haber razonado, sí.**
 - **Un timestamp por avería**, las seis.
-- En la **avería 1**, detente al ver la carpeta vacía y di en voz alta: *"esto no está borrado"*. Y enseña el `.img` de 5 GB.
-- En la **avería 4** —la carpeta que pierde su grupo— comenta que **el sistema no ha dado ningún error**. Ese silencio es la lección.
+- En la **avería 1**, detente al ver desaparecer los seis departamentos y di en voz alta: *"esto no está borrado"*. Y enseña el `.img` de 8 GB intacto.
+- En la **avería 4** —la carpeta que pierde su departamento— comenta que **el sistema no ha dado ningún error**. Ese silencio es la lección.
+- En la **avería 5**, el momento clave es **el mismo `rm` ejecutado dos veces**: con sticky bit falla, sin él funciona. Que se vean las dos salidas seguidas.
 
 > [!danger] 🛑 En la avería 6 NO reinicies con el `fstab` roto
 > El objetivo es justo el contrario: enseñar que **`mount -a` te avisa sin reiniciar**. Repáralo primero, y **después** graba el reinicio de comprobación.

@@ -4,15 +4,16 @@
 # =============================================================================
 # Modulo: SOR - Sistemas Operativos en Red · 2.º SMR · IES Jorge Juan (Alicante)
 #
-# QUE HACE: comprueba las ACL de las carpetas, su herencia, y que Samba publica
-#           los recursos con la invisibilidad (ABE) activada.
-#           No modifica NADA. Solo lee.
+# QUE HACE: comprueba que la MATRIZ DE PERMISOS de Boochan S.L. esta aplicada
+#           carpeta por carpeta, y que Samba publica los recursos con la
+#           invisibilidad (ABE) activada. No modifica NADA. Solo lee.
 #
 # USO:
 #   chmod +x verificar_fase7.sh
 #   sudo ./verificar_fase7.sh
 #
 # El informe se guarda en verificacion-fase-7.txt, en la carpeta actual.
+# Matriz completa: 99_Recursos/Escenario_Boochan_SL.md
 # =============================================================================
 
 # Sin 'set -e' A PROPOSITO: si una comprobacion falla queremos seguir con el
@@ -21,7 +22,31 @@
 INFORME="verificacion-fase-7.txt"
 FALLOS=0
 AVISOS=0
-CARPETA="/srv/samba/prueba3"
+BASE="/srv/samba/departamentos"
+COMUN="/srv/samba/comun"
+DEPARTAMENTOS="facturacion contabilidad comercial logistica rrhh becarios"
+
+# --- LA MATRIZ, en una sola lista: carpeta:grupo:permiso_esperado ------------
+# Solo los permisos CRUZADOS (los de cada grupo sobre su propia carpeta vienen
+# de los permisos clasicos de la Fase 6, no de una ACL).
+CRUCES="facturacion:comercial:r-x
+facturacion:contabilidad:rwx
+comercial:facturacion:r-x
+comercial:contabilidad:r-x
+comercial:logistica:r-x
+logistica:contabilidad:r-x
+logistica:comercial:r-x
+becarios:rrhh:r-x"
+
+# --- Y lo que NO debe existir: RRHH y contabilidad son islas ----------------
+PROHIBIDOS="rrhh:contabilidad
+rrhh:facturacion
+rrhh:comercial
+rrhh:logistica
+rrhh:becarios
+contabilidad:comercial
+contabilidad:logistica
+contabilidad:facturacion"
 
 V='\033[0;32m'; R='\033[0;31m'; A='\033[0;33m'; N='\033[0m'
 ok()    { echo -e "${V}[OK]   ${N} $1"; echo "[OK]    $1" >> "$INFORME"; }
@@ -37,8 +62,9 @@ fi
 {
   echo "============================================================"
   echo " VERIFICACION DE LA FASE 7 - BoochanV1"
+  echo " Escenario: Boochan S.L. - matriz de permisos por departamento"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
-  echo " Servidor: $(hostname) / $(hostname -f 2>/dev/null)"
+  echo " Servidor: $(hostname)"
   echo "============================================================"
 } > "$INFORME"
 cat "$INFORME"
@@ -46,160 +72,227 @@ cat "$INFORME"
 # =============================================================================
 # BLOQUE A - LO QUE VIENE DE LAS FASES 5 Y 6
 # =============================================================================
-# Una ACL se da a un grupo y se pone sobre una carpeta montada. Si el grupo no
-# se ve o la carpeta no esta montada, la ACL se aplica a la nada.
+# Una ACL se da a un grupo, sobre una carpeta montada. Si el grupo no se ve o
+# la carpeta no esta montada, la ACL se aplica a la nada.
 echo "" | tee -a "$INFORME"
 echo "--- A. La base de las fases 5 y 6 ---" | tee -a "$INFORME"
 
-if getent group policia >/dev/null 2>&1; then
-    ok "A1. El grupo 'policia' es visible (GID $(getent group policia | cut -d: -f3))"
+FALTAN=""
+for d in $DEPARTAMENTOS; do
+    getent group "$d" >/dev/null 2>&1 || FALTAN="$FALTAN $d"
+done
+if [ -z "$FALTAN" ]; then
+    ok "A1. Los 6 grupos de departamento son visibles"
 else
-    fallo "A1. El grupo 'policia' NO se ve - las ACL no pueden apuntar a el"
-    info "     Problema de la Fase 5. Arreglalo alli antes de seguir."
+    fallo "A1. No se ven estos grupos:$FALTAN"
+    info "     Problema de la Fase 5. Las ACL apuntarian a la nada."
 fi
 
-if mountpoint -q "$CARPETA"; then
-    ok "A2. $CARPETA esta montado"
+if mountpoint -q "$BASE" && mountpoint -q "$COMUN"; then
+    ok "A2. Los dos volumenes estan montados"
 else
-    fallo "A2. $CARPETA NO esta montado - estarias poniendo ACL en la carpeta equivocada"
+    fallo "A2. Algun volumen NO esta montado - estarias poniendo ACL en la carpeta equivocada"
     info "     Problema de la Fase 6. Arreglo: sudo mount -a"
 fi
 
-GRUPO_CARPETA=$(stat -c %G "$CARPETA" 2>/dev/null)
-if [ "$GRUPO_CARPETA" = "policia" ]; then
-    ok "A3. $CARPETA pertenece al grupo 'policia'"
+MAL=""
+for d in $DEPARTAMENTOS; do
+    [ "$(stat -c %G "$BASE/$d" 2>/dev/null)" = "$d" ] || MAL="$MAL $d"
+done
+if [ -z "$MAL" ]; then
+    ok "A3. Las 6 carpetas pertenecen a su departamento"
 else
-    fallo "A3. $CARPETA pertenece a '$GRUPO_CARPETA', deberia ser 'policia'"
+    fallo "A3. Estas carpetas NO pertenecen a su grupo:$MAL"
     info "     Problema de la Fase 6 (caso E6). Sin esto la proteccion no filtra nada."
 fi
 
-# =============================================================================
-# BLOQUE B - LAS ACL DE LA CARPETA
-# =============================================================================
-echo "" | tee -a "$INFORME"
-echo "--- B. Listas de control de acceso ---" | tee -a "$INFORME"
-
 if ! command -v getfacl >/dev/null 2>&1; then
-    fallo "B0. No esta instalado 'acl' - no se pueden leer las ACL"
+    fallo "A4. No esta instalado 'acl' - no se pueden leer las ACL"
     info "     Instalalo: sudo apt install -y acl"
-else
-    ACL=$(getfacl -p "$CARPETA" 2>/dev/null)
-
-    # B1. El permiso al grupo tiene que estar puesto.
-    if echo "$ACL" | grep -qE "^group:policia:rwx"; then
-        ok "B1. ACL: el grupo 'policia' tiene rwx sobre la carpeta"
-    else
-        fallo "B1. ACL: falta el permiso rwx del grupo 'policia'"
-        info "     Arreglo: sudo setfacl -m g:policia:rwx $CARPETA"
-    fi
-
-    # B2. LA MASCARA. Este es el fallo sutil de las ACL: el permiso figura en
-    #     la lista pero la mascara lo recorta, y getfacl lo marca #effective.
-    if echo "$ACL" | grep -qE "^group:policia:rwx.*#effective:"; then
-        fallo "B2. La MASCARA esta recortando el permiso del grupo"
-        info "     $(echo "$ACL" | grep '^group:policia' | head -1)"
-        info "     El permiso figura en la lista pero NO se aplica. Caso E6 del apartado 7."
-        info "     Arreglo: sudo setfacl -m m::rwx $CARPETA"
-    else
-        ok "B2. La mascara no recorta el permiso del grupo (permiso efectivo)"
-    fi
-
-    # B3. La ACL POR DEFECTO ('-d'): sin ella, lo que se cree manana no hereda.
-    if echo "$ACL" | grep -qE "^default:group:policia:rwx"; then
-        ok "B3. ACL por defecto: los ficheros nuevos heredaran el permiso"
-    else
-        fallo "B3. NO hay ACL por defecto - lo que se cree a partir de ahora no la hereda"
-        info "     Funciona con lo que ya existe y falla con lo nuevo."
-        info "     Arreglo: sudo setfacl -d -m g:policia:rwx $CARPETA"
-    fi
+    echo "" | tee -a "$INFORME"
+    echo " VEREDICTO: FASE 7 NO SUPERADA - falta el paquete 'acl'" | tee -a "$INFORME"
+    exit 1
 fi
 
 # =============================================================================
-# BLOQUE C - SAMBA PUBLICA LAS CARPETAS
+# BLOQUE B - LOS PERMISOS CRUZADOS DE LA MATRIZ
 # =============================================================================
 echo "" | tee -a "$INFORME"
-echo "--- C. Publicacion en Samba ---" | tee -a "$INFORME"
+echo "--- B. Permisos cruzados (la matriz) ---" | tee -a "$INFORME"
 
-# C1. El paracaidas de esta fase: testparm valida la sintaxis SIN reiniciar.
-if testparm -s >/dev/null 2>&1; then
-    ok "C1. /etc/samba/smb.conf no tiene errores de sintaxis (testparm)"
+N=0
+while IFS= read -r LINEA; do
+    [ -z "$LINEA" ] && continue
+    N=$((N+1))
+    CARPETA=$(echo "$LINEA" | cut -d: -f1)
+    GRUPO=$(echo "$LINEA"   | cut -d: -f2)
+    PERM=$(echo "$LINEA"    | cut -d: -f3)
+    RUTA="$BASE/$CARPETA"
+
+    ACL=$(getfacl -p "$RUTA" 2>/dev/null)
+
+    # ¿Existe la entrada para ese grupo?
+    LINEA_ACL=$(echo "$ACL" | grep -E "^group:$GRUPO:")
+    if [ -z "$LINEA_ACL" ]; then
+        fallo "B$N. '$GRUPO' NO tiene permiso sobre '$CARPETA' (deberia ser $PERM)"
+        info "     Arreglo: sudo setfacl -m g:$GRUPO:${PERM//-/} $RUTA"
+        continue
+    fi
+
+    PERM_REAL=$(echo "$LINEA_ACL" | cut -d: -f3 | awk '{print $1}')
+
+    # La MASCARA puede recortar el permiso sin borrarlo. getfacl lo marca
+    # con #effective, y es el fallo mas fino de la fase.
+    if echo "$LINEA_ACL" | grep -q "#effective:"; then
+        EFECTIVO=$(echo "$LINEA_ACL" | sed 's/.*#effective://' | tr -d ' \t')
+        fallo "B$N. '$GRUPO' sobre '$CARPETA': pone $PERM_REAL pero se aplica $EFECTIVO"
+        info "     LA MASCARA lo esta recortando. El permiso figura y NO funciona."
+        info "     Arreglo: sudo setfacl -m m::rwx $RUTA"
+    elif [ "$PERM_REAL" = "$PERM" ]; then
+        ok "B$N. '$GRUPO' sobre '$CARPETA': $PERM (correcto)"
+    else
+        fallo "B$N. '$GRUPO' sobre '$CARPETA': tiene $PERM_REAL, deberia ser $PERM"
+        if [ "$PERM" = "r-x" ] && [ "$PERM_REAL" = "rwx" ]; then
+            info "     TIENE ESCRITURA Y NO DEBERIA. Es el permiso mas peligroso de la matriz."
+        fi
+    fi
+
+    # La ACL por defecto ('-d'): sin ella, lo que se cree manana no hereda.
+    if echo "$ACL" | grep -qE "^default:group:$GRUPO:"; then
+        ok "B$N-bis. '$GRUPO' sobre '$CARPETA': la herencia esta puesta"
+    else
+        fallo "B$N-bis. '$GRUPO' sobre '$CARPETA': FALTA la ACL por defecto"
+        info "     Funciona con lo que ya existe y falla con lo nuevo."
+        info "     Arreglo: sudo setfacl -d -m g:$GRUPO:${PERM//-/} $RUTA"
+    fi
+done <<< "$CRUCES"
+
+# =============================================================================
+# BLOQUE C - LO QUE NO DEBE EXISTIR
+# =============================================================================
+# Un permiso de MAS es peor que uno de menos: el de menos se nota enseguida,
+# el de mas no lo nota nadie hasta que alguien ve lo que no debia.
+echo "" | tee -a "$INFORME"
+echo "--- C. Accesos que NO deben existir ---" | tee -a "$INFORME"
+
+SOBRAN=0
+while IFS= read -r LINEA; do
+    [ -z "$LINEA" ] && continue
+    CARPETA=$(echo "$LINEA" | cut -d: -f1)
+    GRUPO=$(echo "$LINEA"   | cut -d: -f2)
+    if getfacl -p "$BASE/$CARPETA" 2>/dev/null | grep -qE "^group:$GRUPO:"; then
+        fallo "C. '$GRUPO' TIENE acceso a '$CARPETA' y NO deberia"
+        info "     Segun la matriz, esa casilla esta vacia. Quitalo:"
+        info "     sudo setfacl -x g:$GRUPO $BASE/$CARPETA"
+        info "     sudo setfacl -d -x g:$GRUPO $BASE/$CARPETA"
+        SOBRAN=$((SOBRAN+1))
+    fi
+done <<< "$PROHIBIDOS"
+
+if [ "$SOBRAN" -eq 0 ]; then
+    ok "C. Ningun grupo tiene acceso de mas (RRHH y contabilidad siguen siendo islas)"
+fi
+
+# =============================================================================
+# BLOQUE D - LOS CASOS ESPECIALES DE LA MATRIZ
+# =============================================================================
+echo "" | tee -a "$INFORME"
+echo "--- D. Casos especiales ---" | tee -a "$INFORME"
+
+# D1. Los becarios solo LEEN su propia carpeta: es la unica excepcion.
+PERM_BEC=$(stat -c %a "$BASE/becarios" 2>/dev/null)
+if [ "$PERM_BEC" = "2750" ]; then
+    ok "D1. La carpeta de becarios esta en 2750: su grupo lee pero NO escribe"
+elif [ "$PERM_BEC" = "2770" ]; then
+    fallo "D1. La carpeta de becarios esta en 2770: PUEDEN ESCRIBIR Y BORRAR"
+    info "     Segun la matriz, los becarios solo tienen LECTURA sobre lo suyo."
+    info "     Arreglo: sudo chmod 2750 $BASE/becarios"
 else
-    fallo "C1. /etc/samba/smb.conf TIENE ERRORES de sintaxis"
+    fallo "D1. La carpeta de becarios tiene permisos $PERM_BEC, deberian ser 2750"
+fi
+
+# D2. La carpeta comun conserva su sticky bit de la Fase 6.
+PERM_COM=$(stat -c %a "$COMUN" 2>/dev/null)
+if [ "$PERM_COM" = "1777" ]; then
+    ok "D2. La carpeta comun conserva su sticky bit (1777)"
+else
+    fallo "D2. La carpeta comun tiene permisos $PERM_COM, deberian ser 1777"
+    info "     Sin sticky bit, cualquiera puede borrar el fichero de cualquiera."
+fi
+
+# =============================================================================
+# BLOQUE E - SAMBA PUBLICA LAS CARPETAS
+# =============================================================================
+echo "" | tee -a "$INFORME"
+echo "--- E. Publicacion en Samba ---" | tee -a "$INFORME"
+
+# E1. El paracaidas de esta fase: testparm valida la sintaxis SIN reiniciar.
+if testparm -s >/dev/null 2>&1; then
+    ok "E1. /etc/samba/smb.conf no tiene errores de sintaxis (testparm)"
+else
+    fallo "E1. /etc/samba/smb.conf TIENE ERRORES de sintaxis"
     info "     NO reinicies samba-ad-dc: tumbarias el dominio entero."
     info "     Mira que dice: sudo testparm"
 fi
 
-comprueba_recurso() {
-    local NOMBRE="$1"
-    local ETIQUETA="$2"
-    if testparm -s 2>/dev/null | grep -q "^\[$NOMBRE\]"; then
-        ok "$ETIQUETA. El recurso [$NOMBRE] esta publicado"
+for s in $DEPARTAMENTOS comun; do
+    if testparm -s 2>/dev/null | grep -q "^\[$s\]"; then
+        ok "E2. El recurso [$s] esta publicado"
     else
-        fallo "$ETIQUETA. El recurso [$NOMBRE] NO aparece en la configuracion"
+        fallo "E2. El recurso [$s] NO aparece en la configuracion"
     fi
-}
-
-comprueba_recurso "prueba1" "C2"
-comprueba_recurso "prueba3" "C3"
-
-# C4. Secciones duplicadas: Samba se queda con la ULTIMA y la primera se
-#     ignora en silencio. Es un error dificil de ver leyendo el fichero.
-for S in prueba1 prueba3; do
-    VECES=$(grep -c "^\[$S\]" /etc/samba/smb.conf 2>/dev/null)
+    # Secciones duplicadas: Samba usa la ULTIMA y descarta las anteriores.
+    VECES=$(grep -c "^\[$s\]" /etc/samba/smb.conf 2>/dev/null)
     if [ "${VECES:-0}" -gt 1 ]; then
-        fallo "C4. La seccion [$S] aparece $VECES veces en smb.conf"
+        fallo "E2-bis. La seccion [$s] aparece $VECES veces en smb.conf"
         info "     Samba usa la ULTIMA y descarta las anteriores sin avisar."
     fi
 done
 
 # =============================================================================
-# BLOQUE D - LA INVISIBILIDAD (ABE): EL FALLO SILENCIOSO DE ESTA FASE
+# BLOQUE F - LA INVISIBILIDAD (ABE): EL FALLO QUE NO SE VE DESDE AQUI
 # =============================================================================
-# Sin estas dos opciones el recurso SE VE desde Windows aunque no se pueda
-# entrar. La proteccion 'funciona' a medias y no lo sabras hasta la Fase 8.
+# Sin estas opciones el recurso SE VE desde Windows aunque no se pueda entrar.
+# Y desde Ubuntu no hay forma de notarlo: es la Fase 8 quien lo destapa.
 echo "" | tee -a "$INFORME"
-echo "--- D. Invisibilidad basada en acceso (ABE) ---" | tee -a "$INFORME"
+echo "--- F. Invisibilidad basada en acceso (ABE) ---" | tee -a "$INFORME"
 
-CONF_P3=$(testparm -s --section-name=prueba3 2>/dev/null)
+for s in $DEPARTAMENTOS; do
+    CONF=$(testparm -s --section-name="$s" 2>/dev/null)
 
-if echo "$CONF_P3" | grep -qi "access based share enum *= *yes"; then
-    ok "D1. [prueba3] con 'access based share enum = yes'"
-else
-    fallo "D1. [prueba3] SIN 'access based share enum' - el recurso se vera desde Windows"
-    info "     Se puede entrar? No. Se ve? Si. Y eso ya es informacion que regalas."
-fi
+    if echo "$CONF" | grep -qi "access based share enum *= *yes"; then
+        ok "F. [$s] con 'access based share enum = yes'"
+    else
+        fallo "F. [$s] SIN 'access based share enum' - se vera desde Windows"
+        info "     Se puede entrar? No. Se ve que existe? Si. Y eso ya es informacion."
+    fi
 
-if echo "$CONF_P3" | grep -qi "hide unreadable *= *yes"; then
-    ok "D2. [prueba3] con 'hide unreadable = yes'"
-else
-    fallo "D2. [prueba3] SIN 'hide unreadable' - se vera el contenido que no se puede abrir"
-fi
+    if ! echo "$CONF" | grep -qi "hide unreadable *= *yes"; then
+        fallo "F. [$s] SIN 'hide unreadable'"
+    fi
 
-# D3. acl_xattr es lo que permite que las ACL sobrevivan a Windows.
-if echo "$CONF_P3" | grep -qi "vfs objects.*acl_xattr"; then
-    ok "D3. [prueba3] con 'vfs objects = acl_xattr'"
-else
-    fallo "D3. [prueba3] SIN 'acl_xattr' - Windows machacara las ACL al copiar ficheros"
-fi
+    if ! echo "$CONF" | grep -qi "vfs objects.*acl_xattr"; then
+        fallo "F. [$s] SIN 'acl_xattr' - Windows machacara las ACL al copiar ficheros"
+    fi
+done
 
 # =============================================================================
-# BLOQUE E - EL SERVICIO SIGUE VIVO DESPUES DE TOCAR LA CONFIGURACION
+# BLOQUE G - EL DOMINIO SIGUE VIVO DESPUES DE TOCAR LA CONFIGURACION
 # =============================================================================
 echo "" | tee -a "$INFORME"
-echo "--- E. El dominio despues del cambio ---" | tee -a "$INFORME"
+echo "--- G. El dominio despues del cambio ---" | tee -a "$INFORME"
 
 if systemctl is-active samba-ad-dc >/dev/null 2>&1; then
-    ok "E1. samba-ad-dc sigue activo tras editar smb.conf"
+    ok "G1. samba-ad-dc sigue activo tras editar smb.conf"
 else
-    fallo "E1. samba-ad-dc NO esta activo - probablemente por un error en smb.conf"
+    fallo "G1. samba-ad-dc NO esta activo - probablemente por un error en smb.conf"
     info "     Mira: sudo journalctl -u samba-ad-dc -n 30 --no-pager"
 fi
 
-if smbclient -L localhost -N >/dev/null 2>&1; then
-    ok "E2. El servidor lista sus recursos compartidos"
+if id hiroshi.nohara >/dev/null 2>&1; then
+    ok "G2. Los usuarios del dominio siguen resolviendose"
 else
-    aviso "E2. No se han podido listar los recursos con smbclient"
-    info "     Puede ser normal segun la configuracion. Compruebalo a mano."
+    fallo "G2. 'id hiroshi.nohara' no responde - revisa winbind (Fase 5)"
 fi
 
 # =============================================================================
@@ -211,7 +304,6 @@ if [ "$FALLOS" -eq 0 ] && [ "$AVISOS" -eq 0 ]; then
     echo " VEREDICTO: FASE 7 SUPERADA" | tee -a "$INFORME"
 elif [ "$FALLOS" -eq 0 ]; then
     echo " VEREDICTO: FASE 7 SUPERADA CON $AVISOS AVISO(S)" | tee -a "$INFORME"
-    echo " Un aviso no impide seguir, pero LEELO: mira arriba cual es." | tee -a "$INFORME"
 else
     echo " VEREDICTO: FASE 7 NO SUPERADA - $FALLOS FALLO(S)" | tee -a "$INFORME"
     echo " Busca cada caso en Fase_7.7_Resolucion_Problemas." | tee -a "$INFORME"
@@ -221,11 +313,12 @@ echo "============================================================" | tee -a "$I
 {
   echo ""
   echo "ESTE SCRIPT NO HA COMPROBADO:"
-  echo "  - Que la carpeta sea INVISIBLE de verdad desde Windows (eso es la Fase 8)"
-  echo "  - Que exista la instantanea 'Fase 7 terminada'"
-  echo "  - Que exista la copia .ova en tu disco externo"
+  echo "  - Que las carpetas sean INVISIBLES de verdad desde Windows"
+  echo "  - Que un usuario sin permiso no pueda entrar de verdad"
+  echo "  - Que exista la instantanea 'Fase 7 terminada' ni la copia .ova"
   echo ""
-  echo "OJO: la prueba REAL de esta fase se hace desde el cliente Windows."
+  echo "OJO: la prueba REAL de esta fase se hace desde el cliente Windows,"
+  echo "en la FASE 8, iniciando sesion con usuarios distintos."
   echo "Aqui solo se comprueba que el servidor esta bien configurado para ello."
 } | tee -a "$INFORME"
 

@@ -7,145 +7,301 @@
 
 ---
 
+> [!abstract] 🏢 Hoy se aplica la política de la empresa
+> Tienes doce trabajadores (Fase 5) y siete carpetas (Fase 6). **Hoy decides quién entra dónde**, y hasta qué punto.
+>
+> **La matriz de permisos está en [[Escenario_Boochan_SL]] y no te la inventas tú.** Ténla abierta durante toda la fase.
+
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
-> Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
-> 1. **Crea la entrada de apuntes** de esta fase (`b2-f7-seguridad-avanzada.md`) con su estructura, vacía.
-> 2. **Léete los 5 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
-> 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
->
-> Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
+> 1. **Crea la entrada de apuntes** (`b2-f7-seguridad-avanzada.md`), vacía.
+> 2. **Léete los 7 pasos** del procedimiento enteros.
+> 3. **Lee la matriz de permisos** y su justificación en [[Escenario_Boochan_SL]]. Si no sabes **por qué** comercial no escribe en facturación, no sabes qué estás haciendo.
+> 4. Ten **OBS** listo y comprueba **pantalla y micrófono**.
 
-> [!example] Paso 1: Configuración de los Candados (ACLs)
-> Aplicamos permisos granulares al grupo `policia` sobre la carpeta `prueba3` y configuramos la herencia para que todos los archivos nuevos los hereden:
+---
+
+> [!info] 🗺️ La matriz que vas a aplicar
+> | Grupo ↓ · Carpeta → | factur. | contab. | comerc. | logíst. | rrhh | becarios | comun |
+> | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+> | **facturacion** | **RW** | — | R | — | — | — | RW* |
+> | **contabilidad** | **RW** | **RW** | R | R | — | — | RW* |
+> | **comercial** | R | — | **RW** | R | — | — | RW* |
+> | **logistica** | — | — | R | **RW** | — | — | RW* |
+> | **rrhh** | — | — | — | — | **RW** | R | RW* |
+> | **becarios** | — | — | — | — | — | **R** | — |
 >
-> > [!info] 📚 Diccionario de Comandos: Para repasar los operadores exactos de `setfacl`, consulta el [[Diccionario_Comandos_Sistema]].
+> **RW** = leer y escribir · R = solo lectura · — = sin acceso *(y sin verla)* · RW* = escribir, pero solo borrar lo suyo
 >
+> > [!warning] ⚠️ El acceso **RW** de cada grupo a su propia carpeta ya lo diste en la Fase 6
+> > Con el `chown root:<grupo>` y el `chmod 2770`. **Lo que añades hoy son los cruces**: los permisos que un departamento tiene sobre la carpeta **de otro**.
+> >
+> > Y eso los permisos clásicos de Unix **no lo pueden hacer**: solo admiten **un** dueño y **un** grupo. Para dar acceso a un segundo grupo hace falta una **ACL**.
+
+---
+
+> [!example] Paso 1: Comprueba que puedes usar ACL
 > ```bash
-> # Aplicamos el permiso al grupo "policia"
-> sudo setfacl -m g:policia:rwx /srv/samba/prueba3
->
-> # Configuramos la HERENCIA para el futuro
-> sudo setfacl -d -m g:policia:rwx /srv/samba/prueba3
+> sudo apt install -y acl
+> getfacl -p /srv/samba/departamentos/facturacion
 > ```
 >
-> > [!tip] 💡 ¿Qué hace este comando?
-> > - **`-m`:** Significa "Modify". Estamos modificando la lista de permisos.
-> > - **`g:policia:rwx`:** Le damos permisos de Lectura, Escritura y Ejecución (rwx) al **Grupo (g)** policia.
-> > - **`-d`:** Significa "Default" (Herencia). Indica que cualquier archivo nuevo que se cree ahí dentro heredará este permiso automáticamente.
+> - **✅ Bien:** devuelve las líneas `user::`, `group::` y `other::`.
+> - **❌ Mal:** `Operation not supported` → [[Fase_7.7_Resolucion_Problemas#E2 · setfacl Operation not supported|caso E2]].
+>
+> > [!info] 🎓 Lo que ves ahora son los permisos clásicos, traducidos
+> > `getfacl` enseña `rwx` para el dueño, `rwx` para el grupo y `---` para el resto. **Es lo mismo que el `2770` de la Fase 6**, contado de otra forma.
+> >
+> > A partir del siguiente paso vas a añadir **líneas nuevas**: grupos adicionales que los permisos clásicos no podrían representar.
 
-> [!example] Paso 2: Publicación de las Carpetas (smb.conf)
-> Para que los usuarios puedan ver y acceder a las carpetas desde Windows, debemos declarar cada una como un "recurso compartido" en el archivo de configuración de Samba.
->
-> Antes de editar, comprueba que el script de la Fase 4 no añadió ya estas secciones:
+---
+
+> [!example] Paso 2: Los permisos cruzados de LECTURA
+> Empieza por el más importante de la matriz, y hazlo **a mano** entendiendo cada parte: **comercial puede leer facturación**.
 > ```bash
-> sudo grep -n "prueba" /etc/samba/smb.conf
+> sudo setfacl -m g:comercial:rx /srv/samba/departamentos/facturacion
+> sudo setfacl -d -m g:comercial:rx /srv/samba/departamentos/facturacion
+> getfacl -p /srv/samba/departamentos/facturacion
 > ```
-> Si el comando no devuelve nada, continúa. Si devuelve líneas con `[prueba1]` o `[prueba3]`, esas secciones ya existen: **no las añadas de nuevo**; en su lugar edítalas para completar los parámetros que falten.
 >
-> Abre el archivo de configuración:
+> > [!tip] 💡 Qué dice cada trozo
+> > - **`-m`** → *modify*: añade o cambia una entrada de la lista.
+> > - **`g:comercial:rx`** → al **grupo** `comercial`, permiso de **leer** (`r`) y **entrar** en la carpeta (`x`).
+> > - **`-d`** → *default*: la misma regla **para lo que se cree a partir de ahora**. Sin esto, funciona con los ficheros de hoy y falla con los de mañana.
+> >
+> > **Son dos comandos porque son dos cosas distintas:** el permiso de ahora y la herencia.
+>
+> > [!danger] 🛑 Fíjate en que NO lleva `w`
+> > Un comercial necesita saber si su cliente ha pagado. **No puede tocar la factura.**
+> >
+> > Si pudiera, **el mismo que cobra la comisión podría modificar el importe facturado**. Eso no es un detalle técnico: es control interno, y es la regla más importante de la matriz.
+>
+> **Y ahora el resto de los permisos de lectura, con un bucle:**
+> ```bash
+> for regla in \
+>   "contabilidad:comercial" \
+>   "contabilidad:logistica" \
+>   "comercial:logistica" \
+>   "logistica:comercial" \
+>   "facturacion:comercial" \
+>   "rrhh:becarios" ; do
+>     GRUPO="${regla%:*}"
+>     CARPETA="${regla#*:}"
+>     echo ">>> $GRUPO podrá LEER la carpeta de $CARPETA"
+>     sudo setfacl    -m g:"$GRUPO":rx "/srv/samba/departamentos/$CARPETA"
+>     sudo setfacl -d -m g:"$GRUPO":rx "/srv/samba/departamentos/$CARPETA"
+> done
+> ```
+>
+> > [!important] 📖 Antes de ejecutarlo, léelo y compáralo con la matriz
+> > Cada línea es **`grupo_que_accede:carpeta_a_la_que_accede`**. Ve una por una contra la tabla de arriba y confirma que **cada par está en una casilla con `R`**.
+> >
+> > En el vídeo tienes que poder decir por qué está `rrhh:becarios` y **por qué NO está `contabilidad:rrhh`**.
+
+---
+
+> [!example] Paso 3: El permiso cruzado de ESCRITURA
+> Solo hay uno en toda la matriz: **contabilidad escribe en facturación**.
+> ```bash
+> sudo setfacl    -m g:contabilidad:rwx /srv/samba/departamentos/facturacion
+> sudo setfacl -d -m g:contabilidad:rwx /srv/samba/departamentos/facturacion
+> getfacl -p /srv/samba/departamentos/facturacion
+> ```
+>
+> - **✅ Bien:** ahora la carpeta de facturación tiene **tres grupos** en su lista: el suyo, `comercial` con `r-x` y `contabilidad` con `rwx`.
+>
+> > [!info] 🎓 Esto es lo que los permisos clásicos no podían hacer
+> > Una carpeta, **tres grupos distintos con tres niveles distintos**. Con `chown` y `chmod` solo tendrías un dueño y un grupo: o dabas acceso a todos o a ninguno.
+> >
+> > **Para eso existen las ACL**, y por eso esta fase va después de la 6 y no antes.
+>
+> > [!question] 🤔 ¿Por qué contabilidad sí escribe y comercial no?
+> > Son el **mismo circuito de dinero**: contabilidad corrige, ajusta y cierra lo que facturación emite. Comercial solo consulta.
+> >
+> > Anótalo en tu entrada. Es la diferencia entre *"dar permisos"* y **decidir una política**.
+
+> [!example] Paso 3.b: 🔴 Quitar la escritura a los becarios
+> Mira la matriz otra vez. Los becarios tienen **`R`** sobre su propia carpeta, **no `RW`**. Son los únicos.
+>
+> Y ahora mira lo que les dejó la Fase 6:
+> ```bash
+> ls -ld /srv/samba/departamentos/becarios
+> ```
+> Pone **`2770`**: el grupo tiene `rwx`. **Pueden escribir y borrar.** Hay que quitárselo:
+> ```bash
+> sudo chmod 2750 /srv/samba/departamentos/becarios
+> ls -ld /srv/samba/departamentos/becarios
+> ```
+> - **✅ Bien:** ahora se lee **`drwxr-s---`** — el grupo tiene `r-x`, sin `w`.
+>
+> > [!danger] 🛑 Este paso es fácil de saltarse, y se nota en la Fase 8
+> > La Fase 6 creó las siete carpetas **iguales**, porque allí todavía no había política. Hoy aplicas la política, y **la carpeta de becarios es la única excepción de toda la matriz**.
+> >
+> > Si no lo haces, en la Fase 8 `shinnosuke.nohara` **podrá borrar ficheros de su carpeta** — y la prueba de *"los becarios no tocan nada"* fallará.
+>
+> > [!question] 🤔 ¿Y por qué a un becario se le da solo lectura?
+> > Porque llega la semana que viene, se va en tres meses y **nadie le ha enseñado todavía qué es importante**. Puede consultar, aprender y trabajar sobre copias; no puede destruir el material del que aprende.
+> >
+> > No es desconfianza: es **mínimo privilegio**. El mismo criterio por el que contabilidad no entra en RRHH.
+
+---
+
+> [!example] Paso 4: 🔴 Comprueba la MÁSCARA antes de seguir
+> ```bash
+> getfacl -p /srv/samba/departamentos/facturacion
+> ```
+>
+> Mira las líneas de grupo y **lee hasta el final de cada una**:
+>
+> | Lo que quieres ver | Lo que NO quieres ver |
+> | :--- | :--- |
+> | `group:comercial:r-x` | `group:comercial:r-x		#effective:r--` |
+>
+> - **❌ Si aparece `#effective`**, la máscara está recortando el permiso → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica|caso E6]]:
+>   ```bash
+>   sudo setfacl -m m::rwx /srv/samba/departamentos/facturacion
+>   ```
+>
+> > [!danger] 🛑 Esta es la trampa más fina de toda la fase
+> > `group:comercial:r-x   #effective:r--` **pone `r-x` y significa `r--`**. El permiso está escrito, es correcto, y **no se aplica**.
+> >
+> > La máscara es un techo general: ningún grupo de la lista puede superarla, por mucho que figure. Y **el permiso sigue apareciendo**, así que si lees la ACL con prisa ves lo que esperabas ver.
+> >
+> > **Lo que está escrito y lo que se aplica pueden ser cosas distintas.** El sistema te lo está diciendo, en una columna que casi nadie mira.
+
+---
+
+> [!example] Paso 5: Publicar las siete carpetas en Samba
+> Para que Windows las vea, cada carpeta tiene que declararse como **recurso compartido**.
+>
+> Comprueba primero que no existan ya:
+> ```bash
+> sudo grep -n "^\[" /etc/samba/smb.conf
+> ```
+> Si aparecen secciones de departamentos, **no las dupliques**: edítalas → [[Fase_7.7_Resolucion_Problemas#E7 · Secciones duplicadas en smb.conf|caso E7]].
+>
 > ```bash
 > sudo nano /etc/samba/smb.conf
 > ```
 >
-> > [!info] 📚 Recurso: Si no recuerdas cómo usar este editor, repasa la [[Guía_Editor_Nano]].
-> Desplázate hasta el **final del archivo** (puedes usar `Ctrl + End` en nano) y añade estos dos bloques:
+> Añade **al final** estos bloques:
 > ```ini
-> [prueba1]
->     path = /srv/samba/prueba1
->     read only = no
->     vfs objects = acl_xattr
->
-> [prueba3]
->     path = /srv/samba/prueba3
+> [facturacion]
+>     path = /srv/samba/departamentos/facturacion
 >     read only = no
 >     vfs objects = acl_xattr
 >     access based share enum = yes
 >     hide unreadable = yes
+>
+> [contabilidad]
+>     path = /srv/samba/departamentos/contabilidad
+>     read only = no
+>     vfs objects = acl_xattr
+>     access based share enum = yes
+>     hide unreadable = yes
+>
+> [comercial]
+>     path = /srv/samba/departamentos/comercial
+>     read only = no
+>     vfs objects = acl_xattr
+>     access based share enum = yes
+>     hide unreadable = yes
+>
+> [logistica]
+>     path = /srv/samba/departamentos/logistica
+>     read only = no
+>     vfs objects = acl_xattr
+>     access based share enum = yes
+>     hide unreadable = yes
+>
+> [rrhh]
+>     path = /srv/samba/departamentos/rrhh
+>     read only = no
+>     vfs objects = acl_xattr
+>     access based share enum = yes
+>     hide unreadable = yes
+>
+> [becarios]
+>     path = /srv/samba/departamentos/becarios
+>     read only = no
+>     vfs objects = acl_xattr
+>     access based share enum = yes
+>     hide unreadable = yes
+>
+> [comun]
+>     path = /srv/samba/comun
+>     read only = no
+>     vfs objects = acl_xattr
 > ```
 > Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
 >
-> > [!tip] 💡 ¿Qué diferencia hay entre `prueba1` y `prueba3`?
-> > - **`prueba1`:** Es una carpeta de acceso general para todos los usuarios del dominio. No tiene ABE.
-> > - **`prueba3`:** Es la carpeta protegida. Los parámetros `access based share enum = yes` y `hide unreadable = yes` activan la doble capa de invisibilidad: la primera oculta el recurso del listado de red a quien no tiene acceso, y la segunda oculta el contenido interno a quien logra verlo pero no tiene permiso sobre los archivos.
+> > [!tip] 💡 Qué hace cada opción, y por qué `comun` es distinta
+> > | Opción | Para qué |
+> > | :--- | :--- |
+> > | `vfs objects = acl_xattr` | Guarda los permisos de Windows dentro del sistema de ficheros de Linux. **Sin esto, Windows machaca tus ACL al copiar** |
+> > | `access based share enum = yes` | **El recurso no aparece siquiera** en el listado de red de quien no tiene acceso |
+> > | `hide unreadable = yes` | Oculta el contenido interno que no se puede abrir |
+> >
+> > **`comun` no lleva las dos últimas a propósito:** todo el mundo tiene acceso, así que no hay nada que ocultarle a nadie. Ponerlas ahí no haría daño, pero tampoco haría nada — **y una opción que no hace nada es una opción que confunde al siguiente que lea el fichero**.
 
-> [!example] Paso 3: VALIDAR antes de aplicar
-> Cada vez que se modifica el `smb.conf` hay que reiniciar el servicio para que los cambios surtan efecto. **Pero antes se valida.**
->
+---
+
+> [!example] Paso 6: VALIDAR y aplicar
+> **Primero se valida. Después se reinicia. Nunca al revés.**
 > ```bash
 > sudo testparm
 > ```
 > *(Pulsa `Enter` cuando pregunte.)*
 >
 > - **✅ Bien:** `Loaded services file OK` y te muestra la configuración interpretada.
-> - **❌ Mal:** te dice **la línea exacta** del error. **No reinicies** hasta arreglarlo → [[Fase_7.7_Resolucion_Problemas#E1 · samba-ad-dc no arranca tras editar el smb.conf|caso E1]].
+> - **❌ Mal:** te dice **la línea exacta** del error → [[Fase_7.7_Resolucion_Problemas#E1 · samba-ad-dc no arranca tras editar el smb.conf|caso E1]].
 >
 > > [!danger] 🛑 Aquí reiniciar a ciegas no te tumba las carpetas: te tumba el DOMINIO
 > > `samba-ad-dc` **es el controlador de dominio**. Si no arranca por una errata, se lleva por delante el **DNS**, **Kerberos** y **LDAP**. El servidor seguirá encendido y el dominio habrá dejado de existir.
 > >
-> > **`testparm` es a `smb.conf` lo que `sudo mount -a` era al `fstab` en la Fase 6.** Mismo reflejo, otro servicio: se valida antes de reiniciar, no después de romper.
-
-> [!example] Paso 4: Aplicar los cambios
-> Y ahora sí, con la configuración validada:
+> > **`testparm` es a `smb.conf` lo que `sudo mount -a` era al `fstab` en la Fase 6.** Mismo reflejo, otro servicio.
+>
+> Y ahora sí:
 > ```bash
 > sudo systemctl restart samba-ad-dc
 > systemctl is-active samba-ad-dc
 > ```
-> - **✅ Bien:** devuelve `active`.
 >
 > Comprueba que el dominio ha vuelto **entero**, no solo que el servicio arrancó:
 > ```bash
 > host -t A ubuntuserver.boochanlab.local 127.0.0.1
-> id user1
-> ```
-> - **✅ Bien:** el `host` devuelve `10.10.10.10` e `id user1` sigue dando `uid=10001`.
-
-> [!example] Paso 5: El primer latido — ¿la ACL dice lo que crees?
-> Esto **no es la verificación de la fase**: es el pulso mínimo antes de seguir.
-> ```bash
-> getfacl -p /srv/samba/prueba3
+> id hiroshi.nohara
 > ```
 >
-> Busca estas dos líneas, **y mira que no lleven nada escrito a la derecha**:
-> ```
-> group:policia:rwx
-> default:group:policia:rwx
-> ```
->
-> | Qué ves | Qué significa |
-> | :--- | :--- |
-> | Las dos líneas, limpias | Vas bien. Sigue al apartado 8.a |
-> | Falta la línea `default:` | No hay herencia → [[Fase_7.7_Resolucion_Problemas#E4 · Los ficheros nuevos no heredan los permisos\|caso E4]] |
-> | Pone `#effective:r--` al final | **La máscara lo anula** → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica\|caso E6]] |
->
-> > [!warning] ⚠️ Esa columna de la derecha es la trampa de la fase
-> > `group:policia:rwx		#effective:r--` **pone `rwx` y significa `r--`**. El permiso está escrito, es correcto, y no se aplica. Si lees la ACL con prisa, ves lo que esperabas ver.
+> > [!bug] 🛑 ¿Estás seguro de que esto lo ha contestado el SERVIDOR?
+> > Si administras por SSH: `hostname` tiene que responder `ubuntuserver` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
 
 ---
 
 ### ✅ Checklist de esta parte
 
-- [ ] `setfacl -m g:policia:rwx` ejecutado sobre `/srv/samba/prueba3`.
-- [ ] `setfacl -d -m g:policia:rwx` ejecutado *(la herencia, con la `-d`)*.
-- [ ] Comprobado con `grep` que **no había ya** secciones `[prueba1]` / `[prueba3]` antes de añadirlas.
-- [ ] Los dos bloques añadidos al final del `smb.conf`, **una sola vez cada uno**.
-- [ ] `[prueba3]` con **`access based share enum`**, **`hide unreadable`** y **`acl_xattr`**.
+- [ ] Paquete `acl` instalado y `getfacl` funcionando.
+- [ ] **Permiso de lectura cruzado** aplicado en las **siete** casillas `R` de la matriz, **con su `-d`**.
+- [ ] **Permiso de escritura cruzado** (`contabilidad` → `facturacion`) aplicado, **con su `-d`**.
+- [ ] 🔴 Carpeta de **becarios bajada a `2750`**: su grupo con `r-x`, sin `w`.
+- [ ] 🔴 `getfacl` sin ningún **`#effective`** en las carpetas tocadas.
+- [ ] Las **siete secciones** añadidas al `smb.conf`, **una sola vez cada una**.
+- [ ] Las seis de departamento con `acl_xattr`, `access based share enum` y `hide unreadable`.
 - [ ] 🛑 `sudo testparm` → **`Loaded services file OK`**, ejecutado **antes** del reinicio.
 - [ ] `samba-ad-dc` en `active`, y el dominio responde al `host` y al `id`.
-- [ ] `getfacl` muestra las dos líneas **sin `#effective`**.
 - [ ] 🛑 **Instantánea NO tomada todavía.**
 
 ---
 
-> [!danger] 🛑 AQUÍ NO HAS TERMINADO LA FASE. Y esta tiene una particularidad
-> La configuración está puesta. **Pero la mitad del trabajo de esta fase no se puede comprobar desde el servidor.**
+> [!danger] 🛑 AQUÍ NO HAS TERMINADO. Y esta fase tiene una particularidad
+> La política está aplicada. **Pero la mitad del trabajo no se puede comprobar desde el servidor.**
 >
-> Hacer **invisible** una carpeta para quien no tiene permiso solo se ve **desde el listado de red de un cliente Windows** — y eso es la Fase 8. Desde Ubuntu, una carpeta bien protegida y una carpeta protegida a medias **se comportan exactamente igual**.
+> Que una carpeta sea **invisible** para quien no tiene permiso solo se ve **desde el listado de red de un cliente Windows** — y eso es la Fase 8. Desde Ubuntu, una carpeta bien protegida y una protegida a medias **se comportan exactamente igual**.
 >
-> Lo que sí puedes comprobar aquí es que el servidor está correctamente configurado para ello, y el [[Fase_7.8.a_Verificacion|apartado 8.a]] te dice además **qué queda pendiente**, para que lo anotes en vez de darlo por hecho.
+> El [[Fase_7.8.a_Verificacion|apartado 8.a]] comprueba lo que sí se puede comprobar aquí, y te deja **anotadas las pruebas pendientes** en vez de darlas por hechas.
 >
-> **Orden correcto:** [[Fase_7.8.a_Verificacion|8.a · verificar]] → [[Fase_7.8.b_Punto_de_Control|8.b · guardar la instantánea]]. Nunca al revés.
+> **Orden correcto:** [[Fase_7.8.a_Verificacion|8.a · verificar]] → [[Fase_7.8.b_Punto_de_Control|8.b · guardar]]. Nunca al revés.
 
-> ¿Algo no ha salido? → [[Fase_7.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E8`), no leas el documento entero.
+> ¿Algo no ha salido? → [[Fase_7.7_Resolucion_Problemas]] — **búscate por el síntoma** (casos `E1` a `E8`).
 
 ---
 

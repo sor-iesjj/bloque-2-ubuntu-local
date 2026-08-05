@@ -13,7 +13,7 @@
 > No saltes a la solución. **La comprobación es la parte que te enseña a diagnosticar**, y es la que vas a necesitar el día que el fallo no esté en ninguna lista.
 
 > [!danger] 🛑 Esta fase tiene un fallo que es INVISIBLE desde el servidor
-> Es el **[[#E5 · La carpeta protegida se ve desde Windows|caso E5]]**: la protección funciona a medias —no se puede entrar, pero **se ve**— y desde Ubuntu no hay forma de notarlo. **Lo descubres en la Fase 8, con el cliente Windows delante.**
+> Es el **[[#E5 · Una carpeta protegida se ve desde Windows|caso E5]]**: la protección funciona a medias —no se puede entrar, pero **se ve**— y desde Ubuntu no hay forma de notarlo. **Lo descubres en la Fase 8, con el cliente Windows delante.**
 >
 > Si solo vas a leer un caso de esta página, lee ese.
 
@@ -27,7 +27,7 @@
 | `setfacl: Operation not supported` | [[#E2 · setfacl Operation not supported\|E2]] |
 | El usuario ve la carpeta pero no puede entrar | [[#E3 · El usuario ve la carpeta pero no puede entrar\|E3]] |
 | Los ficheros nuevos no heredan los permisos | [[#E4 · Los ficheros nuevos no heredan los permisos\|E4]] |
-| **La carpeta protegida se ve desde Windows** | [[#E5 · La carpeta protegida se ve desde Windows\|E5]] ⚠️ |
+| **La carpeta protegida se ve desde Windows** | [[#E5 · Una carpeta protegida se ve desde Windows\|E5]] ⚠️ |
 | `getfacl` muestra el permiso pero pone `#effective` | [[#E6 · getfacl dice effective y el permiso no se aplica\|E6]] ⚠️ |
 | He añadido dos veces la misma sección | [[#E7 · Secciones duplicadas en smb.conf\|E7]] |
 | Las ACL desaparecen al copiar desde Windows | [[#E8 · Las ACL desaparecen al copiar ficheros desde Windows\|E8]] |
@@ -86,7 +86,7 @@ sudo journalctl -u samba-ad-dc -n 30 --no-pager
 
 > [!bug] Síntoma
 > ```
-> setfacl: /srv/samba/prueba3: Operation not supported
+> setfacl: /srv/samba/departamentos/facturacion: Operation not supported
 > ```
 
 **Hipótesis.** Dos posibilidades: falta el paquete `acl`, o el sistema de ficheros donde está la carpeta no soporta ACL.
@@ -94,14 +94,14 @@ sudo journalctl -u samba-ad-dc -n 30 --no-pager
 **Comprobación.**
 ```bash
 which setfacl getfacl
-mount | grep prueba3
-df -h /srv/samba/prueba3
+mount | grep facturacion
+df -h /srv/samba/departamentos/facturacion
 ```
 
 **Arreglo.**
 ```bash
 sudo apt install -y acl
-sudo setfacl -m g:policia:rwx /srv/samba/prueba3
+sudo setfacl -m g:comercial:rwx /srv/samba/departamentos/facturacion
 ```
 
 > [!info] 🎓 En `ext4` las ACL van activadas por defecto
@@ -125,8 +125,8 @@ sudo setfacl -m g:policia:rwx /srv/samba/prueba3
 **Comprobación.** Las tres, en orden:
 ```bash
 systemctl status samba-ad-dc --no-pager | head -5
-id -nG user1
-getfacl -p /srv/samba/prueba3
+id -nG masao.sato
+getfacl -p /srv/samba/departamentos/facturacion
 ```
 
 **Arreglo.** Según lo que falle:
@@ -134,8 +134,8 @@ getfacl -p /srv/samba/prueba3
 | Qué falla | Arreglo |
 | :--- | :--- |
 | Samba lleva más rato del cambio | `sudo systemctl restart samba-ad-dc` |
-| `user1` no sale en `policia` | `sudo samba-tool group addmembers policia user1` |
-| `getfacl` dice `#effective` | `sudo setfacl -m m::rwx /srv/samba/prueba3` |
+| `masao.sato` no sale en `comercial` | `sudo samba-tool group addmembers comercial masao.sato` |
+| `getfacl` dice `#effective` | `sudo setfacl -m m::rwx /srv/samba/departamentos/facturacion` |
 
 > [!summary] Qué aprendes
 > Que ante un *"no tengo acceso"* hay **un orden de diagnóstico** que ahorra tiempo: primero el servicio *(¿está leyendo la configuración nueva?)*, luego la identidad *(¿es quien creemos?)*, y por último el permiso *(¿dice lo que creemos?)*.
@@ -153,21 +153,21 @@ getfacl -p /srv/samba/prueba3
 
 **Comprobación.**
 ```bash
-getfacl -p /srv/samba/prueba3 | grep default
+getfacl -p /srv/samba/departamentos/facturacion | grep default
 ```
-- **✅ Bien:** aparece `default:group:policia:rwx`.
+- **✅ Bien:** aparece `default:group:comercial:rwx`.
 - **❌ Mal:** no hay ninguna línea `default:`.
 
 **Arreglo.**
 ```bash
-sudo setfacl -d -m g:policia:rwx /srv/samba/prueba3
-getfacl -p /srv/samba/prueba3
+sudo setfacl -d -m g:comercial:rwx /srv/samba/departamentos/facturacion
+getfacl -p /srv/samba/departamentos/facturacion
 ```
 
 > [!warning] ⚠️ El arreglo NO afecta a lo que ya existe
 > La ACL por defecto solo se aplica a **lo que se cree a partir de ahora**. Si ya hay ficheros dentro sin permisos, hay que corregirlos aparte:
 > ```bash
-> sudo setfacl -R -m g:policia:rwx /srv/samba/prueba3
+> sudo setfacl -R -m g:comercial:rwx /srv/samba/departamentos/facturacion
 > ```
 > *(La `-R` es recursiva: entra en todo lo que hay dentro.)*
 
@@ -178,18 +178,18 @@ getfacl -p /srv/samba/prueba3
 
 ---
 
-### E5 · La carpeta protegida se ve desde Windows
+### E5 · Una carpeta protegida se ve desde Windows
 
 > [!bug] Síntoma
 > **Desde el servidor, ninguno.** Todo correcto.
 >
-> Desde el cliente Windows, `user2` —que **no** es del grupo `policia`— abre `\\ubuntuserver` y **ve `prueba3` en la lista**. No puede entrar, pero la ve.
+> Desde el cliente Windows, `shinnosuke.nohara` —que **no** es del grupo `comercial`— abre `\\ubuntuserver` y **ve `facturacion` en la lista**. No puede entrar, pero la ve.
 
-**Hipótesis.** Falta `access based share enum = yes` en la sección `[prueba3]` del `smb.conf`, o Samba no se ha reiniciado después de añadirlo.
+**Hipótesis.** Falta `access based share enum = yes` en la sección `[facturacion]` del `smb.conf`, o Samba no se ha reiniciado después de añadirlo.
 
 **Comprobación.** Desde el servidor:
 ```bash
-testparm -s --section-name=prueba3
+testparm -s --section-name=facturacion
 ```
 - **✅ Bien:** aparecen `access based share enum = Yes` y `hide unreadable = Yes`.
 - **❌ Mal:** falta alguna.
@@ -220,7 +220,7 @@ sudo systemctl restart samba-ad-dc
 > [!bug] Síntoma
 > `getfacl` muestra el permiso perfectamente… con una coletilla al final:
 > ```
-> group:policia:rwx		#effective:r--
+> group:comercial:rwx		#effective:r--
 > ```
 > Y el usuario no puede escribir, aunque pone `rwx`.
 
@@ -228,14 +228,14 @@ sudo systemctl restart samba-ad-dc
 
 **Comprobación.**
 ```bash
-getfacl -p /srv/samba/prueba3
+getfacl -p /srv/samba/departamentos/facturacion
 ```
 Busca la línea `mask::`. Si dice `mask::r--`, ese es tu techo.
 
 **Arreglo.**
 ```bash
-sudo setfacl -m m::rwx /srv/samba/prueba3
-getfacl -p /srv/samba/prueba3
+sudo setfacl -m m::rwx /srv/samba/departamentos/facturacion
+getfacl -p /srv/samba/departamentos/facturacion
 ```
 - **✅ Bien:** desaparece el `#effective` de la línea del grupo.
 
@@ -254,7 +254,7 @@ getfacl -p /srv/samba/prueba3
 ### E7 · Secciones duplicadas en `smb.conf`
 
 > [!bug] Síntoma
-> Cambias algo en `[prueba3]`, reinicias, y **no pasa nada**. El cambio parece ignorarse.
+> Cambias algo en `[facturacion]`, reinicias, y **no pasa nada**. El cambio parece ignorarse.
 
 **Hipótesis.** La sección está **dos veces** en el fichero: la que añadiste tú y otra que ya existía. Samba se queda con la **última** y descarta la primera **sin decir nada**.
 
@@ -262,11 +262,11 @@ getfacl -p /srv/samba/prueba3
 ```bash
 grep -n "^\[prueba" /etc/samba/smb.conf
 ```
-- **❌ Mal:** aparece `[prueba3]` en dos líneas distintas.
+- **❌ Mal:** aparece `[facturacion]` en dos líneas distintas.
 
 Y para ver **qué configuración está usando realmente**:
 ```bash
-testparm -s --section-name=prueba3
+testparm -s --section-name=facturacion
 ```
 
 **Arreglo.** Edita el fichero y **deja una sola sección**, con todos los parámetros juntos:
@@ -292,7 +292,7 @@ sudo systemctl restart samba-ad-dc
 
 **Comprobación.**
 ```bash
-testparm -s --section-name=prueba3 | grep -i "vfs objects"
+testparm -s --section-name=facturacion | grep -i "vfs objects"
 ```
 
 **Arreglo.** Añádelo a la sección, valida y reinicia:

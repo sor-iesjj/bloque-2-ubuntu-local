@@ -27,7 +27,7 @@
 | Lo que ves | Caso |
 | :--- | :--- |
 | **El servidor no arranca tras tocar el fstab** | [[#E1 · El servidor no arranca tras editar el fstab\|E1]] 🔥 |
-| `df -h` no muestra los discos de 5 GB | [[#E2 · df -h no muestra los discos\|E2]] |
+| `df -h` no muestra los volúmenes montados | [[#E2 · df -h no muestra los discos\|E2]] |
 | `wrong fs type` al montar | [[#E3 · wrong fs type al montar\|E3]] |
 | `dd` falla: `No space left on device` | [[#E4 · dd falla por falta de espacio\|E4]] |
 | `chown: invalid group: 'contabilidad'` | [[#E5 · invalid group contabilidad\|E5]] |
@@ -93,7 +93,7 @@
 ### E2 · `df -h` no muestra los discos
 
 > [!bug] Síntoma
-> Has hecho todos los pasos, pero `df -h` no enseña ninguna línea de 5 GB con `/srv/samba/…`.
+> Has hecho todos los pasos, pero `df -h` no enseña las líneas de **8,0G** y **2,0G** con `/srv/samba/…`.
 
 **Hipótesis.** Los discos existen y están formateados, pero **no están montados**. Escribir en esas carpetas ahora mismo escribe en el disco del sistema, no en el disco virtual.
 
@@ -171,7 +171,7 @@ Si aun así no hay 11 GB libres, tienes dos caminos:
 - **Ampliar el disco de la VM** desde VirtualBox *(la VM apagada, `Herramientas` → `Medios`)*.
 
 > [!summary] Qué aprendes
-> Que **un disco virtual no es magia: sale del disco real.** Los 5 GB de `facturacion` no aparecen de la nada — se los quitas al `.vdi`, que a su vez se los quita a tu disco físico.
+> Que **un disco virtual no es magia: sale del disco real.** Los 10 GB de los dos volúmenes no aparecen de la nada — se los quitas al `.vdi`, que a su vez se los quita a tu disco físico.
 >
 > Es la misma idea que la sobreventa de almacenamiento en la nube, y la razón de que un proveedor te cobre por gigabyte: **abajo del todo siempre hay un disco de verdad con un límite de verdad.**
 
