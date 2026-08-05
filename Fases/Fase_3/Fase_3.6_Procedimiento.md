@@ -251,13 +251,29 @@
 > ping 10.20.20.1
 > ```
 >
-> > [!important] 🔒 VPN activa: momento de cerrar el acceso directo
-> > El túnel funciona. Ahora es el momento de ejecutar las acciones de seguridad descritas más arriba: cambiar el puerto SSH a 2222 y hacer que solo escuche en `10.20.20.1`.
+> > [!important] 🔒 Ya tienes una puerta mejor. Cerrar la antigua se hace AL FINAL
+> > Con el túnel funcionando, tu servidor tiene ahora **dos vías de acceso**: la Red Solo Anfitrión (`10.10.10.10`) y la VPN (`10.20.20.1`). La segunda es mucho mejor: va cifrada y solo entra quien tenga una llave criptográfica.
 > >
-> > A partir de ese momento, **todas tus conexiones SSH usarán este comando** (con la IP del túnel, no la de la Red Solo Anfitrión):
+> > Lo lógico sería cerrar la primera. **Y se hará — pero no hoy.**
+> >
+> > **NO cambies nada de SSH en esta fase.** Sigues entrando exactamente igual que hasta ahora:
 > > ```bash
-> > ssh -p 2222 usuario@10.20.20.1
+> > ssh boochan@10.10.10.10
 > > ```
+> >
+> > **¿Por qué no ahora?** Porque acabas de construir ese túnel hace cinco minutos y aún no sabes si aguanta un reinicio. Si cierras la vía directa y el túnel no levanta al arrancar, **te quedas sin ninguna forma de entrar** salvo la ventana de VirtualBox. Cerrar la única puerta que te queda antes de comprobar que la nueva es fiable es de los errores más caros que existen en administración de sistemas.
+> >
+> > **¿Cuándo entonces?** En la **[[Auditoria_Final]]**, que es donde toca: allí se revisan **todas las puertas que abriste durante el proyecto** y se cierran las que sobran, con el procedimiento completo y —esto importa— **con la forma de recuperar el acceso si algo sale mal**.
+> >
+> > Apúntalo en tu entrada de apuntes: *"queda pendiente restringir SSH al túnel — se hará en la Auditoría Final"*. Un administrador anota las puertas que deja abiertas.
+
+> > [!warning] ⚠️ Cuidado: hay DOS cosas distintas que se llaman "2222"
+> > | Dónde | Qué es |
+> > | :--- | :--- |
+> > | **[[Fase_1.6.e_Procedimiento_Acceso_Desde_Otro_Equipo]]** *(opcional)* | Un **reenvío de puertos** del anfitrión: `anfitrión:2222 → VM:22`. Solo si administras desde otro equipo de la red |
+> > | **[[Auditoria_Final]]** | El **puerto en el que escucha SSH** dentro del servidor, cambiado del 22 al 2222 |
+> >
+> > **No tienen nada que ver.** Coinciden en el número por casualidad, y confundirlos hace perder mucho tiempo: puedes estar entrando por el reenvío y creer que el endurecimiento ya está aplicado.
 
 ---
 
