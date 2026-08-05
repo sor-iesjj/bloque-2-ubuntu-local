@@ -12,16 +12,16 @@
 > **⏱️ Tiempo estimado:** ~1,5 horas (teoría + práctica + retos + troubleshooting)  
 > **Requisitos:** 4 GB RAM | Discos virtuales montados | Samba activo
 >
-> **📦 Entrega:** una entrada de apuntes + un vídeo + la instantánea `Fase 7 terminada`
+> **📦 Entrega:** una entrada de apuntes + **tres vídeos** + la instantánea `Fase 7 terminada` + la copia `.ova`
 
 ---
 
 ## 🧭 Índice de la fase
 
-> [!warning] 📖 Esta fase va en diez documentos, no en uno
+> [!warning] 📖 Esta fase va en doce documentos, no en uno
 > Cada apartado es un fichero aparte, dentro de la carpeta `Fase_7/`. **Se leen en orden**, pero puedes volver a cualquiera sin perderte: al final de cada uno tienes la navegación.
 >
-> **La fase completa es UNA sola entrega:** una entrada de apuntes y un vídeo, no diez.
+> **La fase son TRES entregas de vídeo** —procedimiento, punto de control y laboratorio de averías— sobre **una sola entrada de apuntes**.
 
 | # | Apartado | Cuándo se lee |
 | :--- | :--- | :--- |
@@ -32,15 +32,23 @@
 | **5** | [[Fase_7.5_Fundamento_Teorico]] | Antes de teclear — los conceptos |
 | **6** | [[Fase_7.6_Procedimiento]] | **Con la VM delante — aquí está el trabajo** |
 | **7** | [[Fase_7.7_Resolucion_Problemas]] | Cuando algo no salga — búscate por el síntoma |
-| **8** | [[Fase_7.8_Punto_de_Control]] | Al terminar, con la grabación aún en marcha |
+| **8.a** | [[Fase_7.8.a_Verificacion]] | 🔍 Al terminar el procedimiento — **antes** de guardar |
+| **8.b** | [[Fase_7.8.b_Punto_de_Control]] | 💾 Después de verificar — la instantánea y la copia |
 | **9** | [[Fase_7.9_Preguntas]] | Después de la instantánea — trabajo de mesa |
-| **10** | [[Fase_7.10_Auditoria_y_Cierre]] | Lo último — la checklist antes de seguir |
+| **10.a** | [[Fase_7.10.a_Laboratorio_de_Averias]] | 🔨 Romper la seguridad a propósito, y repararla |
+| **10.b** | [[Fase_7.10.b_Auditoria_y_Cierre]] | Lo último — la checklist antes de seguir |
 
 > [!tip] 💡 Cómo se recorre
 > - Los apartados **1, 2 y 3** se leen **antes de encender nada**: son las reglas del juego.
 > - El **4 y el 5** te preparan: contexto y conceptos.
 > - El **6 es el trabajo**. El **7** solo si algo falla.
-> - Los apartados **8, 9 y 10** cierran, **en ese orden**: primero aseguras la máquina, luego escribes, luego compruebas que no te dejas nada.
+> - El **8.a y el 8.b van en ese orden y no se intercambian**: primero se comprueba, después se guarda.
+> - El **9** es trabajo de mesa, y el **10.a** es donde de verdad se aprende: rompes lo que acabas de construir, con la red de seguridad ya puesta.
+
+> [!danger] 🛑 Esta fase NO se puede verificar entera desde el servidor
+> La mitad del trabajo es hacer **invisible** una carpeta para quien no tiene permiso — y la invisibilidad solo se ve **desde un cliente Windows**, que es la Fase 8.
+>
+> Desde Ubuntu, una carpeta bien protegida y una protegida a medias **se comportan igual**. Por eso el 8.a te deja dos pruebas anotadas como pendientes en lugar de dar el trabajo por cerrado.
 
 ---
 
@@ -49,4 +57,4 @@
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_7.1_Que_Se_Evalua]]
 
-**Siguiente al terminar los diez apartados:** Fase 8.
+**Siguiente al terminar los doce apartados:** Fase 8.
