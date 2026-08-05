@@ -544,7 +544,7 @@ hostname
 
 **Hipótesis.** **Tienes dos máquinas virtuales encendidas a la vez con la misma IP.**
 
-Pasa con una segunda instalación, con un clon del ejercicio [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]], o con una VM de otra fase que dejaste corriendo.
+Pasa con una segunda instalación, con un clon del ejercicio [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar]], o con una VM de otra fase que dejaste corriendo.
 
 > [!danger] ⚠️ Este es el fallo más caro de todos, porque NO da error
 > Las dos máquinas responden a `10.10.10.10`. Cuando preguntas por esa IP, **contesta la que llegue antes**, y puede cambiar entre un intento y el siguiente.
@@ -578,7 +578,7 @@ VBoxManage showvminfo "NombreDeLaVM" | findstr /i "NIC 2"
 VBoxManage controlvm "LaQueSobra" acpipowerbutton
 ```
 
-Y si necesitas de verdad tener dos a la vez, dale a la segunda una IP distinta (`10.10.10.11`) y otro `hostname` — es justo lo que se practica en [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]].
+Y si necesitas de verdad tener dos a la vez, dale a la segunda una IP distinta (`10.10.10.11`) y otro `hostname` — es justo lo que se practica en [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar]].
 
 > [!success] ✅ La costumbre que te ahorra esto para siempre
 > **Antes de empezar a trabajar, siempre:**

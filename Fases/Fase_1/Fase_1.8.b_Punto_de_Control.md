@@ -19,7 +19,7 @@ Es la única del bloque que lleva dos, y se toman en momentos distintos:
 | Instantánea | Cuándo se toma | Para qué sirve |
 | :--- | :--- | :--- |
 | **`Sistema base`** | Al terminar [[Fase_1.6.c_Procedimiento_Instalar_Ubuntu\|6.c]] | **La más valiosa del curso.** Evita reinstalar Ubuntu nunca más |
-| **`Fase 1 terminada`** | **Aquí**, tras verificar | Punto de partida limpio para la Fase 2, y **origen del clon** de la 6.f |
+| **`Fase 1 terminada`** | **Aquí**, tras verificar | Punto de partida limpio para la Fase 2, y **el punto al que vuelves** tras entregar tu copia en la 6.f |
 
 > [!danger] 💾 Por qué `Sistema base` se guarda sin verificar del todo
 > Es la excepción de la regla *"primero verificar, después guardar"*, y tiene una razón:
@@ -80,13 +80,48 @@ VBoxManage snapshot "UbuntuServer" list
 >
 > Y en esta fase te llevarías por delante `Sistema base`, que es media hora de tu vida.
 
-### **3A — Exporta la máquina**
+### **3A — Exporta la máquina (procedimiento completo)**
 
-Con la VM **apagada**, en VirtualBox:
+> [!danger] ⚠️ La máquina tiene que estar APAGADA
+> Una máquina encendida **no aparece en la lista** del asistente. Si no la ves, es que sigue corriendo: apágala con `sudo poweroff` y vuelve a entrar.
 
-`Archivo` → **`Exportar servicio virtualizado`** → selecciona `UbuntuServer` → formato **OVF 2.0** → guarda.
+> [!info] 🎓 Exportar NO es clonar. No los confundas
+> | | **Clonar** | **Exportar** ← lo de aquí |
+> | :--- | :--- | :--- |
+> | Qué produce | **Otra máquina virtual**: una carpeta con muchos ficheros | **UN solo fichero** `.ova` |
+> | Dónde queda | Dentro de tu VirtualBox, en la lista | Donde tú digas: el disco externo |
+> | Para qué | Trabajar con una copia sin tocar la original | **Sacar la máquina fuera** |
+>
+> Una máquina virtual **es una carpeta**, no un fichero. El `.ova` solo existe cuando exportas: es esa carpeta empaquetada y comprimida en uno solo.
+>
+> **Para una copia de seguridad quieres un fichero.** Por eso se exporta.
 
-O por comando:
+**Paso a paso, en VirtualBox:**
+
+**1.** Menú **`Archivo`** → **`Exportar servicio virtualizado…`**
+
+**2.** *(Máquinas virtuales)* — Selecciona **`UbuntuServer`** y pulsa `Siguiente`.
+
+> Aquí ves **todas tus máquinas apagadas**. Si tienes más de una, asegúrate de marcar la tuya y no otra.
+
+**3.** *(Configuración del formato)* — Tres cosas que decidir:
+
+| Campo | Qué pones | Por qué |
+| :--- | :--- | :--- |
+| **Formato** | **`Open Virtualization Format 2.0`** | El `1.0` es de 2009 y existe por compatibilidad con herramientas antiguas. Todos usáis VirtualBox |
+| **Archivo** | La ruta de tu disco externo *(punto 3B)* | Que no se quede en el equipo del aula |
+| **Escribir archivo de manifiesto** | ✅ **Márcalo** | Ver abajo |
+
+> [!tip] 💡 Qué es el "archivo de manifiesto" y por qué se marca
+> Es una lista de **sumas de verificación** del contenido, que viaja dentro del `.ova`. Al importar, VirtualBox comprueba con ella que **el fichero no se ha corrompido** por el camino.
+>
+> No cuesta nada y te da algo importante: **una copia que no puedes comprobar no es una copia, es una esperanza.** Un disco externo que se cae al suelo, un pendrive que se saca sin expulsar o una copia interrumpida producen ficheros que parecen buenos y no lo son.
+
+**4.** *(Configuración del servicio virtualizado)* — Datos descriptivos: nombre del producto, fabricante, versión. **Puedes dejarlo como está**; no afectan al funcionamiento. Pulsa **`Exportar`**.
+
+**5.** Espera. Tarda varios minutos y **no hay que tocar nada**.
+
+**Y si prefieres la línea de comandos**, en `cmd` o PowerShell de tu Windows:
 ```
 VBoxManage export "UbuntuServer" --output "E:\SOR\Bloque_2\Fases\Fase_1\B2-F1-infraestructura-virtual.ova"
 ```
@@ -130,8 +165,10 @@ Abre la carpeta del disco y **mira el tamaño del fichero**. Debe rondar los 3-5
 
 ## **4 · Y AHORA, LA ENTREGA POR PAREJAS**
 
-> [!important] 👉 Con `Fase 1 terminada` tomada, te queda [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar|la 6.f]]
-> Esa instantánea no sirve solo para volver atrás: **es el punto desde el que se clona**. En la 6.f la conviertes en una máquina que le das a un compañero, y descubres —chocándote— qué partes de un servidor **no se pueden duplicar**.
+> [!important] 👉 Con `Fase 1 terminada` tomada, te queda [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar|la 6.f]]
+> Esa instantánea no sirve solo para volver atrás: **es el punto al que volverás**. En la 6.f vas a limpiar la identidad de tu servidor, exportarlo para dárselo a un compañero, y después **restaurar esta instantánea para recuperar el tuyo intacto**.
+>
+> Y descubrirás, chocándote, qué partes de un servidor **no se pueden duplicar**.
 >
 > Necesitas un compañero que también haya llegado hasta aquí. Ve poniéndote de acuerdo.
 

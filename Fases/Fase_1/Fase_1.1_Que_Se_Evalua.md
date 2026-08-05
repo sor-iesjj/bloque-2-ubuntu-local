@@ -30,7 +30,7 @@
 >
 > | Código | Criterio de evaluación | Dónde lo demuestras |
 > | :--- | :--- | :--- |
-> | `CE.06.g` | Se ha trabajado en grupo. | [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] — clonas tu servidor, se lo das a un compañero e importas el suyo |
+> | `CE.06.g` | Se ha trabajado en grupo. | [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar]] — clonas tu servidor, se lo das a un compañero e importas el suyo |
 >
 > Es el **único punto de la Fase 1 que no puedes hacer solo**, y por eso es el único donde se puede demostrar este criterio.
 

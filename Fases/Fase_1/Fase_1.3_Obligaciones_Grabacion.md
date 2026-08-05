@@ -17,10 +17,10 @@
 > | 3 | `B2 · F1 · Instalar Ubuntu Server` | **6.c** | ~8-10 min |
 > | 4 | `B2 · F1 · Verificación y acceso remoto` | **6.d + 8.a** | ~12-15 min |
 > | 5 | `B2 · F1 · Punto de control` | **8.b** | ~3-4 min |
-> | 6 | `B2 · F1 · Clonar e intercambiar` | **6.f** | ~10-12 min |
+> | 6 | `B2 · F1 · Exportar e intercambiar` | **6.f** | ~10-12 min |
 > | 7 | `B2 · F1 · Laboratorio de averías` | **10.a** | ~15-20 min |
 >
-> **Por qué siete y no uno largo:** porque son cosas distintas. Montar, comprobar, guardar, clonar y romper se corrigen por separado — y si algo te sale mal en uno, no arrastra a los demás.
+> **Por qué siete y no uno largo:** porque son cosas distintas. Montar, comprobar, guardar, entregar y romper se corrigen por separado — y si algo te sale mal en uno, no arrastra a los demás.
 
 ---
 
@@ -69,8 +69,9 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 - Que se vea **el fichero `.ova` en tu disco externo**, en su carpeta, con su tamaño.
 - ⏸️ **Puedes pausar** mientras exporta.
 
-**2D — Clonar e intercambiar** · `B2 · F1 · Clonar e intercambiar`
+**2D — Exportar e intercambiar** · `B2 · F1 · Exportar e intercambiar`
 - Se hace **por parejas**. Que se vean **las dos máquinas**, la tuya y la de tu compañero.
+- Que se vea el **asistente de exportación** y el **de importación**, con la opción de regenerar las MAC marcada.
 - El momento importante es **la colisión**: dos servidores con la misma IP. Que se vea y que lo expliques.
 
 **2E — Laboratorio de averías** · `B2 · F1 · Laboratorio de averías`

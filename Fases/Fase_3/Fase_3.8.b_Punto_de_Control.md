@@ -53,7 +53,10 @@
 
 Con la VM **apagada**, en VirtualBox:
 
-`Archivo` → **`Exportar servicio virtualizado`** → selecciona `UbuntuServer` → formato **OVF 2.0** → guarda.
+`Archivo` → **`Exportar servicio virtualizado…`** → selecciona `UbuntuServer` → formato **`Open Virtualization Format 2.0`** → **marca el archivo de manifiesto** → guarda como `B2-F3-conectividad-vpn.ova`.
+
+> [!tip] 💡 Es el mismo procedimiento de la Fase 1
+> Si no te acuerdas de alguna pantalla, lo tienes paso a paso en [[Fase_1.8.b_Punto_de_Control]], incluido **por qué se marca el manifiesto** y **por qué la máquina tiene que estar apagada** para aparecer en la lista.
 
 O por comando:
 ```

@@ -39,12 +39,14 @@
 - [ ] `ping 10.10.10.10` responde **desde tu Windows**.
 - [ ] `ssh boochan@10.10.10.10` entra **desde tu Windows**.
 
-## **5 · EL CLON** *(entrega 6)*
+## **5 · EL INTERCAMBIO** *(entrega 6)*
 
-- [ ] Clon completo creado desde `Fase 1 terminada`, **con las claves de host limpiadas antes**.
-- [ ] Intercambiado con un compañero, importado y **arrancado a la vez que el tuyo** *(`CE.06.g` — trabajo en grupo: sin pareja, este criterio no se puede evaluar)*.
-- [ ] Clon renombrado y con IP `10.10.10.11`: las dos máquinas conviven.
-- [ ] 🧹 **Clon apagado.** No pases a la Fase 2 con dos servidores encendidos.
+- [ ] Identidad limpiada (`ssh_host_*` y `machine-id`) **antes** de exportar.
+- [ ] Exportado a **`B2-F1-<tu credencial>.ova`**, con OVF 2.0 y manifiesto.
+- [ ] 🔄 **Instantánea `Fase 1 terminada` restaurada**: tu servidor volvió a estar entero.
+- [ ] Intercambiado con un compañero, importado **regenerando las MAC** y **arrancado a la vez que el tuyo** *(`CE.06.g` — trabajo en grupo: sin pareja, este criterio no se puede evaluar)*.
+- [ ] Máquina importada reparada con `ssh-keygen -A`, renombrada y con IP `10.10.10.11`: las dos conviven.
+- [ ] 🧹 **Máquina del compañero apagada.** No pases a la Fase 2 con dos servidores encendidos.
 
 ## **6 · EL LABORATORIO DE AVERÍAS** *(entrega 7)*
 

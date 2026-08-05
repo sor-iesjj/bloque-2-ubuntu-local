@@ -444,7 +444,7 @@ sudo ss -tlnp | grep ":22 "
 > 2. Al regenerarlas, el servidor tiene **una identidad nueva**
 > 3. Tu Windows, que recordaba la anterior, **se niega a conectarse** y te avisa de un posible ataque
 >
-> **Por qué provocamos esta:** porque provoca a propósito el [[Fase_1.7_Resolucion_Problemas#E11 · Aviso REMOTE HOST IDENTIFICATION HAS CHANGED|caso E11]] del catálogo de errores, y porque es exactamente lo que te encontrarás al clonar una máquina en [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar|la 6.f]].
+> **Por qué provocamos esta:** porque provoca a propósito el [[Fase_1.7_Resolucion_Problemas#E11 · Aviso REMOTE HOST IDENTIFICATION HAS CHANGED|caso E11]] del catálogo de errores, y porque es exactamente lo que te encontrarás al clonar una máquina en [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar|la 6.f]].
 
 > [!question] 🤔 Predice antes de ejecutar
 > 1. Si borras las claves y reinicias el servicio, ¿se regenerarán solas?
@@ -515,7 +515,7 @@ Y vuelve a conectar. Te preguntará de nuevo si aceptas la huella: **compárala 
 >
 > El aviso de tu Windows no es un fastidio: es **la protección funcionando**. Está diciendo *"esta dirección responde, pero ya no es quien era"*. Eso es exactamente lo que pasaría si alguien suplantara al servidor.
 >
-> Por eso se compara la huella antes de aceptar. Y por eso, en [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar|la 6.f]], **lo primero que se borra antes de clonar son estas claves**: si viajaran en el clon, dos máquinas distintas afirmarían ser la misma.
+> Por eso se compara la huella antes de aceptar. Y por eso, en [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar|la 6.f]], **lo primero que se borra antes de clonar son estas claves**: si viajaran en el clon, dos máquinas distintas afirmarían ser la misma.
 
 ---
 
