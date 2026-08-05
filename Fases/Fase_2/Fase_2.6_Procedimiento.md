@@ -257,6 +257,27 @@
 
 ---
 
+### ✅ Checklist de esta parte
+
+- [ ] Entorno **limpio**: los restos de instalaciones anteriores eliminados (Paso 1A).
+- [ ] **Demolición comprobada** (Paso 1B), no dada por hecha.
+- [ ] Paquetes de la Fase 4 instalados: `samba-ad-dc`, `samba-ad-provision`.
+- [ ] Sistema actualizado sin errores.
+- [ ] `/etc/hosts` con sus **tres columnas** en el orden correcto: IP · FQDN · alias.
+- [ ] `hostname -f` → **`UbuntuServer.BOOCHANLAB.LOCAL`**.
+- [ ] 🛑 **Instantánea NO tomada todavía.**
+
+---
+
+> [!important] 🛑 Aquí no has terminado la fase
+> Los comandos han salido bien, pero **eso no es lo mismo que estar verificado**. La lista con la que se decide si esta fase está lista —y con la que se guarda o no la instantánea— es el [[Fase_2.8.a_Verificacion|apartado 8.a]]: cinco comprobaciones, y una de ellas (`hostname -f` y el reino **en mayúsculas**) es la que sostiene toda la Fase 4.
+>
+> **Orden correcto:** [[Fase_2.8.a_Verificacion|8.a · verificar]] → [[Fase_2.8.b_Punto_de_Control|8.b · guardar]]. Nunca al revés: una instantánea de un trabajo mal hecho convierte el fallo en tu punto de retorno.
+
+> ¿Algo no ha salido? → [[Fase_2.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio, no leas el documento entero.
+
+---
+
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
 | [[Fase_2.5_Fundamento_Teorico]] | [[Fase_2]] | [[Fase_2.7_Resolucion_Problemas]] |

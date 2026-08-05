@@ -361,9 +361,28 @@
 >
 > Si has llegado aquí preguntándotelo otra vez, es buena señal: significa que has entendido que tener dos puertas abiertas es algo que hay que resolver. **Y se resuelve — en la [[Auditoria_Final]].**
 
+---
 
+### ✅ Checklist de esta parte
+
+- [ ] Llaves del servidor generadas **con `umask 077`**, y el `ls -l` muestra `-rw-------`.
+- [ ] `wg0.conf` del servidor escrito, con su `[Peer]` apuntando al cliente.
+- [ ] Llaves y configuración del **cliente** creadas.
+- [ ] Llaves **públicas** intercambiadas: cada lado tiene la del otro, **ninguno la privada ajena**.
+- [ ] `sudo wg-quick up wg0` levanta el túnel sin errores.
+- [ ] `sudo systemctl enable wg-quick@wg0` ejecutado, para que arranque solo.
+- [ ] `ping 10.20.20.1` responde desde el cliente.
+- [ ] Las preguntas de la API contestadas en la entrada de apuntes.
+- [ ] 🛑 **Instantánea NO tomada todavía.**
 
 ---
+
+> [!important] 🛑 Aquí no has terminado la fase
+> Que el túnel funcione **ahora mismo** no significa que la fase esté bien hecha: falta comprobar que **sobrevive a un reinicio** y que no has roto nada de las fases anteriores. Eso es el [[Fase_3.8.a_Verificacion|apartado 8.a]], cinco puntos.
+>
+> **Orden correcto:** [[Fase_3.8.a_Verificacion|8.a · verificar]] → [[Fase_3.8.b_Punto_de_Control|8.b · guardar]]. Una VPN que se cae en el próximo arranque es una VPN que no está configurada — solo encendida.
+
+> ¿Algo no ha salido? → [[Fase_3.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio, no leas el documento entero.
 
 ---
 

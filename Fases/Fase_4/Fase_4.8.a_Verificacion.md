@@ -28,6 +28,14 @@
 > ```
 > Si `apt` falla aquí, ya tienes tu primer hallazgo → [[Fase_4.7_Resolucion_Problemas#E8 · Me he quedado sin internet y apt no funciona|caso E8]].
 
+> [!bug] 🛑 Si administras por SSH: confirma primero DÓNDE estás
+> ```bash
+> hostname
+> ```
+> Tiene que responder **`ubuntuserver`**. Si responde el nombre de tu ordenador, la sesión SSH se cerró y estás comprobando **tu propia máquina**: los siete puntos de abajo te contestarán cosas, pero ninguna valdrá → [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11]].
+>
+> Una verificación hecha en la máquina equivocada es peor que no hacerla: te deja tranquilo sin motivo.
+
 > Todos los comandos de aquí **solo leen**. Ninguno modifica nada.
 
 ### **1 · EL CONTROLADOR DE DOMINIO ESTÁ VIVO**
@@ -102,8 +110,10 @@ lsattr /etc/resolv.conf
 
 | Comando | ✅ Bien | ❌ Mal |
 | :--- | :--- | :--- |
-| `cat` | `nameserver 127.0.0.1` | Otra cosa → [[Fase_4.7_Resolucion_Problemas#E6 · Tras reiniciar el DNS ha vuelto a otro sitio\|caso E6]] |
+| `cat` | `nameserver 127.0.0.1` *(una segunda línea `search BOOCHANLAB.LOCAL` es normal)* | Un `nameserver` distinto → [[Fase_4.7_Resolucion_Problemas#E6 · Tras reiniciar el DNS ha vuelto a otro sitio\|caso E6]] |
 | `lsattr` | Aparece una **`i`** entre los atributos | Sin `i` → el fichero se sobrescribirá al reiniciar |
+
+> Ya lo comprobaste en el [[Fase_4.6_Procedimiento|Paso 3 del procedimiento]]. **Se repite aquí a propósito:** esta es la lista con la que decides si guardas la instantánea, y tiene que sostenerse sola.
 
 > [!info] 🎓 Por qué hace falta la `i` (inmutable)
 > `systemd-resolved` **reescribe `/etc/resolv.conf` por su cuenta** cada vez que arranca el sistema. Puedes editarlo cien veces: al reiniciar, vuelve a lo suyo.
@@ -196,6 +206,6 @@ sudo samba-tool domain level show
 
 ---
 
-| ← Anterior | 🧭 Índice | Siguiente → |
-| :--- | :---: | ---: |
+| ← Anterior                        | 🧭 Índice  |                     Siguiente → |
+| :-------------------------------- | :--------: | ------------------------------: |
 | [[Fase_4.7_Resolucion_Problemas]] | [[Fase_4]] | [[Fase_4.8.b_Punto_de_Control]] |

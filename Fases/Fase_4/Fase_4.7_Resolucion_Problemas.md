@@ -33,6 +33,7 @@
 | Me he quedado sin internet: `apt` no funciona | [[#E8 · Me he quedado sin internet y apt no funciona\|E8]] |
 | `samba-ad-dc` no arranca | [[#E9 · samba-ad-dc no arranca\|E9]] |
 | Funciona hoy, pero tras reiniciar no hay dominio | [[#E10 · Funciona hoy pero tras reiniciar no hay dominio\|E10]] |
+| Los comandos responden, pero contestan cosas que no encajan | [[#E11 · Los comandos me responden pero contestan mal\|E11]] |
 
 ---
 
@@ -337,6 +338,48 @@ systemctl is-enabled samba-ad-dc
 > La distinción que llevas arrastrando desde la Fase 3: **`active` es "está corriendo ahora"; `enabled` es "arrancará solo la próxima vez".** Son dos cosas distintas y hacen falta las dos.
 >
 > Un servicio `active` pero no `enabled` es una bomba de relojería: funciona hasta el primer reinicio, que siempre llega en el peor momento.
+
+---
+
+### E11 · Los comandos me responden pero contestan mal
+
+> [!bug] Síntoma
+> Ejecutas una comprobación del procedimiento y **te contesta algo**, pero lo que contesta no encaja con lo que acabas de hacer. El caso típico:
+> ```
+> $ cat /etc/resolv.conf
+> #
+> # macOS Notice
+> # ...
+> nameserver 192.168.18.1
+> ```
+> Un `nameserver` que no es `127.0.0.1`, texto que no habías visto nunca, o una IP de tu red de casa (`192.168.x.x`).
+
+**Hipótesis.** **Estás ejecutando los comandos en tu propio ordenador, no en el servidor.** La sesión SSH se cerró y no te enteraste. Pasa por tres motivos, en este orden de frecuencia:
+
+1. **Terminal equivocada.** Tienes una ventana con SSH y otra local, y el comando cayó en la local.
+2. **Un `exit` de más.** Si saliste de un `sudo -i` o de un `su`, un `exit` extra te devuelve a tu máquina.
+3. **La sesión murió.** El aprovisionamiento toca la red y el DNS; si el SSH se corta, `ssh` termina y te deja en tu prompt. **Sin decirte nada.**
+
+**Comprobación.** El comando que resuelve la duda en un segundo:
+```bash
+hostname
+whoami
+```
+
+| Devuelve | Estás en |
+| :--- | :--- |
+| `ubuntuserver` | El servidor ✅ |
+| El nombre de tu ordenador | Tu máquina ❌ |
+
+**Arreglo.** Vuelve a entrar y repite la comprobación **desde el principio**:
+```bash
+ssh boochan@10.10.10.10
+```
+
+> [!summary] Qué aprendes
+> **Que un comando te conteste no significa que te conteste quien tú crees.** Este fallo es especialmente traicionero porque **no da error**: `cat /etc/resolv.conf` existe en las dos máquinas y en las dos devuelve algo. Solo cambia el contenido — y si no lo miras con atención, das por buena una comprobación que nunca se hizo.
+>
+> De ahí sale una costumbre que vale para toda tu vida profesional: **antes de tocar nada en un servidor remoto, confirma en qué máquina estás.** Los administradores con años de oficio siguen escribiendo `hostname` por reflejo, y no es manía: es que el día que ese comando era `rm -rf` en lugar de `cat`, la diferencia entre las dos ventanas costó muy cara.
 
 ---
 

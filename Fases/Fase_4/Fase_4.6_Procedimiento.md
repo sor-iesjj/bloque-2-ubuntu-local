@@ -119,21 +119,83 @@
 > >
 > > El `DNS_FORWARDER=8.8.8.8` funciona así: cuando Samba no sabe resolver un nombre (porque no es del dominio), reenvía la consulta a Google DNS a través del adaptador NAT.
 
-> [!example] Paso 2: Verificación de Servicios
-> Una vez finalizado el script, debemos comprobar que el "corazón" del dominio está latiendo:
+> [!example] Paso 2: El primer latido — ¿el dominio ha arrancado?
+> Esto **no es la verificación de la fase**: es solo el pulso, para saber si el script dejó el dominio en pie antes de seguir.
 > ```bash
-> # Comprobar que el servicio está activo y corriendo
-> sudo systemctl status samba-ad-dc
+> systemctl is-active samba-ad-dc
 > ```
+> Debe devolver una sola palabra: **`active`**. Si dice `failed` o `inactive` → [[Fase_4.7_Resolucion_Problemas#E9 · samba-ad-dc no arranca|caso E9]].
+>
+> > [!tip] 💡 Si prefieres verlo con detalle, cuidado con la pantalla que se queda enganchada
+> > ```bash
+> > sudo systemctl status samba-ad-dc --no-pager
+> > ```
+> > **Sin `--no-pager`, la salida se abre dentro de `less`** —un paginador— y la pantalla parece bloqueada. No lo está: **se sale pulsando `q`**. Dentro te mueves con `↑`/`↓` y avanzas página con `espacio`. `Ctrl+C` y `Esc` no sirven aquí.
+> >
+> > Es el mismo `less` que usarás en el apartado 8.a para leer el verificador. Acostúmbrate: en Linux, media docena de comandos te dejan en él.
 
-> [!example] Paso 3: Verificación del DNS
-> Es vital confirmar que el servidor se mira a sí mismo para resolver nombres de red:
+> [!example] Paso 3: El servidor se mira a sí mismo
+> El script ha cambiado a quién le pregunta el servidor cuando necesita resolver un nombre. Confírmalo:
 > ```bash
-> # Debe devolver: nameserver 127.0.0.1
 > cat /etc/resolv.conf
+> lsattr /etc/resolv.conf
 > ```
+>
+> | Comando | Qué tiene que salir |
+> | :--- | :--- |
+> | `cat` | `nameserver 127.0.0.1` |
+> | `lsattr` | Una **`i`** entre los atributos: `----i---------e------- /etc/resolv.conf` |
+>
+> > [!info] 🤔 A mí me salen DOS líneas en el `cat`, no una
+> > Normal:
+> > ```
+> > nameserver 127.0.0.1
+> > search BOOCHANLAB.LOCAL
+> > ```
+> > La segunda es el **dominio de búsqueda**: hace que si escribes `ubuntuserver` a secas, el sistema complete solo hasta `ubuntuserver.boochanlab.local`. No es obligatoria y no sobra — es señal de que el aprovisionamiento dejó bien configurado el dominio.
+>
+> > [!warning] ⚠️ La `i` no es un adorno, y por eso se comprueba AQUÍ
+> > `systemd-resolved` **reescribe `/etc/resolv.conf` en cada arranque**. Que hoy ponga `127.0.0.1` no significa que mañana lo siga poniendo.
+> >
+> > `chattr +i` lo deja **inmutable**: ni `root` puede tocarlo. Si el `lsattr` no muestra la `i`, tu configuración se pierde en el próximo reinicio y te enterarás en la Fase 5 o más tarde → [[Fase_4.7_Resolucion_Problemas#E6 · Tras reiniciar el DNS ha vuelto a otro sitio|caso E6]].
+> >
+> > **"Lo he cambiado" no es lo mismo que "se quedará cambiado".** Una configuración que no sobrevive a un reinicio no está hecha.
+>
+> > [!bug] 🛑 ¿Estás seguro de que estos comandos los ha contestado el SERVIDOR?
+> > Si administras por SSH, comprueba **dónde estás** antes de dar nada por bueno:
+> > ```bash
+> > hostname
+> > ```
+> > Tiene que responder `ubuntuserver`. Si responde el nombre de tu ordenador, estás ejecutando los comandos en tu propia máquina y las respuestas no valen → [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11]].
 
 ---
+
+### ✅ Checklist de esta parte
+
+- [ ] Script traído con `curl` **y LEÍDO entero** antes de ejecutarlo.
+- [ ] Comprobado que es el de **`bloque-2-ubuntu-local`**, no el de la nube.
+- [ ] Las **cinco cosas** del `cat` localizadas y explicadas en el vídeo.
+- [ ] Recuadro **`Despliegue de BOOCHANLAB finalizado CORRECTAMENTE`** en pantalla.
+- [ ] `systemctl is-active samba-ad-dc` → `active`.
+- [ ] `/etc/resolv.conf` → `nameserver 127.0.0.1` *(la línea `search` es normal)*.
+- [ ] `lsattr /etc/resolv.conf` → aparece la **`i`**.
+- [ ] Si trabajas por SSH: `hostname` confirma que estás **en el servidor**.
+- [ ] 🛑 **Instantánea NO tomada todavía.**
+
+---
+
+> [!danger] 🛑 AQUÍ NO HAS TERMINADO LA FASE. Y esta vez importa de verdad
+> El script ha acabado, el servicio está activo y el DNS apunta a sí mismo. **Y aun así el trabajo puede estar mal hecho sin que nada te avise.**
+>
+> Tu servidor tiene **dos tarjetas**. Si el dominio se ha anunciado en la del NAT (`10.0.2.x`) en lugar de en la `10.10.10.10`, todo lo que acabas de comprobar **seguiría saliendo igual de bien**: `active`, `127.0.0.1`, recuadro verde. Y en la **Fase 8**, dentro de tres semanas, el cliente Windows dirá *"No se encuentra el dominio"* sin mencionar ni las tarjetas, ni el DNS, ni esta fase.
+>
+> Esa comprobación **no está en este apartado**: está en el [[Fase_4.8.a_Verificacion|apartado 8.a]], que es de obligado cumplimiento y son diez minutos.
+>
+> **Si tomas la instantánea ahora, guardas el fallo dentro de tu punto de retorno** — y cada vez que restaures, volverá.
+>
+> **Orden correcto:** [[Fase_4.8.a_Verificacion|8.a · verificar]] → [[Fase_4.8.b_Punto_de_Control|8.b · guardar la instantánea]]. Nunca al revés.
+
+> ¿Algo no ha salido? → [[Fase_4.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E11`), no leas el documento entero.
 
 ---
 
