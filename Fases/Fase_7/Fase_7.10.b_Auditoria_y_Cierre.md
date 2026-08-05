@@ -68,7 +68,7 @@ done
 
 - [ ] `systemctl is-active samba-ad-dc` → **`active`**.
 - [ ] `host -t A ubuntuserver.boochanlab.local 127.0.0.1` → **`10.10.10.10`**.
-- [ ] Los **seis grupos** con GID **`3001`**-**`3006`**; `id masao.sato` → `uid=10005 gid=3003`.
+- [ ] Los **seis grupos** con GID **`3001`**-**`3006`**; `id masao.sato` → `uid=10005`, con `comercial` en `groups=`.
 - [ ] `mountpoint /srv/samba/departamentos` y `/srv/samba/comun` → **son puntos de montaje**.
 
 ## **6 · EL LABORATORIO DE AVERÍAS** *(entrega 3)*

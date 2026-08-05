@@ -36,7 +36,7 @@ mountpoint /srv/samba/departamentos && mountpoint /srv/samba/comun
 stat -c '%n %U:%G' /srv/samba/departamentos/*
 ```
 
-- **Por qué:** una ACL se le da **a un grupo**, sobre **una carpeta montada**. Si el grupo no se ve o la carpeta no está montada, estás poniendo permisos en la nada.
+- **Por qué:** una ACL se le da **a un grupo**, sobre **una carpeta montada**. Si `getent group` no devuelve nada, el problema es que `samba-ad-dc` no está sirviendo el traductor. Si el grupo no se ve o la carpeta no está montada, estás poniendo permisos en la nada.
 - **✅ Bien:** los seis grupos con `3001`-`3006`, los dos volúmenes montados, y cada carpeta a nombre de **su** departamento.
 - **❌ Mal:** vuelve a la fase de la que venga — [[Fase_5.7_Resolucion_Problemas|Fase 5]] o [[Fase_6.7_Resolucion_Problemas|Fase 6]].
 

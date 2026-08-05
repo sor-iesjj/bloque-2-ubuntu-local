@@ -56,9 +56,9 @@ stat -c '%n  %U:%G  %a' /srv/samba/departamentos/* /srv/samba/comun
 ## **5 · LA BASE DE LAS FASES ANTERIORES SIGUE EN PIE**
 
 - [ ] `systemctl is-active samba-ad-dc` → **`active`**.
-- [ ] `systemctl is-active winbind` → **`active`**.
+- [ ] `wbinfo -p` → **responde** *(el servicio `winbind` de systemd sigue `inactive`: correcto en un AD DC)*.
 - [ ] Los **seis grupos** visibles con GID **`3001`**-**`3006`**.
-- [ ] `id hiroshi.nohara` → **`uid=10001 gid=3001`**.
+- [ ] `id hiroshi.nohara` → **`uid=10001`** y **`facturacion` en `groups=`** *(el `gid=` primario es `100(users)`: normal en AD)*.
 
 ## **6 · EL LABORATORIO DE AVERÍAS** *(entrega 3)*
 

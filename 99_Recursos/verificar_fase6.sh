@@ -58,11 +58,13 @@ cat "$INFORME"
 echo "" | tee -a "$INFORME"
 echo "--- A. Los departamentos de la Fase 5 ---" | tee -a "$INFORME"
 
-if systemctl is-active winbind >/dev/null 2>&1; then
-    ok "A1. winbind activo"
+# En un AD DC winbindd va DENTRO de 'samba': el servicio de systemd esta
+# apagado a proposito. Lo que importa es que RESPONDA, no que corra aparte.
+if wbinfo -p >/dev/null 2>&1; then
+    ok "A1. winbind responde - los grupos del dominio son visibles"
 else
-    fallo "A1. winbind NO esta activo - el sistema no vera los grupos de departamento"
-    info "     Arreglo: sudo systemctl enable --now winbind"
+    fallo "A1. winbind NO responde - el sistema no vera los grupos de departamento"
+    info "     En un AD DC lo sirve samba-ad-dc. Revisa que este activo."
 fi
 
 FALTAN=""
@@ -170,10 +172,13 @@ for d in $DEPARTAMENTOS; do
         continue
     fi
 
+    # 'stat %G' devuelve el grupo con el prefijo del dominio (BOOCHANLAB\grupo).
+    # Nos quedamos con lo que va detras de la barra para poder compararlo.
     GRUPO=$(stat -c %G "$RUTA")
+    GRUPO_CORTO="${GRUPO##*\\}"
     PERM=$(stat -c %a "$RUTA")
 
-    if [ "$GRUPO" != "$d" ]; then
+    if [ "$GRUPO_CORTO" != "$d" ]; then
         fallo "D$N. $RUTA pertenece al grupo '$GRUPO', deberia ser '$d'"
         info "     El chown fallo (probablemente winbind estaba parado) y nadie aviso."
         info "     FUNCIONA HOY y ROMPERA LA FASE 7. Caso E6 del apartado 7."

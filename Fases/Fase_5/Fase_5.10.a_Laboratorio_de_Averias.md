@@ -62,7 +62,7 @@
 # **AVERÍA 1 · PARAR EL TRADUCTOR**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** detener `winbind` **dejando el dominio y los usuarios intactos**.
+> **Qué vamos a provocar:** detener `samba-ad-dc` — que en un controlador de dominio **es también el traductor** — dejando los usuarios intactos en la base de datos.
 >
 > **Qué dejará de funcionar, en cadena:**
 > 1. Se para el traductor
@@ -79,27 +79,42 @@
 >
 > **Escribe tus tres respuestas antes de seguir.**
 
+> [!warning] ⚠️ ¿Y por qué no paramos `winbind` a secas?
+> Porque **en un AD DC ese servicio ya está parado** y no hace nada: `winbindd` corre **dentro** del proceso `samba`. Pruébalo antes de romper:
+> ```bash
+> systemctl is-active winbind    # inactive... y wbinfo funciona igual
+> wbinfo -p
+> ```
+> **El traductor cuelga de `samba-ad-dc`.** Por eso es ese el que hay que parar para ver el efecto.
+
 ### **1 · Romper**
 ```bash
-sudo systemctl stop winbind
+sudo systemctl stop samba-ad-dc
 ```
 
 ### **2 · Comprobar**
 ```bash
-systemctl is-active winbind
+systemctl is-active samba-ad-dc
+wbinfo -p
 id hiroshi.nohara
-sudo samba-tool user list | grep hiroshi.nohara
 getent passwd hiroshi.nohara
 ```
+*(El `samba-tool user list` tampoco funcionará: sin servicio no hay a quién preguntar. Los usuarios **siguen en el disco**, en la base de datos del dominio.)*
 
 **Cómo se interpreta lo que sale:**
 
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
-| `is-active` | `inactive` | El traductor está parado |
+| `is-active` | `inactive` | El dominio está parado |
+| `wbinfo -p` | **Falla** | El traductor se ha ido con él |
 | `id hiroshi.nohara` | `no such user` | Linux no puede resolverlo |
-| `samba-tool user list` | **Aparece `hiroshi.nohara`** | El usuario **existe**. No se ha perdido nada |
-| `getent passwd` | Nada | La vía normal tampoco lo encuentra |
+| `getent passwd` | Nada | La vía normal tampoco |
+| El fichero `sam.ldb` | **Sigue en el disco** | Los doce usuarios **existen**. No se ha perdido nada |
+
+Compruébalo tú mismo, que es la parte que importa:
+```bash
+sudo ls -lh /var/lib/samba/private/sam.ldb
+```
 
 **Y tu sesión SSH sigue funcionando**, porque `boochan` es un usuario **local**, no del dominio.
 
@@ -108,16 +123,19 @@ Un servidor con todos sus usuarios intactos y **ninguno utilizable**. Nadie podr
 
 ### **4 · Reparar**
 ```bash
-sudo systemctl start winbind
-sleep 3
+sudo systemctl start samba-ad-dc
+sleep 5
+wbinfo -p
 id hiroshi.nohara
 ```
-- **✅ Reparado:** `id hiroshi.nohara` vuelve a devolver `uid=10001 gid=3001`.
+- **✅ Reparado:** `wbinfo` responde y `id hiroshi.nohara` vuelve a devolver `uid=10001`.
 
 > [!success] 🎓 La lección
 > **"No existe" y "no lo veo" son cosas distintas**, y el sistema te dice siempre la segunda.
 >
-> De ahí una regla de diagnóstico que vale para cualquier servidor: **antes de recrear algo que parece perdido, comprueba en el origen si sigue estando.** Recrear encima de lo que ya existe es como se convierte un problema pequeño en uno grande.
+> Y una que es propia de esta arquitectura: **en un controlador de dominio, el traductor no es un servicio aparte.** Paras el dominio y se van las identidades, el DNS y la autenticación de golpe — igual que viste en la avería 1 de la Fase 4.
+>
+> De ahí la regla de diagnóstico: **antes de recrear algo que parece perdido, comprueba en el origen si sigue estando.** Recrear encima de lo que ya existe es como un problema pequeño se convierte en uno grande.
 
 ---
 
@@ -129,7 +147,7 @@ id hiroshi.nohara
 > **Por qué provocamos esta:** porque produce **exactamente el mismo síntoma que la avería 1** con una causa completamente distinta. Es el ejercicio de diagnóstico de la fase: dos causas, un solo síntoma.
 
 > [!question] 🤔 Predice antes de ejecutar
-> 1. ¿Dirá `systemctl is-active winbind` que algo va mal?
+> 1. ¿Dirá `wbinfo -p` que algo va mal?
 > 2. ¿Y `wbinfo -u`?
 > 3. ¿En qué se diferenciará esto de la avería 1?
 
@@ -143,7 +161,7 @@ grep -E "^passwd:|^group:" /etc/nsswitch.conf
 
 ### **2 · Comprobar**
 ```bash
-systemctl is-active winbind
+wbinfo -p
 wbinfo -u
 id hiroshi.nohara
 getent passwd hiroshi.nohara
@@ -154,18 +172,18 @@ sudo ./verificar_fase5.sh
 
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
-| `is-active` | **`active`** | El traductor está **perfecto** |
+| `wbinfo -p` | **Responde** | El traductor está **perfecto** |
 | `wbinfo -u` | **Lista los usuarios** | Y además está hablando con el dominio |
 | `id hiroshi.nohara` | `no such user` | Pero nadie le pregunta a él |
 | El verificador | **FALLO en `B3`/`B4`** | Señala el fichero exacto |
 
 > [!danger] 🤯 Compara esto con la avería 1
-> **El mismo síntoma. Otra causa.** En la 1, winbind estaba muerto. Aquí está vivo y respondiendo — solo que Linux no le consulta.
+> **El mismo síntoma. Otra causa.** En la 1 el traductor estaba muerto porque cayó con el dominio. Aquí está vivo y respondiendo — solo que Linux no le consulta.
 >
 > Si te limitas a mirar `id hiroshi.nohara`, las dos averías son idénticas. **`wbinfo` es lo que las separa**, porque pregunta por un camino distinto.
 
 ### **3 · Consecuencias**
-Idénticas a la avería 1 de cara al usuario: nadie del dominio puede entrar. Pero quien diagnostique mirando el servicio dirá *"winbind está bien"* y se quedará atascado, porque está mirando la pieza equivocada.
+Idénticas a la avería 1 de cara al usuario: nadie del dominio puede entrar. Pero quien diagnostique mirando `wbinfo` dirá *"el traductor está bien"* y se quedará atascado, porque está mirando la pieza equivocada.
 
 ### **4 · Reparar**
 ```bash
@@ -312,7 +330,7 @@ sudo ./verificar_fase5.sh
 ### **1 · Romper**
 ```bash
 sudo samba-tool user create duplicado.temporal 'P@ssw0rd' --uid-number=10001 --gid-number=3001
-sudo systemctl restart winbind
+sudo systemctl restart samba-ad-dc
 ```
 
 ### **2 · Comprobar**
@@ -357,7 +375,7 @@ sudo ./verificar_fase5.sh
 # **AVERÍA 6 · LAS IDENTIDADES QUE NO SOBREVIVEN AL REINICIO**
 
 > [!abstract] 🎯 Objetivo de esta avería
-> **Qué vamos a provocar:** dejar los usuarios funcionando **hoy** y desaparecidos **mañana**.
+> **Qué vamos a provocar:** dejar los usuarios funcionando **hoy** y desaparecidos **mañana**, deshabilitando el servicio del que cuelgan.
 >
 > **Por qué provocamos esta:** porque es la avería que no se ve haciendo comprobaciones normales. Todo está bien… hasta que apagas.
 
@@ -367,10 +385,11 @@ sudo ./verificar_fase5.sh
 
 ### **1 · Romper**
 ```bash
-sudo systemctl disable winbind
-systemctl is-active winbind
-systemctl is-enabled winbind
+sudo systemctl disable samba-ad-dc
+systemctl is-active samba-ad-dc
+systemctl is-enabled samba-ad-dc
 ```
+*(Recuerda: los usuarios cuelgan de `samba-ad-dc`, no del servicio `winbind`, que está parado a propósito.)*
 
 ### **2 · Comprobar**
 ```bash
@@ -380,10 +399,10 @@ sudo ./verificar_fase5.sh
 
 | Qué mira | Resultado |
 | :--- | :--- |
-| `is-active` | **`active`** — winbind funciona perfectamente |
+| `is-active` | **`active`** — el dominio funciona perfectamente |
 | `is-enabled` | **`disabled`** — no arrancará la próxima vez |
 | `id hiroshi.nohara` | **Responde bien** — hoy no pasa nada |
-| El verificador | **FALLO en `B2`** |
+| El verificador | **FALLO en `A1`** tras el reinicio |
 
 **Y ahora compruébalo de verdad:** reinicia la máquina.
 ```bash
@@ -400,8 +419,8 @@ Un servidor de identidades que funciona hasta el primer corte de luz. Y el prime
 
 ### **4 · Reparar**
 ```bash
-sudo systemctl enable --now winbind
-systemctl is-enabled winbind
+sudo systemctl enable --now samba-ad-dc
+systemctl is-enabled samba-ad-dc
 id hiroshi.nohara
 sudo ./verificar_fase5.sh
 ```

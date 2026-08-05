@@ -94,18 +94,30 @@ fi
 echo "" | tee -a "$INFORME"
 echo "--- B. El traductor (winbind) ---" | tee -a "$INFORME"
 
-if systemctl is-active winbind >/dev/null 2>&1; then
-    ok "B1. winbind activo"
+# OJO: en un Samba AD DC, winbindd va DENTRO del proceso 'samba'. El servicio
+# 'winbind' de systemd es el del Samba CLASICO y debe estar INACTIVO (asi lo
+# comprueba tambien la Fase 4). Por eso aqui NO se mira el servicio: se mira
+# si winbind RESPONDE, que es lo unico que importa.
+if command -v wbinfo >/dev/null 2>&1; then
+    if wbinfo -p >/dev/null 2>&1; then
+        ok "B1. winbind responde (wbinfo -p) - lo sirve el propio samba-ad-dc"
+    else
+        fallo "B1. winbind NO responde - los 12 usuarios seran invisibles para Linux"
+        info "     En un AD DC winbindd va dentro de 'samba'. Revisa samba-ad-dc (bloque A)."
+    fi
 else
-    fallo "B1. winbind NO esta activo - los 12 usuarios seran invisibles para Linux"
-    info "     Arreglo: sudo systemctl enable --now winbind"
+    fallo "B1. 'wbinfo' no esta instalado - no se puede comprobar winbind"
+    info "     Instalalo: sudo apt install -y winbind"
 fi
 
-if systemctl is-enabled winbind >/dev/null 2>&1; then
-    ok "B2. winbind habilitado - arranca solo tras reiniciar"
+# B2. El servicio winbind de systemd tiene que estar APAGADO: es el del Samba
+#     clasico y se pelea con el AD DC por los mismos recursos.
+if systemctl is-active winbind >/dev/null 2>&1; then
+    aviso "B2. El servicio 'winbind' de systemd esta ACTIVO"
+    info "     En un AD DC deberia estar apagado: winbindd ya corre dentro de samba."
+    info "     No suele romper nada, pero es el Samba clasico asomando."
 else
-    fallo "B2. winbind no arranca solo - la plantilla entera desaparecera al reiniciar"
-    info "     Arreglo: sudo systemctl enable winbind"
+    ok "B2. El servicio 'winbind' de systemd esta apagado (correcto en un AD DC)"
 fi
 
 if grep -E "^passwd:" /etc/nsswitch.conf 2>/dev/null | grep -q "winbind"; then
@@ -122,16 +134,12 @@ else
     info "     $(grep -E '^group:' /etc/nsswitch.conf 2>/dev/null | head -1)"
 fi
 
-# B5. wbinfo pregunta a winbind DIRECTAMENTE, saltandose nsswitch. Comparar su
-#     respuesta con la de getent localiza en que tramo se pierde el dato.
-if command -v wbinfo >/dev/null 2>&1; then
-    if wbinfo -p >/dev/null 2>&1; then
-        ok "B5. winbind responde (wbinfo -p)"
-    else
-        fallo "B5. winbind no responde a wbinfo - no esta hablando con el dominio"
-    fi
+# B5. La prueba de fuego: que el sistema resuelva un usuario por la via normal.
+if getent passwd hiroshi.nohara >/dev/null 2>&1; then
+    ok "B5. El sistema resuelve usuarios del dominio (getent passwd)"
 else
-    aviso "B5. 'wbinfo' no esta instalado - no se puede comprobar winbind a fondo"
+    fallo "B5. 'getent passwd' no encuentra a los usuarios del dominio"
+    info "     Si wbinfo -u SI los lista, el fallo esta en nsswitch (B3/B4)."
 fi
 
 # =============================================================================
@@ -199,17 +207,30 @@ while IFS= read -r LINEA; do
 
     DUPLICADOS="$DUPLICADOS $UID_REAL"
 
-    if [ "$UID_REAL" = "$UID_ESP" ] && [ "$GID_REAL" = "$GID_ESP" ]; then
-        if id -nG "$LOGIN" 2>/dev/null | tr ' ' '\n' | grep -qx "$GRUPO"; then
-            ok "D$N. $LOGIN -> uid=$UID_REAL gid=$GID_REAL, en '$GRUPO'"
-        else
-            fallo "D$N. $LOGIN tiene los numeros bien pero NO pertenece a '$GRUPO'"
-            info "     Arreglo: sudo samba-tool group addmembers $GRUPO $LOGIN"
+    # El UID SI tiene que ser exacto: es lo que se graba en cada fichero.
+    if [ "$UID_REAL" != "$UID_ESP" ]; then
+        fallo "D$N. $LOGIN -> uid=$UID_REAL, esperado uid=$UID_ESP"
+        info "     Se creo sin --uid-number y el sistema asigno el numero solo."
+        continue
+    fi
+
+    # El GID PRIMARIO en Active Directory es 'Domain Users' para todo el mundo:
+    # eso es normal y NO se corrige. Lo que importa es la PERTENENCIA al
+    # departamento, que es lo que miran las ACL de la Fase 7. Y el grupo de los
+    # ficheros que cree lo decidira el setgid de la carpeta (Fase 6), no este GID.
+    # 'id -nG' devuelve los grupos con el prefijo del dominio (BOOCHANLAB\grupo),
+    # asi que el patron acepta el nombre con o sin ese prefijo.
+    if id -nG "$LOGIN" 2>/dev/null | tr ' ' '\n' | grep -qE "(^|\\\\)$GRUPO\$"; then
+        ok "D$N. $LOGIN -> uid=$UID_REAL, en el departamento '$GRUPO'"
+        if [ "$GID_REAL" != "$GID_ESP" ]; then
+            info "     (gid primario $GID_REAL = Domain Users: normal en AD, no es un fallo)"
         fi
     else
-        fallo "D$N. $LOGIN -> uid=$UID_REAL gid=$GID_REAL; esperado uid=$UID_ESP gid=$GID_ESP"
-        info "     Se creo sin --uid-number/--gid-number y el sistema asigno IDs solo."
+        fallo "D$N. $LOGIN tiene el UID correcto pero NO pertenece a '$GRUPO'"
+        info "     Sin la pertenencia, las ACL de la Fase 7 no le alcanzaran."
+        info "     Arreglo: sudo samba-tool group addmembers $GRUPO $LOGIN"
     fi
+
 done <<< "$USUARIOS"
 
 # D13. Dos personas NO pueden compartir UID: para el sistema de ficheros serian

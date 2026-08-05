@@ -144,7 +144,7 @@
 > > [!danger] 🛑 Mira el `ls -ld` DESPUÉS de cada `chown`. No es opcional
 > > La columna del grupo tiene que decir **`facturacion`**, no `root`.
 > >
-> > Si `winbind` no estaba levantado, el `chown` falla con `invalid group` — **o peor, la carpeta se queda a nombre de `root` y todo parece correcto**. Ese es el fallo silencioso de esta fase → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]].
+> > Si el dominio no estaba levantado, el `chown` falla con `invalid group` — **o peor, la carpeta se queda a nombre de `root` y todo parece correcto**. Ese es el fallo silencioso de esta fase → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]].
 > >
 > > **Que un comando no proteste no significa que hiciera lo que querías.**
 >

@@ -16,8 +16,9 @@
 
 ## **1 · EL TRADUCTOR**
 
-- [ ] `systemctl is-active winbind` → **`active`**.
-- [ ] `systemctl is-enabled winbind` → **`enabled`**.
+- [ ] `wbinfo -p` → **responde**.
+- [ ] `getent passwd hiroshi.nohara` → **lo resuelve**.
+- [ ] `systemctl is-active winbind` → **`inactive`** *(correcto en un AD DC: winbindd va dentro de samba)*.
 - [ ] `/etc/nsswitch.conf` con `winbind` en las líneas `passwd` **y** `group`.
 
 ## **2 · LOS SEIS DEPARTAMENTOS**
@@ -36,7 +37,7 @@ done
 ## **3 · 🔴 LAS DOCE IDENTIDADES UNIX**
 
 - [ ] Los **doce** trabajadores con UID **`10001`** a **`10012`**, **exactamente** los de [[Escenario_Boochan_SL]].
-- [ ] Cada uno con el **GID de su departamento**.
+- [ ] Cada uno con **su departamento en `groups=`** *(el `gid=` primario es `100(users)`: normal en AD)*.
 - [ ] **Ningún UID repetido.**
 - [ ] Los dos becarios **solo** en `becarios`, en ningún departamento operativo.
 - [ ] `sudo samba-tool user list` **no** muestra `prueba.temporal` ni `duplicado.temporal` *(los del laboratorio)*.

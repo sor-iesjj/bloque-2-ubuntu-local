@@ -45,17 +45,20 @@ sudo samba-tool domain level show
 ### **2 · EL TRADUCTOR ESTÁ VIVO Y SEGUIRÁ ESTÁNDOLO**
 
 ```bash
+wbinfo -p
+getent passwd hiroshi.nohara
 systemctl is-active winbind
-systemctl is-enabled winbind
 ```
 
-- **✅ Bien:** `active` y `enabled`.
-- **❌ Mal:**
-  - `inactive` → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1]]
-  - `disabled` → [[Fase_5.7_Resolucion_Problemas#E8 · Tras reiniciar los usuarios han desaparecido|caso E8]]
+- **✅ Bien:** `Ping to winbindd succeeded`, el `getent` resuelve al usuario, y el servicio dice **`inactive`**.
+- **❌ Mal:** `wbinfo -p` falla → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1]].
 
-> [!warning] ⚠️ `active` sin `enabled` es una bomba de relojería
-> **Los doce trabajadores desaparecerían en el próximo arranque.** Y el síntoma —*"se han borrado todos los usuarios"*— no menciona a winbind por ningún sitio.
+> [!danger] 🛑 Que el servicio diga `inactive` es LO CORRECTO. No lo arranques
+> En un **controlador de dominio**, `winbindd` va **dentro** del proceso `samba`. El servicio `winbind` de systemd es el del **Samba clásico**, el que apagaste en la Fase 4 junto a `smbd` y `nmbd`.
+>
+> Por eso aquí no se pregunta *"¿está el servicio corriendo?"* sino **"¿responde el traductor?"**. Son cosas distintas, y solo la segunda importa.
+>
+> **Fíjate en la contradicción aparente:** servicio parado, `wbinfo` respondiendo y usuarios resolviéndose. Si sabes leer eso, sabes cómo está montado tu servidor.
 
 ### **3 · LINUX SABE A QUIÉN PREGUNTAR**
 
@@ -79,7 +82,15 @@ for u in hiroshi.nohara nene.sakurada misae.nohara toru.kazama \
 done
 ```
 
-- **✅ Bien:** los doce, con UID **`10001`** a **`10012`** y sus GID, **exactamente** como en [[Escenario_Boochan_SL]].
+- **✅ Bien:** los doce, con UID **`10001`** a **`10012`**, y cada uno con **su departamento en `groups=`**.
+
+> [!warning] ⚠️ El `gid=` que verás es `100(users)`, y está bien
+> ```
+> uid=10001(...hiroshi.nohara) gid=100(users) groups=100(users),3001(...facturacion)
+> ```
+> **En Active Directory el grupo primario de todo el mundo es `Domain Users`.** Lo que importa es lo que hay en **`groups=`**: ahí sí está su departamento.
+>
+> Las ACL de la Fase 7 miran la **pertenencia**, y los ficheros que cree heredarán el grupo de la carpeta por el **setgid** de la Fase 6. **El grupo primario no interviene en ninguna de las dos cosas.**
 - **❌ Mal:**
   - `NO SE ENCUENTRA` → [[Fase_5.7_Resolucion_Problemas#E1 · Un usuario no aparece con id|caso E1]]
   - **Otros números** → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario|caso E7]]
@@ -172,7 +183,7 @@ id -nG himawari.nohara
 ### ✅ Checklist de este apartado
 
 - [ ] `samba-ad-dc` → `active` y el dominio responde.
-- [ ] `winbind` → `active` **y** `enabled`.
+- [ ] `wbinfo -p` responde y `getent passwd` resuelve *(el servicio, `inactive`: correcto)*.
 - [ ] `nsswitch.conf` → `winbind` en `passwd` **y** `group`.
 - [ ] 🔴 Los **doce** trabajadores con UID **`10001`-`10012`** y sus GID exactos.
 - [ ] Los **seis** departamentos con GID **`3001`-`3006`**.

@@ -97,7 +97,8 @@ fi
 
 MAL=""
 for d in $DEPARTAMENTOS; do
-    [ "$(stat -c %G "$BASE/$d" 2>/dev/null)" = "$d" ] || MAL="$MAL $d"
+    G=$(stat -c %G "$BASE/$d" 2>/dev/null); G="${G##*\\}"
+    [ "$G" = "$d" ] || MAL="$MAL $d"
 done
 if [ -z "$MAL" ]; then
     ok "A3. Las 6 carpetas pertenecen a su departamento"

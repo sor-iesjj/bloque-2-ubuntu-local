@@ -31,6 +31,7 @@
 | El usuario no aparece en su grupo | [[#E6 · El usuario no está en su grupo\|E6]] |
 | **Todo funciona pero los UID no son los míos** | [[#E7 · Los UID no son los del escenario\|E7]] ⚠️ |
 | Funciona hoy; tras reiniciar, los usuarios desaparecen | [[#E8 · Tras reiniciar los usuarios han desaparecido\|E8]] |
+| El `gid=` primario es `users` y no su departamento | [[#E9 · El gid primario no es el de su departamento\|E9]] |
 
 ---
 
@@ -47,7 +48,7 @@
 **Comprobación.** Separa las dos preguntas — *"¿existe?"* y *"¿lo veo?"*:
 ```bash
 sudo samba-tool user list | grep hiroshi.nohara      # ¿existe en el dominio?
-systemctl is-active winbind                 # ¿el traductor está vivo?
+wbinfo -p                                   # ¿el traductor responde?
 grep -E "^passwd:|^group:" /etc/nsswitch.conf   # ¿Linux le pregunta?
 ```
 
@@ -56,7 +57,7 @@ grep -E "^passwd:|^group:" /etc/nsswitch.conf   # ¿Linux le pregunta?
 | Qué falla                            | Arreglo                                     |
 | :----------------------------------- | :------------------------------------------ |
 | No aparece en `samba-tool user list` | El usuario no se creó. Repite el Paso 3     |
-| `winbind` no está `active`           | `sudo systemctl enable --now winbind`       |
+| `wbinfo -p` falla                    | El traductor no responde: revisa `samba-ad-dc` |
 | Falta `winbind` en `nsswitch.conf`   | Vuelve al Paso 1 y añádelo a las dos líneas |
 
 > [!summary] Qué aprendes
@@ -231,7 +232,9 @@ id -nG hiroshi.nohara
 > ```
 > uid=3000019(hiroshi.nohara) gid=100(users)
 > ```
-> en lugar de `uid=10001 gid=3001`.
+> en lugar de `uid=10001`, que es el número que tú pusiste.
+>
+> *(El `gid=100(users)` sí es normal: mira el [[#E9 · El gid primario no es el de su departamento|caso E9]].)*
 
 **Hipótesis.** El usuario se creó **sin** `--uid-number` / `--gid-number`, y winbind le asignó un número automático del rango que tiene reservado.
 
@@ -241,7 +244,7 @@ id hiroshi.nohara
 id misae.nohara
 getent group facturacion
 ```
-- **✅ Bien:** `uid=10001 gid=3001` y `uid=10002 gid=3002`, exactamente.
+- **✅ Bien:** `uid=10001` y `uid=10002`, **exactamente**, y con su departamento en `groups=`.
 - **❌ Mal:** cualquier otro número.
 
 **Arreglo.** Asigna los atributos Unix a mano y reinicia el traductor para que se entere:
@@ -275,26 +278,68 @@ Si sigue sin cuadrar, borra el usuario y créalo otra vez **con los parámetros 
 > ```
 > Y tú no has tocado nada.
 
-**Hipótesis.** `winbind` está **activo pero no habilitado**: lo arrancaste a mano (o lo arrancó otra cosa) y no se levanta solo al encender.
+**Hipótesis.** En un controlador de dominio, **el traductor lo sirve `samba-ad-dc`**. Si ese servicio está *activo pero no habilitado*, funciona hasta el primer reinicio — y con él se van los doce trabajadores.
+
+> [!warning] ⚠️ Aquí NO mires el servicio `winbind` de systemd
+> Ese está `inactive` **a propósito**: es el del Samba clásico. Arrancarlo no arregla nada.
+>
+> **El servicio del que dependen tus usuarios es `samba-ad-dc`.**
 
 **Comprobación.**
 ```bash
-systemctl is-active winbind
-systemctl is-enabled winbind
+systemctl is-active samba-ad-dc
+systemctl is-enabled samba-ad-dc
+wbinfo -p
 ```
-- **❌ Mal:** `inactive` + `disabled`, o `active` + `disabled` *(este segundo es la bomba de relojería: hoy va, mañana no)*.
+- **❌ Mal:** `active` + **`disabled`** → funciona hoy, no mañana.
 
 **Arreglo.**
 ```bash
-sudo systemctl enable --now winbind
-systemctl is-enabled winbind
+sudo systemctl enable --now samba-ad-dc
+systemctl is-enabled samba-ad-dc
 id hiroshi.nohara
 ```
 
 > [!summary] Qué aprendes
-> **`active` es "ahora". `enabled` es "la próxima vez".** Llevas tres fases encontrándote esta distinción: el `netplan` de la Fase 1, el `wg-quick@wg0` de la Fase 3, el `samba-ad-dc` de la Fase 4 y ahora `winbind`.
+> **`active` es "ahora". `enabled` es "la próxima vez".** Llevas cuatro fases encontrándote esta distinción: el `netplan` de la Fase 1, el `wg-quick@wg0` de la Fase 3, el `samba-ad-dc` de la Fase 4 y ahora sus consecuencias aquí.
 >
-> Que se repita cuatro veces no es casualidad del material: es que **lo que no persiste, no está configurado.** Solo está encendido.
+> Y una idea nueva que sale de este caso: **un servicio puede depender de otro sin que se note.** Tus doce usuarios no dependen de `winbind`, dependen de `samba-ad-dc`. Saber **de qué cuelga cada cosa** es lo que distingue arreglar de adivinar.
+
+---
+
+### E9 · El `gid=` primario no es el de su departamento
+
+> [!bug] Síntoma
+> ```
+> uid=10001(...hiroshi.nohara) gid=100(users) groups=100(users),3001(...facturacion)
+> ```
+> El UID es correcto, pertenece a `facturacion`… pero el **grupo primario** es `users`.
+
+**Hipótesis.** Ninguna: **es el comportamiento normal de Active Directory.** El grupo primario de todos los usuarios de un dominio es **`Domain Users`**, y `--gid-number` rellena el atributo sin cambiar esa pertenencia.
+
+**Comprobación.**
+```bash
+id hiroshi.nohara
+id -nG hiroshi.nohara
+```
+- **✅ Bien:** en `groups=` aparece **su departamento**. Eso es lo único que importa.
+
+**Arreglo.** **No hay nada que arreglar.** Y forzarlo sería pelear contra AD sin ganar nada.
+
+> [!info] 🎓 ¿Y entonces cómo van a funcionar los permisos?
+> Por dos vías, y **ninguna usa el grupo primario**:
+>
+> | Mecanismo | De qué depende |
+> | :--- | :--- |
+> | Las **ACL** de la Fase 7 | De la **pertenencia** al grupo — y ahí sí está su departamento |
+> | El grupo de los ficheros que cree | Del **setgid** de la carpeta (Fase 6), que impone el grupo de la carpeta |
+>
+> **Por eso el `2770` de la Fase 6 no es un adorno.** Sin ese `2`, los ficheros de `hiroshi.nohara` saldrían a nombre de `users` y el resto de facturación no podría tocarlos.
+
+> [!summary] Qué aprendes
+> Que **un sistema puede tener varias respuestas a "¿de qué grupo eres?"** y hay que saber cuál mira cada mecanismo. El grupo primario decide poco; la pertenencia lo decide casi todo.
+>
+> Y algo más incómodo: **no todo lo que parece un fallo lo es.** Antes de "arreglar" un valor que no esperabas, averigua si alguien depende de él.
 
 ---
 

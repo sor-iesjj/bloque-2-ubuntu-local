@@ -37,12 +37,25 @@
 > ```
 > Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
 >
-> Y asegúrate de que el traductor está vivo **y arrancará solo**:
+> Y comprueba que el traductor **responde**:
 > ```bash
-> sudo systemctl enable --now winbind
-> systemctl is-active winbind
-> systemctl is-enabled winbind
+> wbinfo -p
 > ```
+> - **✅ Bien:** `Ping to winbindd succeeded`.
+>
+> > [!danger] 🛑 NO arranques el servicio `winbind` de systemd
+> > Si ejecutas `systemctl is-active winbind` te dirá **`inactive`**, y **eso es lo correcto**.
+> >
+> > En un **controlador de dominio**, `winbindd` va **dentro** del proceso `samba`: lo arranca `samba-ad-dc`. El servicio `winbind` de systemd es el del **Samba clásico**, el que apagaste en la Fase 4 junto a `smbd` y `nmbd`.
+> >
+> > Compruébalo tú mismo: el servicio está parado y `wbinfo -p` responde igual.
+> > ```bash
+> > systemctl is-active winbind   # inactive
+> > wbinfo -p                      # Ping to winbindd succeeded
+> > getent passwd hiroshi.nohara   # lo resuelve
+> > ```
+> >
+> > **La comprobación correcta no es "¿está el servicio corriendo?", sino "¿responde el traductor?".** Un servicio parado que hace su trabajo por otra vía es exactamente el tipo de cosa que hay que saber leer.
 >
 > > [!tip] 💡 ¿Qué hace este cambio?
 > > `nsswitch.conf` es la **guía de consulta** de Linux: le dice dónde buscar cuando alguien pregunta *"¿quién es este usuario?"*. Al añadir `winbind`, le estás diciendo: *"si no lo encuentras en los ficheros locales, pregúntale a Winbind, que conoce a todo el dominio"*.
@@ -128,6 +141,19 @@
 > >
 > > **En Unix, una persona no es su nombre: es su número.**
 >
+> > [!warning] ⚠️ El `--gid-number` NO cambia el grupo primario. Y da igual
+> > Cuando compruebes con `id`, verás algo así:
+> > ```
+> > uid=10001(...hiroshi.nohara) gid=100(users) groups=100(users),3001(...facturacion)
+> > ```
+> > **El grupo primario es `users`, no `facturacion`.** Y es correcto: en Active Directory **el grupo primario de todo el mundo es `Domain Users`**, por diseño. `--gid-number` rellena el atributo, pero no cambia esa pertenencia.
+> >
+> > **¿Y entonces funcionará algo?** Sí, por dos motivos:
+> > - Las **ACL de la Fase 7** miran la **pertenencia** al grupo, y ahí sí aparece `facturacion`.
+> > - Los ficheros que cree heredarán el grupo **de la carpeta**, gracias al **setgid** que pondrás en la Fase 6.
+> >
+> > Lo que sí tiene que ser exacto es **el UID**: eso es lo que se graba en cada fichero.
+>
 > > [!tip] 💡 ¿Y `--given-name` y `--surname`?
 > > Son el nombre y los apellidos que verá Windows en la pantalla de inicio de sesión y en RSAT. **No son obligatorios y sí importan**: un directorio lleno de `hiroshi.nohara` sin nombre real es un directorio que nadie quiere administrar.
 >
@@ -211,7 +237,7 @@
 ### ✅ Checklist de esta parte
 
 - [ ] `/etc/nsswitch.conf` con `winbind` en las líneas `passwd` **y** `group`.
-- [ ] `winbind` en **`active`** y **`enabled`**.
+- [ ] `wbinfo -p` responde *(el servicio de systemd sigue `inactive`, y es correcto)*.
 - [ ] Los **seis grupos** creados, con GID **`3001`** a **`3006`**.
 - [ ] Los **doce usuarios** creados, con UID **`10001`** a **`10012`**.
 - [ ] Cada usuario **añadido a su grupo** con `addmembers`.

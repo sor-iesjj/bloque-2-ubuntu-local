@@ -179,7 +179,7 @@ id hiroshi.nohara
 ```
 
 - **Por qué:** los permisos de esta fase se apoyan en los grupos. Si un grupo se deja de ver, la carpeta apunta a un número sin dueño.
-- **✅ Bien:** los seis grupos con GID `3001`-`3006`, e `id hiroshi.nohara` con `uid=10001 gid=3001`.
+- **✅ Bien:** los seis grupos con GID `3001`-`3006`, e `id hiroshi.nohara` con `uid=10001` y `facturacion` entre sus grupos.
 - **❌ Mal:** vuelve a la [[Fase_5.7_Resolucion_Problemas|resolución de problemas de la Fase 5]].
 
 ---
