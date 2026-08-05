@@ -25,4 +25,4 @@
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_6.8_Punto_de_Control]] | [[Fase_6]] | [[Fase_6.10_Auditoria_y_Cierre]] |
+| [[Fase_6.8.b_Punto_de_Control]] | [[Fase_6]] | [[Fase_6.10.a_Laboratorio_de_Averias]] |

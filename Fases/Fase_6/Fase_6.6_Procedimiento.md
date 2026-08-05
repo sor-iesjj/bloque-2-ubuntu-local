@@ -10,7 +10,7 @@
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
 > 1. **Crea la entrada de apuntes** de esta fase (`b2-f6-almacenamiento-virtual.md`) con su estructura, vacía.
-> 2. **Léete los 5 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
+> 2. **Léete los 6 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
 > 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
 >
 > Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
@@ -107,7 +107,50 @@
 > > - **`2`:** Es el **bit setgid**. Hace que todos los archivos nuevos creados dentro de la carpeta hereden automáticamente el grupo `policia`, en lugar del grupo personal de quien lo creó. Así todos los archivos de la carpeta siempre pertenecen al grupo correcto.
 > > - **`770`:** El propietario y el grupo tienen acceso total (rwx), pero el resto del mundo no tiene ningún acceso (---).
 
+> [!example] Paso 6: El primer latido — ¿está todo en su sitio?
+> Esto **no es la verificación de la fase**: es el pulso mínimo antes de seguir.
+> ```bash
+> df -h | grep prueba
+> ls -ld /srv/samba/prueba1 /srv/samba/prueba3
+> ```
+>
+> | Qué tiene que salir | Si no sale |
+> | :--- | :--- |
+> | Dos líneas de **5,0G** en `df` | [[Fase_6.7_Resolucion_Problemas#E2 · df -h no muestra los discos\|caso E2]] |
+> | `prueba3` a nombre de **`root policia`** | [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta prueba3 pertenece a root y no a policia\|caso E6]] |
+> | Permisos **`drwxrws---`** en `prueba3` *(con la `s`)* | [[Fase_6.7_Resolucion_Problemas#E7 · Los ficheros nuevos no heredan el grupo\|caso E7]] |
+>
+> > [!bug] 🛑 ¿Estás seguro de que esto lo ha contestado el SERVIDOR?
+> > Si administras por SSH: `hostname` tiene que responder `ubuntuserver` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
+
 ---
+
+### ✅ Checklist de esta parte
+
+- [ ] Las dos carpetas de montaje creadas con `mkdir -p`.
+- [ ] Los dos `.img` creados con `dd`, de **5 GB** cada uno.
+- [ ] Los dos formateados con `mkfs.ext4`.
+- [ ] Las **dos líneas** añadidas al `/etc/fstab`, **con la palabra `loop`**.
+- [ ] 🛑 `sudo mount -a` ejecutado y **en silencio**.
+- [ ] `prueba1` → `chmod 777`.
+- [ ] `prueba3` → `chown root:policia` **verificado con `ls -ld`** y `chmod 2770`.
+- [ ] 🛑 **Instantánea NO tomada todavía. Y NO has reiniciado.**
+
+---
+
+> [!danger] 🛑 AQUÍ NO HAS TERMINADO LA FASE. Y esta vez el riesgo es el arranque
+> Los discos están montados y las carpetas tienen permisos. **Y aun así puede haber dos problemas que no ves:**
+>
+> 1. **Un `fstab` con una errata.** No lo notarás hasta que la máquina no arranque — y no eliges tú cuándo se reinicia.
+> 2. **El grupo de `prueba3` puesto a `root`.** No da ningún error y tumba la Fase 7.
+>
+> Ninguno de los dos se detecta mirando si "todo funciona". Se comprueban en el [[Fase_6.8.a_Verificacion|apartado 8.a]], que es de obligado cumplimiento.
+>
+> **No apagues ni reinicies antes de pasar por ahí.** Y no tomes la instantánea: guardarías el fallo dentro de tu punto de retorno.
+>
+> **Orden correcto:** [[Fase_6.8.a_Verificacion|8.a · verificar]] → [[Fase_6.8.b_Punto_de_Control|8.b · guardar la instantánea]]. Nunca al revés.
+
+> ¿Algo no ha salido? → [[Fase_6.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E8`), no leas el documento entero.
 
 ---
 
