@@ -1,9 +1,9 @@
-## Fase 3 · Apartado 8 — 💾 Verificación y punto de control
+## Fase 3 · Apartado 8.a — 🔍 Verificación del trabajo
 
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Conectividad VPN (WireGuard)**
 > 🧭 Índice de la fase: [[Fase_3]]
 >
-> **📍 Cuándo se lee:** **Al terminar el procedimiento**, con la grabación aún en marcha.
+> **📍 Cuándo se lee:** **Al terminar el procedimiento**, con la grabación aún en marcha. **Antes** de tomar la instantánea.
 
 ---
 
@@ -12,13 +12,9 @@
 >
 > **Guardar sin comprobar es peor que no guardar.**
 >
-> Este apartado tiene dos partes, en este orden:
-> 1. **Verificar** — solo lectura, no toca nada
-> 2. **Guardar** — la instantánea, ya de un estado comprobado
+> Aquí compruebas. En el [[Fase_3.8.b_Punto_de_Control|apartado 8.b]] guardas.
 
 ---
-
-## 🔍 PARTE 1 — Verificación
 
 > Todos los comandos de aquí **solo leen**. Ninguno modifica nada.
 
@@ -151,34 +147,6 @@ ping 10.20.20.1
 
 ---
 
-## 💾 PARTE 2 — El punto de control
-
-> [!important] 💾 Ahora sí: guarda el estado
-> **Solo si las cinco verificaciones han salido bien.** Con la grabación todavía en marcha, apaga la máquina:
->
-> ```bash
-> sudo poweroff
-> ```
->
-> En VirtualBox: selecciona la VM → **`Instantáneas`** → **`Tomar`** → nómbrala **`Fase 3 terminada`**.
->
-> Por comando, si el botón no aparece:
-> ```
-> VBoxManage snapshot "UbuntuServer" take "Fase 3 terminada"
-> ```
->
-> Y comprueba que se ha creado:
-> ```
-> VBoxManage snapshot "UbuntuServer" list
-> ```
-
-> [!tip] 💡 Por qué la instantánea va aquí y no al final de la fase
-> Las preguntas del apartado 9 son trabajo de mesa y puedes tardar días. La instantánea cierra el **trabajo de máquina** mientras lo tienes fresco y la VM en la mano.
->
-> Y hay una segunda razón: en el apartado 10 vas a **romper cosas a propósito** para entender qué detecta cada comprobación. Esta instantánea es la red de seguridad que te permite hacerlo sin miedo.
-
-> Cómo se hace paso a paso, cómo verificar que existe y qué NO conserva: [[Fase_0.S_Instantaneas_Puntos_de_Control]]
-
 ---
 
 ### ✅ Checklist de este apartado
@@ -188,11 +156,12 @@ ping 10.20.20.1
 - [ ] `systemctl is-enabled wg-quick@wg0` → `enabled`.
 - [ ] `10.10.10.10` presente y `hostname -f` correcto.
 - [ ] `ping 10.20.20.1` responde **desde Windows**.
-- [ ] *(Opcional)* Script ejecutado, leído, e informe subido al repositorio.
-- [ ] 💾 **Instantánea `Fase 3 terminada`** tomada, con la VM apagada y **grabándolo**.
+- [ ] *(Opcional)* Script descargado, leído, ejecutado e informe subido al repositorio.
+
+> [!success] ✅ Con las cinco en verde, pasa al [[Fase_3.8.b_Punto_de_Control|apartado 8.b]] y guarda la instantánea.
 
 ---
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_3.7_Resolucion_Problemas]] | [[Fase_3]] | [[Fase_3.9_Preguntas]] |
+| [[Fase_3.7_Resolucion_Problemas]] | [[Fase_3]] | [[Fase_3.8.b_Punto_de_Control]] |

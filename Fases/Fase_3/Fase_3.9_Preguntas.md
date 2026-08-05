@@ -28,4 +28,4 @@
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_3.8_Punto_de_Control]] | [[Fase_3]] | [[Fase_3.10_Auditoria_y_Cierre]] |
+| [[Fase_3.8.b_Punto_de_Control]] | [[Fase_3]] | [[Fase_3.10.a_Laboratorio_de_Averias]] |

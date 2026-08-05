@@ -216,10 +216,10 @@ Se añade en la **Fase 8**, cuando el cliente tenga que resolver nombres del dom
 > **Cuando un sistema falla sin quejarse, la única salida es comprobar capa por capa.**
 
 > [!tip] 💾 La red de seguridad
-> Si te lías con las llaves, restaurar la instantánea **`Fase 2 terminada`** y repetir la fase cuesta menos que perseguir una llave mal pegada. Ver [[Fase_3.8_Punto_de_Control]].
+> Si te lías con las llaves, restaurar la instantánea **`Fase 2 terminada`** y repetir la fase cuesta menos que perseguir una llave mal pegada. Ver [[Fase_3.8.b_Punto_de_Control]].
 
 ---
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_3.6_Procedimiento]] | [[Fase_3]] | [[Fase_3.8_Punto_de_Control]] |
+| [[Fase_3.6_Procedimiento]] | [[Fase_3]] | [[Fase_3.8.a_Verificacion]] |
