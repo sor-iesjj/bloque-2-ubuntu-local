@@ -32,9 +32,11 @@
 | **5**  | [[Fase_2.5_Fundamento_Teorico]]     | Antes de teclear — los conceptos                    |
 | **6**  | [[Fase_2.6_Procedimiento]]          | **Con la VM delante — aquí está el trabajo**        |
 | **7**  | [[Fase_2.7_Resolucion_Problemas]]   | Cuando algo no salga — búscate por el síntoma       |
-| **8**  | [[Fase_2.8_Punto_de_Control]]       | Al terminar, con la grabación aún en marcha         |
+| **8.a** | [[Fase_2.8.a_Verificacion]] | 🔍 **Verificar** la identidad y los paquetes — antes de guardar nada |
+| **8.b** | [[Fase_2.8.b_Punto_de_Control]] | 💾 Instantánea **y copia al disco externo** |
 | **9**  | [[Fase_2.9_Preguntas]]              | Después de la instantánea — trabajo de mesa         |
-| **10** | [[Fase_2.10_Auditoria_y_Cierre]]    | Lo último — la checklist antes de la Fase 3         |
+| **10.a** | [[Fase_2.10.a_Laboratorio_de_Averias]] | 🔨 Cinco averías para entender qué detecta cada comprobación |
+| **10.b** | [[Fase_2.10.b_Auditoria_y_Cierre]] | 🏁 Checklist final antes de la Fase 3 |
 
 > [!tip] 💡 Cómo se recorre
 > - Los apartados **1, 2 y 3** se leen **antes de encender nada**: son las reglas del juego.

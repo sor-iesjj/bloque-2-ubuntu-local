@@ -389,10 +389,10 @@ apt-cache policy <nombre-del-paquete>
 > **Esa forma de pensar es el módulo entero.** Los comandos se buscan; el razonamiento, no.
 
 > [!tip] 💾 La red de seguridad que evita la mitad de estos sustos
-> Varios de estos casos se resuelven en treinta segundos restaurando la instantánea **`Fase 1 terminada`** y repitiendo, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver [[Fase_2.8_Punto_de_Control]].
+> Varios de estos casos se resuelven en treinta segundos restaurando la instantánea **`Fase 1 terminada`** y repitiendo, en vez de diagnosticar a ciegas sobre una máquina que ya no sabes en qué estado está. Ver [[Fase_2.8.a_Verificacion]].
 
 ---
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_2.6_Procedimiento]] | [[Fase_2]] | [[Fase_2.8_Punto_de_Control]] |
+| [[Fase_2.6_Procedimiento]] | [[Fase_2]] | [[Fase_2.8.a_Verificacion]] |

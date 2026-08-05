@@ -24,4 +24,4 @@
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_2.8_Punto_de_Control]] | [[Fase_2]] | [[Fase_2.10_Auditoria_y_Cierre]] |
+| [[Fase_2.8.b_Punto_de_Control]] | [[Fase_2]] | [[Fase_2.10.a_Laboratorio_de_Averias]] |

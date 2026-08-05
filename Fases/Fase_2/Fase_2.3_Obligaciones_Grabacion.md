@@ -7,19 +7,95 @@
 
 ---
 
-> [!important] 📹 Obligaciones de grabación (LÉEME — es igual en TODAS las fases)
-> Esta práctica se **graba entera con OBS**, de principio a fin. No es un repaso al final: quiero ver **cómo lo haces tú**.
-> 1. **Prepárate primero (sin grabar):** comprueba lo necesario, **léete el procedimiento entero** y **crea la entrada de apuntes de esta fase** en Obsidian: fichero `v1-fase-2-purga-y-preparacion-del-entorno.md` dentro de `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`, con la estructura de la Fase 0.1 y **vacía**. Rellenarla es cosa tuya, después.
-> 2. **Arranca OBS y PRESÉNTATE:** *"Hola, me llamo [Nombre], 2.º SMR, y en este vídeo voy a explicar la Fase 2 de Boochan V1 — Purga y Preparación del Entorno."* Y **muestra algo que demuestre que eres tú** (tu perfil de GitHub, tu Teams o tu correo `@alu.edu.gva.es`). Di qué vas a hacer.
-> 3. **Graba TODO el procedimiento**, explicando cada paso en voz alta mientras lo haces.
-> 4. **Timestamps SIEMPRE** en la descripción: `00:00 Presentación` + uno por cada paso.
-> 5. **Al terminar:** nombra el vídeo `V1 · Fase 2 — Purga y Preparación del Entorno`, súbelo a tu playlist de YouTube **`B2_Ubuntu_Local`** (No listado) y **copia su enlace**.
-> 6. **~8-10 min.** Esta fase es más larga que las de prerrequisitos: ve al grano, pero no te saltes pasos. Si se te va mucho, **pártela en dos vídeos** y ponlos los dos en la entrada.
-> 7. **El enlace del vídeo va DENTRO de tu entrada de apuntes**, en el apartado `Enlace al vídeo explicativo`. Ahí, no en un papel.
-> 8. **La entrega va por la TAREA de Teams.** Abriré una tarea que cubrirá **esta fase y otras**; te llegará notificación con fecha límite.
+> [!danger] 🛑 ESTA FASE SON CUATRO VÍDEOS, NO UNO
+> Cada uno cubre una actividad distinta y **los cuatro son obligatorios**. Si falta uno, la fase no se corrige.
 >
-> > [!info] 🏷️ Por qué el nombre lleva `V1` delante
-> > Porque el proyecto Boochan existe en **varias versiones** (VirtualBox, Hyper-V, Azure, AWS…) y algunas comparten bloque y playlist. Sin la etiqueta, la Fase 2 de Azure y la de AWS se llamarían **exactamente igual** y no habría forma de distinguirlas.
+> | # | Vídeo | Qué apartado cubre | Duración |
+> | :--- | :--- | :--- | :--- |
+> | 1 | `B2 · F2 · Purga y Preparación` | Apartado **6** — el procedimiento | ~8-10 min |
+> | 2 | `B2 · F2 · Verificación` | Apartado **8.a** — las cinco comprobaciones | ~4-6 min |
+> | 3 | `B2 · F2 · Laboratorio de averías` | Apartado **10.a** — las cinco averías | ~8-12 min |
+> | 4 | `B2 · F2 · Punto de control` | Apartado **8.b** — instantánea y copia al disco | ~2-3 min |
+>
+> **Por qué cuatro y no uno largo:** porque son cosas distintas. Montar, comprobar, romper y guardar se corrigen por separado — y si algo te sale mal en uno, no arrastra a los demás.
+
+---
+
+## **1 · REGLAS COMUNES A LOS CUATRO**
+
+**1A — Antes de grabar**
+- Léete el apartado entero primero. **Grabar leyendo por primera vez no sale bien.**
+- Crea la entrada de apuntes **vacía**: `b2-f2-purga-y-preparacion.md`, en `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`.
+
+**1B — Al empezar cada vídeo: preséntate**
+> *"Hola, me llamo [Nombre], 2.º SMR. En este vídeo voy a hacer la verificación de la Fase 2 del Bloque 2."*
+
+Y **muestra algo que demuestre que eres tú**: tu perfil de GitHub, tu Teams o tu correo `@alu.edu.gva.es`.
+
+**1C — Mientras grabas**
+- **Explica en voz alta lo que haces**, no solo lo hagas. Quiero oír el razonamiento.
+- Si algo falla, **no cortes**: enseña el error y cómo lo resuelves. **Eso puntúa más que un vídeo donde todo sale a la primera.**
+
+**1D — Timestamps SIEMPRE**
+En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o avería.
+
+**Sin timestamps no se corrige.** Es lo que me permite entrar directo al punto que quiero comprobar.
+
+**1E — Al terminar**
+- Nómbralo **exactamente** como pone la tabla.
+- Súbelo a la playlist **`B2_Ubuntu_Local`** (No listado).
+- **Pega el enlace en tu entrada de apuntes.** Los cuatro, en su apartado.
+
+---
+
+## **2 · LO ESPECÍFICO DE CADA VÍDEO**
+
+**2A — Procedimiento** · `B2 · F2 · Purga y Preparación`
+- Se graba **entero**, de principio a fin.
+- Que se vea **la comprobación del Paso 1B antes del Paso 2**: es tu única oportunidad de demostrar que la purga funcionó.
+
+**2B — Verificación** · `B2 · F2 · Verificación`
+- Los cinco comandos del apartado 8.a, **uno a uno**.
+- En cada uno, di **qué esperas ver antes de ejecutarlo**. Después, si coincide.
+- Si usas el script, **enséñalo leído antes de ejecutarlo**: un administrador no lanza con `sudo` lo que no ha leído.
+
+**2C — Laboratorio de averías** · `B2 · F2 · Laboratorio de averías`
+- **Tu predicción, en voz alta, ANTES de cada rotura.** Es lo que más se valora de este vídeo.
+- Acertar no puntúa. **Haber razonado, sí.** Si te equivocas, dilo y explica por qué creías lo otro.
+- Un timestamp por avería.
+
+**2D — Punto de control** · `B2 · F2 · Punto de control`
+- Que se vea la instantánea **creada y en la lista**.
+- Que se vea **el fichero `.ova` en tu disco externo**, en su carpeta.
+- ⏸️ **Puedes pausar** mientras exporta. Se ve que arrancas y se ve el resultado.
+
+---
+
+## **3 · SI ALGO SE ALARGA**
+
+> [!tip] 💡 Un vídeo largo se parte; una fase no se parte
+> Si el procedimiento se te va de 15 minutos, **pártelo en dos** y llámalos `B2 · F2 · Purga y Preparación (1 de 2)` y `(2 de 2)`. Pon los dos enlaces en la entrada.
+>
+> Lo que **no** se hace es juntar dos actividades distintas en un vídeo. Verificación y averías van siempre separadas.
+
+> [!tip] 💡 ¿Y si la fase te ha llevado tres clases?
+> **Una fase, una entrada de apuntes.** No crees un fichero por día: abres el mismo y sigues escribiendo. Haz `commit` y `push` **al terminar cada sesión**.
+
+---
+
+> [!info] 🏷️ Por qué los vídeos se llaman `B2 · F3 · …`
+> `B2` es el **bloque** y `F3` la **fase**. Es el mismo formato que usan el Bloque 1 (`B1.5 · …`) y el Bloque 6 (`B6.1.1 · …`).
+>
+> Así, mirando el nombre de un vídeo suelto, **se sabe de dónde sale sin abrirlo**. Y ordenándolos alfabéticamente, salen en el orden del curso.
+
+> [!important] 📤 Cómo se entrega
+> **Por la TAREA de Teams.** Abriré una tarea que cubre esta fase y alguna más; te llegará notificación con fecha límite.
+>
+> En la tarea entregas, **en este orden**:
+> 1. El enlace a tu **repositorio**
+> 2. Los **cuatro enlaces de vídeo**, numerados
+>
+> Todo lo demás —apuntes, respuestas, predicciones— ya está dentro del repositorio.
 
 ---
 
