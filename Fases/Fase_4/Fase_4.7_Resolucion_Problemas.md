@@ -24,7 +24,7 @@
 | Lo que ves | Caso |
 | :--- | :--- |
 | El script para diciendo que falta un paquete | [[#E1 · El script para diciendo que falta un paquete\|E1]] |
-| `git clone` falla, no hay red | [[#E2 · git clone falla porque no hay red\|E2]] |
+| No puedo traer el script: `curl` o `git` fallan | [[#E2 · No puedo traer el script porque no hay red\|E2]] |
 | El aprovisionamiento falló a medias y quiero repetirlo | [[#E3 · El aprovisionamiento falló a medias y quiero repetirlo\|E3]] |
 | `Realm not found` o Kerberos no autentica | [[#E4 · Realm not found o Kerberos no autentica\|E4]] |
 | **Todo va bien pero el dominio se anuncia en `10.0.2.x`** | [[#E5 · El dominio se anuncia en una IP que no es la 10.10.10.10\|E5]] ⚠️ |
@@ -65,9 +65,14 @@ sudo ./provision_boochan.sh
 
 ---
 
-### E2 · git clone falla porque no hay red
+### E2 · No puedo traer el script porque no hay red
 
 > [!bug] Síntoma
+> Con `curl`:
+> ```
+> curl: (6) Could not resolve host: raw.githubusercontent.com
+> ```
+> O con `git`:
 > ```
 > fatal: unable to access 'https://github.com/...': Could not resolve host
 > ```

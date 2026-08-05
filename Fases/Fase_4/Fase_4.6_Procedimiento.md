@@ -15,24 +15,50 @@
 >
 > Cuando lo tengas: **arranca la grabación, preséntate y muestra tu identidad**. A partir de ahí, **todo queda grabado** — incluido cualquier paso previo de preparación que venga a continuación.
 
-> [!example] Paso 1: Descarga del Proyecto y Ejecución del Script
-> Para evitar errores humanos, usaremos el script `provision_boochan.sh`, adaptado para este laboratorio local con las variables `BOOCHANLAB` / `BOOCHANLAB.LOCAL`. Primero, descargamos el proyecto completo desde el repositorio usando `git`:
+> [!example] Paso 1: Traer el script, leerlo y ejecutarlo
+> Para evitar errores humanos, usaremos el script `provision_boochan.sh`, adaptado para este laboratorio local con las variables `BOOCHANLAB` / `BOOCHANLAB.LOCAL`. Lo primero es **traerlo al servidor**.
 >
 > > [!info] 📚 Diccionario de Comandos: Consulta el [[Diccionario_Comandos_Sistema]] para entender al detalle cómo funcionan los comandos administrativos que usaremos aquí.
 >
-> **1.** Instala `git` y clona el repositorio de la práctica dentro del servidor:
-> ```bash
-> sudo apt install git -y
-> sudo git clone https://github.com/sor-iesjj/bloque-2-ubuntu-local /opt/boochan
-> ```
+> **1.** Trae el script al servidor. **Hay dos formas, y elegir bien es parte del ejercicio.**
+>
+> > [!success] ✅ Opción A (recomendada): trae SOLO el fichero, con `curl`
+> > ```bash
+> > cd ~
+> > curl -O https://raw.githubusercontent.com/sor-iesjj/bloque-2-ubuntu-local/main/provision_boochan.sh
+> > ls -l provision_boochan.sh
+> > ```
+> > Un fichero de **unos 7 KB**. Nada más. Es la misma técnica con la que descargas los verificadores desde la Fase 1.
+>
+> > [!info] 🔀 Opción B: clona el repositorio entero, con `git`
+> > ```bash
+> > sudo apt install git -y
+> > sudo git clone https://github.com/sor-iesjj/bloque-2-ubuntu-local /opt/boochan
+> > cd /opt/boochan
+> > ```
+> > Te trae **el repositorio completo: 124 ficheros**, con todo el material del bloque. Para usar **uno**.
+>
+> > [!question] 🤔 ¿Cuál elegirías tú? Contéstalo en tu entrada de apuntes
+> > | | **A · `curl`** | **B · `git clone`** |
+> > | :--- | :--- | :--- |
+> > | Qué trae | **1 fichero** (7 KB) | **124 ficheros** + el historial de Git |
+> > | Instala algo | No. `curl` ya está | Sí, hay que instalar `git` |
+> > | Se actualiza solo | No | Sí, con `git pull` |
+> > | Para qué sirve | **Coger una herramienta y usarla** | **Trabajar sobre un proyecto** |
+> >
+> > **La respuesta correcta aquí es la A**, y el motivo no es que `git` sea peor: es que **estás usando la herramienta equivocada para lo que necesitas.** `git clone` sirve para trabajar sobre un proyecto —ver su historia, hacer cambios, sincronizarlos—. Tú solo quieres **ejecutar un script una vez**.
+> >
+> > **Y hay un motivo más serio:** en un servidor de producción, **cuanto menos haya, mejor**. Instalar `git` y dejar 124 ficheros del material del curso en `/opt` de un controlador de dominio es exactamente lo que un auditor te marcaría. Se llama **superficie de ataque**: cada programa y cada fichero que no necesitas es algo más que puede fallar o que alguien puede aprovechar.
+> >
+> > **Entonces, ¿por qué te enseño la B?** Porque la vas a ver en mil tutoriales, y porque **saber cuándo NO usar una herramienta que dominas vale más que aprender otra nueva.** Además, si algún día quieres el material completo dentro del servidor, ya sabes cómo.
 >
 > > [!warning] ⚠️ Que sea el de **V1 (Local)**
-> > Los scripts `provision_boochan.sh` de V1, V2 y V3 se parecen muchísimo, pero los de la nube usan el realm **`BOOCHAN.SPACE`**. Si clonas el equivocado, el dominio no coincidirá con el `/etc/hosts` que configuraste en la Fase 2 y **nada encajará**.
-> > El repositorio correcto es el que termina en **`bloque-2-ubuntu-local`**.
+> > Los scripts `provision_boochan.sh` de V1, V2 y V3 se parecen muchísimo, pero los de la nube usan el reino **`BOOCHAN.SPACE`**. Si te traes el equivocado, el dominio no coincidirá con el `/etc/hosts` que configuraste en la Fase 2 y **nada encajará**.
+> >
+> > La dirección correcta es la que lleva **`bloque-2-ubuntu-local`**. Compruébalo en la línea que has escrito antes de darle a `Enter`.
 >
-> **2.** Entra y **LEE EL SCRIPT ANTES DE EJECUTARLO**:
+> **2.** **LEE EL SCRIPT ANTES DE EJECUTARLO** *(desde donde lo hayas dejado: `~` con la opción A, `/opt/boochan` con la B)*:
 > ```bash
-> cd /opt/boochan
 > cat provision_boochan.sh
 > ```
 >
@@ -63,16 +89,18 @@
 > >  Despliegue de BOOCHANLAB finalizado CORRECTAMENTE.
 > > ==========================================================
 > > ```
-> > Si en su lugar ves una línea que empieza por `ERROR:` o por `!!!`, **lee lo que dice**: te indica exactamente qué instalar o qué revisar. No sigas al Paso 2 sin el recuadro de éxito.
+> > Si en su lugar ves una línea que empieza por `ERROR:` o por `!!!`, **lee lo que dice**: te indica exactamente qué instalar o qué revisar. No sigas sin el recuadro de éxito — y si te habla de paquetes que faltan, es el [[Fase_4.7_Resolucion_Problemas#E1 · El script para diciendo que falta un paquete|caso E1]].
 >
-> > [!tip] 💡 ¿Qué hace este comando?
-> > - **`git clone`:** Descarga una copia completa del proyecto desde internet a tu servidor (usando el adaptador NAT para salir), igual que descargar un ZIP pero de forma más profesional. Necesita el adaptador **NAT** funcionando: la Red Solo Anfitrión no da salida a internet.
+> > [!tip] 💡 ¿Qué hace cada comando?
+> > - **`curl -O`:** Descarga **un fichero** desde una dirección de internet. La `-O` **mayúscula** significa *"guárdalo con el mismo nombre que tiene allí"*. Y `raw.githubusercontent.com` devuelve **el fichero desnudo**, sin la página web de GitHub alrededor — lo explicamos en [[Fase_1.8.a_Verificacion]].
+> > - **`git clone`:** Descarga una copia completa del proyecto **con todo su historial**. Es la herramienta correcta cuando vas a trabajar sobre el proyecto, no cuando solo quieres un fichero.
+> > - **Los dos necesitan el adaptador NAT.** La Red Solo Anfitrión no da salida a internet: si esto falla, mira el [[Fase_4.7_Resolucion_Problemas#E2 · No puedo traer el script porque no hay red|caso E2]].
 > > - **`chmod +x`:** En Linux, los archivos descargados no "tienen permiso" para ejecutarse por seguridad. Este comando le pone la etiqueta de **ejecutable**.
 > > - **El punto y la barra (`./`):** Le dice a Linux: "Busca este archivo **aquí mismo**, en esta carpeta". Sin el `./`, Linux buscaría el comando en las carpetas del sistema y no lo encontraría.
 > > - **Los valores por defecto del script:** El script ya viene configurado con los valores correctos de este proyecto (`BOOCHANLAB`, Realm `BOOCHANLAB.LOCAL`, contraseña `P@ssw0rd`). No necesitas modificar nada salvo que tu profesor indique lo contrario.
 >
 > > [!note] 📄 Mapa del script: las cinco secciones que verás en el `cat`
-> > **La fuente de verdad es el script que acabas de clonar**, no este resumen — si difieren, manda el del repositorio. Esto es el mapa para no perderte al leerlo:
+> > **La fuente de verdad es el script que acabas de descargar**, no este resumen — si difieren, manda el del repositorio. Esto es el mapa para no perderte al leerlo:
 > >
 > > | Sección | Qué hace | La línea clave |
 > > | :--- | :--- | :--- |
