@@ -87,6 +87,15 @@ sudo wg show
 >
   Y para entonces —si ya has hecho la Auditoría Final— SSH solo escuchará por el túnel: **te quedas fuera de tu propio servidor**.
 
+> [!danger] 💣 Consecuencias, por plazos
+> | Cuándo | Qué pasa |
+> | :--- | :--- |
+> | **Hoy** | **Nada.** Cero síntomas. El túnel va perfecto |
+> | **Al primer reinicio** | El túnel no levanta. Si ya hiciste la Auditoría Final y SSH solo escucha por la VPN, **pierdes el acceso remoto**: solo entras por la ventana de VirtualBox |
+> | **En una empresa** | Un corte de luz de 30 segundos se convierte en horas de incidencia. Los servicios que "estaban funcionando" no vuelven — y quien lo montó ya no trabaja allí |
+>
+> **Lo que dice el verificador:** `[FALLO] D1` en rojo. **Él sí lo ve, aunque tú no lo notes.**
+
 **Arreglar:**
 ```bash
 sudo systemctl enable wg-quick@wg0
@@ -126,6 +135,17 @@ sudo wg show
 - **La lección:** **hay errores que no dan error.** Con un solo cliente el fallo no se nota; con dos, el servidor no sabría a cuál enviar cada paquete y aparecerían cortes intermitentes que nadie relacionaría con este fichero.
 >
   Son los peores: los que se manifiestan **más tarde, en otro sitio y de forma aleatoria**.
+
+> [!danger] 💣 Consecuencias, por plazos
+> | Cuándo | Qué pasa |
+> | :--- | :--- |
+> | **Hoy, con un cliente** | **Nada** |
+> | **En la Fase 8, con el cliente Windows 11** | Los **dos** peers reclaman el mismo rango. WireGuard enruta hacia el último que coincida: el tráfico de un cliente **puede irse al otro**. Uno de los dos deja de responder, y cambia según quién haya saludado el último |
+> | **En una VPN de empresa** | Es el clásico *"a veces no me va la VPN"* **sin patrón reproducible**. Y no hay ningún error en ningún registro que lo delate |
+>
+> **Lo que dice el verificador:** `[FALLO] C2` en rojo.
+>
+> ⚠️ **Esta es la más traicionera de todas:** el síntoma aparece **dos fases más tarde**, cuando ya nadie recuerda haber tocado esta línea.
 
 **Arreglar:**
 ```bash
@@ -177,6 +197,20 @@ sudo wg show
 >
   Un fallo de seguridad **no se manifiesta como un fallo de funcionamiento**. Por eso existen las auditorías: si esperas a que algo deje de ir, nunca lo encontrarás.
 
+> [!danger] 💣 Consecuencias, por plazos
+> | Cuándo | Qué pasa |
+> | :--- | :--- |
+> | **Hoy, en tu laboratorio** | **Nada**, y con un solo usuario el riesgo es casi teórico |
+> | **En un servidor con varios usuarios** | Cualquiera lee la **clave privada del servidor**. Con ella puede **hacerse pasar por tu servidor** desde otra máquina: tus clientes conectarían al impostor creyendo que es el legítimo |
+> | **Al clonar o entregar la máquina** | 🔴 **Aquí deja de ser teórico.** En el ejercicio [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] entregas tu VM a un compañero. Con los permisos abiertos, **le entregas la clave privada dentro** |
+>
+> **Lo que dice el verificador:** `[AVISO] C3` en amarillo.
+>
+> > [!info] 🔐 Un matiz que conviene saber
+> > WireGuard tiene *forward secrecy*: usa claves temporales distintas en cada sesión. Así que **el tráfico ya capturado NO se puede descifrar** aunque roben esa clave.
+> >
+> > Lo que sí permite es **suplantar de ahí en adelante**. Es robo de identidad, no de historial. Grave igual, pero conviene saber exactamente qué se pierde.
+
 **Arreglar:**
 ```bash
 sudo chmod 600 /etc/wireguard/wg0.conf
@@ -212,6 +246,13 @@ sudo wg show
 > ```
 >
 > Si algo no vuelve a su sitio, **restaura la instantánea `Fase 3 terminada`** y listo. Para eso está.
+
+> [!important] 🎯 La lección que une las averías 2, 3 y 5
+> En las tres, **el sistema sigue funcionando perfectamente**. No hay error, no hay log, no hay síntoma.
+>
+> Y en las tres, **el verificador las detecta**.
+>
+> Ese es exactamente el motivo de que exista una herramienta de comprobación de estado: **"funciona" no es lo mismo que "está bien"**. Si esperas a que algo deje de ir para revisarlo, estos tres fallos no los encuentras nunca — los encuentras el día que explotan, que siempre es el peor.
 
 > [!question] 📝 Lo que va a tu entrada de apuntes
 > 1. De las seis averías, **¿cuáles NO se notaban?** ¿Por qué son las más peligrosas?

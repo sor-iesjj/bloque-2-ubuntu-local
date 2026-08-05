@@ -175,7 +175,7 @@
 > > **¿Por qué no?** Porque un túnel tiene dos extremos y **el servidor todavía no sabe quién eres**: aún no le has dado tu clave pública. Si activas ahora, WireGuard lo intentará, el servidor descartará tus paquetes por venir de un desconocido, y verás un túnel "activo" que no transmite nada — de los fallos más confusos que hay, porque la interfaz dice que todo va bien.
 > >
 > > Primero el Paso 4 (darle tu llave al servidor). **Activarás al final, y te lo diré.**
-
+>
 > > [!important] 💡 ¿Y el `Endpoint`? Aquí es distinto a la versión cloud
 > > En BoochanV2/V3 el `Endpoint` era la IP pública del servidor en internet. Aquí, como todo vive dentro de VirtualBox, el `Endpoint` es simplemente la IP de la **Red Solo Anfitrión** del servidor: `10.10.10.10:51820`. El `PersistentKeepalive` sigue siendo una buena práctica a mantener (evita que ciertos firewalls o el propio sistema operativo den por "muerta" una conexión inactiva), aunque en una red local su necesidad real sea menor que atravesando el NAT de un proveedor cloud.
 
@@ -266,7 +266,7 @@
 > > **¿Cuándo entonces?** En la **[[Auditoria_Final]]**, que es donde toca: allí se revisan **todas las puertas que abriste durante el proyecto** y se cierran las que sobran, con el procedimiento completo y —esto importa— **con la forma de recuperar el acceso si algo sale mal**.
 > >
 > > Apúntalo en tu entrada de apuntes: *"queda pendiente restringir SSH al túnel — se hará en la Auditoría Final"*. Un administrador anota las puertas que deja abiertas.
-
+>
 > > [!warning] ⚠️ Cuidado: hay DOS cosas distintas que se llaman "2222"
 > > | Dónde | Qué es |
 > > | :--- | :--- |
