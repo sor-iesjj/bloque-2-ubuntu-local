@@ -12,8 +12,8 @@
 >
 > | Entregable | Dónde vive | Qué debe contener |
 > | :--- | :--- | :--- |
-> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-4-aprovisionamiento-del-dominio-samba-ad-d.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **enlace del vídeo** |
-> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | `V1 · Fase 4 — Aprovisionamiento del Dominio (Samba AD DC)`, con presentación, identidad y timestamps |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-f4-aprovisionamiento-del-dominio.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **enlace del vídeo** |
+> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | `B2 · F4 · Aprovisionamiento del dominio`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
 > | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 4 terminada`**, tomada **durante la grabación** |
 

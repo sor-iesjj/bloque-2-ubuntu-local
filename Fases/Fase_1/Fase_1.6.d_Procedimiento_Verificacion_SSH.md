@@ -11,8 +11,8 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~45 min |
-> | **Entrada de apuntes** | `v1-fase-1-4-verificacion-y-acceso-remoto.md` |
-> | **Vídeo** | `V1 · Fase 1.4 — Verificación y Acceso Remoto` · ~8-10 min |
+> | **Entrada de apuntes** | `b2-f1-4-verificacion-y-acceso-remoto.md` |
+> | **Vídeo** | `B2 · F1 · Verificación y acceso remoto` · ~8-10 min |
 >
 > Las obligaciones de grabación están en [[Fase_1.3_Obligaciones_Grabacion]]. La teoría que necesitas, en el bloque *"Verificar desde fuera, y por qué SSH"* de [[Fase_1.5_Fundamento_Teorico]].
 
@@ -154,7 +154,7 @@
 ---
 
 > [!important] 💾 Al terminar esta parte, toma la instantánea **`Fase 1 terminada`**
-> Cierra la fase completa. Cómo hacerlo: [[Fase_1.8_Punto_de_Control]]
+> Antes de guardar nada, verifica: [[Fase_1.8.a_Verificacion]]. Después se toma la instantánea en [[Fase_1.8.b_Punto_de_Control]].
 
 > ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E13`), no leas el documento entero.
 

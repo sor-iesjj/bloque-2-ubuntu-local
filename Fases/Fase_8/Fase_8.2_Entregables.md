@@ -12,8 +12,8 @@
 >
 > | Entregable | Dónde vive | Qué debe contener |
 > | :--- | :--- | :--- |
-> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-fase-8-integracion-del-cliente-windows-11.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **enlace del vídeo** |
-> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | `V1 · Fase 8 — Integración del Cliente (Windows 11)`, con presentación, identidad y timestamps |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-f8-integracion-del-cliente.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **enlace del vídeo** |
+> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | `B2 · F8 · Integración del cliente`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
 > | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 8 terminada`**, tomada **durante la grabación** |
 

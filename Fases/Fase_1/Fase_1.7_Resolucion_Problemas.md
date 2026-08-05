@@ -611,4 +611,4 @@ Y si necesitas de verdad tener dos a la vez, dale a la segunda una IP distinta (
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_1.6.d_Procedimiento_Verificacion_SSH]] | [[Fase_1]] | [[Fase_1.8_Punto_de_Control]] |
+| [[Fase_1.6.d_Procedimiento_Verificacion_SSH]] | [[Fase_1]] | [[Fase_1.8.a_Verificacion]] |

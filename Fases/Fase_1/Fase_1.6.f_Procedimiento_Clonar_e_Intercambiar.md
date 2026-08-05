@@ -11,10 +11,10 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~50 min (se trabaja **por parejas**) |
-> | **Entrada de apuntes** | `v1-fase-1-5-clonar-e-intercambiar.md` |
-> | **Vídeo** | `V1 · Fase 1.5 — Clonar e Intercambiar` · ~10-12 min |
+> | **Entrada de apuntes** | `b2-f1-6-clonar-e-intercambiar.md` |
+> | **Vídeo** | `B2 · F1 · Clonar e intercambiar` · ~10-12 min |
 >
-> **Requisito imprescindible:** tener la instantánea **`Fase 1 terminada`** ([[Fase_1.8_Punto_de_Control]]). Sin ella no se puede empezar.
+> **Requisito imprescindible:** tener la instantánea **`Fase 1 terminada`** ([[Fase_1.8.b_Punto_de_Control]]). Sin ella no se puede empezar.
 
 
 > [!abstract] 📋 Qué se te evalúa aquí

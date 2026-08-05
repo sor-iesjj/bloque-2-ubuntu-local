@@ -11,8 +11,8 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~45 min |
-> | **Entrada de apuntes** | `v1-fase-1-2-la-red-del-laboratorio.md` |
-> | **Vídeo** | `V1 · Fase 1.2 — La Red del Laboratorio` · ~8-10 min |
+> | **Entrada de apuntes** | `b2-f1-2-la-red-del-laboratorio.md` |
+> | **Vídeo** | `B2 · F1 · La red del laboratorio` · ~8-10 min |
 >
 > Las obligaciones de grabación están en [[Fase_1.3_Obligaciones_Grabacion]]. La teoría que necesitas, en el bloque *"Las redes virtuales de VirtualBox"* de [[Fase_1.5_Fundamento_Teorico]].
 

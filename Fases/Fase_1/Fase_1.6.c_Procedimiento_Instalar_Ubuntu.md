@@ -11,8 +11,8 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~1 h |
-> | **Entrada de apuntes** | `v1-fase-1-3-instalar-ubuntu-server.md` |
-> | **Vídeo** | `V1 · Fase 1.3 — Instalar Ubuntu Server` · ~8-10 min |
+> | **Entrada de apuntes** | `b2-f1-3-instalar-ubuntu-server.md` |
+> | **Vídeo** | `B2 · F1 · Instalar Ubuntu Server` · ~8-10 min |
 >
 > Las obligaciones de grabación están en [[Fase_1.3_Obligaciones_Grabacion]]. La teoría que necesitas, en el bloque *"El instalador y el mapa del teclado"* de [[Fase_1.5_Fundamento_Teorico]].
 
@@ -188,7 +188,7 @@
 ---
 
 > [!important] 💾 Al terminar esta parte, toma la instantánea **`Sistema base`**
-> Es la más importante de todo el proyecto: te evita volver a instalar Ubuntu nunca más. Cómo hacerlo: [[Fase_1.8_Punto_de_Control]]
+> Es la más importante de todo el proyecto: te evita volver a instalar Ubuntu nunca más. Cómo hacerlo: [[Fase_1.8.b_Punto_de_Control]]
 
 > ¿Algo no ha salido? → [[Fase_1.7_Resolucion_Problemas]] — **búscate por el síntoma** en el índice del principio (casos `E1` a `E13`), no leas el documento entero.
 

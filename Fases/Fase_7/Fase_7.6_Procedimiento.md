@@ -9,7 +9,7 @@
 
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
-> 1. **Crea la entrada de apuntes** de esta fase (`v1-fase-7-seguridad-avanzada-acls-y-abe.md`) con su estructura, vacía.
+> 1. **Crea la entrada de apuntes** de esta fase (`b2-f7-seguridad-avanzada.md`) con su estructura, vacía.
 > 2. **Léete los 3 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
 > 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
 >
