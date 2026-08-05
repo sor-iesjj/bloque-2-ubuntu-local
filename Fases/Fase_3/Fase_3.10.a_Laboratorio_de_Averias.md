@@ -28,221 +28,471 @@
 > [!info] 🎓 Por qué se rompe algo que funciona
 > Hasta ahora has comprobado que **todo va bien**. Y eso enseña la mitad.
 >
-> La otra mitad es saber **qué se ve cuando va mal**. Un técnico no se distingue por montar sistemas: se distingue por **reconocer un síntoma** y saber de dónde viene.
->
-> Cada avería de aquí es un **ciclo de tres pasos**:
->
-> **Romper** → **Comprobar que se detecta** → **Arreglar y confirmar**
+> La otra mitad es saber **qué se ve cuando va mal**. Un técnico no se distingue por montar sistemas — se distingue por **reconocer un síntoma** y saber de dónde viene.
 >
 > No estás perdiendo el tiempo: estás aprendiendo a leer un sistema roto **en condiciones controladas**, en vez de la primera vez que te pase de verdad y con prisa.
 
-> [!tip] 💡 Cómo trabajarlo
-> - **Predice antes de ejecutar.** Escribe en tu entrada qué crees que va a pasar. Acertar no puntúa; **haber pensado, sí**.
-> - Después de cada rotura, pasa el verificador y mira **qué línea cambia de color**.
-> - Arregla y confirma antes de pasar a la siguiente.
-> - **Grábalo.** Este apartado es de lo mejor que puedes enseñar en el vídeo.
+> [!tip] 💡 Las seis averías siguen siempre el mismo guion
+> | Paso | Qué se hace |
+> | :--- | :--- |
+> | **🎯 Objetivo** | Qué vas a aprender y por qué merece la pena |
+> | **🤔 Predice** | Escribes qué crees que va a pasar, **antes** de ejecutar |
+> | **1. Romper** | El comando que provoca la avería |
+> | **2. Comprobar** | Qué comando lo detecta y **cómo se interpreta** |
+> | **3. Consecuencias** | Qué daño hace, a corto, medio y largo plazo |
+> | **4. Reparar** | El comando que lo arregla y **cómo confirmar** que se arregló |
+> | **🎓 La lección** | La idea que te llevas |
+>
+> **Predecir es lo más importante.** Acertar no puntúa; haber pensado, sí. **Grábalo todo**: este apartado es de lo mejor que puedes enseñar en el vídeo.
 
 ---
 
-### **AVERÍA 1 · BAJAR EL TÚNEL**
+# **AVERÍA 1 · BAJAR EL TÚNEL**
 
-**Romper:**
+> [!abstract] 🎯 Objetivo
+> Entender la diferencia entre **un servicio configurado** y **un servicio funcionando** — dos cosas que se confunden constantemente y que viven en sitios distintos: el disco y la memoria.
+>
+> **Por qué importa:** cuando algo no va, la primera reacción es abrir el fichero de configuración. Y muchas veces el fichero está perfecto: lo que pasa es que **nadie lo está ejecutando**. Saber distinguirlo te ahorra revisar durante media hora algo que no tiene ningún fallo.
+
+> [!question] 🤔 Predice antes de ejecutar
+> Al bajar el túnel:
+> 1. ¿Sigue existiendo el fichero `/etc/wireguard/wg0.conf`?
+> 2. ¿Sigue existiendo la interfaz `wg0`?
+> 3. ¿Sigue ocupado el puerto `51820`?
+>
+> **Escribe tus tres respuestas antes de seguir.**
+
+### **1 · Romper**
 ```bash
 sudo wg-quick down wg0
 ```
 
-**Comprobar:**
+### **2 · Comprobar**
 ```bash
 sudo wg show
 sudo ss -ulnp | grep 51820
+ls -l /etc/wireguard/wg0.conf
 ```
 
-- **🤔 Predice:** ¿el fichero de configuración sigue existiendo? ¿Y el túnel?
-- **Qué verás:** `wg show` no devuelve nada. El puerto `51820` desaparece.
-- **La lección:** **configurado no es lo mismo que funcionando.** El `wg0.conf` sigue ahí, intacto y perfecto. Pero nadie lo está ejecutando. Es la misma diferencia que entre tener un contrato de luz y tener la luz encendida.
+**Cómo se interpreta lo que sale:**
 
-**Arreglar:**
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `wg show` | **Nada** | No hay ninguna interfaz WireGuard activa |
+| `ss -ulnp` | **Nada** | Nadie escucha en el `51820`: el servicio no está corriendo |
+| `ls` del fichero | **Sigue ahí, intacto** | La configuración **no se ha perdido** |
+
+**El verificador dirá:** `[FALLO] B1`, `[FALLO] B2` y `[FALLO] B4`.
+
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Inmediato** | El cliente pierde la VPN. Si ya hubieras restringido SSH al túnel, **perderías el acceso remoto ahora mismo** |
+| **Medio** | Ninguna, porque **se nota enseguida**. Esta avería es de las honestas: falla de forma visible |
+| **En producción** | Es lo que ocurre al parar un servicio para mantenimiento y olvidarse de volver a levantarlo |
+
+### **4 · Reparar**
 ```bash
 sudo wg-quick up wg0
 ```
 
+**Cómo confirmar que se arregló:**
+```bash
+sudo wg show
+```
+Debe volver a aparecer la interfaz, y al cabo de unos segundos el `latest handshake`.
+
 > [!warning] ⏱️ Espera medio minuto antes de dar por bueno el arreglo
-> Al levantar el túnel, los contadores se ponen a cero y **el cliente tarda unos segundos en volver a saludar** — hasta 25, por el `PersistentKeepalive`.
+> Al levantar el túnel, **los contadores se ponen a cero** y el cliente tarda unos segundos en volver a saludar — hasta 25, por el `PersistentKeepalive` que configuraste.
 >
 > Si verificas de inmediato verás *"nunca hubo handshake"* y creerás que lo has roto del todo. **No es un fallo: es que aún no ha llegado el saludo.**
+>
+> Y esto también se aprende: **hay comprobaciones que necesitan tiempo antes de ser válidas.** Verificar demasiado pronto da falsos negativos.
+
+> [!summary] 🎓 La lección
+> **Configurado no es lo mismo que funcionando.** El `wg0.conf` seguía ahí, intacto y perfecto, mientras el túnel no existía.
+>
+> Es la misma diferencia que entre tener contratada la luz y tener la luz encendida.
 
 ---
 
-### **AVERÍA 2 · QUITAR LA PERSISTENCIA**
+# **AVERÍA 2 · QUITAR LA PERSISTENCIA**
 
-**Romper:**
+> [!abstract] 🎯 Objetivo
+> Descubrir que **hay averías que no producen ningún síntoma hoy**, y que solo aparecen al reiniciar.
+>
+> **Por qué importa:** es el tipo de fallo más caro que existe en administración de sistemas. No lo detectas probando —porque todo funciona—, solo lo detectas **comprobando el estado**. Y si no lo compruebas, lo descubres el día del reinicio, que siempre es el peor día.
+
+> [!question] 🤔 Predice antes de ejecutar
+> Al desactivar el arranque automático del túnel:
+> 1. ¿Se cae el túnel ahora mismo?
+> 2. ¿Notarías algo si no miraras el estado del servicio?
+> 3. ¿Cuándo se manifestaría el problema?
+
+### **1 · Romper**
 ```bash
 sudo systemctl disable wg-quick@wg0
 ```
 
-**Comprobar:**
+### **2 · Comprobar**
 ```bash
 systemctl is-enabled wg-quick@wg0
 sudo wg show
+ping -c2 10.20.20.2
 ```
 
-- **🤔 Predice:** ¿deja de funcionar el túnel ahora mismo?
-- **Qué verás:** `is-enabled` dice `disabled`… **pero `wg show` sigue funcionando perfectamente.**
-- **La lección:** esta es **la avería más peligrosa de todo el itinerario**, porque **no se nota**. El túnel funciona hoy, funciona esta tarde, funciona toda la semana. Y el día que reinicies, no arranca.
+**Cómo se interpreta lo que sale:**
 
-  Y para entonces —si ya has hecho la Auditoría Final— SSH solo escuchará por el túnel: **te quedas fuera de tu propio servidor**.
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `is-enabled` | **`disabled`** | No arrancará solo la próxima vez |
+| `wg show` | **Funciona perfectamente** | El servicio **sigue corriendo**: desactivar el arranque no lo para |
+| El túnel en general | **Todo normal** | **No hay ningún síntoma** |
 
-> [!danger] 💣 Consecuencias, por plazos
-> | Cuándo | Qué pasa |
-> | :--- | :--- |
-> | **Hoy** | **Nada.** Cero síntomas. El túnel va perfecto |
-> | **Al primer reinicio** | El túnel no levanta. Si ya hiciste la Auditoría Final y SSH solo escucha por la VPN, **pierdes el acceso remoto**: solo entras por la ventana de VirtualBox |
-> | **En una empresa** | Un corte de luz de 30 segundos se convierte en horas de incidencia. Los servicios que "estaban funcionando" no vuelven — y quien lo montó ya no trabaja allí |
->
-> **Lo que dice el verificador:** `[FALLO] D1` en rojo. **Él sí lo ve, aunque tú no lo notes.**
+**El verificador dirá:** `[FALLO] D1`. **Él lo ve; tú, no.**
 
-**Arreglar:**
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Hoy** | **Nada.** Cero síntomas. El túnel va perfecto |
+| **Al primer reinicio** | El túnel no levanta. Si ya hiciste la Auditoría Final y SSH solo escucha por la VPN, **pierdes el acceso remoto**: solo entras por la ventana de VirtualBox |
+| **En una empresa** | Un corte de luz de 30 segundos se convierte en horas de incidencia. Los servicios que "estaban funcionando" no vuelven — y quien lo montó ya no trabaja allí |
+
+### **4 · Reparar**
 ```bash
 sudo systemctl enable wg-quick@wg0
 ```
 
-> [!question] 🤔 Para tu entrada
-> ¿Qué otras averías se te ocurren que **funcionen hoy y fallen al reiniciar**? Piensa en cosas que hayas hecho a mano en las Fases 1 y 2.
+**Cómo confirmar que se arregló:**
+```bash
+systemctl is-enabled wg-quick@wg0
+```
+Debe devolver **`enabled`**.
+
+> [!tip] 🔬 La comprobación de verdad es reiniciar
+> `is-enabled` te dice lo que el sistema **promete** hacer. Si quieres la prueba real:
+> ```bash
+> sudo reboot
+> ```
+> Espera un minuto y vuelve a entrar. `sudo wg show` debe responder **sin que tú hayas levantado nada**.
+
+> [!summary] 🎓 La lección
+> **Funcionar hoy no garantiza funcionar mañana.** Un servicio arrancado a mano y un servicio habilitado son cosas distintas, y solo la segunda sobrevive a un reinicio.
+>
+> **Este tipo de avería no se detecta probando: se detecta auditando.**
 
 ---
 
-### **AVERÍA 3 · ROMPER LA MÁSCARA DEL CLIENTE**
+# **AVERÍA 3 · ROMPER LA MÁSCARA DEL CLIENTE**
 
-> Antes de tocar nada, **copia de seguridad**. Es lo que hace un administrador antes de editar un fichero de configuración:
+> [!abstract] 🎯 Objetivo
+> Ver con tus propios ojos que **hay errores de configuración que no rompen nada… todavía**. El sistema funciona igual de bien, y el fallo espera agazapado a que aparezca un segundo cliente.
+>
+> **Por qué importa:** es el fallo que produce las incidencias imposibles de diagnosticar — las de *"a veces va y a veces no"*, sin patrón y sin ningún error en ningún registro.
+
+> [!warning] 💾 Antes de tocar, copia de seguridad
+> Es lo que hace un administrador antes de editar cualquier fichero de configuración:
 > ```bash
 > sudo cp /etc/wireguard/wg0.conf /tmp/wg0.conf.bak
 > ```
 
-**Romper** — cambia el `/32` del peer por `/24`:
+> [!question] 🤔 Predice antes de ejecutar
+> Vas a cambiar el `AllowedIPs` del cliente de `/32` a `/24`:
+> 1. ¿Se cae el túnel?
+> 2. ¿Dará algún error el sistema?
+> 3. ¿Cuándo empezaría a notarse?
+
+### **1 · Romper**
 ```bash
 sudo nano /etc/wireguard/wg0.conf
 ```
+Dentro del bloque `[Peer]`, cambia la línea por:
 ```ini
 AllowedIPs = 10.20.20.0/24
 ```
-Y recarga el túnel:
+Guarda y recarga el túnel:
 ```bash
 sudo wg-quick down wg0 && sudo wg-quick up wg0
 ```
 
-**Comprobar:**
+### **2 · Comprobar**
 ```bash
 sudo wg show
+ping -c2 10.20.20.2
 ```
 
-- **🤔 Predice:** ¿se cae el túnel?
-- **Qué verás:** **el túnel sigue funcionando.** Handshake, tráfico, todo normal.
-- **La lección:** **hay errores que no dan error.** Con un solo cliente el fallo no se nota; con dos, el servidor no sabría a cuál enviar cada paquete y aparecerían cortes intermitentes que nadie relacionaría con este fichero.
+**Cómo se interpreta lo que sale:**
 
-  Son los peores: los que se manifiestan **más tarde, en otro sitio y de forma aleatoria**.
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `wg show` | **Handshake y tráfico normales** | El túnel funciona igual de bien que antes |
+| `ping` | **Responde** | Con **un solo** cliente, el fallo es invisible |
+| Cualquier registro del sistema | **Nada** | **No hay ningún error que consultar** |
 
-> [!danger] 💣 Consecuencias, por plazos
-> | Cuándo | Qué pasa |
-> | :--- | :--- |
-> | **Hoy, con un cliente** | **Nada** |
-> | **En la Fase 8, con el cliente Windows 11** | Los **dos** peers reclaman el mismo rango. WireGuard enruta hacia el último que coincida: el tráfico de un cliente **puede irse al otro**. Uno de los dos deja de responder, y cambia según quién haya saludado el último |
-> | **En una VPN de empresa** | Es el clásico *"a veces no me va la VPN"* **sin patrón reproducible**. Y no hay ningún error en ningún registro que lo delate |
->
-> **Lo que dice el verificador:** `[FALLO] C2` en rojo.
->
-> ⚠️ **Esta es la más traicionera de todas:** el síntoma aparece **dos fases más tarde**, cuando ya nadie recuerda haber tocado esta línea.
+**El verificador dirá:** `[FALLO] C2`. Es el único que se entera.
 
-**Arreglar:**
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Hoy, con un cliente** | **Nada** |
+| **En la Fase 8, con el cliente Windows 11** | Los **dos** peers reclaman el mismo rango. WireGuard enruta hacia el último que coincida: el tráfico de un cliente **puede irse al otro**. Uno de los dos deja de responder, y cambia según quién haya saludado el último |
+| **En una VPN de empresa** | El clásico *"a veces no me va la VPN"* **sin patrón reproducible**. Nadie lo relaciona con una línea escrita meses atrás |
+
+> ⚠️ **Es la más traicionera de las seis:** el síntoma aparece **dos fases más tarde**, cuando ya nadie recuerda haber tocado ese fichero.
+
+### **4 · Reparar**
 ```bash
 sudo cp /tmp/wg0.conf.bak /etc/wireguard/wg0.conf
 sudo wg-quick down wg0 && sudo wg-quick up wg0
 ```
 
+**Cómo confirmar que se arregló:**
+```bash
+sudo grep AllowedIPs /etc/wireguard/wg0.conf
+```
+Debe poner **`10.20.20.2/32`**.
+
+> [!summary] 🎓 La lección
+> **Hay errores que no dan error.** Con `/32` cada cliente declara *"soy exactamente esta dirección"*; con `/24` dice *"soy toda la red"*, y el servidor deja de poder decidir a quién enviar cada paquete.
+>
+> Lo peor no es el fallo: es que **se manifiesta más tarde, en otro sitio y de forma aleatoria**.
+
 ---
 
-### **AVERÍA 4 · METER UN `Endpoint` EN EL SERVIDOR**
+# **AVERÍA 4 · METER UN `Endpoint` EN EL SERVIDOR**
 
-**Romper** — añade esta línea dentro del bloque `[Peer]` del **servidor**:
+> [!abstract] 🎯 Objetivo
+> Fijar la regla que estructura **cualquier** configuración de WireGuard: en cada fichero, `[Interface]` habla **de ti** y `[Peer]` habla **del otro**.
+>
+> **Por qué importa:** los dos ficheros —servidor y cliente— se parecen muchísimo, y confundirlos es el error número uno de esta tecnología. Entender la regla te evita copiar bloques al fichero equivocado durante el resto de tu vida profesional.
+
+> [!question] 🤔 Predice antes de ejecutar
+> El cliente lleva una línea `Endpoint`. Parece razonable que el servidor también la tenga.
+> 1. ¿Por qué crees que el servidor **no** la lleva?
+> 2. Si le pones `Endpoint = 10.10.10.1`, ¿a quién le estarías diciendo que envíe los paquetes?
+
+### **1 · Romper**
+```bash
+sudo nano /etc/wireguard/wg0.conf
+```
+Añade esta línea **dentro del bloque `[Peer]`**:
 ```ini
 Endpoint = 10.10.10.1:51820
 ```
-
-**Comprobar:**
+Guarda y recarga:
 ```bash
-sudo cat /etc/wireguard/wg0.conf
+sudo wg-quick down wg0 && sudo wg-quick up wg0
 ```
 
-- **🤔 Predice:** parece razonable, ¿no? Si el cliente lleva `Endpoint`, ¿por qué no el servidor?
-- **La lección:** **la regla de oro de WireGuard** — en cada fichero, `[Interface]` habla **de ti** y `[Peer]` habla **del otro**.
+### **2 · Comprobar**
+```bash
+sudo cat /etc/wireguard/wg0.conf
+sudo wg show
+```
 
-  El servidor no necesita `Endpoint` porque **lo aprende solo**: en cuanto recibe un saludo válido, anota de dónde vino y responde ahí. Eso permite que el cliente cambie de red o de Wi-Fi sin tocar nada en el servidor.
+**Cómo se interpreta lo que sale:**
 
-  El cliente sí lo necesita, porque **alguien tiene que dar el primer paso** y saber a qué puerta llamar.
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `cat` | La línea `Endpoint` en el `[Peer]` | El servidor tiene una dirección fija anotada para el cliente |
+| `wg show` | Puede seguir funcionando | El cliente sigue iniciando él la conexión, así que **el fallo se disimula** |
 
-**Arreglar:** borra la línea y recarga el túnel.
+**El verificador dirá:** `[FALLO] C1`.
+
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Hoy** | Poco o nada: el cliente da el primer paso y el servidor le responde |
+| **Si el cliente cambia de red** | El servidor sigue enviando a la dirección vieja. **El túnel se rompe y no se recupera solo** |
+| **En movilidad real** | Un portátil que va del Wi-Fi de casa al de la oficina cambia de IP. Con `Endpoint` fijo en el servidor, **cada cambio de red exige tocar el servidor a mano** |
+
+### **4 · Reparar**
+Borra la línea del fichero y recarga:
+```bash
+sudo wg-quick down wg0 && sudo wg-quick up wg0
+```
+
+**Cómo confirmar que se arregló:**
+```bash
+sudo grep -c Endpoint /etc/wireguard/wg0.conf
+```
+Debe devolver **`0`**.
+
+> [!summary] 🎓 La lección
+> El servidor **no necesita** `Endpoint` porque **lo aprende solo**: en cuanto recibe un saludo válido, anota de dónde vino y responde ahí. Por eso el cliente puede cambiar de red sin que nadie toque el servidor.
+>
+> El cliente sí lo necesita, porque **alguien tiene que dar el primer paso** y saber a qué puerta llamar.
 
 ---
 
-### **AVERÍA 5 · ABRIR LOS PERMISOS DEL FICHERO**
+# **AVERÍA 5 · ABRIR LOS PERMISOS DEL FICHERO**
 
-**Romper:**
+> [!abstract] 🎯 Objetivo
+> Comprobar que **un fallo de seguridad no se parece en nada a un fallo de funcionamiento**. Todo va perfecto y el sistema está expuesto.
+>
+> **Por qué importa:** si esperas a que algo deje de funcionar para revisarlo, **los fallos de seguridad no los encuentras nunca**. Por eso existen las auditorías como actividad separada del mantenimiento.
+
+> [!question] 🤔 Predice antes de ejecutar
+> 1. ¿Afecta al funcionamiento del túnel cambiar los permisos del fichero?
+> 2. ¿Qué hay dentro de `wg0.conf` que justifique protegerlo?
+> 3. Con `644`, ¿crees que **ya** podría leerlo cualquier usuario? *(Ojo con esta: la respuesta obvia no es la correcta.)*
+
+### **1 · Romper**
 ```bash
 sudo chmod 644 /etc/wireguard/wg0.conf
 ```
 
-**Comprobar:**
+### **2 · Comprobar**
 ```bash
 ls -l /etc/wireguard/wg0.conf
 sudo wg show
+grep PrivateKey /etc/wireguard/wg0.conf
 ```
 
-- **🤔 Predice:** ¿afecta al funcionamiento?
-- **Qué verás:** **absolutamente nada.** El túnel va igual de bien.
-- **La lección:** ese fichero contiene **la clave privada de tu servidor**. Con `644`, **cualquier usuario de la máquina puede leerla** — y con esa clave se puede suplantar a tu servidor en la red.
+**Cómo se interpreta lo que sale:**
 
-  Un fallo de seguridad **no se manifiesta como un fallo de funcionamiento**. Por eso existen las auditorías: si esperas a que algo deje de ir, nunca lo encontrarás.
+| Comando | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| `sudo ls -l` | `-rw-r--r--` | El **fichero** ya permite lectura a todo el mundo |
+| `wg show` | Funciona perfectamente | **El funcionamiento no cambia en absoluto** |
+| `grep PrivateKey` **sin `sudo`** | **`Permiso denegado`** | 🤯 **Sigue protegido. ¿Por qué?** |
 
-> [!danger] 💣 Consecuencias, por plazos
-> | Cuándo | Qué pasa |
-> | :--- | :--- |
-> | **Hoy, en tu laboratorio** | **Nada**, y con un solo usuario el riesgo es casi teórico |
-> | **En un servidor con varios usuarios** | Cualquiera lee la **clave privada del servidor**. Con ella puede **hacerse pasar por tu servidor** desde otra máquina: tus clientes conectarían al impostor creyendo que es el legítimo |
-> | **Al clonar o entregar la máquina** | 🔴 **Aquí deja de ser teórico.** En el ejercicio [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] entregas tu VM a un compañero. Con los permisos abiertos, **le entregas la clave privada dentro** |
+> [!danger] 🤯 Sorpresa: has abierto el fichero y NO se puede leer. ¿Por qué?
+> Míralo:
+> ```bash
+> sudo ls -ld /etc/wireguard
+> ```
+> Sale **`drwx------`**. **El directorio** solo lo puede abrir `root`.
 >
-> **Lo que dice el verificador:** `[AVISO] C3` en amarillo.
+> **Para leer un fichero no basta con tener permiso sobre el fichero: hay que poder atravesar todos los directorios del camino.** Si una carpeta del recorrido te cierra la puerta, da igual lo abierto que esté lo que hay dentro.
 >
-> > [!info] 🔐 Un matiz que conviene saber
-> > WireGuard tiene *forward secrecy*: usa claves temporales distintas en cada sesión. Así que **el tráfico ya capturado NO se puede descifrar** aunque roben esa clave.
-> >
-> > Lo que sí permite es **suplantar de ahí en adelante**. Es robo de identidad, no de historial. Grave igual, pero conviene saber exactamente qué se pierde.
+> Esto se llama **defensa en profundidad**: dos barreras independientes protegiendo lo mismo. Has tirado una y la otra ha aguantado.
 
-**Arreglar:**
+> [!warning] ⚠️ Entonces, ¿el `644` da igual? NO
+> La segunda barrera aguanta **hoy y aquí**. Deja de aguantar en cuanto el fichero **sale de esa carpeta**, que es algo que pasa constantemente:
+>
+> - Una **copia de seguridad** a otro directorio
+> - Un `cp` a `/tmp` para trastear
+> - Un **clon de la máquina** entregado a un compañero
+>
+> **Compruébalo tú mismo:**
+> ```bash
+> sudo cp /etc/wireguard/wg0.conf /tmp/prueba.conf
+> sudo chmod 644 /tmp/prueba.conf
+> grep PrivateKey /tmp/prueba.conf
+> ```
+> **Ahí sí te la muestra, sin `sudo`.** Fuera de su carpeta blindada, el `644` deja la clave privada al alcance de cualquiera.
+>
+> Limpia después:
+> ```bash
+> sudo rm /tmp/prueba.conf
+> ```
+
+**El verificador dirá:** `[AVISO] C3` — en amarillo, no en rojo, porque no impide funcionar.
+
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Hoy, en tu laboratorio** | **Nada**, y con un solo usuario el riesgo es casi teórico |
+| **En un servidor con varios usuarios** | Cualquiera lee la **clave privada del servidor**. Con ella puede **hacerse pasar por tu servidor** desde otra máquina: tus clientes conectarían al impostor creyendo que es el legítimo |
+| **Al clonar o entregar la máquina** | 🔴 **Aquí deja de ser teórico.** En el ejercicio [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] entregas tu VM a un compañero. Con los permisos abiertos, **le entregas la clave privada dentro** |
+
+> [!info] 🔐 Un matiz que conviene saber
+> WireGuard tiene *forward secrecy*: usa claves temporales distintas en cada sesión. Así que **el tráfico ya capturado NO se puede descifrar** aunque roben esa clave.
+>
+> Lo que sí permite es **suplantar de ahí en adelante**. Es robo de identidad, no de historial. Grave igual, pero conviene saber exactamente qué se pierde.
+
+### **4 · Reparar**
 ```bash
 sudo chmod 600 /etc/wireguard/wg0.conf
 ```
 
+**Cómo confirmar que se arregló:**
+```bash
+sudo ls -l /etc/wireguard/wg0.conf
+```
+Debe mostrar **`-rw-------`**: solo `root` lo lee.
+
+> [!summary] 🎓 La lección
+> Dos ideas, y la segunda no la esperabas al empezar:
+>
+> **1. Un fallo de seguridad no se manifiesta como un fallo de funcionamiento.** El túnel iba perfecto con el fichero abierto.
+>
+> **2. La seguridad se construye por capas, no por una barrera.** Aquí había dos —los permisos del fichero y los del directorio— y al tirar una, la otra aguantó. Eso es **defensa en profundidad**, y es la razón de que un solo fallo rara vez baste para comprometer un sistema bien montado.
+>
+> Pero **una capa que aguanta hoy no es una capa que aguante siempre**: en cuanto el fichero se copia fuera de su carpeta, la protección que quedaba desaparece.
+
 ---
 
-### **AVERÍA 6 · DESCONECTAR EL CLIENTE**
+# **AVERÍA 6 · DESCONECTAR EL CLIENTE**
 
-> Esta se hace **en Windows**, no en el servidor.
+> [!abstract] 🎯 Objetivo
+> Entender **cómo se entera un servidor de que alguien se ha ido**. Respuesta corta: no se entera. Solo sabe cuánto hace que no le hablan.
+>
+> **Por qué importa:** casi ningún sistema en red tiene una desconexión limpia. Lo que hay es **silencio**, y alguien decidiendo cuánto silencio es demasiado. Entenderlo cambia cómo lees cualquier panel de monitorización.
 
-**Romper:** en la aplicación de WireGuard, pulsa **`Desactivar`**.
+> [!question] 🤔 Predice antes de ejecutar
+> Al desactivar el túnel en Windows:
+> 1. ¿Desaparecerá el peer de la lista del servidor?
+> 2. ¿Sabrá el servidor que te has desconectado?
+> 3. ¿Qué dato cambiará?
 
-**Comprobar** — en el servidor:
+### **1 · Romper**
+> Esto se hace **en Windows**, no en el servidor.
+
+En la aplicación de WireGuard, pulsa **`Desactivar`**.
+
+### **2 · Comprobar**
+En el servidor, ejecútalo **dos veces separadas por un minuto**:
 ```bash
 sudo wg show
 ```
 
-- **🤔 Predice:** ¿desaparece el peer de la lista?
-- **Qué verás:** el peer **sigue apareciendo**, con su clave y sus `AllowedIPs`. Lo que envejece es el `latest handshake`.
-- **La lección:** el servidor **no sabe** que el cliente se ha ido. Nadie le avisa. Solo sabe **cuánto hace que no le habla**.
+**Cómo se interpreta lo que sale:**
 
-  Así funcionan casi todos los sistemas en red: no hay una desconexión limpia, hay **silencio** — y alguien decidiendo cuánto silencio es demasiado.
+| Qué mirar | Qué verás | Qué significa |
+| :--- | :--- | :--- |
+| El bloque `peer:` | **Sigue ahí**, con su clave y sus `AllowedIPs` | El servidor **no borra** a nadie: esa información viene del fichero |
+| `latest handshake` | **Envejece**: 30 s… 90 s… 3 minutos | Es el **único** dato que revela la ausencia |
+| `transfer` | Se queda congelado | No entra ni sale nada más |
 
-**Arreglar:** pulsa **`Activar`** y espera unos segundos.
+**El verificador dirá:** primero `[AVISO] B2` cuando pasen 5 minutos. Nunca un `[FALLO]`, porque **no está roto: está ausente**.
+
+### **3 · Consecuencias**
+
+| Plazo | Qué pasa |
+| :--- | :--- |
+| **Inmediato** | El cliente pierde acceso a la red del túnel. El servidor sigue tan tranquilo |
+| **Para el diagnóstico** | Si solo miras *"¿está el peer configurado?"*, dirás que todo va bien. **La configuración no te dice quién está conectado** |
+| **En monitorización real** | Por esto los sistemas usan *timeouts*: nadie avisa de que se va, así que hay que **decidir cuánto silencio significa "se ha ido"** |
+
+### **4 · Reparar**
+En Windows, pulsa **`Activar`**.
+
+**Cómo confirmar que se arregló:**
+```bash
+sudo wg show
+```
+El `latest handshake` debe volver a contar desde pocos segundos. Dale hasta 25 segundos.
+
+> [!summary] 🎓 La lección
+> **El servidor no sabe que te has ido: solo mide silencio.**
+>
+> Es cómo funcionan casi todos los sistemas en red. No hay una despedida — hay un contador que crece, y un umbral decidido por alguien.
 
 ---
+
+> [!important] 🎯 La lección que une las averías 2, 3 y 5
+> En las tres, **el sistema sigue funcionando perfectamente**. No hay error, no hay registro, no hay síntoma.
+>
+> Y en las tres, **el verificador las detecta**.
+>
+> Ese es el motivo de que exista una herramienta de comprobación de estado: **"funciona" no es lo mismo que "está bien"**. Si esperas a que algo deje de ir para revisarlo, estos tres fallos no los encuentras nunca — los encuentras el día que explotan, que siempre es el peor.
 
 > [!success] ✅ Deja el sistema como estaba
 > Al terminar las seis, pasa el verificador y comprueba que **todo vuelve a estar en verde**:
@@ -250,22 +500,15 @@ sudo wg show
 > sudo ./verificar_fase3.sh
 > ```
 >
-> Si algo no vuelve a su sitio, **restaura la instantánea `Fase 3 terminada`** y listo. Para eso está.
-
-> [!important] 🎯 La lección que une las averías 2, 3 y 5
-> En las tres, **el sistema sigue funcionando perfectamente**. No hay error, no hay log, no hay síntoma.
->
-> Y en las tres, **el verificador las detecta**.
->
-> Ese es exactamente el motivo de que exista una herramienta de comprobación de estado: **"funciona" no es lo mismo que "está bien"**. Si esperas a que algo deje de ir para revisarlo, estos tres fallos no los encuentras nunca — los encuentras el día que explotan, que siempre es el peor.
+> Si algo no vuelve a su sitio, **restaura la instantánea `Fase 3 terminada`**. Para eso está.
 
 > [!question] 📝 Lo que va a tu entrada de apuntes
 > 1. De las seis averías, **¿cuáles NO se notaban?** ¿Por qué son las más peligrosas?
-> 2. La avería 2 y la 5 tienen algo en común. ¿Qué es?
-> 3. En la avería 3, el túnel siguió funcionando con la configuración mal. **¿Cómo detectarías tú un fallo así en un sistema que no has montado tú?**
+> 2. Las averías 2 y 5 tienen algo en común. ¿Qué es?
+> 3. En la avería 3 el túnel siguió funcionando con la configuración mal. **¿Cómo detectarías un fallo así en un sistema que no has montado tú?**
 > 4. ¿Qué avería te ha sorprendido más y por qué?
+> 5. Escribe **una avería nueva** que se te ocurra para esta fase, con su objetivo, su comando de rotura y su reparación.
 
----
 ---
 
 | ← Anterior | 🧭 Índice | Siguiente → |
