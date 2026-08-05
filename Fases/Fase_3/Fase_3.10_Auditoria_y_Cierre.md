@@ -84,7 +84,7 @@ sudo wg show
 - **🤔 Predice:** ¿deja de funcionar el túnel ahora mismo?
 - **Qué verás:** `is-enabled` dice `disabled`… **pero `wg show` sigue funcionando perfectamente.**
 - **La lección:** esta es **la avería más peligrosa de todo el itinerario**, porque **no se nota**. El túnel funciona hoy, funciona esta tarde, funciona toda la semana. Y el día que reinicies, no arranca.
->
+
   Y para entonces —si ya has hecho la Auditoría Final— SSH solo escuchará por el túnel: **te quedas fuera de tu propio servidor**.
 
 > [!danger] 💣 Consecuencias, por plazos
@@ -133,7 +133,7 @@ sudo wg show
 - **🤔 Predice:** ¿se cae el túnel?
 - **Qué verás:** **el túnel sigue funcionando.** Handshake, tráfico, todo normal.
 - **La lección:** **hay errores que no dan error.** Con un solo cliente el fallo no se nota; con dos, el servidor no sabría a cuál enviar cada paquete y aparecerían cortes intermitentes que nadie relacionaría con este fichero.
->
+
   Son los peores: los que se manifiestan **más tarde, en otro sitio y de forma aleatoria**.
 
 > [!danger] 💣 Consecuencias, por plazos
@@ -169,9 +169,9 @@ sudo cat /etc/wireguard/wg0.conf
 
 - **🤔 Predice:** parece razonable, ¿no? Si el cliente lleva `Endpoint`, ¿por qué no el servidor?
 - **La lección:** **la regla de oro de WireGuard** — en cada fichero, `[Interface]` habla **de ti** y `[Peer]` habla **del otro**.
->
+
   El servidor no necesita `Endpoint` porque **lo aprende solo**: en cuanto recibe un saludo válido, anota de dónde vino y responde ahí. Eso permite que el cliente cambie de red o de Wi-Fi sin tocar nada en el servidor.
->
+
   El cliente sí lo necesita, porque **alguien tiene que dar el primer paso** y saber a qué puerta llamar.
 
 **Arreglar:** borra la línea y recarga el túnel.
@@ -194,7 +194,7 @@ sudo wg show
 - **🤔 Predice:** ¿afecta al funcionamiento?
 - **Qué verás:** **absolutamente nada.** El túnel va igual de bien.
 - **La lección:** ese fichero contiene **la clave privada de tu servidor**. Con `644`, **cualquier usuario de la máquina puede leerla** — y con esa clave se puede suplantar a tu servidor en la red.
->
+
   Un fallo de seguridad **no se manifiesta como un fallo de funcionamiento**. Por eso existen las auditorías: si esperas a que algo deje de ir, nunca lo encontrarás.
 
 > [!danger] 💣 Consecuencias, por plazos
@@ -232,7 +232,7 @@ sudo wg show
 - **🤔 Predice:** ¿desaparece el peer de la lista?
 - **Qué verás:** el peer **sigue apareciendo**, con su clave y sus `AllowedIPs`. Lo que envejece es el `latest handshake`.
 - **La lección:** el servidor **no sabe** que el cliente se ha ido. Nadie le avisa. Solo sabe **cuánto hace que no le habla**.
->
+
   Así funcionan casi todos los sistemas en red: no hay una desconexión limpia, hay **silencio** — y alguien decidiendo cuánto silencio es demasiado.
 
 **Arreglar:** pulsa **`Activar`** y espera unos segundos.
