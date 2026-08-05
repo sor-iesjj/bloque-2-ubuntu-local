@@ -42,7 +42,7 @@
 | **8.b** | [[Fase_1.8.b_Punto_de_Control]] | 💾 **Entrega 5** — instantánea y copia al disco externo · ~20 min |
 | **6.f** | [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar]] | 👥 **Entrega 6** — clonar e intercambiar con un compañero · ~50 min |
 | **9** | [[Fase_1.9_Preguntas]] | Trabajo de mesa — las preguntas críticas |
-| **10.a** | [[Fase_1.10.a_Laboratorio_de_Averias]] | 🔨 **Entrega 7** — romper seis cosas a propósito · ~50 min |
+| **10.a** | [[Fase_1.10.a_Laboratorio_de_Averias]] | 🔨 **Entrega 7** — romper seis cosas a propósito · **en 2 sesiones** |
 | **10.b** | [[Fase_1.10.b_Auditoria_y_Cierre]] | Lo último — la checklist antes de la Fase 2 |
 
 > [!tip] 💡 Cómo se recorre

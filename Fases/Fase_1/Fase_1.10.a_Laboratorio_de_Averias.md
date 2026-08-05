@@ -38,6 +38,22 @@
 >
 > No estás perdiendo el tiempo: estás aprendiendo a leer un sistema roto **en condiciones controladas**, en vez de la primera vez que te pase de verdad y con prisa.
 
+> [!important] 🗓️ Esto va en DOS SESIONES, no en una
+> Seis averías con predicción, rotura, comprobación y reparación son **cerca de una hora**. En una sesión de clase no caben, y hacerlas con prisa es justo lo contrario de lo que se busca aquí.
+>
+> | Sesión | Averías | Qué tienen en común |
+> | :--- | :--- | :--- |
+> | **1.ª** | **1 · 2 · 3 · 4** | Todas son de **red**. Y la pareja **3+4** hay que hacerla seguida: el contraste entre el fallo que calla y el que grita es la idea que más lejos llega |
+> | **2.ª** | **5 · 6** | Las dos son de **SSH**. La 6 acaba tocando tu propio Windows |
+>
+> **Sigue siendo UN SOLO vídeo**, `B2 · F1 · Laboratorio de averías`, con sus seis timestamps. Solo lo grabas en dos ratos: pausa OBS al terminar la avería 4 y reanuda al día siguiente.
+>
+> **Al empezar la segunda sesión**, pasa el verificador antes de romper nada:
+> ```bash
+> sudo ./verificar_fase1.sh
+> ```
+> Si no sale `FASE 1 SUPERADA`, es que algo de la sesión anterior quedó sin reparar. **Arréglalo antes de seguir**, o arrastrarás un fallo y creerás que lo ha causado la avería 5.
+
 > [!tip] 💡 Las seis averías siguen siempre el mismo guion
 > | Paso | Qué se hace |
 > | :--- | :--- |
@@ -326,6 +342,23 @@ sudo netplan get
 
 ---
 
+---
+
+> [!important] ⏸️ FIN DE LA PRIMERA SESIÓN
+> Hasta aquí, las cuatro averías **de red**. Antes de cerrar:
+>
+> 1. **Comprueba que has reparado todo:**
+>    ```bash
+>    sudo ./verificar_fase1.sh
+>    ```
+>    Tiene que salir **`FASE 1 SUPERADA`**. Si no, vuelve a la avería que corresponda: el informe te dice cuál.
+> 2. **Pausa la grabación de OBS.** No cierres el vídeo: las dos que quedan van en el mismo.
+> 3. **Escribe ya tus cuatro predicciones y lo que pasó**, mientras lo tienes fresco. Dentro de dos días no te acordarás de por qué predijiste lo que predijiste.
+>
+> **Lo que viene son las dos de SSH**, y son de otra naturaleza: la 5 desmonta una creencia y la 6 acaba tocando tu Windows.
+
+---
+
 # **AVERÍA 5 · PARAR SSH (Y LA SORPRESA DEL PUERTO ABIERTO)**
 
 > [!abstract] 🎯 Objetivo de esta avería
@@ -504,7 +537,9 @@ sudo ./verificar_fase1.sh
 
 ### ✅ Checklist de este apartado
 
-- [ ] Las **seis averías** hechas, en la **ventana de VirtualBox**.
+- [ ] **Sesión 1:** averías **1, 2, 3 y 4**, y `FASE 1 SUPERADA` al cerrar.
+- [ ] **Sesión 2:** verificador **antes** de empezar, y después las averías **5 y 6**.
+- [ ] Las seis hechas en la **ventana de VirtualBox**, no por SSH.
 - [ ] **Predicción escrita antes** de cada una, en la entrada de apuntes.
 - [ ] Anotada la diferencia de salida entre la **avería 1** y la **avería 2**.
 - [ ] Anotada la huella **antes y después** de la avería 6.

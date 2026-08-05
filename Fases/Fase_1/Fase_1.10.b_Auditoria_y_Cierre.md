@@ -48,7 +48,7 @@
 
 ## **6 · EL LABORATORIO DE AVERÍAS** *(entrega 7)*
 
-- [ ] Las **seis averías** provocadas y reparadas, en la ventana de VirtualBox.
+- [ ] Las **seis averías** provocadas y reparadas, en la ventana de VirtualBox, **en dos sesiones** (1-4 de red, 5-6 de SSH).
 - [ ] **Predicción escrita antes** de cada una.
 - [ ] Verificador pasado al final: **`FASE 1 SUPERADA`**.
 

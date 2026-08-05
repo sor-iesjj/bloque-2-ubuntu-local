@@ -79,6 +79,18 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 - **Un timestamp por avería**, las seis.
 - Se graba desde **la ventana de VirtualBox**, no por SSH: las averías te cortan el acceso remoto.
 
+> [!important] 🗓️ Este vídeo se graba en DOS SESIONES
+> Son seis averías y cerca de una hora de trabajo: en una sesión de clase no caben, y con prisa este apartado no sirve de nada.
+>
+> | Sesión | Averías | |
+> | :--- | :--- | :--- |
+> | **1.ª** | 1 · 2 · 3 · 4 | Las de **red** |
+> | **2.ª** | 5 · 6 | Las de **SSH** |
+>
+> **Es UN SOLO vídeo, no dos.** Pausa OBS al terminar la avería 4 y reanuda en la siguiente sesión. Los seis timestamps van en la misma descripción.
+>
+> Y **al empezar la segunda sesión, pasa el verificador antes de romper nada**: si algo quedó sin reparar del día anterior, lo descubres ahora y no lo confundes con la avería nueva.
+
 ---
 
 ## **3 · SI ALGO SE ALARGA**

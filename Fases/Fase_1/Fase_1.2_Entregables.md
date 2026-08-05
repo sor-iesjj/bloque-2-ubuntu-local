@@ -31,7 +31,7 @@
 | **4** | [[Fase_1.6.d_Procedimiento_Verificacion_SSH\|6.d]] **+** [[Fase_1.8.a_Verificacion\|8.a]] | `b2-f1-4-verificacion-y-acceso-remoto.md` | `B2 · F1 · Verificación y acceso remoto` | ~12-15 min |
 | **5** | [[Fase_1.8.b_Punto_de_Control\|8.b]] | `b2-f1-5-punto-de-control.md` | `B2 · F1 · Punto de control` | ~3-4 min |
 | **6** | [[Fase_1.6.f_Procedimiento_Clonar_e_Intercambiar\|6.f]] | `b2-f1-6-clonar-e-intercambiar.md` | `B2 · F1 · Clonar e intercambiar` | ~10-12 min |
-| **7** | [[Fase_1.10.a_Laboratorio_de_Averias\|10.a]] | `b2-f1-7-laboratorio-de-averias.md` | `B2 · F1 · Laboratorio de averías` | ~15-20 min |
+| **7** | [[Fase_1.10.a_Laboratorio_de_Averias\|10.a]] | `b2-f1-7-laboratorio-de-averias.md` | `B2 · F1 · Laboratorio de averías` | ~15-20 min · **en 2 sesiones** |
 
 Todas las entradas van en `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/` y todos los vídeos en la playlist **`B2_Ubuntu_Local`** (No listado).
 
