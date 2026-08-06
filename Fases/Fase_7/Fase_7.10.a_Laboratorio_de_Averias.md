@@ -261,7 +261,7 @@ sudo ./verificar_fase7.sh
 Primero deja un fichero **de antes**, para comparar:
 ```bash
 sudo touch /srv/samba/departamentos/facturacion/antes.txt
-getfacl -p /srv/samba/departamentos/facturacion/antes.txt | grep comercial
+sudo getfacl -p /srv/samba/departamentos/facturacion/antes.txt | grep comercial
 ```
 Y ahora quita la herencia:
 ```bash
@@ -272,7 +272,7 @@ sudo setfacl -k /srv/samba/departamentos/facturacion
 ```bash
 getfacl -p /srv/samba/departamentos/facturacion
 sudo touch /srv/samba/departamentos/facturacion/despues.txt
-getfacl -p /srv/samba/departamentos/facturacion/despues.txt | grep comercial
+sudo getfacl -p /srv/samba/departamentos/facturacion/despues.txt | grep comercial
 sudo ./verificar_fase7.sh
 ```
 

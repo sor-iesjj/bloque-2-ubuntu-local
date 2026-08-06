@@ -171,11 +171,32 @@ Los puntos anteriores dicen que las ACL **están escritas**. Este dice que **hac
 
 ```bash
 sudo touch /srv/samba/departamentos/facturacion/prueba_herencia.txt
-getfacl -p /srv/samba/departamentos/facturacion/prueba_herencia.txt
+sudo getfacl -p /srv/samba/departamentos/facturacion/prueba_herencia.txt
 ```
 
 - **✅ Bien:** el fichero recién creado **ya lleva** `group:comercial` y `group:contabilidad`, sin que tú se los hayas puesto.
 - **❌ Mal:** no los lleva → falta la ACL por defecto → [[Fase_7.7_Resolucion_Problemas#E4 · Los ficheros nuevos no heredan los permisos|caso E4]].
+
+> [!warning] ⚠️ Fíjate en que los DOS comandos llevan `sudo`. Y no es por costumbre
+> Prueba a quitárselo al `getfacl`:
+> ```bash
+> getfacl -p /srv/samba/departamentos/facturacion/prueba_herencia.txt
+> ```
+> ```
+> getfacl: ...: Permission denied
+> ```
+>
+> **Y está bien que falle.** Tú, como `boochan`, no eres `root` ni perteneces al grupo `facturacion`: caes en *otros*, que en una carpeta `2770` tiene **`---`**. Ni siquiera puedes **atravesarla** para llegar al fichero.
+>
+> **Acabas de comprobar tu propia protección funcionando contra ti mismo.** Sin `sudo`, un administrador es un usuario más.
+
+> [!info] 🎓 Por qué el `getfacl` de la CARPETA sí funcionaba sin `sudo`
+> | Qué consultas | ¿Sin `sudo`? | Por qué |
+> | :--- | :---: | :--- |
+> | La ACL de **la carpeta** | ✅ Sí | Leer los permisos de una carpeta no exige entrar en ella |
+> | La ACL de **un fichero de dentro** | ❌ No | Para llegar al fichero hay que **atravesar** la carpeta, y eso pide la `x` |
+>
+> Ese permiso `x` en un directorio no significa "ejecutar": significa **"puedes pasar por aquí"**. Es de las cosas de Unix que más se malinterpretan, y acabas de tropezarte con ella en vivo.
 
 **Y bórralo:**
 ```bash
