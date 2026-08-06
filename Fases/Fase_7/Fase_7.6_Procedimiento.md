@@ -122,16 +122,46 @@
 > [!example] Paso 3.b: 🔴 Quitar la escritura a los becarios
 > Mira la matriz otra vez. Los becarios tienen **`R`** sobre su propia carpeta, **no `RW`**. Son los únicos.
 >
-> Y ahora mira lo que les dejó la Fase 6:
+> Y ahora mira lo que les dejó la Fase 6. **Los dos comandos dicen lo mismo de dos formas distintas:**
 > ```bash
-> ls -ld /srv/samba/departamentos/becarios
+> ls -ld /srv/samba/departamentos/becarios      # forma simbólica
+> stat -c '%a  %n' /srv/samba/departamentos/becarios   # forma numérica
 > ```
-> Pone **`2770`**: el grupo tiene `rwx`. **Pueden escribir y borrar.** Hay que quitárselo:
+> ```
+> drwxrws--- 2 root BOOCHANLAB\becarios 4096 ... /srv/samba/departamentos/becarios
+> 2770  /srv/samba/departamentos/becarios
+> ```
+>
+> > [!warning] ⚠️ `ls -ld` NO te da el número. Te da las letras
+> > Es un despiste clásico: **`ls` nunca enseña `2770`**. Enseña `drwxrws---`. El número lo da **`stat -c %a`**.
+> >
+> > Y hay que saber pasar de una forma a la otra, porque **el material y los comandos usan las dos**: `chmod` habla en números, `ls` contesta en letras.
+> >
+> > | | | |
+> > | :--- | :--- | :--- |
+> > | `d` | tipo | `d` = directorio |
+> > | `rwx` | **dueño** | 4+2+1 = **7** |
+> > | `rws` | **grupo** | 4+2+1 = **7**, y la `s` es el **setgid** → el `2` de delante |
+> > | `---` | otros | **0** |
+> >
+> > **`drwxrws---` = `2770`.** Misma información, dos idiomas.
+>
+> El grupo tiene **`rws`**, o sea `rwx` más el setgid: **pueden escribir y borrar.** Hay que quitarles la `w`:
 > ```bash
 > sudo chmod 2750 /srv/samba/departamentos/becarios
 > ls -ld /srv/samba/departamentos/becarios
+> stat -c '%a  %n' /srv/samba/departamentos/becarios
 > ```
-> - **✅ Bien:** ahora se lee **`drwxr-s---`** — el grupo tiene `r-x`, sin `w`.
+> - **✅ Bien:** ahora se lee **`drwxr-s---`** y `stat` dice **`2750`**.
+>
+> > [!tip] 💡 Fíjate en qué letra ha cambiado, que es una sola
+> > ```
+> > antes:  drwx rws ---     2770
+> > ahora:  drwx r-s ---     2750
+> >              ↑
+> >              la 'w' del grupo se ha ido
+> > ```
+> > **El `7` del medio ha pasado a `5`.** Y la `s` sigue ahí: el setgid no se toca, solo la escritura.
 >
 > > [!danger] 🛑 Este paso es fácil de saltarse, y se nota en la Fase 8
 > > La Fase 6 creó las siete carpetas **iguales**, porque allí todavía no había política. Hoy aplicas la política, y **la carpeta de becarios es la única excepción de toda la matriz**.
