@@ -1,4 +1,4 @@
-## Fase 7 · Apartado 8.a — 🔍 Verificación del trabajo
+	## Fase 7 · Apartado 8.a — 🔍 Verificación del trabajo
 
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Seguridad Avanzada (ACLs y ABE)**
 > 🧭 Índice de la fase: [[Fase_7]]
@@ -28,6 +28,13 @@
 
 ### **1 · LA BASE DE LAS FASES 5 Y 6 SIGUE EN PIE**
 
+> [!abstract] 🎯 Qué compruebas aquí, y por qué antes que nada
+> **Una ACL se le da a un grupo, sobre una carpeta montada.** Esas dos piezas no las has hecho hoy: los grupos vienen de la Fase 5 y las carpetas de la Fase 6.
+>
+> **Si alguna se ha movido, todo el trabajo de hoy se ha aplicado a la nada** — y no lo verías, porque `setfacl` no protesta por escribir permisos para un grupo que el sistema ya no reconoce.
+>
+> **Se comprueba primero para no perder una hora** buscando en las ACL un problema que está dos fases más atrás.
+
 ```bash
 for d in facturacion contabilidad comercial logistica rrhh becarios; do
     printf '%-16s %s\n' "$d" "$(getent group $d | cut -d: -f3)"
@@ -36,11 +43,40 @@ mountpoint /srv/samba/departamentos && mountpoint /srv/samba/comun
 stat -c '%n %U:%G' /srv/samba/departamentos/*
 ```
 
-- **Por qué:** una ACL se le da **a un grupo**, sobre **una carpeta montada**. Si `getent group` no devuelve nada, el problema es que `samba-ad-dc` no está sirviendo el traductor. Si el grupo no se ve o la carpeta no está montada, estás poniendo permisos en la nada.
-- **✅ Bien:** los seis grupos con `3001`-`3006`, los dos volúmenes montados, y cada carpeta a nombre de **su** departamento.
-- **❌ Mal:** vuelve a la fase de la que venga — [[Fase_5.7_Resolucion_Problemas|Fase 5]] o [[Fase_6.7_Resolucion_Problemas|Fase 6]].
+> [!info] 📖 Qué hace ese código
+> Son **tres comprobaciones seguidas**, una por pieza:
+>
+> 1. **El bucle** recorre los seis departamentos y, por cada uno, pregunta al sistema su GID:
+>    - `getent group facturacion` devuelve la línea entera del grupo → `BOOCHANLAB\facturacion:x:3001:`
+>    - `cut -d: -f3` se queda con **el tercer campo**, que es el número → `3001`
+>    - `printf '%-16s %s\n'` lo imprime en dos columnas alineadas, para poder leerlo de un vistazo
+> 2. **`mountpoint`** pregunta si esa ruta es un punto de montaje o una carpeta normal. Van los dos unidos por `&&`: el segundo solo se ejecuta si el primero va bien.
+> 3. **`stat -c '%n %U:%G'`** imprime, de cada carpeta, **su nombre, su dueño y su grupo**. El `*` hace que las recorra las seis.
+>
+> **Ninguno de los tres modifica nada.** Los tres preguntan.
+
+- **✅ Bien:**
+  - Los seis departamentos con sus GID **`3001`** a **`3006`**, en orden.
+  - Los dos `mountpoint` responden **`is a mountpoint`**.
+  - Las seis carpetas a nombre de **`root:BOOCHANLAB\<su departamento>`**.
+- **❌ Mal:**
+  - Un GID **vacío** → el grupo no se resuelve → [[Fase_5.7_Resolucion_Problemas|Fase 5]].
+  - **`is not a mountpoint`** → el volumen no está montado → [[Fase_6.7_Resolucion_Problemas|Fase 6]].
+  - Una carpeta con grupo **`root`** en vez del suyo → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6 de la Fase 6]].
 
 ### **2 · 🔴 LOS OCHO PERMISOS CRUZADOS ESTÁN PUESTOS**
+
+> [!abstract] 🎯 Qué compruebas aquí, y por qué
+> **Que la matriz de la empresa está escrita en el servidor**, entrada por entrada.
+>
+> Esto es el trabajo del apartado 6: los ocho accesos que un departamento tiene sobre la carpeta **de otro**. Y hay que mirarlo en **dos direcciones**:
+>
+> | Miras que… | Si falla… |
+> | :--- | :--- |
+> | **Están los ocho** que deben estar | Alguien no podrá trabajar. Te llamará mañana |
+> | **No hay ninguno de más** | Alguien verá lo que no debe. **No te llamará nunca** |
+>
+> Lo segundo es lo que de verdad se evalúa aquí, y es lo que nadie mira.
 
 ```bash
 for d in facturacion contabilidad comercial logistica rrhh becarios; do
@@ -72,6 +108,15 @@ Compara **casilla por casilla** con la matriz. Esto es lo que tiene que salir:
 > Si en `rrhh` aparece cualquier cosa, has roto el principio de mínimo privilegio de la empresa.
 
 ### **3 · 🔴 LA MÁSCARA RECORTA SOLO DONDE DEBE**
+
+> [!abstract] 🎯 Qué compruebas aquí, y por qué
+> **Que los permisos que acabas de escribir se aplican de verdad.**
+>
+> Una ACL puede decir `rwx` y valer `r--`: la **máscara** es un techo que recorta a los grupos con nombre sin borrarlos de la lista. El permiso sigue ahí, escrito y correcto, y no funciona.
+>
+> **Y no lo notarías administrando**, porque la máscara **no afecta al dueño** — y tú trabajas con `sudo`. El que se queda fuera es el usuario.
+>
+> Aquí compruebas que solo recorta **donde tú querías que recortara**.
 
 ```bash
 getfacl -p /srv/samba/departamentos/* 2>/dev/null | grep -B8 "#effective"
@@ -114,6 +159,14 @@ getfacl -p /srv/samba/departamentos/* 2>/dev/null | grep -B8 "#effective"
 
 ### **4 · LOS DOS CASOS ESPECIALES**
 
+> [!abstract] 🎯 Qué compruebas aquí, y por qué
+> **Las dos excepciones de la matriz**, que son las que se olvidan:
+>
+> - **Los becarios** son el único grupo con **solo lectura sobre lo suyo**. La Fase 6 creó las siete carpetas iguales, así que esto lo corregiste a mano en el Paso 3.b.
+> - **La carpeta común** conserva su **sticky bit** de la Fase 6: todos escriben, cada uno borra solo lo suyo.
+>
+> Si falla el primero, en la Fase 8 un becario podrá borrar ficheros y esa prueba se caerá. Si falla el segundo, cualquiera podrá borrar el trabajo de otro.
+
 ```bash
 stat -c '%n  %U:%G  %a' /srv/samba/departamentos/becarios /srv/samba/comun
 ls -ld /srv/samba/departamentos/becarios /srv/samba/comun
@@ -133,6 +186,15 @@ ls -ld /srv/samba/departamentos/becarios /srv/samba/comun
 
 ### **5 · 🔴 LA CONFIGURACIÓN DE SAMBA ES VÁLIDA**
 
+> [!abstract] 🎯 Qué compruebas aquí, y por qué
+> **Que el servidor podrá arrancar mañana.**
+>
+> `samba-ad-dc` no es solo el servidor de ficheros: **es el controlador de dominio**. Si `smb.conf` tiene una errata, al reiniciar no arranca — y se lleva por delante el **DNS, Kerberos y LDAP** de golpe.
+>
+> Y aquí está lo traicionero: **el servicio sigue funcionando ahora mismo con el fichero ya roto**, porque solo lo lee al arrancar. Tienes una ventana para descubrirlo, y `testparm` es la forma de usarla.
+>
+> **Es el mismo reflejo que el `sudo mount -a` de la Fase 6**, con otro nombre.
+
 ```bash
 sudo testparm
 grep -c "^\[" /etc/samba/smb.conf
@@ -151,6 +213,19 @@ grep -n "^\[" /etc/samba/smb.conf
 
 ### **6 · LAS SIETE CARPETAS PUBLICADAS, CON SUS OPCIONES**
 
+> [!abstract] 🎯 Qué compruebas aquí, y por qué
+> **Que Windows va a ver lo que debe y solo lo que debe.**
+>
+> Los permisos de los puntos anteriores deciden **quién entra**. Estas tres opciones deciden **quién se entera de que la carpeta existe**:
+>
+> | Opción | Para qué |
+> | :--- | :--- |
+> | `access based share enum` | Oculta el recurso a quien no tiene acceso |
+> | `hide unreadable` | Oculta el contenido que no puede leer |
+> | `acl_xattr` | Evita que Windows machaque tus ACL al copiar |
+>
+> **Sin las dos primeras la protección funciona a medias:** nadie entra donde no debe, pero todos ven que existe una carpeta llamada `rrhh`. Y un nombre de carpeta ya es información.
+
 ```bash
 for s in facturacion contabilidad comercial logistica rrhh becarios; do
     echo "=== $s"
@@ -166,6 +241,15 @@ testparm -s --section-name=comun 2>/dev/null | grep -Ei "path|acl_xattr"
 > No lo que tú escribiste. Si has duplicado una sección o te has equivocado de sitio, **aquí se ve** — porque muestra la configuración **efectiva**, ya interpretada.
 
 ### **7 · LA HERENCIA FUNCIONA DE VERDAD** *(la prueba que importa)*
+
+> [!abstract] 🎯 Qué compruebas aquí, y por qué
+> **Que lo que se cree mañana nacerá con los permisos puestos.**
+>
+> Todo lo anterior comprueba que las ACL **están escritas**. Esto comprueba que **hacen algo**: creas un fichero nuevo y miras si nace con la lista puesta, sin que tú se la pongas.
+>
+> **Si falla, no se rompe nada hoy.** Los ficheros que ya existen siguen bien. Lo que pasa es que la carpeta **se va degradando sola** durante semanas, hasta que alguien se queja y ya no hay ningún cambio reciente al que señalar.
+>
+> Es el fallo más difícil de diagnosticar de esta fase, y por eso se prueba en lugar de suponerse.
 
 Los puntos anteriores dicen que las ACL **están escritas**. Este dice que **hacen algo**:
 
