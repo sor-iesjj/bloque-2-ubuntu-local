@@ -1,4 +1,4 @@
-	## Fase 7 · Apartado 8.a — 🔍 Verificación del trabajo
+		## Fase 7 · Apartado 8.a — 🔍 Verificación del trabajo
 
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Seguridad Avanzada (ACLs y ABE)**
 > 🧭 Índice de la fase: [[Fase_7]]
@@ -85,6 +85,12 @@ for d in facturacion contabilidad comercial logistica rrhh becarios; do
 done
 ```
 
+> [!info] 📖 Qué hace ese código
+> - **El bucle** recorre las seis carpetas de departamento y, en cada vuelta, imprime una cabecera `=== <nombre>` para que sepas de cuál te está hablando.
+> - **`getfacl -p`** vuelca la lista de permisos completa de esa carpeta. La `-p` evita que recorte las rutas largas.
+> - **`grep -E "^(group|default:group):"`** se queda **solo con las líneas de grupo** — las de acceso y las de herencia—, que son las que te interesan. Descarta el `user::`, el `mask::` y el `other::`.
+> - **`2>/dev/null`** manda los mensajes de error a la papelera: si una carpeta no existiera, no quieres que el error ensucie la salida de las demás.
+
 Compara **casilla por casilla** con la matriz. Esto es lo que tiene que salir:
 
 | Carpeta | Grupos que deben aparecer, además del suyo |
@@ -121,6 +127,13 @@ Compara **casilla por casilla** con la matriz. Esto es lo que tiene que salir:
 ```bash
 getfacl -p /srv/samba/departamentos/* 2>/dev/null | grep -B8 "#effective"
 ```
+
+> [!info] 📖 Qué hace ese código
+> - **`getfacl -p .../\*`** saca la ACL de **las seis carpetas de golpe**: el `*` las expande todas.
+> - **`grep "#effective"`** busca esa palabra, que `getfacl` **solo escribe cuando la máscara está recortando** un permiso. Si no recorta nada, no aparece.
+> - **`-B8`** significa *"y enséñame las 8 líneas de antes"*. Sin eso verías la línea suelta y no sabrías **de qué carpeta** es.
+>
+> **Si el comando no devuelve nada, no hay ninguna máscara recortando.** Es el `grep` más rentable de la fase: una línea contra seis carpetas.
 
 - **✅ Bien:** aparece **únicamente en `becarios`**, así:
   ```
@@ -172,6 +185,18 @@ stat -c '%n  %U:%G  %a' /srv/samba/departamentos/becarios /srv/samba/comun
 ls -ld /srv/samba/departamentos/becarios /srv/samba/comun
 ```
 
+> [!info] 📖 Qué hace ese código
+> **Los dos comandos dicen lo mismo en dos idiomas distintos**, y por eso van juntos:
+>
+> | Comando | Qué te da | Ejemplo |
+> | :--- | :--- | :--- |
+> | `stat -c '%n %U:%G %a'` | El permiso **en números** | `2750` |
+> | `ls -ld` | El permiso **en letras** | `drwxr-s---` |
+>
+> En `stat -c`, cada `%` pide un dato: **`%n`** el nombre, **`%U`** el dueño, **`%G`** el grupo y **`%a`** los permisos en octal.
+>
+> **Necesitas los dos** porque `chmod` habla en números y `ls` contesta en letras — y aquí tienes que reconocer la **`s`** del setgid y la **`t`** del sticky bit, que en octal son ese primer dígito.
+
 - **✅ Bien:**
   - `becarios` → **`2750`**, y en `ls -ld` se lee `drwxr-s---` *(el grupo con `r-x`, **sin `w`**)*
   - `comun` → **`1777`**, con la **`t`** al final
@@ -200,6 +225,13 @@ sudo testparm
 grep -c "^\[" /etc/samba/smb.conf
 grep -n "^\[" /etc/samba/smb.conf
 ```
+
+> [!info] 📖 Qué hace ese código
+> - **`testparm`** es el validador que trae Samba: **lee `smb.conf` y te dice si lo entiende**, sin tocar el servicio. Pulsa `Enter` cuando pregunte.
+> - **`grep "^\["`** busca las líneas que **empiezan** por un corchete — que son las cabeceras de sección, como `[facturacion]`. El `^` significa *"al principio de línea"*.
+> - **`-c`** las **cuenta**; **`-n`** las enseña **con su número de línea**.
+>
+> Los dos `grep` responden a la misma pregunta desde dos lados: *"¿cuántas secciones hay?"* y *"¿dónde está cada una?"*. **Si el recuento no cuadra con lo que escribiste, la de más está duplicada** — y Samba se queda con la última sin avisar.
 
 - **✅ Bien:** `Loaded services file OK`, y **cada sección aparece una sola vez**.
 - **❌ Mal:**
@@ -234,6 +266,15 @@ done
 testparm -s --section-name=comun 2>/dev/null | grep -Ei "path|acl_xattr"
 ```
 
+> [!info] 📖 Qué hace ese código
+> - **`testparm -s`** saca la configuración **ya interpretada por Samba**, sin esperar a que pulses nada. La `-s` es de *silencioso*.
+> - **`--section-name=<recurso>`** pide **solo esa sección**, en vez del fichero entero.
+> - **`grep -Ei`** filtra las cuatro opciones que importan. La **`i`** ignora mayúsculas y minúsculas: Samba te devuelve `Yes` aunque tú escribieras `yes`.
+> - **La última línea va aparte** porque `comun` **no lleva las opciones de invisibilidad** — todo el mundo tiene acceso, así que no hay nada que ocultarle a nadie.
+>
+> > [!tip] 💡 Esto NO te enseña lo que escribiste, sino lo que Samba entendió
+> > Es la diferencia clave: si duplicaste una sección o te equivocaste de sitio, **el fichero puede decir una cosa y Samba estar aplicando otra**. `testparm -s` te da lo segundo.
+
 - **✅ Bien:** las **seis** de departamento con las tres opciones —`acl_xattr`, `access based share enum = Yes` y `hide unreadable = Yes`— y `comun` con `acl_xattr`.
 - **❌ Mal:** falta alguna → [[Fase_7.7_Resolucion_Problemas#E5 · Una carpeta protegida se ve desde Windows|caso E5]] o [[Fase_7.7_Resolucion_Problemas#E8 · Las ACL desaparecen al copiar ficheros desde Windows|caso E8]].
 
@@ -257,6 +298,14 @@ Los puntos anteriores dicen que las ACL **están escritas**. Este dice que **hac
 sudo touch /srv/samba/departamentos/facturacion/prueba_herencia.txt
 sudo getfacl -p /srv/samba/departamentos/facturacion/prueba_herencia.txt
 ```
+
+> [!info] 📖 Qué hace ese código
+> - **`touch`** crea un fichero vacío. **No le pones ningún permiso**: esa es la gracia.
+> - **`getfacl`** te enseña con qué permisos ha **nacido**.
+>
+> **Toda la prueba está en no tocar nada.** Si el fichero aparece ya con `comercial` y `contabilidad` en su lista, es porque **la carpeta se los ha puesto sola** — que es exactamente lo que hace la ACL por defecto.
+>
+> Los dos van con `sudo` **por el mismo motivo**: sin él no puedes ni atravesar una carpeta `2770`.
 
 - **✅ Bien:** el fichero recién creado **ya lleva** `group:comercial` y `group:contabilidad`, sin que tú se los hayas puesto.
 - **❌ Mal:** no los lleva → falta la ACL por defecto → [[Fase_7.7_Resolucion_Problemas#E4 · Los ficheros nuevos no heredan los permisos|caso E4]].
