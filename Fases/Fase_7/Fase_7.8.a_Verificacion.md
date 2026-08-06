@@ -71,27 +71,46 @@ Compara **casilla por casilla** con la matriz. Esto es lo que tiene que salir:
 >
 > Si en `rrhh` aparece cualquier cosa, has roto el principio de mínimo privilegio de la empresa.
 
-### **3 · 🔴 LA MÁSCARA NO ESTÁ RECORTANDO NADA**
+### **3 · 🔴 LA MÁSCARA RECORTA SOLO DONDE DEBE**
 
 ```bash
-getfacl -p /srv/samba/departamentos/* 2>/dev/null | grep "#effective"
+getfacl -p /srv/samba/departamentos/* 2>/dev/null | grep -B8 "#effective"
 ```
 
-- **✅ Bien:** **no devuelve nada.**
-- **❌ Mal:** cualquier línea → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica|caso E6]]:
+- **✅ Bien:** aparece **únicamente en `becarios`**, así:
+  ```
+  # file: srv/samba/departamentos/becarios
+  group::rwx			#effective:r-x
+  mask::r-x
+  ```
+- **❌ Mal:** aparece en **cualquier otra carpeta** → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica|caso E6]]:
   ```bash
   sudo setfacl -m m::rwx /srv/samba/departamentos/<la_carpeta>
   ```
 
-> [!danger] 🛑 Esta es la trampa más fina de toda la fase
-> ```
-> group:comercial:r-x		#effective:r--
-> ```
-> **Pone `r-x` y significa `r--`.** El permiso está escrito, es correcto, y no se aplica.
+> [!success] 🎯 En `becarios` el `#effective` es CORRECTO, y lo has provocado tú
+> Esto no es un fallo: **es el Paso 3.b funcionando.**
 >
-> La máscara es un techo general que recorta a todos los grupos de la lista **sin borrarlos**. Si lees la ACL con prisa —y todo el mundo la lee con prisa— ves lo que esperabas ver.
+> Cuando ejecutaste `chmod 2750`, la carpeta **ya tenía una ACL** (`rrhh:r-x`). Y en una carpeta con ACL, **el dígito central de `chmod` no toca al grupo dueño: toca a la máscara**. El `5` es `r-x`, y ahí se quedó.
 >
-> **Lo que está escrito y lo que se aplica pueden ser cosas distintas.** El sistema te lo está diciendo, en una columna que casi nadie mira.
+> Por eso `group::rwx` sigue diciendo `rwx` y se aplica `r-x`: **los becarios no pueden escribir en su propia carpeta**, que es exactamente lo que pedía la matriz.
+>
+> **Es el mecanismo del fundamento teórico, en tu servidor y provocado por ti.** Míralo con calma: es la única vez en todo el proyecto que vas a ver la máscara trabajando a tu favor.
+
+> [!danger] 🛑 Y en las demás carpetas sí sería un fallo
+> En `facturacion`, `comercial` o `logistica` **no debe aparecer ningún `#effective`**. Si sale, alguien le ha bajado el techo a un grupo que necesitaba escribir — normalmente **un `chmod` inocente** sobre una carpeta que ya tenía ACL.
+>
+> ```
+> group:contabilidad:rwx		#effective:r--
+> ```
+> **Pone `rwx` y significa `r--`.** El permiso está escrito, es correcto, y no funciona. Si lees la ACL con prisa, ves lo que esperabas ver.
+>
+> **Lo que está escrito y lo que se aplica pueden ser cosas distintas.**
+
+> [!question] 🤔 Para tu entrada de apuntes
+> El mismo mecanismo —la máscara recortando— es **un acierto en `becarios` y un fallo en `facturacion`**. Explica con tus palabras por qué.
+>
+> *(Pista: la pregunta no es "¿recorta?", sino "¿recorta lo que yo quería que recortara?")*
 
 ### **4 · LOS DOS CASOS ESPECIALES**
 
@@ -208,7 +227,7 @@ sudo rm -f /srv/samba/departamentos/facturacion/prueba_herencia.txt
 - [ ] Los seis grupos visibles, los dos volúmenes montados, cada carpeta con su dueño.
 - [ ] 🔴 Los **ocho permisos cruzados** puestos, **con su línea `default:`**.
 - [ ] 🔴 **`rrhh` y `contabilidad` sin ningún grupo ajeno** en su ACL.
-- [ ] 🔴 `getfacl … | grep "#effective"` **no devuelve nada**.
+- [ ] 🔴 `#effective` aparece **solo en `becarios`** *(ahí es correcto: lo provoca el `chmod 2750`)* y **en ninguna otra carpeta**.
 - [ ] `becarios` en **`2750`** *(sin `w` para su grupo)*.
 - [ ] `comun` en **`1777`**, con la **`t`**.
 - [ ] 🔴 `sudo testparm` → **`Loaded services file OK`**, y ninguna sección duplicada.

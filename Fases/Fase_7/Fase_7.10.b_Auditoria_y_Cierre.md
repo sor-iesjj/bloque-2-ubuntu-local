@@ -32,11 +32,13 @@ done
 | `becarios` | `rrhh:r-x` | |
 | `contabilidad` · `rrhh` | **nada** | son islas |
 
-- [ ] 🔴 Ninguna línea lleva **`#effective`** al final.
+- [ ] 🔴 **`#effective` solo en `becarios`** *(ahí es correcto: lo provoca el `chmod 2750` del Paso 3.b)* y en **ninguna otra carpeta**.
 - [ ] `ls -ld` muestra el **`+`** al final de los permisos en las carpetas con ACL.
 
-> [!danger] ⚠️ Si aparece `#effective:r--`, PARA AQUÍ
+> [!danger] ⚠️ Si aparece `#effective` FUERA de `becarios`, PARA AQUÍ
 > El permiso está escrito y **no se aplica**. Arréglalo con el [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica|caso E6]] antes de seguir.
+>
+> **En `becarios` sí es correcto:** ahí la máscara está haciendo lo que le pediste — impedir que escriban en su propia carpeta. **El mismo mecanismo es un acierto en una carpeta y un fallo en otra**, y saber distinguirlo es lo que se evalúa.
 
 ## **2 · 🔴 LA HERENCIA FUNCIONA**
 
