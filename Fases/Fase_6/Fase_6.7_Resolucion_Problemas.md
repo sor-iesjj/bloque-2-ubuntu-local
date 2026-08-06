@@ -34,6 +34,7 @@
 | **Todo va bien pero contabilidad es de `root`** | [[#E6 · Una carpeta pertenece a root y no a su departamento\|E6]] ⚠️ |
 | Los ficheros nuevos no heredan el grupo | [[#E7 · Los ficheros nuevos no heredan el grupo\|E7]] |
 | Tras reiniciar, los discos no están montados | [[#E8 · Tras reiniciar los discos no estan montados\|E8]] |
+| `mount -a` me da un aviso sobre `systemd` | [[#E9 · mount -a avisa de que systemd usa la version vieja\|E9]] |
 
 ---
 
@@ -316,6 +317,49 @@ df -h | grep prueba
 > **`active` es "ahora"; `enabled` es "la próxima vez"** — aquí en su versión de almacenamiento: *montado* es ahora, *`fstab`* es la próxima vez.
 >
 > Es la quinta fase seguida en la que aparece la misma idea: el `netplan` de la Fase 1, el `wg-quick@wg0` de la Fase 3, el `samba-ad-dc` de la 4, el `winbind` de la 5 y el `fstab` de la 6. **Lo que no persiste, no está configurado.**
+
+---
+
+### E9 · `mount -a` avisa de que systemd usa la versión vieja
+
+> [!bug] Síntoma
+> Ejecutas `sudo mount -a` esperando silencio y sale esto:
+> ```
+> mount: (hint) your fstab has been modified, but systemd still uses
+>        the old version; use 'systemctl daemon-reload' to reload.
+> ```
+
+**Hipótesis.** **Ninguna: no es un fallo.** Fíjate en la palabra **`(hint)`** — es una sugerencia.
+
+`systemd` se fabrica sus propias unidades `.mount` a partir de `/etc/fstab` y las mantiene en memoria. Al editar el fichero, esa copia se queda desactualizada y te avisa.
+
+**Comprobación.** La que zanja la duda es el `df`:
+```bash
+df -h | grep srv
+```
+- **✅ Si los dos volúmenes aparecen montados**, el `fstab` ha funcionado y lo que viste era un aviso.
+- **❌ Si falta alguno**, entonces sí tenías un error de verdad → mira los casos [[#E1 · El servidor no arranca tras editar el fstab|E1]] o [[#E3 · wrong fs type al montar|E3]].
+
+**Arreglo.** Refresca la copia de systemd:
+```bash
+sudo systemctl daemon-reload
+sudo mount -a
+```
+Ahora sí saldrá el silencio.
+
+> [!info] 🎓 Aviso, error y fallo silencioso: tres cosas distintas
+> | Tipo | Qué hace el sistema | Qué haces tú |
+> | :--- | :--- | :--- |
+> | **Aviso** (`hint`, `warning`) | Ha funcionado, y te sugiere algo | Léelo, hazle caso, sigue |
+> | **Error** | **No** ha funcionado | Para y arréglalo |
+> | **Fallo silencioso** | Ha funcionado… mal, y no dice nada | Solo lo pilla una verificación |
+>
+> **Confundir un aviso con un error cuesta tiempo; confundir un error con un aviso cuesta el servidor.** Aprender a distinguirlos es de las cosas más útiles de todo el módulo.
+
+> [!summary] Qué aprendes
+> Que **no todo lo que sale por pantalla es un problema**, y que el que escribió el mensaje se molestó en decírtelo: puso `(hint)` delante.
+>
+> Y una regla práctica: **cuando dudes de si un mensaje era grave, no mires el mensaje — mira el resultado.** Aquí, el `df`. En la Fase 7 será el `testparm`. El estado del sistema no opina; el mensaje sí.
 
 ---
 

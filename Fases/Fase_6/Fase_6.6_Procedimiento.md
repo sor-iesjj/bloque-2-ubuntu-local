@@ -108,11 +108,22 @@
 > /samba_deptos.img  /srv/samba/departamentos  ext4  loop,defaults  0  0
 > /samba_comun.img   /srv/samba/comun          ext4  loop,defaults  0  0
 > ```
-> Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`), y monta sin reiniciar:
+> Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`). Avisa a systemd de que el fichero ha cambiado y monta:
 > ```bash
+> sudo systemctl daemon-reload
 > sudo mount -a
 > df -h | grep srv
 > ```
+>
+> > [!tip] 💡 ¿Y ese `daemon-reload` para qué es?
+> > `systemd` **se fabrica sus propias unidades a partir de `/etc/fstab`** y las tiene guardadas en memoria. Al editar el fichero, su copia se queda vieja.
+> >
+> > Si te lo saltas, `mount -a` funcionará igual pero te soltará este aviso:
+> > ```
+> > mount: (hint) your fstab has been modified, but systemd still uses
+> >        the old version; use 'systemctl daemon-reload' to reload.
+> > ```
+> > **Fíjate en la palabra `(hint)`: es una sugerencia, no un error.** El montaje ha funcionado. Pero refrescarlo es lo que hace un administrador.
 >
 > > [!caution] ⚠️ La palabra `loop` es obligatoria
 > > Sin ella, Linux intenta tratar el fichero como una **partición física real** y el arranque puede quedarse colgado. Compruébalo dos veces antes de seguir.
@@ -121,7 +132,10 @@
 > > Este comando **ensaya el arranque sin arrancar**: lee el `fstab` entero e intenta montar todo lo que dice.
 > >
 > > - **Silencio absoluto** = tu sintaxis es correcta.
-> > - **Cualquier mensaje** = tienes un fallo. **BAJO NINGÚN CONCEPTO REINICIES** hasta arreglarlo, o la máquina se quedará en modo emergencia → [[Fase_6.7_Resolucion_Problemas#E1 · El servidor no arranca tras editar el fstab|caso E1]].
+> > - **Un aviso que empieza por `mount: (hint)`** = no es un fallo. Lee el punto de arriba: te falta el `daemon-reload`.
+> > - **Un ERROR de montaje** —`wrong fs type`, `can't find`, `unknown filesystem`— = tienes un fallo. **BAJO NINGÚN CONCEPTO REINICIES** hasta arreglarlo, o la máquina se quedará en modo emergencia → [[Fase_6.7_Resolucion_Problemas#E1 · El servidor no arranca tras editar el fstab|caso E1]].
+> >
+> > **Y la comprobación que zanja la duda es el `df`:** si los dos volúmenes aparecen montados, el `fstab` ha funcionado.
 > >
 > > **`/etc/fstab` es de los poquísimos ficheros de Linux donde una errata impide arrancar el sistema.** Por eso existe este ensayo, y por eso se hace siempre.
 

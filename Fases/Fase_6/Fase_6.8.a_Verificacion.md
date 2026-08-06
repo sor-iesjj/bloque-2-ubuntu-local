@@ -69,13 +69,19 @@ mountpoint /srv/samba/comun
 
 ```bash
 cat /etc/fstab
+sudo systemctl daemon-reload
 sudo mount -a
+df -h | grep srv
 grep samba /etc/fstab
 ```
 
 - **Qué hace `mount -a`:** **ensaya el arranque sin arrancar.**
-- **✅ Bien:** **silencio absoluto**, y las dos líneas del `fstab` contienen **`loop`**.
-- **❌ Mal:** cualquier mensaje → **NO REINICIES** → [[Fase_6.7_Resolucion_Problemas#E1 · El servidor no arranca tras editar el fstab|caso E1]].
+- **✅ Bien:** **silencio**, los dos volúmenes en el `df`, y las dos líneas del `fstab` con **`loop`**.
+- **⚠️ Un aviso `mount: (hint) ... systemd still uses the old version`** → **no es un fallo**: te faltaba el `daemon-reload`. Ejecútalo y repite.
+- **❌ Mal de verdad:** un **error** de montaje (`wrong fs type`, `can't find`, `unknown filesystem`) → **NO REINICIES** → [[Fase_6.7_Resolucion_Problemas#E1 · El servidor no arranca tras editar el fstab|caso E1]].
+
+> [!tip] 💡 Cómo distinguir un aviso de un error en dos segundos
+> **Mira el `df`.** Si los dos volúmenes aparecen montados, el `fstab` funciona y lo que has visto era un aviso. Si falta alguno, era un error.
 
 > [!danger] 🛑 ESTA ES LA COMPROBACIÓN MÁS IMPORTANTE DE LA FASE
 > `/etc/fstab` es de los poquísimos ficheros de Linux donde **una errata impide arrancar el sistema**. No es un servicio que falla: es la máquina que no llega al login.
@@ -92,13 +98,18 @@ stat -c '%n  %U:%G  %a' /srv/samba/departamentos/*
 
 - **✅ Bien:** las seis, cada una con **su grupo** y permisos **`2770`**:
   ```
-  /srv/samba/departamentos/becarios      root:becarios      2770
-  /srv/samba/departamentos/comercial     root:comercial     2770
-  /srv/samba/departamentos/contabilidad  root:contabilidad  2770
-  /srv/samba/departamentos/facturacion   root:facturacion   2770
-  /srv/samba/departamentos/logistica     root:logistica     2770
-  /srv/samba/departamentos/rrhh          root:rrhh          2770
+  /srv/samba/departamentos/becarios      root:BOOCHANLAB\becarios      2770
+  /srv/samba/departamentos/comercial     root:BOOCHANLAB\comercial     2770
+  /srv/samba/departamentos/contabilidad  root:BOOCHANLAB\contabilidad  2770
+  /srv/samba/departamentos/facturacion   root:BOOCHANLAB\facturacion   2770
+  /srv/samba/departamentos/logistica     root:BOOCHANLAB\logistica     2770
+  /srv/samba/departamentos/rrhh          root:BOOCHANLAB\rrhh          2770
   ```
+
+> [!info] 🎓 El `BOOCHANLAB\` delante del grupo es normal
+> Winbind nombra los grupos del dominio con su **prefijo de dominio**, para distinguirlos de los grupos locales de Linux. `BOOCHANLAB\facturacion` **es** el grupo `facturacion` — solo que dicho con su nombre completo.
+>
+> Es la misma idea que en Windows, donde los usuarios se escriben `BOOCHANLAB\usuario`.
 - **❌ Mal:**
   - Alguna dice `root:root` → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]]
   - Alguna pone `770` en vez de `2770` → falta el setgid → [[Fase_6.7_Resolucion_Problemas#E7 · Los ficheros nuevos no heredan el grupo|caso E7]]

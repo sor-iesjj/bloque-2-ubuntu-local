@@ -147,10 +147,18 @@ comprueba_montaje "$BASE"  "$IMG_DEPTOS" "C1"
 comprueba_montaje "$COMUN" "$IMG_COMUN"  "C2"
 
 # C3. El paracaidas: 'mount -a' en seco. Si esto falla, el arranque tambien.
-if mount -a --fake >/dev/null 2>&1; then
+#     OJO: el aviso "(hint) ... systemd still uses the old version" NO es un
+#     error; se resuelve con 'systemctl daemon-reload'. Aqui se mira el codigo
+#     de salida, que es lo unico que distingue un aviso de un fallo real.
+SALIDA_MOUNT=$(mount -a --fake 2>&1)
+if [ $? -eq 0 ]; then
     ok "C3. /etc/fstab no tiene errores de sintaxis (mount -a --fake)"
+    if echo "$SALIDA_MOUNT" | grep -q "hint"; then
+        info "     (systemd tiene la copia vieja del fstab: sudo systemctl daemon-reload)"
+    fi
 else
     fallo "C3. /etc/fstab TIENE ERRORES - el servidor podria no arrancar"
+    info "     $(echo "$SALIDA_MOUNT" | head -1)"
     info "     NO REINICIES. Corrigelo y vuelve a pasar el verificador."
 fi
 
