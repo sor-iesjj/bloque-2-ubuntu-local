@@ -22,27 +22,27 @@
 > chmod +x verificar_fase5.sh
 > ```
 
-> > [!danger] 🛑 Comprueba que te has traído la versión BUENA. No es paranoia
-> > Un `curl` puede decirte `100%` y traerte **un fichero antiguo**: GitHub sirve estos ficheros a través de una red de caché, y a veces un nodo tarda en actualizarse.
+> [!danger] 🛑 Comprueba que te has traído la versión BUENA. No es paranoia
+> Un `curl` puede decirte `100%` y traerte **un fichero antiguo**: GitHub sirve estos ficheros a través de una red de caché, y a veces un nodo tarda en actualizarse.
+>
+> **Pasó de verdad**, y costó veinte minutos de diagnóstico: el verificador marcaba fallos que no existían, y el problema era que el fichero descargado era el de antes.
+>
+> **La comprobación cuesta dos segundos:**
+> ```bash
+> ls -l verificar_fase5.sh
+> ```
+> **Apunta el tamaño en bytes.** Si vuelves a descargarlo tras un aviso de que se ha corregido y **el tamaño no ha cambiado**, es que te has traído el mismo de antes.
+>
+> **Y si sospechas que estás con una versión vieja:**
+> ```bash
+> rm -f verificar_fase5.sh          # bórralo primero: así, si falla el curl, lo ves
+> curl -H 'Cache-Control: no-cache' -O <la URL>
+> ```
+>
+> > [!info] 🎓 Otra vez la misma idea, y ya van tres en este bloque
+> > **Que un comando no dé error no significa que haya hecho lo que querías.** El `curl` devolvió `200 OK`, descargó un fichero válido y ejecutable… y era el equivocado.
 > >
-> > **Pasó de verdad**, y costó veinte minutos de diagnóstico: el verificador marcaba fallos que no existían, y el problema era que el fichero descargado era el de antes.
-> >
-> > **La comprobación cuesta dos segundos:**
-> > ```bash
-> > ls -l verificar_fase5.sh
-> > ```
-> > **Apunta el tamaño en bytes.** Si vuelves a descargarlo tras un aviso de que se ha corregido y **el tamaño no ha cambiado**, es que te has traído el mismo de antes.
-> >
-> > **Y si sospechas que estás con una versión vieja:**
-> > ```bash
-> > rm -f verificar_fase5.sh          # bórralo primero: así, si falla el curl, lo ves
-> > curl -H 'Cache-Control: no-cache' -O <la URL>
-> > ```
-> >
-> > > [!info] 🎓 Otra vez la misma idea, y ya van tres en este bloque
-> > > **Que un comando no dé error no significa que haya hecho lo que querías.** El `curl` devolvió `200 OK`, descargó un fichero válido y ejecutable… y era el equivocado.
-> > >
-> > > Lo has visto ya con `chown` *(pasa y deja la carpeta a nombre de root)*, con `setfacl` *(pasa y la máscara anula el permiso)* y ahora con `curl`. **Siempre la misma lección: comprueba el resultado, no el mensaje.**
+> > Lo has visto ya con `chown` *(pasa y deja la carpeta a nombre de root)*, con `setfacl` *(pasa y la máscara anula el permiso)* y ahora con `curl`. **Siempre la misma lección: comprueba el resultado, no el mensaje.**
 
 > [!warning] 🖥️ Estas averías NO te cortan el acceso SSH
 > Entras con tu usuario local de Linux (`boochan`), que no depende del dominio ni de winbind. Puedes romper la identidad de los usuarios de dominio sin quedarte fuera.
