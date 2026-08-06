@@ -54,6 +54,24 @@ fallo() { echo -e "${R}[FALLO]${N} $1"; echo "[FALLO] $1" >> "$INFORME"; FALLOS=
 aviso() { echo -e "${A}[AVISO]${N} $1"; echo "[AVISO] $1" >> "$INFORME"; AVISOS=$((AVISOS+1)); }
 info()  { echo "        $1"; echo "        $1" >> "$INFORME"; }
 
+
+# -----------------------------------------------------------------------------
+# winbind devuelve los grupos del dominio con su prefijo: BOOCHANLAB\comercial.
+# Asi que getfacl escribe "group:BOOCHANLAB\comercial:r-x", no "group:comercial:".
+# Esta funcion busca la entrada de un grupo ACEPTANDO ese prefijo o sin el.
+#   $1 = salida de getfacl   $2 = nombre corto del grupo   $3 = "default" o vacio
+linea_de_grupo() {
+    local ACL="$1" GRUPO="$2" TIPO="${3:-}"
+    echo "$ACL" | awk -F: -v g="$GRUPO" -v tipo="$TIPO" '
+        {
+            linea = $0
+            if (tipo == "default") { if (linea !~ /^default:group:/) next; campo = $3 }
+            else                   { if (linea !~ /^group:/)         next; campo = $2 }
+            sub(/.*\\/, "", campo)      # quita "DOMINIO\" si lo lleva
+            if (campo == g && campo != "") print linea
+        }'
+}
+
 if [ "$EUID" -ne 0 ]; then
     echo "ERROR: ejecutalo con sudo   ->   sudo ./verificar_fase7.sh"
     exit 1
@@ -132,15 +150,19 @@ while IFS= read -r LINEA; do
 
     ACL=$(getfacl -p "$RUTA" 2>/dev/null)
 
-    # ¿Existe la entrada para ese grupo?
-    LINEA_ACL=$(echo "$ACL" | grep -E "^group:$GRUPO:")
+    # ¿Existe la entrada para ese grupo? (con o sin prefijo de dominio)
+    LINEA_ACL=$(linea_de_grupo "$ACL" "$GRUPO")
     if [ -z "$LINEA_ACL" ]; then
         fallo "B$N. '$GRUPO' NO tiene permiso sobre '$CARPETA' (deberia ser $PERM)"
         info "     Arreglo: sudo setfacl -m g:$GRUPO:${PERM//-/} $RUTA"
         continue
     fi
 
-    PERM_REAL=$(echo "$LINEA_ACL" | cut -d: -f3 | awk '{print $1}')
+    # El permiso es el ultimo campo, y puede llevar "\t#effective:..." detras.
+    PERM_REAL=$(echo "$LINEA_ACL" | awk -F: '{print $NF}' | awk '{print $1}')
+    if echo "$LINEA_ACL" | grep -q "#effective:"; then
+        PERM_REAL=$(echo "$LINEA_ACL" | sed 's/#effective:.*//' | awk -F: '{print $NF}' | awk '{print $1}')
+    fi
 
     # La MASCARA puede recortar el permiso sin borrarlo. getfacl lo marca
     # con #effective, y es el fallo mas fino de la fase.
@@ -159,7 +181,7 @@ while IFS= read -r LINEA; do
     fi
 
     # La ACL por defecto ('-d'): sin ella, lo que se cree manana no hereda.
-    if echo "$ACL" | grep -qE "^default:group:$GRUPO:"; then
+    if [ -n "$(linea_de_grupo "$ACL" "$GRUPO" default)" ]; then
         ok "B$N-bis. '$GRUPO' sobre '$CARPETA': la herencia esta puesta"
     else
         fallo "B$N-bis. '$GRUPO' sobre '$CARPETA': FALTA la ACL por defecto"
@@ -181,7 +203,7 @@ while IFS= read -r LINEA; do
     [ -z "$LINEA" ] && continue
     CARPETA=$(echo "$LINEA" | cut -d: -f1)
     GRUPO=$(echo "$LINEA"   | cut -d: -f2)
-    if getfacl -p "$BASE/$CARPETA" 2>/dev/null | grep -qE "^group:$GRUPO:"; then
+    if [ -n "$(linea_de_grupo "$(getfacl -p "$BASE/$CARPETA" 2>/dev/null)" "$GRUPO")" ]; then
         fallo "C. '$GRUPO' TIENE acceso a '$CARPETA' y NO deberia"
         info "     Segun la matriz, esa casilla esta vacia. Quitalo:"
         info "     sudo setfacl -x g:$GRUPO $BASE/$CARPETA"
