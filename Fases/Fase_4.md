@@ -23,6 +23,27 @@
 >
 > **La fase completa es UNA sola entrega:** una entrada de apuntes y un vídeo, no diez.
 
+> [!important] ✍️ PASO 0 — Abre tu entrada de apuntes AHORA, antes de leer nada
+> **No esperes al apartado 6.** Créala ya, vacía, y tenla abierta en una pestaña mientras lees:
+>
+> ```
+> 00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-f4-aprovisionamiento-del-dominio.md
+> ```
+>
+> **Por qué ahora y no cuando empieces a teclear:** porque **hay cosas que anotar desde el primer apartado**. Si abres el cuaderno cuando ya llevas cinco documentos leídos, o vuelves atrás a buscarlas, o las pierdes.
+>
+> | Mientras lees… | Anota |
+> | :--- | :--- |
+> | **1 · Qué se evalúa** | Los CE que toca esta fase, para saber qué te van a mirar |
+> | **2 · Entregables** | Lo que tiene de particular **esta** fase: nombres de fichero, número de vídeos |
+> | **3 · Grabación** | Lo que hay que decir **en voz alta** en cada vídeo. Es lo que más se olvida |
+> | **4 · Dónde estamos** | De qué fase depende esta, por si algo falla luego |
+> | **5 · Fundamento teórico** | 🔴 **Los conceptos con tus palabras y las preguntas de comprensión.** Aquí es donde más se escribe |
+> | **6 · Procedimiento** | Lo que va pasando, los errores que te salen y cómo los resuelves |
+> | **7 al 10** | Comprobaciones, predicciones de las averías y respuestas |
+>
+> **Una entrada de apuntes no es un formulario que se rellena al final: es el cuaderno donde trabajas.** Si la escribes de memoria cuando ya has terminado, se nota — y se corrige como lo que es.
+
 | #        | Apartado                               | Cuándo se lee                                                           |
 | :------- | :------------------------------------- | :---------------------------------------------------------------------- |
 | **1**    | [[Fase_4.1_Que_Se_Evalua]]             | Antes de encender la VM — qué se te evalúa                              |

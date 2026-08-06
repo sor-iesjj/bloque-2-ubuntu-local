@@ -24,7 +24,7 @@
 
 **1A — Antes de grabar**
 - Léete el apartado entero primero. **Grabar leyendo por primera vez no sale bien.**
-- Crea la entrada de apuntes **vacía**: `b2-f7-seguridad-avanzada.md`, en `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`.
+- **Tu entrada ya debería estar abierta** desde el índice de la fase (`b2-f7-seguridad-avanzada.md`). Repasa lo que llevas escrito **antes** de grabar: es lo que te evita improvisar delante del micrófono.
 
 **1B — Al empezar cada vídeo: preséntate**
 > *"Hola, me llamo [Nombre], 2.º SMR. En este vídeo voy a configurar la seguridad avanzada de la Fase 7 del Bloque 2."*
@@ -59,7 +59,7 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 - 🪂 **El `sudo testparm` tiene que verse ANTES del reinicio.** Explica por qué: `samba-ad-dc` es el controlador de dominio, y reiniciarlo con el fichero roto tumba el DNS y la autenticación, no solo las carpetas.
 - Después del reinicio, enseña que el dominio ha vuelto **entero**: el `host` y el `id`.
 - Y sin cortar, **las seis comprobaciones del apartado 8.a**, incluida la prueba de herencia con un fichero nuevo.
-- **Al final, di en voz alta las dos pruebas que quedan pendientes para la Fase 8.** Es parte de la fase reconocer lo que no se ha podido comprobar.
+- **Al final, di en voz alta las cuatro pruebas que quedan pendientes para la Fase 8.** Es parte de la fase reconocer lo que no se ha podido comprobar.
 
 **2B — Laboratorio de averías** · `B2 · F7 · Laboratorio de averías`
 - **Tu predicción, en voz alta, ANTES de cada rotura.** Es lo que más se valora de este vídeo.

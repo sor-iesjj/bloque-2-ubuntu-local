@@ -25,6 +25,22 @@
 >
 > Y hay **dos entregas más** que no son procedimiento: el **punto de control** (8.b) y el **laboratorio de averías** (10.a). Siete en total.
 
+> [!important] ✍️ PASO 0 — Abre tu primera entrada de apuntes AHORA
+> Esta fase son **siete entregas**, y cada una tiene **su propia entrada**. Pero **no esperes al apartado 6 para empezar a escribir**.
+>
+> Abre ya la primera —`b2-f1-1-la-maquina-virtual.md`— y tenla a mano mientras lees los apartados 1 a 5. **Lo que aprendas ahí vale para las siete entregas**, y solo se lee una vez.
+>
+> | Mientras lees… | Anota |
+> | :--- | :--- |
+> | **1 · Qué se evalúa** | Los CE que toca esta fase |
+> | **2 · Entregables** | Los **siete** nombres de fichero y de vídeo, que no se improvisan |
+> | **3 · Grabación** | Lo que hay que decir en voz alta. Es lo que más se olvida |
+> | **4 · Dónde estamos** | El punto de partida |
+> | **5 · Fundamento teórico** | 🔴 **Los conceptos con tus palabras.** Aquí es donde más se escribe |
+> | **6.a a 6.f** | Cada procedimiento, en **su** entrada |
+>
+> **Una entrada de apuntes no es un formulario que se rellena al final: es el cuaderno donde trabajas.**
+
 | # | Apartado | Cuándo se lee |
 | :--- | :--- | :--- |
 | **1** | [[Fase_1.1_Que_Se_Evalua]] | Antes de encender nada — qué se te evalúa |

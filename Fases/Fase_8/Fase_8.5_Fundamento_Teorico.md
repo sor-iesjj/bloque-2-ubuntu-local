@@ -34,7 +34,7 @@
 
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
-> 1. **Crea la entrada de apuntes** de esta fase (`b2-f8-integracion-del-cliente.md`) con su estructura, vacía.
+> 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-f8-integracion-del-cliente.md`). Repasa lo que tienes: la teoría del apartado 5 la vas a necesitar ahora.
 > 2. **Léete los 6 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
 > 3. Ten **OBS** listo y comprueba **pantalla y micrófono**.
 >

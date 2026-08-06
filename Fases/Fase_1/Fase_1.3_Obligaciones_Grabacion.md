@@ -28,7 +28,7 @@
 
 **1A — Antes de grabar**
 - Léete el apartado entero primero. **Grabar leyendo por primera vez no sale bien.**
-- Crea la entrada de apuntes **vacía**, con la estructura de la Fase 0.1, en `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/`.
+- **La entrada de la entrega que vayas a grabar**, creada y con lo que ya hayas escrito. La primera la abriste al empezar la fase; las demás, al llegar a su procedimiento.
 
 **1B — Al empezar cada vídeo: preséntate**
 > *"Hola, me llamo [Nombre], 2.º SMR. En este vídeo voy a hacer el punto de control de la Fase 1 del Bloque 2."*

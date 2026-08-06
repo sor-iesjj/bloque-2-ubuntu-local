@@ -13,7 +13,7 @@
 > **Ten abierta la ficha del escenario mientras trabajas:** [[Escenario_Boochan_SL]]. Ahí están los nombres, los UID y los GID exactos, y es la fuente de verdad de las fases 5 a 8.
 
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
-> 1. **Crea la entrada de apuntes** de esta fase (`b2-f5-gestion-de-identidades.md`) con su estructura, vacía.
+> 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-f5-gestion-de-identidades.md`). Repasa lo que tienes: la teoría del apartado 5 la vas a necesitar ahora.
 > 2. **Léete los 5 pasos** del procedimiento enteros, para no atascarte a mitad del vídeo.
 > 3. **Lee [[Escenario_Boochan_SL]]** entero. Si no sabes quién es quién, no sabes qué estás haciendo.
 > 4. Ten **OBS** listo y comprueba **pantalla y micrófono**.
