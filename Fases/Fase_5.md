@@ -30,7 +30,7 @@
 > **No esperes al apartado 6.** Créala ya, vacía, y tenla abierta en una pestaña mientras lees:
 >
 > ```
-> 00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-f5-gestion-de-identidades.md
+> 00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-5-gestion-de-identidades.md
 > ```
 >
 > **Por qué ahora y no cuando empieces a teclear:** porque **hay cosas que anotar desde el primer apartado**. Si abres el cuaderno cuando ya llevas cinco documentos leídos, o vuelves atrás a buscarlas, o las pierdes.

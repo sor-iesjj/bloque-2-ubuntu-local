@@ -13,7 +13,7 @@
 > **La matriz de permisos está en [[Escenario_Boochan_SL]] y no te la inventas tú.** Ténla abierta durante toda la fase.
 
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
-> 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-f7-seguridad-avanzada.md`). Repasa las **seis preguntas del apartado 5**: si no las tienes contestadas, vuelve — la máscara la vas a ver hoy en pantalla.
+> 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-7-seguridad-avanzada.md`). Repasa las **seis preguntas del apartado 5**: si no las tienes contestadas, vuelve — la máscara la vas a ver hoy en pantalla.
 > 2. **Léete los 7 pasos** del procedimiento enteros.
 > 3. **Lee la matriz de permisos** y su justificación en [[Escenario_Boochan_SL]]. Si no sabes **por qué** comercial no escribe en facturación, no sabes qué estás haciendo.
 > 4. Ten **OBS** listo y comprueba **pantalla y micrófono**.

@@ -13,7 +13,7 @@
 > **Ten abierta la ficha del escenario:** [[Escenario_Boochan_SL]].
 
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
-> 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-f6-almacenamiento-virtual.md`). Repasa lo que tienes: la teoría del apartado 5 la vas a necesitar ahora.
+> 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-6-almacenamiento-virtual.md`). Repasa lo que tienes: la teoría del apartado 5 la vas a necesitar ahora.
 > 2. **Léete los 7 pasos** del procedimiento enteros.
 > 3. **Comprueba que tienes sitio:** `df -h /` debe mostrar **al menos 11 GB libres**.
 > 4. Ten **OBS** listo y comprueba **pantalla y micrófono**.

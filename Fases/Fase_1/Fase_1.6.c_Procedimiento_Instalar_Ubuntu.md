@@ -11,7 +11,7 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~1 h |
-> | **Entrada de apuntes** | `b2-f1-3-instalar-ubuntu-server.md` |
+> | **Entrada de apuntes** | `b2-1.3-instalar-ubuntu-server.md` |
 > | **Vídeo** | `B2 · F1 · Instalar Ubuntu Server` · ~8-10 min |
 >
 > Las obligaciones de grabación están en [[Fase_1.3_Obligaciones_Grabacion]]. La teoría que necesitas, en el bloque *"El instalador y el mapa del teclado"* de [[Fase_1.5_Fundamento_Teorico]].

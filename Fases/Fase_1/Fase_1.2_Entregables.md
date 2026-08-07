@@ -25,13 +25,13 @@
 
 | # | Apartado | Entrada de apuntes | Vídeo | Duración |
 | :--- | :--- | :--- | :--- | :--- |
-| **1** | [[Fase_1.6.a_Procedimiento_Maquina_Virtual\|6.a]] | `b2-f1-1-la-maquina-virtual.md` | `B2 · F1 · La máquina virtual` | ~6-8 min |
-| **2** | [[Fase_1.6.b_Procedimiento_Red_Laboratorio\|6.b]] | `b2-f1-2-la-red-del-laboratorio.md` | `B2 · F1 · La red del laboratorio` | ~8-10 min |
-| **3** | [[Fase_1.6.c_Procedimiento_Instalar_Ubuntu\|6.c]] | `b2-f1-3-instalar-ubuntu-server.md` | `B2 · F1 · Instalar Ubuntu Server` | ~8-10 min |
-| **4** | [[Fase_1.6.d_Procedimiento_Verificacion_SSH\|6.d]] **+** [[Fase_1.8.a_Verificacion\|8.a]] | `b2-f1-4-verificacion-y-acceso-remoto.md` | `B2 · F1 · Verificación y acceso remoto` | ~12-15 min |
-| **5** | [[Fase_1.8.b_Punto_de_Control\|8.b]] | `b2-f1-5-punto-de-control.md` | `B2 · F1 · Punto de control` | ~3-4 min |
-| **6** | [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar\|6.f]] | `b2-f1-6-exportar-e-intercambiar.md` | `B2 · F1 · Exportar e intercambiar` | ~10-12 min |
-| **7** | [[Fase_1.10.a_Laboratorio_de_Averias\|10.a]] | `b2-f1-7-laboratorio-de-averias.md` | `B2 · F1 · Laboratorio de averías` | ~15-20 min · **en 2 sesiones** |
+| **1** | [[Fase_1.6.a_Procedimiento_Maquina_Virtual\|6.a]] | `b2-1.1-la-maquina-virtual.md` | `B2 · F1 · La máquina virtual` | ~6-8 min |
+| **2** | [[Fase_1.6.b_Procedimiento_Red_Laboratorio\|6.b]] | `b2-1.2-la-red-del-laboratorio.md` | `B2 · F1 · La red del laboratorio` | ~8-10 min |
+| **3** | [[Fase_1.6.c_Procedimiento_Instalar_Ubuntu\|6.c]] | `b2-1.3-instalar-ubuntu-server.md` | `B2 · F1 · Instalar Ubuntu Server` | ~8-10 min |
+| **4** | [[Fase_1.6.d_Procedimiento_Verificacion_SSH\|6.d]] **+** [[Fase_1.8.a_Verificacion\|8.a]] | `b2-1.4-verificacion-y-acceso-remoto.md` | `B2 · F1 · Verificación y acceso remoto` | ~12-15 min |
+| **5** | [[Fase_1.8.b_Punto_de_Control\|8.b]] | `b2-1.5-punto-de-control.md` | `B2 · F1 · Punto de control` | ~3-4 min |
+| **6** | [[Fase_1.6.f_Procedimiento_Exportar_e_Intercambiar\|6.f]] | `b2-1.6-exportar-e-intercambiar.md` | `B2 · F1 · Exportar e intercambiar` | ~10-12 min |
+| **7** | [[Fase_1.10.a_Laboratorio_de_Averias\|10.a]] | `b2-1.7-laboratorio-de-averias.md` | `B2 · F1 · Laboratorio de averías` | ~15-20 min · **en 2 sesiones** |
 
 Todas las entradas van en `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/` y todos los vídeos en la playlist **`B2_Ubuntu_Local`** (No listado).
 

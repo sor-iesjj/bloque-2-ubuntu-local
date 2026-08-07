@@ -12,7 +12,7 @@
 >
 > | Entregable | Dónde vive | Qué debe contener |
 > | :--- | :--- | :--- |
-> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-f7-seguridad-avanzada.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **los tres enlaces de vídeo** + **las dos pruebas pendientes de la Fase 8** |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-7-seguridad-avanzada.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **los tres enlaces de vídeo** + **las dos pruebas pendientes de la Fase 8** |
 > | **Tres vídeos** | Playlist `B2_Ubuntu_Local` (No listado) | `B2 · F7 · Seguridad avanzada`, `B2 · F7 · Laboratorio de averías` y `B2 · F7 · Punto de control` |
 > | **💿 Copia de seguridad** | Tu disco externo | `SOR/Bloque_2/Fases/Fase_7/B2-F7-seguridad-avanzada.ova` |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada y el informe `verificacion-fase-7.txt`, subidos con `git add` → `commit` → `push` |

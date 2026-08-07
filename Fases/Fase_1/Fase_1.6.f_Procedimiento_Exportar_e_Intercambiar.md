@@ -11,7 +11,7 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~50 min (se trabaja **por parejas**) |
-> | **Entrada de apuntes** | `b2-f1-6-exportar-e-intercambiar.md` |
+> | **Entrada de apuntes** | `b2-1.6-exportar-e-intercambiar.md` |
 > | **Vídeo** | `B2 · F1 · Exportar e intercambiar` · ~10-12 min |
 >
 > **Requisitos:** la instantánea **`Fase 1 terminada`** y **saber exportar** — las dos cosas las hiciste en [[Fase_1.8.b_Punto_de_Control]].

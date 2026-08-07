@@ -28,7 +28,7 @@
 > [!important] ✍️ PASO 0 — Abre tu primera entrada de apuntes AHORA
 > Esta fase son **siete entregas**, y cada una tiene **su propia entrada**. Pero **no esperes al apartado 6 para empezar a escribir**.
 >
-> Abre ya la primera —`b2-f1-1-la-maquina-virtual.md`— y tenla a mano mientras lees los apartados 1 a 5. **Lo que aprendas ahí vale para las siete entregas**, y solo se lee una vez.
+> Abre ya la primera —`b2-1.1-la-maquina-virtual.md`— y tenla a mano mientras lees los apartados 1 a 5. **Lo que aprendas ahí vale para las siete entregas**, y solo se lee una vez.
 >
 > | Mientras lees… | Anota |
 > | :--- | :--- |

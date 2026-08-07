@@ -25,7 +25,7 @@
 
 **1A — Antes de grabar**
 - Léete el apartado entero primero. **Grabar leyendo por primera vez no sale bien.**
-- **Tu entrada ya debería estar abierta** desde el índice de la fase (`b2-f3-conectividad-vpn.md`). Repasa lo que llevas escrito **antes** de grabar: es lo que te evita improvisar delante del micrófono.
+- **Tu entrada ya debería estar abierta** desde el índice de la fase (`b2-3-conectividad-vpn.md`). Repasa lo que llevas escrito **antes** de grabar: es lo que te evita improvisar delante del micrófono.
 
 **1B — Al empezar cada vídeo: preséntate**
 > *"Hola, me llamo [Nombre], 2.º SMR. En este vídeo voy a hacer la verificación de la Fase 3 del Bloque 2."*

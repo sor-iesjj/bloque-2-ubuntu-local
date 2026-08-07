@@ -12,7 +12,7 @@
 >
 > | Entregable | Dónde vive | Qué debe contener |
 > | :--- | :--- | :--- |
-> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-f6-almacenamiento-virtual.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **los tres enlaces de vídeo** |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-6-almacenamiento-virtual.md` | El procedimiento con tus palabras + **respuestas a las preguntas críticas** + **los tres enlaces de vídeo** |
 > | **Tres vídeos** | Playlist `B2_Ubuntu_Local` (No listado) | Los de la tabla de abajo, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada y el informe `verificacion-fase-6.txt`, subidos con `git add` → `commit` → `push` |
 > | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Fase 6 terminada`**, tomada **con la VM apagada** y **durante la grabación** |

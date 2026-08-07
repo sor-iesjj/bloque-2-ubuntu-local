@@ -11,7 +11,7 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~40 min |
-> | **Entrada de apuntes** | `b2-f1-1-la-maquina-virtual.md` |
+> | **Entrada de apuntes** | `b2-1.1-la-maquina-virtual.md` |
 > | **Vídeo** | `B2 · F1 · La máquina virtual` · ~6-8 min |
 >
 > Las obligaciones de grabación están en [[Fase_1.3_Obligaciones_Grabacion]]. La teoría que necesitas, en el bloque *"Virtualización: el hipervisor y tu hardware"* de [[Fase_1.5_Fundamento_Teorico]].

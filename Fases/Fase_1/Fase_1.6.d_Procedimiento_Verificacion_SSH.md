@@ -11,7 +11,7 @@
 > | | |
 > | :--- | :--- |
 > | **Tiempo** | ~45 min |
-> | **Entrada de apuntes** | `b2-f1-4-verificacion-y-acceso-remoto.md` |
+> | **Entrada de apuntes** | `b2-1.4-verificacion-y-acceso-remoto.md` |
 > | **Vídeo** | `B2 · F1 · Verificación y acceso remoto` · ~8-10 min |
 >
 > Las obligaciones de grabación están en [[Fase_1.3_Obligaciones_Grabacion]]. La teoría que necesitas, en el bloque *"Verificar desde fuera, y por qué SSH"* de [[Fase_1.5_Fundamento_Teorico]].

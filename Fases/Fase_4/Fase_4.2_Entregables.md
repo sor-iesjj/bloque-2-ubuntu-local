@@ -21,7 +21,7 @@
 | | |
 | :--- | :--- |
 | **Dónde** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/` |
-| **Nombre exacto** | `b2-f4-aprovisionamiento-del-dominio.md` |
+| **Nombre exacto** | `b2-4-aprovisionamiento-del-dominio.md` |
 | **Qué contiene** | El procedimiento con tus palabras · **las cinco cosas que localizaste al leer el script** · respuestas a las preguntas críticas · las predicciones del laboratorio de averías · **los tres enlaces de vídeo** |
 | **Cómo se entrega** | A tu repositorio: `git add` → `commit` → `push` |
 
@@ -87,7 +87,7 @@ Todos van a la **misma playlist**: `B2_Ubuntu_Local` (No listado).
 ---
 
 > [!success] 🎯 Criterio de éxito
-> Abro tu repositorio, encuentro `b2-f4-aprovisionamiento-del-dominio.md`, y dentro está: qué has hecho, qué has entendido, qué dudas te quedaron y **los tres enlaces de vídeo**.
+> Abro tu repositorio, encuentro `b2-4-aprovisionamiento-del-dominio.md`, y dentro está: qué has hecho, qué has entendido, qué dudas te quedaron y **los tres enlaces de vídeo**.
 >
 > Entro a los vídeos por sus timestamps y contrasto con lo que dicen tus apuntes.
 >
