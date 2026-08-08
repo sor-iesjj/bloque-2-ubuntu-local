@@ -91,6 +91,24 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 6 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · TUMBAR LA TARJETA DEL LABORATORIO**\|TUMBAR LA TARJETA DEL LABORATORIO]] |
+> | **2** | [[#**AVERÍA 2 · DESCONECTAR EL CABLE VIRTUAL**\|DESCONECTAR EL CABLE VIRTUAL]] |
+> | **3** | [[#**AVERÍA 3 · BORRAR LA IP DEL `netplan` — EL FALLO SILENCIOSO**\|BORRAR LA IP DEL `netplan` — EL FALLO SILENCIOSO]] |
+> | **4** | [[#**AVERÍA 4 · ROMPER LA INDENTACIÓN — EL FALLO RUIDOSO**\|ROMPER LA INDENTACIÓN — EL FALLO RUIDOSO]] |
+> | **5** | [[#**AVERÍA 5 · PARAR SSH (Y LA SORPRESA DEL PUERTO ABIERTO)**\|PARAR SSH (Y LA SORPRESA DEL PUERTO ABIERTO)]] |
+> | **6** | [[#**AVERÍA 6 · BORRAR LAS CLAVES DE HOST**\|BORRAR LAS CLAVES DE HOST]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · TUMBAR LA TARJETA DEL LABORATORIO**
 
 > [!abstract] 🎯 Objetivo de esta avería

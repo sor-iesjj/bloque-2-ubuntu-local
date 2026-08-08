@@ -17,7 +17,7 @@ Itinerario práctico de **8 fases + auditoría final** en el que construyes una 
    ```bash
    git clone https://github.com/TU_USUARIO/bloque-2-ubuntu-local.git B2_Ubuntu_Local
    ```
-3. Ábrela en **Obsidian** como bóveda ("Abrir carpeta como almacén") y empieza por **[Manual_BoochanV1.md](Manual_BoochanV1.md)** — el manual explica el proyecto, las fases y cómo se trabaja.
+3. Ábrela en **Obsidian** como bóveda ("Abrir carpeta como almacén") y empieza por **[Manual_Bloque_2.md](Manual_Bloque_2.md)** — el manual explica el proyecto, las fases y cómo se trabaja.
 4. A medida que avances y hagas cambios, súbelos a **tu** repositorio:
    ```bash
    git add .
@@ -29,7 +29,7 @@ Itinerario práctico de **8 fases + auditoría final** en el que construyes una 
 
 ## 📂 Contenido
 
-- **[Manual_BoochanV1.md](Manual_BoochanV1.md)** — manual maestro: qué es, índice de fases con resumen, datos clave y estructura.
+- **[Manual_Bloque_2.md](Manual_Bloque_2.md)** — manual maestro: qué es, índice de fases con resumen, datos clave y estructura.
 - **Fases/** — las 8 fases del itinerario + la Auditoría Final.
 - **99_Recursos/** — diccionario de comandos, guía de errores y material de apoyo.
 

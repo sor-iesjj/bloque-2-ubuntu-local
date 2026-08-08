@@ -72,6 +72,24 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 6 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · DESMONTAR EL DISCO CON DATOS DENTRO**\|DESMONTAR EL DISCO CON DATOS DENTRO]] |
+> | **2** | [[#**AVERÍA 2 · ESCRIBIR CON EL DISCO DESMONTADO**\|ESCRIBIR CON EL DISCO DESMONTADO]] |
+> | **3** | [[#**AVERÍA 3 · LLENAR LA CARPETA COMÚN**\|LLENAR LA CARPETA COMÚN]] |
+> | **4** | [[#**AVERÍA 4 · 🔴 LA CARPETA QUE PIERDE SU DEPARTAMENTO**\|🔴 LA CARPETA QUE PIERDE SU DEPARTAMENTO]] |
+> | **5** | [[#**AVERÍA 5 · QUITAR EL STICKY BIT DE LA CARPETA COMÚN**\|QUITAR EL STICKY BIT DE LA CARPETA COMÚN]] |
+> | **6** | [[#**AVERÍA 6 · EL FSTAB ROTO** *(la que da miedo, y por eso se hace aquí)*\|EL FSTAB ROTO]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · DESMONTAR EL DISCO CON DATOS DENTRO**
 
 > [!abstract] 🎯 Objetivo de esta avería

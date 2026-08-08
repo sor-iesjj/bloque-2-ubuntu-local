@@ -81,6 +81,24 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 6 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · PARAR EL CONTROLADOR DE DOMINIO**\|PARAR EL CONTROLADOR DE DOMINIO]] |
+> | **2** | [[#**AVERÍA 2 · LEVANTAR EL SAMBA CLÁSICO A LA VEZ**\|LEVANTAR EL SAMBA CLÁSICO A LA VEZ]] |
+> | **3** | [[#**AVERÍA 3 · ROMPER EL DNS DEL SERVIDOR**\|ROMPER EL DNS DEL SERVIDOR]] |
+> | **4** | [[#**AVERÍA 4 · 🔴 BORRAR EL REGISTRO DEL SERVIDOR EN SU PROPIO DNS**\|🔴 BORRAR EL REGISTRO DEL SERVIDOR EN SU PROPIO DNS]] |
+> | **5** | [[#**AVERÍA 5 · EL REINO DE KERBEROS EN MINÚSCULAS**\|EL REINO DE KERBEROS EN MINÚSCULAS]] |
+> | **6** | [[#**AVERÍA 6 · EL DOMINIO QUE NO SOBREVIVE AL REINICIO**\|EL DOMINIO QUE NO SOBREVIVE AL REINICIO]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · PARAR EL CONTROLADOR DE DOMINIO**
 
 > [!abstract] 🎯 Objetivo de esta avería

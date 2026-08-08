@@ -81,6 +81,24 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 6 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · PARAR EL TRADUCTOR**\|PARAR EL TRADUCTOR]] |
+> | **2** | [[#**AVERÍA 2 · EL TRADUCTOR AL QUE NADIE PREGUNTA**\|EL TRADUCTOR AL QUE NADIE PREGUNTA]] |
+> | **3** | [[#**AVERÍA 3 · EL USUARIO QUE YA NO PERTENECE A SU GRUPO**\|EL USUARIO QUE YA NO PERTENECE A SU GRUPO]] |
+> | **4** | [[#**AVERÍA 4 · 🔴 EL USUARIO CREADO SIN NÚMERO**\|🔴 EL USUARIO CREADO SIN NÚMERO]] |
+> | **5** | [[#**AVERÍA 5 · DOS PERSONAS CON EL MISMO NÚMERO**\|DOS PERSONAS CON EL MISMO NÚMERO]] |
+> | **6** | [[#**AVERÍA 6 · LAS IDENTIDADES QUE NO SOBREVIVEN AL REINICIO**\|LAS IDENTIDADES QUE NO SOBREVIVEN AL REINICIO]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · PARAR EL TRADUCTOR**
 
 > [!abstract] 🎯 Objetivo de esta avería

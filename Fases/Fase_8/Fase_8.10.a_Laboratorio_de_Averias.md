@@ -49,6 +49,24 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 6 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · APAGAR EL SERVIDOR**\|APAGAR EL SERVIDOR]] |
+> | **2** | [[#**AVERÍA 2 · CAMBIAR EL DNS DEL CLIENTE**\|CAMBIAR EL DNS DEL CLIENTE]] |
+> | **3** | [[#**AVERÍA 3 · DESFASAR EL RELOJ**\|DESFASAR EL RELOJ]] |
+> | **4** | [[#**AVERÍA 4 · 🔴 SACAR A `masao.sato` DEL GRUPO** *(y ver el ABE en directo)*\|🔴 SACAR A `masao.sato` DEL GRUPO]] |
+> | **5** | [[#**AVERÍA 5 · ROMPER LA RELACIÓN DE CONFIANZA**\|ROMPER LA RELACIÓN DE CONFIANZA]] |
+> | **6** | [[#**AVERÍA 6 · DESCONECTAR EL CABLE DEL LABORATORIO**\|DESCONECTAR EL CABLE DEL LABORATORIO]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · APAGAR EL SERVIDOR**
 
 > [!abstract] 🎯 Objetivo de esta avería

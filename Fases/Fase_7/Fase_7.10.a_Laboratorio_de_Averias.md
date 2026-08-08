@@ -74,6 +74,25 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 7 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **0** | [[#**AVERÍA 0 · 🔴 EL PERMISO QUE SOBRA**\|🔴 EL PERMISO QUE SOBRA]] |
+> | **1** | [[#**AVERÍA 1 · QUITAR LA ACL DEL GRUPO**\|QUITAR LA ACL DEL GRUPO]] |
+> | **2** | [[#**AVERÍA 2 · LA MÁSCARA QUE ANULA EL PERMISO**\|LA MÁSCARA QUE ANULA EL PERMISO]] |
+> | **3** | [[#**AVERÍA 3 · 🔴 QUITAR LA HERENCIA**\|🔴 QUITAR LA HERENCIA]] |
+> | **4** | [[#**AVERÍA 4 · 🔴 QUITAR LA INVISIBILIDAD (ABE)**\|🔴 QUITAR LA INVISIBILIDAD (ABE)]] |
+> | **5** | [[#**AVERÍA 5 · ROMPER EL `smb.conf`** *(la que tira el dominio)*\|ROMPER EL `smb.conf`]] |
+> | **6** | [[#**AVERÍA 6 · EL RECURSO DUPLICADO**\|EL RECURSO DUPLICADO]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 0 · 🔴 EL PERMISO QUE SOBRA**
 
 > [!abstract] 🎯 Objetivo de esta avería

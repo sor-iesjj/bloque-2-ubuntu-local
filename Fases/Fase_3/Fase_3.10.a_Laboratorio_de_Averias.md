@@ -69,6 +69,24 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 6 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · BAJAR EL TÚNEL**\|BAJAR EL TÚNEL]] |
+> | **2** | [[#**AVERÍA 2 · QUITAR LA PERSISTENCIA**\|QUITAR LA PERSISTENCIA]] |
+> | **3** | [[#**AVERÍA 3 · ROMPER LA MÁSCARA DEL CLIENTE**\|ROMPER LA MÁSCARA DEL CLIENTE]] |
+> | **4** | [[#**AVERÍA 4 · METER UN `Endpoint` EN EL SERVIDOR**\|METER UN `Endpoint` EN EL SERVIDOR]] |
+> | **5** | [[#**AVERÍA 5 · ABRIR LOS PERMISOS DEL FICHERO**\|ABRIR LOS PERMISOS DEL FICHERO]] |
+> | **6** | [[#**AVERÍA 6 · DESCONECTAR EL CLIENTE**\|DESCONECTAR EL CLIENTE]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · BAJAR EL TÚNEL**
 
 > [!abstract] 🎯 Objetivo de esta avería

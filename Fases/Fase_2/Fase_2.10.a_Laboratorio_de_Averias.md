@@ -75,6 +75,23 @@
 
 ---
 
+---
+
+## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
+
+> [!abstract] 5 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> | # | Qué vas a romper |
+> | :--- | :--- |
+> | **1** | [[#**AVERÍA 1 · VACIAR `/etc/hosts`**\|VACIAR `/etc/hosts`]] |
+> | **2** | [[#**AVERÍA 2 · INVERTIR EL ORDEN DE LAS COLUMNAS**\|INVERTIR EL ORDEN DE LAS COLUMNAS]] |
+> | **3** | [[#**AVERÍA 3 · AÑADIR UNA LÍNEA `127.0.1.1`**\|AÑADIR UNA LÍNEA `127.0.1.1`]] |
+> | **4** | [[#**AVERÍA 4 · PARAR EL SERVICIO `smbd`**\|PARAR EL SERVICIO `smbd`]] |
+> | **5** | [[#**AVERÍA 5 · QUITAR EL ARRANQUE AUTOMÁTICO DE `smbd`**\|QUITAR EL ARRANQUE AUTOMÁTICO DE `smbd`]] |
+>
+> **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
+
+---
+
 # **AVERÍA 1 · VACIAR `/etc/hosts`**
 
 > [!abstract] 🎯 Objetivo de esta avería

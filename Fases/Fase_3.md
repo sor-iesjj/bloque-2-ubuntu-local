@@ -51,7 +51,10 @@
 | **3**    | [[Fase_3.3_Obligaciones_Grabacion]]    | Antes de arrancar OBS — cómo se graba y se entrega                      |
 | **4**    | [[Fase_3.4_Donde_Estamos]]             | Antes de empezar — de dónde vienes y a dónde llegas                     |
 | **5**    | [[Fase_3.5_Fundamento_Teorico]]        | Antes de teclear — los conceptos                                        |
-| **6**    | [[Fase_3.6_Procedimiento]]             | **Con la VM delante — aquí está el trabajo**                            |
+| **6**    | [[Fase_3.6_Procedimiento]]             | *(índice)* **Con la VM delante — aquí está el trabajo**, en 3 partes ↓  |
+| **6.a**  | [[Fase_3.6.a_Procedimiento_Servidor]]  | Llaves del servidor y su `wg0.conf`                                     |
+| **6.b**  | [[Fase_3.6.b_Procedimiento_Cliente_e_Intercambio]] | El cliente y el **cruce de llaves públicas**                |
+| **6.c**  | [[Fase_3.6.c_Procedimiento_Levantar_el_Tunel]] | Levantar el túnel y comprobar qué lleva dentro              |
 | **7**    | [[Fase_3.7_Resolucion_Problemas]]      | Cuando algo no salga — búscate por el síntoma                           |
 | **8.a**  | [[Fase_3.8.a_Verificacion]]            | 🔍 **Verificar** que el túnel funciona — antes de guardar nada          |
 | **8.b**  | [[Fase_3.8.b_Punto_de_Control]]        | 💾 Instantánea **y copia al disco externo**                             |
