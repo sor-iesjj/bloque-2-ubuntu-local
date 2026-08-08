@@ -10,7 +10,7 @@
 > [!abstract] 📦 Los entregables
 > | Entregable | Dónde vive | Qué debe contener |
 > | :--- | :--- | :--- |
-> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/v1-auditoria-final-hardening-y-cierre-de-seguridad.md` | El procedimiento + **respuestas a las preguntas** + **enlace del vídeo** |
+> | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-auditoria-final-hardening-y-cierre-de-seguridad.md` | El procedimiento + **respuestas a las preguntas** + **enlace del vídeo** |
 > | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | `V1 · Auditoría Final — Hardening y cierre de seguridad` |
 > | **Repositorio** | Tu repo de apuntes | La entrada, con `add` → `commit` → `push` |
 > | **💾 Punto de control** | Instantánea en VirtualBox | Nombrada **`Proyecto terminado`** |
