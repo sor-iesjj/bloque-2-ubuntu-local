@@ -837,4 +837,4 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-*Proyecto BoochanV1 — Curso 2025/2026*
+*Bloque 2 · Ubuntu en local — Curso 2025/2026*

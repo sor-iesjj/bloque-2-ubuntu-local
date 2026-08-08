@@ -1,4 +1,4 @@
-# BoochanV1 — Proyecto Boochan (SOR · 2.º SMR)
+# Bloque 2 · Ubuntu en local — Proyecto Boochan (SOR · 2.º SMR)
 
 > **Autor y propietario:** © 2026 **Pedro Navarro Miralles** — IES Jorge Juan (Alicante)
 > **Módulo:** Sistemas Operativos en Red (SOR) · 2.º Curso SMR

@@ -83,8 +83,8 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 
 ---
 
-> [!info] 🏷️ Por qué los vídeos se llaman `B2 · F3 · …`
-> `B2` es el **bloque** y `F3` la **fase**. Es el mismo formato que usan el Bloque 1 (`B1.5 · …`) y el Bloque 6 (`B6.1.1 · …`).
+> [!info] 🏷️ Por qué los vídeos se llaman `B2 · F2 · …`
+> `B2` es el **bloque** y `F2` la **fase**. Es el mismo formato que usan el Bloque 1 (`B1.5 · …`) y el Bloque 6 (`B6.1.1 · …`).
 >
 > Así, mirando el nombre de un vídeo suelto, **se sabe de dónde sale sin abrirlo**. Y ordenándolos alfabéticamente, salen en el orden del curso.
 

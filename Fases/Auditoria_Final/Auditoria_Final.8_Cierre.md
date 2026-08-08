@@ -25,8 +25,8 @@
 > > Las **Preguntas Críticas** y el **🔬 Reto** de más arriba no son decorativos: son la parte de la fase que demuestra que has entendido lo que has hecho, y no solo que has sabido copiar comandos. Se contestan **con tus palabras**, en el apartado `Respuesta a las preguntas` de tu entrada.
 > > Una fase con el procedimiento perfecto y las preguntas en blanco está **incompleta**.
 >
-> > [!info] 🏷️ Por qué el nombre lleva `V1` delante
-> > Porque el proyecto Boochan existe en **varias versiones** (VirtualBox, Hyper-V, Azure, AWS…) y algunas comparten bloque y playlist. Sin la etiqueta, la Fase 4 de Azure y la de AWS se llamarían **exactamente igual** y no habría forma de distinguirlas. Con ella, tu carpeta y tu playlist dicen siempre **qué versión hiciste**.
+> > [!info] 🏷️ Por qué los vídeos llevan `B2` delante
+> > `B2` es el **bloque**. Todo lo tuyo de este bloque se llama igual: la carpeta de apuntes `B2_Ubuntu_Local`, la playlist `B2_Ubuntu_Local` y el prefijo de tus entradas, `b2-`. **Una cosa, un nombre.**
 >
 > > [!success] 🎯 Criterio de éxito
 > > Abro tu repositorio, encuentro la entrada de esta fase, y dentro está: qué has hecho, qué has entendido, qué dudas te han quedado y el enlace al vídeo donde se te ve haciéndolo. Si falta el enlace o faltan las respuestas, la fase **no cuenta como entregada**.

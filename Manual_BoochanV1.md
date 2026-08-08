@@ -1,4 +1,4 @@
-# 🚀 BoochanV1 — Infraestructura de Servidores Local sobre VirtualBox
+# 🚀 Bloque 2 · Ubuntu en local — Infraestructura de servidores sobre VirtualBox
 
 > **Módulo:** Sistemas Operativos en Red (SOR) · 2.º Curso SMR
 > **Profesor:** Pedro Navarro Miralles · IES Jorge Juan (Alicante)

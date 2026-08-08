@@ -43,7 +43,7 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 **1E — Al terminar**
 - Nómbralo **exactamente** como pone la tabla.
 - Súbelo a la playlist **`B2_Ubuntu_Local`** (No listado).
-- **Pega el enlace en tu entrada de apuntes**, en el apartado `Enlace al vídeo explicativo`.
+- **Pega el enlace en tu entrada de apuntes**, en el apartado `🔗 Enlaces`.
 
 ---
 

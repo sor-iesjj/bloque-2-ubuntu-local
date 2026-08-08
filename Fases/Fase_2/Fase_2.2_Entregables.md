@@ -105,7 +105,7 @@ Todos van a la **misma playlist**: `B2_Ubuntu_Local` (No listado).
 | 4 | `B2 · F2 · Punto de control` |
 
 > [!danger] ⚠️ Los nombres NO son orientativos
-> `B2` es el bloque · `F3` la fase · y después, qué se hace en ese vídeo. **Se llaman exactamente así.**
+> `B2` es el bloque · `F2` la fase · y después, qué se hace en ese vídeo. **Se llaman exactamente así.**
 >
 > Con un grupo entero entregando cuatro vídeos por fase, si cada uno pone lo que le apetece corregir se vuelve imposible. **Un nombre distinto es una entrega no localizada — y una entrega no localizada es una entrega no presentada.**
 
