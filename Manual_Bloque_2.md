@@ -61,13 +61,13 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 **[Fase 4 — Aprovisionamiento del Dominio (Samba AD DC)](Fases/Fase_4.md):** se ejecuta el script `provision_boochan.sh` (variables `BOOCHANLAB` / `BOOCHANLAB.LOCAL`) que provisiona el Active Directory con LDAP, Kerberos y DNS interno, y hace inmutable `/etc/resolv.conf` (`chattr +i`) para que apunte siempre a `127.0.0.1`. Aquí no hay ningún Security Group ni NSG que abrir: la Red Solo Anfitrión no filtra tráfico entre VMs.
 
-**[Fase 5 — Gestión de Identidades (Usuarios y Grupos)](Fases/Fase_5.md):** se activa `winbind` como traductor de identidades (SID de Windows ↔ UID/GID de Linux) mediante RFC 2307, y se crean los grupos `policia` (GID 3001) y `bomberos` (GID 3002) junto con los usuarios `user1` y `user2`, que se usarán en las Fases 6-8 para demostrar segregación de datos.
+**[Fase 5 — Gestión de Identidades (Usuarios y Grupos)](Fases/Fase_5.md):** se activa `winbind` como traductor de identidades (SID de Windows ↔ UID/GID de Linux) mediante RFC 2307, y se crean los **seis grupos departamentales** de Boochan S.L. (`facturacion`, `contabilidad`, `comercial`, `logistica`, `rrhh`, `becarios` — GID 3001-3006) y sus **doce usuarios** (UID 10001-10012), que se usarán en las Fases 6-8 para demostrar segregación de datos.
 
-**[Fase 6 — Almacenamiento Virtual (Cuotas)](Fases/Fase_6.md):** se crean dos discos virtuales de 5 GB cada uno mediante Loop Devices (`dd` + `mkfs.ext4` + `fstab` con la opción `loop`), montados en `/srv/samba/prueba1` (acceso general) y `/srv/samba/prueba3` (restringido al grupo `policia`), como cuota física infranqueable frente a un llenado accidental o malicioso del disco.
+**[Fase 6 — Almacenamiento Virtual (Cuotas)](Fases/Fase_6.md):** se crean **dos discos virtuales** mediante Loop Devices (`dd` + `mkfs.ext4` + `fstab` con la opción `loop`): `/samba_deptos.img` (8 GB) montado en `/srv/samba/departamentos` y `/samba_comun.img` (2 GB) en `/srv/samba/comun`. Son una **cuota física infranqueable** frente a un llenado accidental o malicioso del disco: un departamento que se descontrola no se lleva por delante a los demás.
 
-**[Fase 7 — Seguridad Avanzada (ACLs y ABE)](Fases/Fase_7.md):** se aplican ACLs (`setfacl`) al grupo `policia` sobre `prueba3` con herencia (`-d`), y se activa Access Based Enumeration (`access based share enum = yes`, `hide unreadable = yes`) en `smb.conf`, de modo que `user2` (bomberos) ni siquiera ve la carpeta `prueba3` en el explorador de red.
+**[Fase 7 — Seguridad Avanzada (ACLs y ABE)](Fases/Fase_7.md):** se aplican ACLs (`setfacl`) con herencia (`-d`) para los **cruces entre departamentos** de la matriz de permisos (contabilidad escribe en facturación, comercial solo la consulta…), y se activa Access Based Enumeration (`access based share enum = yes`, `hide unreadable = yes`) en `smb.conf`, de modo que un becario **ni siquiera ve** las carpetas a las que no tiene acceso.
 
-**[Fase 8 — Integración del Cliente (Windows 11)](Fases/Fase_8.md):** se crea una **segunda VM** en VirtualBox (`Cliente-Windows11`, 4 GB RAM, 40 GB disco, TPM 2.0 y Secure Boot activados) conectada a la misma Red Solo Anfitrión del laboratorio (`10.10.10.0/24`) con IP fija `10.10.10.20`, se une al dominio `BOOCHANLAB.LOCAL`, se instala RSAT y se mapean las carpetas compartidas como unidades de red — demostrando que el modelo de permisos definido en Linux se respeta desde el cliente Windows.
+**[Fase 8 — Integración del Cliente (Windows 11)](Fases/Fase_8.md):** se crea una **segunda VM** en VirtualBox (`Windows11`, 4 GB RAM, 40 GB disco, TPM 2.0 y Secure Boot activados) conectada a la misma Red Solo Anfitrión del laboratorio (`10.10.10.0/24`) con IP fija `10.10.10.20`, se une al dominio `BOOCHANLAB.LOCAL`, se instala RSAT y se mapean las carpetas compartidas como unidades de red — demostrando que el modelo de permisos definido en Linux se respeta desde el cliente Windows.
 
 **[Auditoría Final — Hardening](Fases/Auditoria_Final.md):** cierre de seguridad con el principio Zero Trust aplicado mediante `ufw` **dentro** del propio servidor (política `deny incoming` por defecto, permitiendo solo `10.10.10.0/24`, `10.20.20.0/24` y el puerto WireGuard `51820/udp`), ya que en un laboratorio local no existe un firewall externo tipo Security Group que restringir.
 
@@ -84,7 +84,8 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 | **Red del túnel VPN (WireGuard)** | `10.20.20.0/24` (servidor `10.20.20.1`, cliente `10.20.20.2`) |
 | **Red host-only de VirtualBox** | `10.10.10.0/24`, host en `10.10.10.1` (creada manualmente en la Fase 1.2, DHCP desactivado). ⚠️ **El nombre depende del anfitrión**: `vboxnetN` en Mac/Linux, `VirtualBox Host-Only Ethernet Adapter` (con `#2`, `#3`…) en Windows. **Identifícala siempre por su IP, nunca por su nombre.** |
 | **Usuario administrador Linux** | `boochan` |
-| **Usuarios de dominio de ejemplo** | `user1` (UID 10001, grupo `policia`/GID 3001) · `user2` (UID 10002, grupo `bomberos`/GID 3002) |
+| **Grupos de dominio** | `facturacion` · `contabilidad` · `comercial` · `logistica` · `rrhh` · `becarios` (GID 3001-3006) |
+| **Usuarios de dominio** | 12 trabajadores, UID 10001-10012. El detalle y la matriz de permisos, en `99_Recursos/Escenario_Boochan_SL.md` |
 | **Sistema operativo servidor** | Ubuntu Server 26.04 LTS |
 | **Sistema operativo cliente** | Windows 11 (64-bit) |
 
@@ -94,14 +95,14 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 ```
 BoochanV1/
-├── Manual_BoochanV1.md           ← este documento (punto de entrada)
+├── Manual_Bloque_2.md           ← este documento (punto de entrada)
 ├── Fases/
 │   ├── Fase_N.md                  ← índice de cada fase (1-8)
 │   ├── Fase_N/                    ← sus 10 apartados, uno por fichero
 │   │      1 Qué se evalúa · 2 Entregables · 3 Obligaciones ·
 │   │      4 Dónde estamos · 5 Teoría · 6 Procedimiento ·
 │   │      7 Problemas · 8 Punto de control · 9 Preguntas · 10 Cierre
-│   │      (la Fase 1 abre el 6 en 6.a-6.d: son 4 entregas)
+│   │      (la Fase 1 abre el 6 en 6.a-6.g: son 7 entregas)
 │   ├── Auditoria_Final.md + Auditoria_Final/   ← 8 apartados
 │   ├── Fase_0.S                   ← instantáneas / puntos de control (común)
 │   ├── Auditoria_Final.md        ← cierre de seguridad (hardening con ufw)
