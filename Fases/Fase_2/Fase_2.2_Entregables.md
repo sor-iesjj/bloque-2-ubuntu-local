@@ -55,7 +55,7 @@
 | :--- | :--- |
 | **Nombre exacto** | `B2 · F2 · Punto de control` |
 | **Duración** | ~2-3 min |
-| **Qué se ve** | La instantánea `Fase 3 terminada` tomada en VirtualBox **y** la máquina exportada a tu disco externo |
+| **Qué se ve** | La instantánea `Fase 2 terminada` tomada en VirtualBox **y** la máquina exportada a tu disco externo |
 
 > [!danger] 💾 La copia en el disco externo NO es opcional
 > Una instantánea de VirtualBox **vive dentro de VirtualBox**. Si el programa se corrompe, si formatean el equipo del aula o si falla el disco, **se va todo con ella**.
@@ -122,7 +122,7 @@ Todos van a la **misma playlist**: `B2_Ubuntu_Local` (No listado).
 > - [ ] Entrada de apuntes con el nombre exacto, subida al repositorio.
 > - [ ] Los **cuatro** vídeos en la playlist, con sus nombres exactos y sus timestamps.
 > - [ ] Los **cuatro enlaces** dentro de la entrada de apuntes.
-> - [ ] Instantánea `Fase 3 terminada` en VirtualBox.
+> - [ ] Instantánea `Fase 2 terminada` en VirtualBox.
 > - [ ] `B2-F2-purga-y-preparacion.ova` en tu disco externo, en su carpeta.
 
 ---

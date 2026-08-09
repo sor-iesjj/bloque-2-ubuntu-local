@@ -52,7 +52,12 @@
 > 2. Ve a **Sistema** → **Acerca de**.
 > 3. Haz clic en **"Cambiar nombre de este PC (avanzado)"** → pestaña **"Nombre de equipo"** → botón **"Cambiar..."**.
 > 4. Selecciona **"Dominio"** e introduce: `BOOCHANLAB.LOCAL`
-> 5. Pulsa **Aceptar**. Te pedirá credenciales: introduce `Administrator` y `P@ssw0rd`.
+> 5. Pulsa **Aceptar**. Te pedirá credenciales: introduce **`BOOCHANLAB\Administrator`** y `P@ssw0rd`.
+>
+>    > [!danger] 🛑 El `BOOCHANLAB\` de delante no es opcional
+>    > Este equipo **todavía no es del dominio** — se está uniendo ahora mismo. Si escribes `Administrator` a secas, Windows lo busca **en su propia lista local**, no la del servidor. Y ahí esa cuenta no existe con esa contraseña.
+>    >
+>    > Resultado: *"nombre de usuario o contraseña incorrectos"* con la contraseña correcta. Es el fallo nº1 de esta fase.
 > 6. Si aparece el mensaje **"Bienvenido al dominio BOOCHANLAB"**, el proceso ha sido correcto.
 > 7. **Reinicia el equipo** cuando te lo pida. Este paso es obligatorio.
 >

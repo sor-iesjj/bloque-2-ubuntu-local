@@ -105,6 +105,16 @@ echo prueba > \\UbuntuServer.BOOCHANLAB.LOCAL\becarios\intento.txt
 
 ### **5.3 — `masao.sato` (comercial) SÍ abre una factura**
 
+> [!warning] ⚠️ Antes de esta prueba: asegúrate de que hay una factura que abrir
+> El fichero `factura-001.txt` puede que lo crearas en el laboratorio de la Fase 6, pero **era opcional**. Si no está, estas dos pruebas fallan por un fichero que no existe, no por un permiso.
+>
+> **Compruébalo y créalo si hace falta**, desde el servidor y como alguien de facturación:
+> ```bash
+> ls /srv/samba/departamentos/facturacion/factura-001.txt \
+>   || sudo -u '#10001' sh -c 'echo "Factura de prueba" > /srv/samba/departamentos/facturacion/factura-001.txt'
+> ```
+> *(`10001` es `hiroshi.nohara`, de facturación. Se crea con su identidad **a propósito**: un fichero creado por `root` no demuestra nada sobre los permisos del grupo.)*
+
 Cierra sesión y entra como `BOOCHANLAB\masao.sato`:
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL

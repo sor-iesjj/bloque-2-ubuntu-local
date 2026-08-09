@@ -75,7 +75,7 @@ done
 
 ## **6 · EL LABORATORIO DE AVERÍAS** *(entrega 3)*
 
-- [ ] Las **seis averías** provocadas y reparadas, **en dos sesiones** (1-3 permisos, 4-6 publicación).
+- [ ] Las **siete averías** provocadas y reparadas, **en dos sesiones** (1-3 permisos, 4-6 publicación).
 - [ ] **Predicción escrita antes** de cada una.
 - [ ] Restos borrados: ficheros de prueba y `smb.conf.bak`.
 - [ ] Verificador pasado al final: **`FASE 7 SUPERADA`**.

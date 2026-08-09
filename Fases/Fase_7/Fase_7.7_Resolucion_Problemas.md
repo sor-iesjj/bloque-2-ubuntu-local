@@ -101,7 +101,7 @@ df -h /srv/samba/departamentos/facturacion
 **Arreglo.**
 ```bash
 sudo apt install -y acl
-sudo setfacl -m g:comercial:rwx /srv/samba/departamentos/facturacion
+sudo setfacl -m g:comercial:rx /srv/samba/departamentos/facturacion
 ```
 
 > [!info] 🎓 En `ext4` las ACL van activadas por defecto
@@ -155,19 +155,19 @@ getfacl -p /srv/samba/departamentos/facturacion
 ```bash
 getfacl -p /srv/samba/departamentos/facturacion | grep default
 ```
-- **✅ Bien:** aparece `default:group:comercial:rwx`.
+- **✅ Bien:** aparece `default:group:comercial:r-x`. **`r-x`, no `rwx`:** comercial *consulta* facturación, no escribe en ella.
 - **❌ Mal:** no hay ninguna línea `default:`.
 
 **Arreglo.**
 ```bash
-sudo setfacl -d -m g:comercial:rwx /srv/samba/departamentos/facturacion
+sudo setfacl -d -m g:comercial:rx /srv/samba/departamentos/facturacion
 getfacl -p /srv/samba/departamentos/facturacion
 ```
 
 > [!warning] ⚠️ El arreglo NO afecta a lo que ya existe
 > La ACL por defecto solo se aplica a **lo que se cree a partir de ahora**. Si ya hay ficheros dentro sin permisos, hay que corregirlos aparte:
 > ```bash
-> sudo setfacl -R -m g:comercial:rwx /srv/samba/departamentos/facturacion
+> sudo setfacl -R -m g:comercial:rx /srv/samba/departamentos/facturacion
 > ```
 > *(La `-R` es recursiva: entra en todo lo que hay dentro.)*
 
@@ -220,7 +220,7 @@ sudo systemctl restart samba-ad-dc
 > [!bug] Síntoma
 > `getfacl` muestra el permiso perfectamente… con una coletilla al final:
 > ```
-> group:comercial:rwx		#effective:r--
+> group:contabilidad:rwx		#effective:r--
 > ```
 > Y el usuario no puede escribir, aunque pone `rwx`.
 
@@ -260,7 +260,7 @@ getfacl -p /srv/samba/departamentos/facturacion
 
 **Comprobación.**
 ```bash
-grep -n "^\[prueba" /etc/samba/smb.conf
+grep -n "^\[facturacion\]" /etc/samba/smb.conf
 ```
 - **❌ Mal:** aparece `[facturacion]` en dos líneas distintas.
 

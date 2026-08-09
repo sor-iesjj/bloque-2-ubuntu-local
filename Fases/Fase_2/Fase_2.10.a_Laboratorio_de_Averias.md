@@ -449,7 +449,7 @@ Debe devolver `enabled`.
 > Sistema base
 >  └── Fase 1 terminada
 >       └── Fase 2 terminada
->            └── Fase 3 terminada
+>            └── Fase 2 terminada
 > ```
 >
 > **Restaurar una anterior NO borra las posteriores.** Vuelves atrás en el árbol, pero las ramas siguen ahí y puedes avanzar de nuevo cuando quieras.

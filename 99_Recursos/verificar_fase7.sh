@@ -243,6 +243,19 @@ else
     info "     Sin sticky bit, cualquiera puede borrar el fichero de cualquiera."
 fi
 
+# D3. comun esta en 1777 (escritura para todos), asi que la puerta que deja
+#     fuera a los becarios NO puede ser el permiso: tiene que ser Samba.
+if testparm -s --parameter-name="valid users" --section-name=comun 2>/dev/null | grep -qi "becarios"; then
+    fallo "D3. El recurso [comun] admite al grupo becarios"
+    info "     La matriz dice que los becarios NO tienen comun. Quita @becarios de valid users."
+elif testparm -s --parameter-name="valid users" --section-name=comun 2>/dev/null | grep -q "@"; then
+    ok "D3. El recurso [comun] limita quien conecta con valid users"
+else
+    fallo "D3. El recurso [comun] no tiene valid users: entra TODO EL MUNDO"
+    info "     Con comun en 1777, sin valid users un becario entra igual."
+    info "     Arreglo: valid users = @facturacion,@contabilidad,@comercial,@logistica,@rrhh"
+fi
+
 # =============================================================================
 # BLOQUE E - SAMBA PUBLICA LAS CARPETAS
 # =============================================================================

@@ -68,8 +68,8 @@
    ```
    Las dos líneas correctas son exactamente:
    ```
-   /samba_deptos.img  /srv/samba/departamentos/facturacion  ext4  loop,defaults  0  0
-   /samba_comun.img  /srv/samba/departamentos/contabilidad  ext4  loop,defaults  0  0
+   /samba_deptos.img  /srv/samba/departamentos  ext4  loop,defaults  0  0
+   /samba_comun.img   /srv/samba/comun          ext4  loop,defaults  0  0
    ```
 5. **Antes de reiniciar**, comprueba en seco:
    ```bash
@@ -108,7 +108,7 @@ grep samba /etc/fstab                  # ¿está declarado?
 **Arreglo.**
 ```bash
 sudo mount -a
-df -h | grep prueba
+df -h | grep srv
 ```
 
 > [!summary] Qué aprendes
@@ -195,7 +195,7 @@ systemctl is-active winbind
 
 **Arreglo.**
 ```bash
-sudo systemctl enable --now winbind
+sudo systemctl status samba-ad-dc   # winbindd vive DENTRO de samba en un AD DC
 getent group contabilidad
 sudo chown root:contabilidad /srv/samba/departamentos/contabilidad
 ```
@@ -303,7 +303,7 @@ mountpoint /srv/samba/departamentos/facturacion
 **Arreglo.** Añade las dos líneas al `fstab` *(Paso 4 del procedimiento)* y **comprueba en seco antes de volver a reiniciar**:
 ```bash
 sudo mount -a
-df -h | grep prueba
+df -h | grep srv
 ```
 
 > [!danger] ⚠️ Y comprueba si has escrito datos con el disco desmontado

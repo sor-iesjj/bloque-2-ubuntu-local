@@ -44,7 +44,7 @@
 > Antes de tocar nada de dominio, necesitas una segunda VM. Ábrela así:
 >
 > 1. En VirtualBox, pulsa **"Nueva"**.
-> 2. **Nombre:** `Cliente-Windows11` — Tipo: `Microsoft Windows` — Versión: `Windows 11 (64-bit)`.
+> 2. **Nombre:** `Windows11` — **exactamente así, sin guiones ni espacios** — Tipo: `Microsoft Windows` — Versión: `Windows 11 (64-bit)`.
 > 3. **Memoria RAM:** `4096 MB` (4 GB). Es el mínimo razonable para que Windows 11 no vaya "a tirones" dentro de una VM; si tu equipo host tiene 16 GB o más, puedes subir a 6144 MB.
 > 4. **Procesadores:** 2 CPUs (Windows 11 exige al menos 2 núcleos lógicos para instalarse).
 > 5. **Disco duro:** crear uno nuevo, tipo VDI, **reservado dinámicamente**, de **40 GB**. Dinámico porque no ocuparán los 40 GB reales hasta que se necesiten — importante si tu disco del host anda justo de espacio.

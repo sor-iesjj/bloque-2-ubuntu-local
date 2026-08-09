@@ -360,7 +360,7 @@ sudo samba-tool computer list
 El equipo está fuera. Y en el servidor puede quedar una **cuenta de equipo huérfana**, que es justo lo que provoca el error de relación de confianza cuando alguien vuelve a unir una máquina con el mismo nombre sin limpiar antes.
 
 ### **4 · Reparar**
-Vuelve a unirlo, exactamente como en el Paso 3 del procedimiento: `Dominio` → `BOOCHANLAB.LOCAL` → `Administrator` / `P@ssw0rd` → reiniciar.
+Vuelve a unirlo, exactamente como en el Paso 3 del procedimiento: `Dominio` → `BOOCHANLAB.LOCAL` → **`BOOCHANLAB\Administrator`** / `P@ssw0rd` → reiniciar.
 
 Y comprueba:
 ```cmd

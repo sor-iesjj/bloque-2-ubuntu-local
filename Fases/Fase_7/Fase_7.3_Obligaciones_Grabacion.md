@@ -58,12 +58,12 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 
 - 🪂 **El `sudo testparm` tiene que verse ANTES del reinicio.** Explica por qué: `samba-ad-dc` es el controlador de dominio, y reiniciarlo con el fichero roto tumba el DNS y la autenticación, no solo las carpetas.
 - Después del reinicio, enseña que el dominio ha vuelto **entero**: el `host` y el `id`.
-- Y sin cortar, **las seis comprobaciones del apartado 8.a**, incluida la prueba de herencia con un fichero nuevo.
+- Y sin cortar, **las siete comprobaciones del apartado 8.a**, incluida la prueba de herencia con un fichero nuevo.
 - **Al final, di en voz alta las cuatro pruebas que quedan pendientes para la Fase 8.** Es parte de la fase reconocer lo que no se ha podido comprobar.
 
 **2B — Laboratorio de averías** · `B2 · F7 · Laboratorio de averías`
 - **Tu predicción, en voz alta, ANTES de cada rotura.** Es lo que más se valora de este vídeo.
-- **Un timestamp por avería**, las seis.
+- **Un timestamp por avería**, las siete (van de la 0 a la 6).
 - En la **avería 2** —la máscara— para el vídeo, señala el `#effective` en pantalla y di *"pone rwx y significa r--"*. Es el momento más importante de la fase.
 - En la **avería 4** —quitar el ABE— comenta que **ningún comando del servidor detecta el problema**, y que por eso hace falta la Fase 8.
 

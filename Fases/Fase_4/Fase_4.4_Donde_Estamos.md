@@ -22,7 +22,7 @@
 > 3. Verificar que el servicio `samba-ad-dc` está activo: `sudo systemctl status samba-ad-dc`
 > 4. Comprobar que el DNS interno apunta a `127.0.0.1`: `cat /etc/resolv.conf`
 > 5. Hacer inmutable `/etc/resolv.conf` con `chattr +i` para que `systemd-resolved` no lo rompa en reinicios
-> 6. Validar que Kerberos funciona: `nslookup _kerberos._tcp.BOOCHANLAB.LOCAL 127.0.0.1`
+> 6. Validar que Kerberos funciona: `nslookup -type=srv _kerberos._tcp.BOOCHANLAB.LOCAL 127.0.0.1`
 > 7. Listar usuarios creados automáticamente: `samba-tool user list` (verás Administrator, krbtgt, etc.)
 >
 > **Resultado Final:** Dominio `BOOCHANLAB.LOCAL` completamente provisionado y operativo. El servidor es ahora un verdadero Controlador de Dominio profesional, listo para que la futura VM Windows 11 se una a él.

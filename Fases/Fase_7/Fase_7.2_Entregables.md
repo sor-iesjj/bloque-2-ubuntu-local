@@ -22,7 +22,7 @@
 > | # | Nombre exacto | Qué se ve |
 > | :--- | :--- | :--- |
 > | 1 | `B2 · F7 · Seguridad avanzada` | El procedimiento: ACL, herencia, `smb.conf`, `testparm` y el reinicio |
-> | 2 | `B2 · F7 · Laboratorio de averías` | Las seis averías provocadas y reparadas, con un timestamp cada una |
+> | 2 | `B2 · F7 · Laboratorio de averías` | Las siete averías provocadas y reparadas, con un timestamp cada una |
 > | 3 | `B2 · F7 · Punto de control` | El apagado, la instantánea y la exportación a `.ova` |
 >
 > **Son tres momentos distintos del trabajo, no tres formas de contar lo mismo.** El 2 se graba en dos sesiones y sigue siendo un solo vídeo.

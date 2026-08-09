@@ -18,7 +18,7 @@
 
 ## 🧭 Índice de la fase
 
-> [!warning] 📖 Esta fase va en diez documentos, no en uno
+> [!warning] 📖 Esta fase va en doce documentos, no en uno
 > Cada apartado es un fichero aparte, dentro de la carpeta `Fase_4/`. **Se leen en orden**, pero puedes volver a cualquiera sin perderte: al final de cada uno tienes la navegación.
 >
 > **La fase completa es UNA sola entrega:** una entrada de apuntes y un vídeo, no diez.
@@ -72,4 +72,4 @@
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_4.1_Que_Se_Evalua]]
 
-**Siguiente al terminar los diez apartados:** Fase 5.
+**Siguiente al terminar los doce apartados:** Fase 5.

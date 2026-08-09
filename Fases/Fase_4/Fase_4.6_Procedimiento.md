@@ -166,7 +166,7 @@
 > > ```bash
 > > hostname
 > > ```
-> > Tiene que responder `ubuntuserver`. Si responde el nombre de tu ordenador, estás ejecutando los comandos en tu propia máquina y las respuestas no valen → [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11]].
+> > Tiene que responder `UbuntuServer` — **con las mayúsculas**. Si responde el nombre de tu ordenador, estás ejecutando los comandos en tu propia máquina y las respuestas no valen → [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11]].
 
 ---
 

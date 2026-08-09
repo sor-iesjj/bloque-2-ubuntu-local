@@ -88,13 +88,13 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 > **Sintaxis:** `sudo dd if=[origen] of=[destino] bs=[bloque] count=[cantidad]`
 
 > [!example] Ejemplo de uso (Fase 6):
-> - `sudo dd if=/dev/zero of=/samba_p1.img bs=1M count=5120`: Coge datos de una "fábrica infinita de ceros" y los suelta dentro de `samba_p1.img` en trozos de 1 Megabyte, repitiéndolo 5120 veces (5 Gigabytes exactos). Recuerda que este archivo se guarda dentro del **disco virtual VDI** de la VM en VirtualBox — comprueba antes con `df -h /` que el disco de la VM tiene espacio libre suficiente.
+> - `sudo dd if=/dev/zero of=/samba_deptos.img bs=1M count=8192`: Coge datos de una "fábrica infinita de ceros" y los suelta dentro de `samba_deptos.img` en trozos de 1 Megabyte, repitiéndolo 8192 veces (8 Gigabytes exactos). Recuerda que este archivo se guarda dentro del **disco virtual VDI** de la VM en VirtualBox — comprueba antes con `df -h /` que el disco de la VM tiene espacio libre suficiente.
 
 ### `mkfs.ext4` y `mount`
 > **Descripción:** Antes de meter archivos en un disco duro (o disco virtual .img), hay que crear un "Índice". Eso es formatear (`mkfs`). Después, hay que pinchar el disco en el sistema (`mount`).
 
 > [!example] Ejemplos de uso (Fase 6):
-> - `sudo mkfs.ext4 /samba_p1.img`: Dale formato `ext4` (el estándar de Linux) al archivo virtual, preparándolo para recibir datos.
+> - `sudo mkfs.ext4 /samba_deptos.img`: Dale formato `ext4` (el estándar de Linux) al archivo virtual, preparándolo para recibir datos.
 > - `sudo mount -a`: Lee el archivo de auto-arranque `/etc/fstab` y monta cualquier disco que esté ahí programado.
 
 ### Listas de Control `setfacl` y `getfacl`

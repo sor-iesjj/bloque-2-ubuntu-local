@@ -45,7 +45,8 @@
 > sudo ufw allow 51820/udp
 >
 > # Servicios de dominio (SMB, DNS, Kerberos, LDAP...) SOLO desde la Red Solo Anfitrión del laboratorio
-# SSH NO se incluye aquí: desde la Fase 3 solo escucha en la VPN WireGuard (10.20.20.1), no en la Red Solo Anfitrión
+# SSH NO se incluye aqui: en el Paso 2 lo vas a dejar escuchando SOLO en la VPN (10.20.20.1).
+# Ahora mismo todavia responde en el 22 por la Red Solo Anfitrion; al terminar el Paso 2, ya no.
 > sudo ufw allow from 10.10.10.0/24
 >
 > # Y también desde el rango del túnel WireGuard (administración remota ya autenticada)

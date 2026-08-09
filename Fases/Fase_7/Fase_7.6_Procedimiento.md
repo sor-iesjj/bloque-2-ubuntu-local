@@ -261,6 +261,9 @@
 >     path = /srv/samba/comun
 >     read only = no
 >     vfs objects = acl_xattr
+>     valid users = @facturacion,@contabilidad,@comercial,@logistica,@rrhh
+>     access based share enum = yes
+>     hide unreadable = yes
 > ```
 > Guarda y sal (`Ctrl + O`, `Enter`, `Ctrl + X`).
 >
@@ -271,7 +274,15 @@
 > > | `access based share enum = yes` | **El recurso no aparece siquiera** en el listado de red de quien no tiene acceso |
 > > | `hide unreadable = yes` | Oculta el contenido interno que no se puede abrir |
 > >
-> > **`comun` no lleva las dos últimas a propósito:** todo el mundo tiene acceso, así que no hay nada que ocultarle a nadie. Ponerlas ahí no haría daño, pero tampoco haría nada — **y una opción que no hace nada es una opción que confunde al siguiente que lea el fichero**.
+> > | `valid users = @grupo,…` | **Quién puede conectar al recurso.** Es una puerta *antes* de los permisos del sistema de ficheros: si no estás en la lista, Samba no te deja ni llamar |
+> >
+> > **`comun` es la única que lleva `valid users`, y ahí está la lección de la fase.**
+> >
+> > Mira la matriz: **los becarios no tienen `comun`.** Pero la carpeta está en `1777` —escritura para todos— porque necesita el *sticky bit* para que nadie borre lo de otro. Con esos permisos, un becario **entraría**.
+> >
+> > Los permisos del sistema de ficheros no te sirven aquí: si le quitas el `rwx` a *otros*, rompes el `1777` que necesitas. **La solución está en otra capa:** Samba decide quién conecta *antes* de que el sistema de ficheros diga nada.
+> >
+> > **Dos candados en serie, y basta con que falle uno para que no se entre.** Esa es la idea que te llevas de la Fase 7.
 
 ---
 

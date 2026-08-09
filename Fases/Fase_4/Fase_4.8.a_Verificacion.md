@@ -22,7 +22,7 @@
 ---
 
 > [!important] 🔧 Antes de empezar: instala las herramientas de DNS
-> No vienen en Ubuntu Server y las necesitas para tres de las seis comprobaciones:
+> No vienen en Ubuntu Server y las necesitas para tres de las siete comprobaciones:
 > ```bash
 > sudo apt install -y dnsutils
 > ```
@@ -32,7 +32,7 @@
 > ```bash
 > hostname
 > ```
-> Tiene que responder **`ubuntuserver`**. Si responde el nombre de tu ordenador, la sesión SSH se cerró y estás comprobando **tu propia máquina**: los siete puntos de abajo te contestarán cosas, pero ninguna valdrá → [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11]].
+> Tiene que responder **`UbuntuServer`**. Si responde el nombre de tu ordenador, la sesión SSH se cerró y estás comprobando **tu propia máquina**: los siete puntos de abajo te contestarán cosas, pero ninguna valdrá → [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11]].
 >
 > Una verificación hecha en la máquina equivocada es peor que no hacerla: te deja tranquilo sin motivo.
 

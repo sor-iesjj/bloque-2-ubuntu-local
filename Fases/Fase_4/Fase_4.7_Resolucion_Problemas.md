@@ -368,7 +368,7 @@ whoami
 
 | Devuelve | Estás en |
 | :--- | :--- |
-| `ubuntuserver` | El servidor ✅ |
+| `UbuntuServer` | El servidor ✅ |
 | El nombre de tu ordenador | Tu máquina ❌ |
 
 **Arreglo.** Vuelve a entrar y repite la comprobación **desde el principio**:

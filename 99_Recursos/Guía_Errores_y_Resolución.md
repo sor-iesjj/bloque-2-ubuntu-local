@@ -543,8 +543,8 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 >    ```
 >    Las líneas de los discos virtuales deben tener exactamente este formato:
 >    ```
->    /samba_p1.img  /srv/samba/departamentos/comercial  ext4  loop,defaults  0  0
->    /samba_p3.img  /srv/samba/departamentos/facturacion  ext4  loop,defaults  0  0
+>    /samba_deptos.img  /srv/samba/departamentos  ext4  loop,defaults  0  0
+>    /samba_comun.img   /srv/samba/comun          ext4  loop,defaults  0  0
 >    ```
 > 4. Antes de reiniciar, verifica que la sintaxis es correcta:
 >    ```bash
@@ -593,7 +593,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 > [!example] Resolución
 > ```bash
-> sudo mkfs.ext4 /samba_p1.img
+> sudo mkfs.ext4 /samba_deptos.img
 > sudo mount -a
 > ```
 
@@ -614,7 +614,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 >    ```
 > 2. Si hay archivos `.img` de un intento anterior, elimínalos:
 >    ```bash
->    sudo rm -f /samba_p1.img /samba_p3.img
+>    sudo rm -f /samba_deptos.img /samba_comun.img
 >    ```
 > 3. Si aún no hay espacio suficiente (necesitas al menos 11 GB libres), tienes dos opciones en local:
 >    - **Ampliar el disco virtual VDI** desde VirtualBox: apaga la VM → `Configuración → Almacenamiento` → selecciona el disco → `Propiedades del atributo` → aumenta el tamaño (solo funciona con discos de asignación dinámica que aún no llegaron a su máximo, y requiere después ampliar la partición dentro de Ubuntu con `growpart`/`resize2fs`).

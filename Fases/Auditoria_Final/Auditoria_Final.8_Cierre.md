@@ -18,7 +18,7 @@
 > | Entregable | Dónde vive | Qué debe contener |
 > | :--- | :--- | :--- |
 > | **Entrada de apuntes** | `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/b2-auditoria-final-hardening-y-cierre-de-seguridad.md` | Estructura completa + **respuestas a las Preguntas Críticas y al 🔬 Reto** + **enlace del vídeo** |
-> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `V1 · Auditoría Final — Hardening y cierre de seguridad`, con presentación, identidad y timestamps |
+> | **Vídeo** | Playlist `B2_Ubuntu_Local` (No listado) | Nombrado `B2 · Auditoría Final — Hardening y cierre de seguridad`, con presentación, identidad y timestamps |
 > | **Repositorio** | Tu repo de apuntes en GitHub | La entrada, subida con `git add` → `commit` → `push` |
 >
 > > [!danger] ⚠️ Las respuestas van en la ENTRADA, no en un documento aparte
