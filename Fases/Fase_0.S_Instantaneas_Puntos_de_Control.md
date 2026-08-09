@@ -198,7 +198,7 @@
 > | :--- | :--- | :--- |
 > | **Git** (Fase 0) | el mensaje del commit | el **hash** (`a3f9c21…`) |
 > | **VirtualBox** (aquí) | `Fase 1 terminada` | el **UUID** |
-> | **Active Directory** (Fase 4) | el usuario `user1` | el **SID** |
+> | **Active Directory** (Fase 4) | el usuario `hiroshi.nohara` | el **SID** |
 >
 > Los sistemas serios **nunca** identifican las cosas por su nombre visible, porque los nombres cambian. Cuando entiendas esto, entenderás por qué en la Fase 5 hay que traducir SIDs a UIDs con winbind.
 

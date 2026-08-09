@@ -17,7 +17,7 @@
 > Integrar el servicio **winbind** (el "traductor") en el servidor para que Linux reconozca a los usuarios de Windows como ciudadanos de primer nivel del sistema de archivos. Cada usuario y grupo tendrá un UID/GID permanente, y cualquier archivo creado podrá ser compartido y editado por sus compañeros de grupo con permisos claros.
 
 > [!abstract] 🏢 A partir de aquí, el laboratorio tiene nombre: **Boochan S.L.**
-> Se acabaron los `user1` y `user2`. Vas a dar de alta a **una plantilla entera**: seis departamentos y doce trabajadores, con nombres, apellidos y un puesto.
+> Aquí no hay usuarios de juguete. Vas a dar de alta a **una plantilla entera**: seis departamentos y doce trabajadores, con nombres, apellidos y un puesto.
 >
 > **Todo el escenario —nombres, UID, GID y la matriz de permisos que aplicarás en la Fase 7— está en [[Escenario_Boochan_SL]].** Léelo antes de empezar: es la fuente de verdad de las fases 5 a 8.
 
