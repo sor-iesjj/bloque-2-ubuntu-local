@@ -325,7 +325,7 @@ sudo ./verificar_fase7.sh
 | Líneas `default:` | **Han desaparecido** |
 | `antes.txt` | **Tiene** el permiso del grupo |
 | `despues.txt` | **NO lo tiene** |
-| El verificador | **FALLO en `B3`** |
+| El verificador | **FALLO en un `B…-bis`** *(la herencia)* |
 
 > [!danger] 🤯 Dos ficheros en la misma carpeta con permisos distintos
 > Nadie ha tocado los ficheros. Nadie ha cambiado los permisos de la carpeta. **Y sin embargo lo que se crea hoy sale distinto de lo que se creó ayer.**
@@ -371,7 +371,7 @@ sudo ./verificar_fase7.sh
 Copia de seguridad primero — **siempre, antes de tocar `smb.conf`**:
 ```bash
 sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
-sudo sed -i 's/^\( *access based share enum *=\) *yes/\1 no/I' /etc/samba/smb.conf
+sudo sed -i '/^\[facturacion\]/,/^\[/ s/^\( *access based share enum *=\) *yes/\1 no/I' /etc/samba/smb.conf
 sudo testparm -s --section-name=facturacion | grep -i "access based"
 ```
 Y aplica el cambio, **validando antes**:
@@ -397,7 +397,7 @@ sudo ./verificar_fase7.sh
 | `ls -ld` | **Perfecto** | La carpeta está igual |
 | `is-active` | `active` | El servicio va bien |
 | `testparm -s` | `access based share enum = No` | **Aquí está** |
-| El verificador | **FALLO en `D1`** | Es lo único que avisa |
+| El verificador | **FALLO en el bloque `F`** *(ABE)* | Es lo único que avisa |
 
 > [!danger] 🤯 Fíjate en lo que NO ha pasado
 > **Nada.** El acceso sigue perfectamente protegido: `shinnosuke.nohara` no puede entrar en la carpeta. Los permisos son correctos, las ACL son correctas, el servicio funciona.
@@ -462,7 +462,7 @@ sudo ./verificar_fase7.sh
 | Comando | Qué verás | Qué significa |
 | :--- | :--- | :--- |
 | `testparm` | **Un error con su línea** | El validador ha hecho su trabajo |
-| El verificador | **FALLO en `C1`** | Y te dice que no reinicies |
+| El verificador | **FALLO en `E1`** *(testparm)* | Y te dice que no reinicies |
 | `samba-ad-dc` | **Sigue `active`** | Porque no lo has reiniciado |
 
 > [!success] 🎯 Esto es lo que tenías que ver
@@ -532,7 +532,7 @@ sudo ./verificar_fase7.sh
 | `grep -n` | **Dos líneas** con `[facturacion]` | Está duplicada |
 | `testparm` | **No da error grave** | La sintaxis es correcta |
 | `testparm -s --section-name` | La configuración **de la última** | Samba se queda con una |
-| El verificador | **FALLO en `C4`** | Lo cuenta y lo dice |
+| El verificador | **FALLO en `E2-bis`** | Lo cuenta y lo dice |
 
 > [!important] ✍️ Aquí anota tú lo que veas
 > **Compara lo que dice `testparm -s --section-name=facturacion` con lo que tú escribiste al principio en el `smb.conf`.** ¿Coinciden? ¿Qué opciones se han perdido por el camino?

@@ -74,7 +74,9 @@
 ---
 
 > [!abstract] 📋 Qué se te evalúa (resumen)
-> **RA.04** — CE.04.a · CE.04.b · CE.04.c · CE.04.d · CE.04.e · CE.04.f · CE.04.g
+> **RA.04** — CE.04.a · CE.04.b · CE.04.c · CE.04.f
+>
+> *(`CE.04.d` y `CE.04.g` quedan fuera del itinerario; `CE.04.e` se evalúa en la **Fase 8**.)*
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_7.1_Que_Se_Evalua]]
 

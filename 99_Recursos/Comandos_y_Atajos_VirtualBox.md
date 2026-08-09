@@ -16,7 +16,7 @@ Esta guía no existe en BoochanV2 (Azure) ni en BoochanV3 (AWS), porque allí la
 > | VM | RAM | vCPU | Disco (VDI dinámico) | Uso |
 > | :--- | :--- | :--- | :--- | :--- |
 > | `UbuntuServer` | 2048 MB (subir a 3072-4096 MB en Fase 4) | 2 | 20 GB | Servidor Samba AD DC |
-> | `Cliente-Windows11` | 4096 MB (6144 MB si el host tiene ≥16 GB) | 2 | 40 GB | Cliente de dominio |
+> | `Windows11` | 4096 MB (6144 MB si el host tiene ≥16 GB) | 2 | 40 GB | Cliente de dominio |
 >
 > El tipo de disco **VDI de asignación dinámica** es el recomendado siempre: el archivo empieza pequeño y crece según se necesita, en vez de reservar de golpe todo el espacio.
 

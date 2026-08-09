@@ -24,7 +24,7 @@
 > ```bash
 > hostname
 > ```
-> Tiene que responder **`ubuntuserver`** → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
+> Tiene que responder **`UbuntuServer`** → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
 
 ### **1 · LA BASE DE LAS FASES 5 Y 6 SIGUE EN PIE**
 

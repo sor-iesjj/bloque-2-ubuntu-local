@@ -230,7 +230,7 @@
 > - **✅ Bien:** **dos personas en cada departamento**, las del escenario.
 >
 > > [!bug] 🛑 ¿Estás seguro de que esto lo ha contestado el SERVIDOR?
-> > Si administras por SSH: `hostname` tiene que responder `ubuntuserver` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
+> > Si administras por SSH: `hostname` tiene que responder `UbuntuServer` → si no, [[Fase_4.7_Resolucion_Problemas#E11 · Los comandos me responden pero contestan mal|caso E11 de la Fase 4]].
 
 ---
 

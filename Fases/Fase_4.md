@@ -12,7 +12,7 @@
 > **⏱️ Tiempo estimado:** ~2,5 horas (teoría + práctica + retos + troubleshooting)  
 > **Requisitos:** VM con 3072-4096 MB RAM asignados en VirtualBox (según la nota de dimensionado de la Fase 1) | Git | Samba disponible
 >
-> **📦 Entrega:** una entrada de apuntes + un vídeo + la instantánea `Fase 4 terminada`
+> **📦 Entrega:** una entrada de apuntes + **tres vídeos** + la instantánea `Fase 4 terminada`
 
 ---
 
@@ -21,7 +21,7 @@
 > [!warning] 📖 Esta fase va en doce documentos, no en uno
 > Cada apartado es un fichero aparte, dentro de la carpeta `Fase_4/`. **Se leen en orden**, pero puedes volver a cualquiera sin perderte: al final de cada uno tienes la navegación.
 >
-> **La fase completa es UNA sola entrega:** una entrada de apuntes y un vídeo, no diez.
+> **Toda la fase produce UNA sola entrada de apuntes**, no una por documento. Los vídeos sí son tres: aprovisionamiento, laboratorio de averías y punto de control.
 
 > [!important] ✍️ PASO 0 — Abre tu entrada de apuntes AHORA, antes de leer nada
 > **No esperes al apartado 6.** Créala ya, vacía, y tenla abierta en una pestaña mientras lees:
@@ -68,7 +68,9 @@
 ---
 
 > [!abstract] 📋 Qué se te evalúa (resumen)
-> **RA.03** — CE.03.a · CE.03.b · CE.03.c · CE.03.d · CE.03.e · CE.03.f · CE.03.g · CE.03.h
+> **RA.03** — CE.03.a · CE.03.b · CE.03.d · CE.03.e · CE.03.g · CE.03.h
+>
+> *(`CE.03.c` y `CE.03.f` son de RA.03 pero **no se evalúan en esta fase** — mira el detalle.)*
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_4.1_Que_Se_Evalua]]
 

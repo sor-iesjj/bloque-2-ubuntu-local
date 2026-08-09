@@ -41,7 +41,7 @@
 - [ ] `lsattr /etc/resolv.conf` muestra el atributo **`i`**.
 - [ ] `getent hosts archive.ubuntu.com` responde *(el reenviador funciona)*.
 
-## **5 · EL LABORATORIO DE AVERÍAS** *(entrega 3)*
+## **5 · EL LABORATORIO DE AVERÍAS** *(entrega 2)*
 
 - [ ] Las **seis averías** provocadas y reparadas, **en dos sesiones** (1-3 servicio y DNS, 4-6 fallos silenciosos).
 - [ ] **Predicción escrita antes** de cada una.
@@ -54,7 +54,7 @@
 
 ## **7 · LA ENTREGA**
 
-- [ ] Las **cuatro entradas** de apuntes, con sus **cuatro enlaces de vídeo**.
+- [ ] **La entrada** de apuntes de la fase, con sus **tres enlaces de vídeo** dentro.
 - [ ] Preguntas críticas contestadas.
 - [ ] `commit` y `push` hechos.
 
