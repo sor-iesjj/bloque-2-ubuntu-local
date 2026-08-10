@@ -13,11 +13,16 @@
 > 3. 🔬 **Reto práctico:** ejecuta `id hiroshi.nohara` e `id misae.nohara`. Anota UID y GID de cada uno. Ahora crea un fichero en su nombre y mira de quién es:
 >    ```bash
 >    sudo mkdir -p /tmp/pruebas_fase5
+>    sudo chmod 1777 /tmp/pruebas_fase5
 >    sudo -u 'BOOCHANLAB\hiroshi.nohara' touch /tmp/pruebas_fase5/hola.txt
 >    ls -l  /tmp/pruebas_fase5/
 >    ls -ln /tmp/pruebas_fase5/
 >    ```
 >    ¿A qué usuario y grupo pertenece? ¿Coincide con lo que anotaste? **¿Y qué diferencia hay entre lo que enseña `ls -l` y lo que enseña `ls -ln`?**
+>
+>    > 💡 El `chmod 1777` no es decorativo: sin él la carpeta es de `root` y `hiroshi.nohara` **no puede escribir dentro**. Es el mismo `1777` de la carpeta común de la Fase 6.
+>
+>    ⚠️ **Ojo al grupo del fichero.** No es `facturacion`. **Y eso es la pregunta.** ¿Por qué en `/tmp` sale un grupo y en `/srv/samba/departamentos/facturacion` saldría otro? *(La respuesta la montaste tú en la Fase 6.)*
 > 4. 🔬 **Reto práctico:** crea un usuario **sin** especificar UID y mira qué número le toca:
 >    ```bash
 >    sudo samba-tool user create prueba.temporal 'P@ssw0rd'
