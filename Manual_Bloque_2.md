@@ -3,7 +3,7 @@
 > **Módulo:** Sistemas Operativos en Red (SOR) · 2.º Curso SMR
 > **Profesor:** Pedro Navarro Miralles · IES Jorge Juan (Alicante)
 > **Correo:** p.navarromiralles2@edu.gva.es
-> **Entorno:** VirtualBox (máquina virtual local, sin cuenta cloud) — adaptación local de BoochanV2 (Azure) y BoochanV3 (AWS)
+> **Entorno:** VirtualBox (máquina virtual local, sin cuenta cloud) — adaptación local del Bloque 4 (Ubuntu en la nube: Azure y AWS)
 > **RA cubiertos:** RA.01, RA.02, RA.03, RA.04, RA.05, RA.06
 > **⏱️ Tiempo estimado total:** ~14-15 horas repartidas en 9 sesiones (ver desglose por fase más abajo)
 
@@ -11,19 +11,19 @@
 
 ## ¿Qué es este proyecto?
 
-BoochanV1 es un itinerario práctico de **8 fases + auditoría final** en el que el alumno construye, desde cero y **dentro de su propio ordenador** (sin cuenta cloud, sin coste, sin depender de la conexión del aula), una infraestructura profesional completa: un servidor Ubuntu con **Controlador de Dominio (Samba AD DC)**, **VPN WireGuard**, **cuotas de disco**, **permisos avanzados (ACL + ABE)** y un **cliente Windows 11** integrado en el dominio — todo ello ejecutado como máquinas virtuales dentro de **VirtualBox**.
+El Bloque 2 es un itinerario práctico de **8 fases + auditoría final** en el que el alumno construye, desde cero y **dentro de su propio ordenador** (sin cuenta cloud, sin coste, sin depender de la conexión del aula), una infraestructura profesional completa: un servidor Ubuntu con **Controlador de Dominio (Samba AD DC)**, **VPN WireGuard**, **cuotas de disco**, **permisos avanzados (ACL + ABE)** y un **cliente Windows 11** integrado en el dominio — todo ello ejecutado como máquinas virtuales dentro de **VirtualBox**.
 
-Es la versión **local** del proyecto Boochan. La teoría, los comandos y los ejercicios son los mismos que en BoochanV2 (Azure) y BoochanV3 (AWS), pero adaptados al ecosistema de virtualización de escritorio: **VirtualBox, Red Solo Anfitrión (Host-Only), adaptador NAT y snapshots**, en lugar de EC2/VM cloud, Security Groups/NSG e IPs públicas.
+Es la versión **local** del proyecto Boochan. La teoría, los comandos y los ejercicios son los mismos que en el **Bloque 4 · Ubuntu en la nube** (Azure y AWS), pero adaptados al ecosistema de virtualización de escritorio: **VirtualBox, Red Solo Anfitrión (Host-Only), adaptador NAT y snapshots**, en lugar de EC2/VM cloud, Security Groups/NSG e IPs públicas.
 
 ---
 
-## ¿Por qué una versión local? Diferencias con BoochanV2 y BoochanV3
+## ¿Por qué una versión local? Diferencias con el Bloque 4 (Ubuntu en la nube)
 
-**El itinerario pedagógico es idéntico** en las tres versiones: mismo dominio Active Directory con Samba, misma VPN WireGuard, mismas cuotas con Loop Devices, mismas ACL + ABE, mismo cliente Windows 11 integrado. Un alumno que complete BoochanV1 ha aprendido exactamente los mismos conceptos y comandos que uno que complete BoochanV2 o BoochanV3 — samba-tool, setfacl, wg-quick, fstab con `loop`, RSAT, todo se reutiliza sin cambios de fondo.
+**El itinerario pedagógico es idéntico** en las tres versiones: mismo dominio Active Directory con Samba, misma VPN WireGuard, mismas cuotas con Loop Devices, mismas ACL + ABE, mismo cliente Windows 11 integrado. Un alumno que complete el Bloque 2 ha aprendido exactamente los mismos conceptos y comandos que uno que haga el Bloque 4 en Azure o en AWS — samba-tool, setfacl, wg-quick, fstab con `loop`, RSAT, todo se reutiliza sin cambios de fondo.
 
-Lo que cambia es **dónde vive la infraestructura y quién es responsable de que funcione**. En BoochanV2 y BoochanV3 el alumno "alquila" un servidor real en Azure o AWS: hay una IP pública, un firewall perimetral gestionado por el proveedor (NSG / Security Group) y una cuenta cloud con crédito limitado (AWS Academy Learner Lab). En **BoochanV1 no hay proveedor, no hay factura, no hay cuenta que crear ni credencial que perder**: el alumno es "el superordenador" — VirtualBox reparte la RAM y CPU de su propio portátil entre el sistema anfitrión (host) y dos máquinas virtuales (servidor Ubuntu + cliente Windows 11), conectadas entre sí por una **Red Solo Anfitrión** privada y aislada de la red del instituto. No hay Security Group que abrir: el filtrado de tráfico se hace *dentro* del propio servidor con `ufw`, como se ve en la Auditoría Final.
+Lo que cambia es **dónde vive la infraestructura y quién es responsable de que funcione**. En el Bloque 4 el alumno "alquila" un servidor real en Azure o AWS: hay una IP pública, un firewall perimetral gestionado por el proveedor (NSG / Security Group) y una cuenta cloud con crédito limitado (AWS Academy Learner Lab). En el **Bloque 2 no hay proveedor, no hay factura, no hay cuenta que crear ni credencial que perder**: el alumno es "el superordenador" — VirtualBox reparte la RAM y CPU de su propio portátil entre el sistema anfitrión (host) y dos máquinas virtuales (servidor Ubuntu + cliente Windows 11), conectadas entre sí por una **Red Solo Anfitrión** privada y aislada de la red del instituto. No hay Security Group que abrir: el filtrado de tráfico se hace *dentro* del propio servidor con `ufw`, como se ve en la Auditoría Final.
 
-Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para una cuenta cloud por alumno, cuando la conexión a internet del aula no es fiable, o simplemente como **primer contacto** con virtualización antes de dar el salto a la nube: entender cómo se construye un hipervisor de Tipo 2 en el propio hardware es la base sobre la que después se entiende, por comparación, qué hace realmente un proveedor cloud con un hipervisor de Tipo 1. Las limitaciones son las lógicas de trabajar con hardware compartido de aula: RAM limitada (portátiles de 8 GB compartidos entre turnos), dependencia de que VirtualBox esté ya instalado (los alumnos no tienen permisos de administrador) y el hecho de que, a diferencia de la nube, si el portátil se apaga o se queda sin batería, el "datacenter" del alumno se apaga con él.
+Esto hace que el Bloque 2 sea la opción preferible cuando no hay presupuesto para una cuenta cloud por alumno, cuando la conexión a internet del aula no es fiable, o simplemente como **primer contacto** con virtualización antes de dar el salto a la nube: entender cómo se construye un hipervisor de Tipo 2 en el propio hardware es la base sobre la que después se entiende, por comparación, qué hace realmente un proveedor cloud con un hipervisor de Tipo 1. Las limitaciones son las lógicas de trabajar con hardware compartido de aula: RAM limitada (portátiles de 8 GB compartidos entre turnos), dependencia de que VirtualBox esté ya instalado (los alumnos no tienen permisos de administrador) y el hecho de que, a diferencia de la nube, si el portátil se apaga o se queda sin batería, el "datacenter" del alumno se apaga con él.
 
 ---
 
@@ -31,7 +31,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 - **VirtualBox debe estar ya instalado** en el equipo del aula. Instalarlo requiere permisos de administrador del sistema operativo anfitrión, y **los alumnos no tienen esos permisos**. Si VirtualBox no está instalado y el alumno no puede instalarlo, la práctica **no es viable en ese equipo** — hay que avisar al profesor para que el departamento de informática del centro lo instale de antemano en la imagen del equipo, o usar un equipo personal con permisos completos. Ver el detalle completo en la advertencia de la **[Fase 1](Fases/Fase_1_Infraestructura_Virtual_Local.md)**.
 - **RAM mínima recomendada:** 2 GB libres para la VM del servidor en las Fases 1-3 (subir a 3-4 GB a partir de la Fase 4, cuando se provisiona Samba AD DC), más 4 GB adicionales para la VM cliente Windows 11 a partir de la Fase 8. En un portátil de aula de 8 GB totales, es fácil quedarse justo si ambas VMs están encendidas a la vez — cierra el resto de aplicaciones del host antes de trabajar.
-- **Disco libre:** al menos 20 GB para la VM del servidor (disco VDI dinámico) + 40 GB para la VM cliente Windows 11 + margen para los discos virtuales de cuotas de la Fase 6 (2×5 GB).
+- **Disco libre:** al menos 20 GB para la VM del servidor (disco VDI dinámico) + 40 GB para la VM cliente Windows 11 + margen para los discos virtuales de cuotas de la Fase 6 (**8 GB + 2 GB = 10 GB**).
 - **Virtualización por hardware (VT-x/AMD-V) activada en la BIOS** del equipo anfitrión. En equipos de aula gestionados centralizadamente puede estar bloqueada — si el instalador de VirtualBox no arranca la VM, es la primera causa a descartar con el profesor.
 - **ISOs necesarias:** Ubuntu Server 26.04 LTS (Fase 1) y Windows 11 (Fase 8).
 
@@ -57,7 +57,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 **[Fase 2 — Purga y Preparación del Entorno](Fases/Fase_2_Purga_y_Preparacion_del_Entorno.md):** se elimina el Samba preinstalado (libera el puerto 445), se instalan las dependencias de Samba AD DC/Kerberos/winbind, y se configura el FQDN completo del servidor (`UbuntuServer.BOOCHANLAB.LOCAL`) en `/etc/hostname` y `/etc/hosts`, requisito imprescindible para que Kerberos funcione en la Fase 4.
 
-**[Fase 3 — Conectividad VPN (WireGuard)](Fases/Fase_3_Conectividad_VPN_WireGuard.md):** se instala un túnel WireGuard (`10.20.20.0/24`) aunque la Red Solo Anfitrión ya esté aislada de internet por diseño — el objetivo es puramente pedagógico: aprender a construir y verificar un túnel VPN cifrado punto a punto, la misma habilidad que en BoochanV2/V3 sí resuelve un problema real de exposición pública.
+**[Fase 3 — Conectividad VPN (WireGuard)](Fases/Fase_3_Conectividad_VPN_WireGuard.md):** se instala un túnel WireGuard (`10.20.20.0/24`) aunque la Red Solo Anfitrión ya esté aislada de internet por diseño — el objetivo es puramente pedagógico: aprender a construir y verificar un túnel VPN cifrado punto a punto, la misma habilidad que en el Bloque 4 (nube) sí resuelve un problema real de exposición pública.
 
 **[Fase 4 — Aprovisionamiento del Dominio (Samba AD DC)](Fases/Fase_4_Aprovisionamiento_del_Dominio.md):** se ejecuta el script `provision_boochan.sh` (variables `BOOCHANLAB` / `BOOCHANLAB.LOCAL`) que provisiona el Active Directory con LDAP, Kerberos y DNS interno, y hace inmutable `/etc/resolv.conf` (`chattr +i`) para que apunte siempre a `127.0.0.1`. Aquí no hay ningún Security Group ni NSG que abrir: la Red Solo Anfitrión no filtra tráfico entre VMs.
 
@@ -75,7 +75,7 @@ Esto hace que BoochanV1 sea la opción preferible cuando no hay presupuesto para
 
 ## 📊 Datos clave del proyecto
 
-| Concepto | Valor en BoochanV1 |
+| Concepto | Valor en el Bloque 2 |
 | :--- | :--- |
 | **Nombre NetBIOS** | `BOOCHANLAB` |
 | **Realm (dominio completo)** | `BOOCHANLAB.LOCAL` |

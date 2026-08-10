@@ -6,7 +6,7 @@
 
 Itinerario práctico de **8 fases + auditoría final** en el que construyes una infraestructura de servidor completa (Controlador de Dominio, VPN, cuotas, permisos y cliente Windows 11).
 
-**Esta versión (BoochanV1):** Ubuntu Server + Samba AD DC — **VM local (VirtualBox)**.
+**Este bloque:** Ubuntu Server + Samba AD DC — **máquina virtual local (VirtualBox)**.
 
 ---
 
@@ -21,7 +21,7 @@ Itinerario práctico de **8 fases + auditoría final** en el que construyes una 
 4. A medida que avances y hagas cambios, súbelos a **tu** repositorio:
    ```bash
    git add .
-   git commit -m "Mis avances en BoochanV1"
+   git commit -m "Mis avances en el Bloque 2"
    git push
    ```
 
