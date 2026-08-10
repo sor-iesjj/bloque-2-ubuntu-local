@@ -11,7 +11,7 @@
 > A diferencia de un despliegue en la nube (donde el cliente Windows sería un PC físico del aula conectándose por Internet y VPN), aquí **el cliente Windows 11 es otra máquina virtual** dentro del mismo VirtualBox que el servidor. Ambas VMs comparten la misma **Red Solo Anfitrión (Host-Only)** de VirtualBox — la misma red del laboratorio (`10.10.10.0/24`) que ya creaste y configuraste en la Fase 1 — un cable de red virtual que conecta servidor, cliente y tu propio ordenador. Esto es clave porque los equipos de Consellería de las aulas no dan permisos de administrador sobre el sistema físico (el host): todo lo que se pueda tocar o romper debe vivir *dentro* de las VMs, nunca en el host.
 
 > [!important] 2. ¿Por qué esta vez NO hace falta VPN?
-> En BoochanV2/V3 (servidor en la nube), el cliente Windows estaba en un PC físico distinto, conectado a Internet, y necesitaba el túnel WireGuard para "entrar" en la red privada del servidor. Aquí no: el cliente Windows 11 **ya vive dentro de la misma Red Solo Anfitrión que el servidor** (`10.10.10.0/24`), así que hablan directamente, sin cifrado adicional ni túnel de por medio. El túnel WireGuard (`10.20.20.1` / `10.20.20.2`) que configuraste en fases anteriores sigue existiendo — pero es para el acceso *remoto* de administración desde tu equipo host, no para que el cliente de dominio funcione.
+> En el Bloque 4 (servidor en la nube), el cliente Windows estaba en un PC físico distinto, conectado a Internet, y necesitaba el túnel WireGuard para "entrar" en la red privada del servidor. Aquí no: el cliente Windows 11 **ya vive dentro de la misma Red Solo Anfitrión que el servidor** (`10.10.10.0/24`), así que hablan directamente, sin cifrado adicional ni túnel de por medio. El túnel WireGuard (`10.20.20.1` / `10.20.20.2`) que configuraste en fases anteriores sigue existiendo — pero es para el acceso *remoto* de administración desde tu equipo host, no para que el cliente de dominio funcione.
 
 > [!warning] 3. Sincronización Horaria (NTP)
 > Kerberos (el sistema de tickets) utiliza marcas de tiempo para evitar ataques. Si el reloj del PC y el del Servidor varían más de **5 minutos (Clock Skew)**, la comunicación se cortará por seguridad y no podrás iniciar sesión. Esto es especialmente fácil que ocurra en VirtualBox: las VMs paradas o suspendidas pierden la noción del tiempo real y hay que forzar la resincronización al arrancarlas.
@@ -70,7 +70,7 @@
 > >
 > > Marca la casilla **`Omitir instalación desatendida`** *(«Skip Unattended Installation»)* y el campo desaparece. Instalas tú a mano, como toca.
 > >
-> > **Ya te pasó con Ubuntu** en la **Bloque 2 · Fase 1.6.a**: es exactamente la misma casilla. [[Fase_1.6.a_Procedimiento_Maquina_Virtual]]
+> > **Ya te pasó con Ubuntu** en el **Bloque 2 · Fase 1.6.a**: es exactamente la misma casilla. [[Fase_1.6.a_Procedimiento_Maquina_Virtual]]
 
 > [!example] Paso 0.b: CONFIGURAR la VM *(ya creada, y APAGADA)*
 > **Esto no está en el asistente.** `Configuración` **no existe hasta que la máquina está creada** — si buscas TPM mientras la creas, no lo vas a encontrar.

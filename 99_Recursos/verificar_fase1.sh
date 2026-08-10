@@ -39,7 +39,7 @@ fi
 
 {
   echo "============================================================"
-  echo " VERIFICACION DE LA FASE 1 - BoochanV1"
+  echo " VERIFICACION DE LA FASE 1 - Bloque 2"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
   echo " Servidor: $(hostname)"
   echo "============================================================"

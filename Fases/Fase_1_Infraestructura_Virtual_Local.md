@@ -89,7 +89,7 @@
 > - Usuario `boochan` y acceso **por SSH desde tu propia terminal**
 > - El nombre del dominio del proyecto anotado: `BOOCHANLAB` / `BOOCHANLAB.LOCAL`
 >
-> Sobre eso se construye todo BoochanV1.
+> Sobre eso se construye todo el Bloque 2.
 
 > [!abstract] 📋 Qué se te evalúa (resumen)
 > **`RA.01`** *(35 % del módulo, el más alto)* — `CE.01.a` · `CE.01.b` · `CE.01.c` · `CE.01.e` · `CE.01.g` · `CE.01.i`

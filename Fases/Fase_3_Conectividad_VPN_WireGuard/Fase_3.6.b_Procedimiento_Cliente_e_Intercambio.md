@@ -66,7 +66,7 @@
 > > Primero el Paso 4 (darle tu llave al servidor). **Activarás al final, y te lo diré.**
 >
 > > [!important] 💡 ¿Y el `Endpoint`? Aquí es distinto a la versión cloud
-> > En BoochanV2/V3 el `Endpoint` era la IP pública del servidor en internet. Aquí, como todo vive dentro de VirtualBox, el `Endpoint` es simplemente la IP de la **Red Solo Anfitrión** del servidor: `10.10.10.10:51820`. El `PersistentKeepalive` sigue siendo una buena práctica a mantener (evita que ciertos firewalls o el propio sistema operativo den por "muerta" una conexión inactiva), aunque en una red local su necesidad real sea menor que atravesando el NAT de un proveedor cloud.
+> > En el Bloque 4 (la nube) el `Endpoint` era la IP pública del servidor en internet. Aquí, como todo vive dentro de VirtualBox, el `Endpoint` es simplemente la IP de la **Red Solo Anfitrión** del servidor: `10.10.10.10:51820`. El `PersistentKeepalive` sigue siendo una buena práctica a mantener (evita que ciertos firewalls o el propio sistema operativo den por "muerta" una conexión inactiva), aunque en una red local su necesidad real sea menor que atravesando el NAT de un proveedor cloud.
 
 > [!danger] ⚠️ El error más común de esta fase: copiar el bloque del cliente en el servidor
 > Los dos ficheros se parecen muchísimo y es facilísimo pegar el que no es. **No son intercambiables.** Así queda cada uno:

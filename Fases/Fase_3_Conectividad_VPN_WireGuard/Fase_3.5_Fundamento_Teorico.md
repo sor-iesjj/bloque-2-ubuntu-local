@@ -59,7 +59,7 @@
 ### 🔓 Firewall Local: por qué aquí no hay "Security Group" que configurar
 
 > [!info] Sin NSG, sin Security Group... sin nada que abrir
-> En BoochanV2 (Azure) y BoochanV3 (AWS) esta sección se dedicaba a abrir el puerto 51820/UDP en el firewall del proveedor cloud (NSG o Security Group). **En tu laboratorio local no existe ese firewall perimetral**: la Red Solo Anfitrión de VirtualBox no filtra tráfico entre el host y las VMs que la comparten, así que el paquete UDP de WireGuard llega sin obstáculos de un extremo a otro. No tienes ningún portal que abrir.
+> En el Bloque 4 (Azure y AWS) esta sección se dedicaba a abrir el puerto 51820/UDP en el firewall del proveedor cloud (NSG o Security Group). **En tu laboratorio local no existe ese firewall perimetral**: la Red Solo Anfitrión de VirtualBox no filtra tráfico entre el host y las VMs que la comparten, así que el paquete UDP de WireGuard llega sin obstáculos de un extremo a otro. No tienes ningún portal que abrir.
 >
 > > [!tip] 💡 Verificación rápida: ¿tiene Ubuntu su propio firewall activo?
 > > Ubuntu Server incluye `ufw` (Uncomplicated Firewall), pero **viene desactivado por defecto** tras una instalación limpia. Compruébalo:

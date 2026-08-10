@@ -14,7 +14,7 @@
 > - Usuario `boochan` y acceso **por SSH desde tu propia terminal**
 > - El nombre del dominio del proyecto anotado: `BOOCHANLAB` / `BOOCHANLAB.LOCAL`
 >
-> Sobre eso se construye todo BoochanV1.
+> Sobre eso se construye todo el Bloque 2.
 
 > [!info] ℹ️ Lo que NO entra en esta fase
 > Actualizar el sistema y limpiarlo de software que estorba es la **Fase 2**. Aquí solo se instala y se comprueba. Si al entrar te encuentras actualizaciones pendientes, déjalas: tienen su momento.
@@ -29,7 +29,7 @@
 ### 6.a · La máquina virtual
 
 > [!info] El punto de partida
-> Esta es la primera piedra de BoochanV1. En BoochanV2 y V3 alquilabas un servidor en la nube; aquí lo vas a construir **dentro de tu propio ordenador**, con VirtualBox.
+> Esta es la primera piedra del Bloque 2. En el Bloque 4 alquilabas un servidor en la nube; aquí lo vas a construir **dentro de tu propio ordenador**, con VirtualBox.
 
 > [!warning] El problema
 > No siempre hay presupuesto ni conexión fiable en el aula para una cuenta cloud por alumno. Y hay algo más de fondo: entender la virtualización **local** — la que corre sobre tu hardware — es lo que luego te permite entender la de la nube. Antes de alquilarle un ordenador virtual a Microsoft, conviene saber crear uno.

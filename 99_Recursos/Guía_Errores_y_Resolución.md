@@ -1,9 +1,9 @@
-# 🚨 Guía de Errores y Resolución — Proyecto BoochanV1 (VirtualBox)
+# 🚨 Guía de Errores y Resolución — Bloque 2 (VirtualBox)
 
 > [!info] Cómo usar esta guía
 > Este documento recoge todos los errores conocidos organizados por fase. Cada error tiene un código único (`Fase.Número`). Si algo no funciona, localiza la fase en la que estás, busca el error que más se parece a lo que ves en pantalla y sigue el procedimiento paso a paso.
 >
-> A diferencia de BoochanV2/V3 (donde el rescate de un servidor bloqueado pasaba por la consola web de Azure/AWS), en BoochanV1 **siempre tienes la ventana de la VM de VirtualBox como último recurso**: aunque se rompa la red o el SSH, puedes iniciar sesión directamente desde esa ventana con el usuario y contraseña locales. Es la gran ventaja de trabajar en local.
+> A diferencia del Bloque 4 (la nube) (donde el rescate de un servidor bloqueado pasaba por la consola web de Azure/AWS), en el Bloque 2 **siempre tienes la ventana de la VM de VirtualBox como último recurso**: aunque se rompa la red o el SSH, puedes iniciar sesión directamente desde esa ventana con el usuario y contraseña locales. Es la gran ventaja de trabajar en local.
 
 ---
 
@@ -316,7 +316,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > Al intentar levantar el túnel desde el cliente, si el `Endpoint` del fichero de configuración del cliente está mal escrito.
 
 > [!example] Resolución
-> Recuerda que en BoochanV1 el `Endpoint` **no** es una IP pública de internet (como en V2/V3), sino la IP de la Red Solo Anfitrión del servidor:
+> Recuerda que en el Bloque 2 el `Endpoint` **no** es una IP pública de internet (como en el Bloque 4), sino la IP de la Red Solo Anfitrión del servidor:
 > ```ini
 > Endpoint = 10.10.10.10:51820
 > ```
@@ -337,7 +337,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > No. El comando falla al instante sin haber hecho ningún cambio en el servidor.
 
 > [!example] Resolución
-> Pide a tu profesor la URL real del repositorio **de BoochanV1 (Local)** — no confundas con la de V2 o V3, que usan un Realm distinto (`BOOCHAN.SPACE` en vez de `BOOCHANLAB.LOCAL`).
+> Pide a tu profesor la URL real del repositorio **del Bloque 2 (Local)** — no confundas con la del Bloque 4, que usan un Realm distinto (`BOOCHAN.SPACE` en vez de `BOOCHANLAB.LOCAL`).
 > ```bash
 > git clone https://la-url-real-de-V1 /opt/boochan
 > ```
@@ -534,7 +534,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > **Sí.** Es el error más grave de esta fase. El servidor entra en modo de emergencia y la conexión SSH deja de responder.
 
 > [!example] Resolución — Acceso de rescate (VirtualBox, sin SSH)
-> A diferencia de la nube (donde hacía falta SSM o la Consola Serie), en BoochanV1 el rescate es directo:
+> A diferencia de la nube (donde hacía falta SSM o la Consola Serie), en el Bloque 2 el rescate es directo:
 > 1. Abre la **ventana de la VM en VirtualBox** (doble clic sobre `UbuntuServer` en el VirtualBox Manager, o `Mostrar` si ya está en marcha).
 > 2. Verás la consola en modo emergencia o el prompt de login local. Inicia sesión con el usuario `boochan` y su contraseña.
 > 3. Corrige el archivo:
@@ -808,7 +808,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 > Si estás conectado por SSH desde una IP que no está dentro de `10.10.10.0/24` ni `10.20.20.0/24` (por ejemplo, si te conectaste directamente desde el host sin pasar por la Red Solo Anfitrión ni por el túnel) y activas `ufw` con la política `deny incoming`.
 
 > [!caution] ¿Hay que preocuparse?
-> **Sí**, aunque en BoochanV1 el rescate siempre está disponible: puedes recuperar el acceso abriendo la **ventana de la VM en VirtualBox** e iniciando sesión localmente, sin depender de ningún mecanismo externo.
+> **Sí**, aunque en el Bloque 2 el rescate siempre está disponible: puedes recuperar el acceso abriendo la **ventana de la VM en VirtualBox** e iniciando sesión localmente, sin depender de ningún mecanismo externo.
 
 > [!example] Resolución
 > 1. Abre la ventana de la VM `UbuntuServer` en VirtualBox e inicia sesión con el usuario `boochan`.

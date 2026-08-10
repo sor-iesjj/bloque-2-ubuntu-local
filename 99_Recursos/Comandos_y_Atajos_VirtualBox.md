@@ -1,6 +1,6 @@
 # 🖥️ Comandos y Atajos de VirtualBox
 
-Esta guía no existe en BoochanV2 (Azure) ni en BoochanV3 (AWS), porque allí la "máquina" ya viene creada por el proveedor cloud. En **BoochanV1 tú eres quien crea, configura y administra el hipervisor**, así que necesitas dominar la interfaz de VirtualBox tanto como los comandos de Linux. Úsala como referencia rápida a lo largo de las Fases 1 y 8 (creación de VMs) y en cualquier momento que necesites un snapshot de seguridad.
+Esta guía no existe en el Bloque 4, ni en Azure ni en AWS, porque allí la "máquina" ya viene creada por el proveedor cloud. En **el Bloque 2 tú eres quien crea, configura y administra el hipervisor**, así que necesitas dominar la interfaz de VirtualBox tanto como los comandos de Linux. Úsala como referencia rápida a lo largo de las Fases 1 y 8 (creación de VMs) y en cualquier momento que necesites un snapshot de seguridad.
 
 > [!info] Interfaz gráfica, no terminal
 > A diferencia del resto del Diccionario de Comandos (que son órdenes de texto), la mayoría de las acciones de esta guía se hacen con el **VirtualBox Manager**, la ventana principal del programa. Se indican las rutas de menú tal como aparecen en VirtualBox 7.x — en versiones distintas el texto exacto puede variar ligeramente, pero la ubicación es la misma.
@@ -12,7 +12,7 @@ Esta guía no existe en BoochanV2 (Azure) ni en BoochanV3 (AWS), porque allí la
 ### Crear una máquina virtual nueva
 > **Ruta:** `Máquina → Nueva` (o el botón `Nueva` en la barra superior)
 
-> [!example] Valores usados en BoochanV1 (Fase 1 y Fase 8)
+> [!example] Valores usados en el Bloque 2 (Fase 1 y Fase 8)
 > | VM | RAM | vCPU | Disco (VDI dinámico) | Uso |
 > | :--- | :--- | :--- | :--- | :--- |
 > | `UbuntuServer` | 2048 MB (subir a 3072-4096 MB en Fase 4) | 2 | 20 GB | Servidor Samba AD DC |
@@ -29,7 +29,7 @@ Esta guía no existe en BoochanV2 (Azure) ni en BoochanV3 (AWS), porque allí la
 ### Montar/desmontar una ISO en la unidad óptica virtual
 > **Ruta:** `Configuración → Almacenamiento` → selecciona el icono de disquete/CD bajo el controlador → icono de disco a la derecha → `Elegir un archivo de disco...`
 
-> [!example] Uso en BoochanV1
+> [!example] Uso en el Bloque 2
 > - Fase 1: montar la ISO de Ubuntu Server 26.04 LTS para instalar el servidor.
 > - Fase 8: montar la ISO de Windows 11 para instalar la VM cliente.
 > - Al terminar la instalación, VirtualBox expulsa la ISO automáticamente cuando el instalador te lo pide (pulsa Enter).
@@ -38,7 +38,7 @@ Esta guía no existe en BoochanV2 (Azure) ni en BoochanV3 (AWS), porque allí la
 
 ## 🌐 2. Redes: NAT y Red Solo Anfitrión (Host-Only)
 
-Esta es la parte más importante y la que más errores genera en BoochanV1. Repásala junto con la Fase 1.
+Esta es la parte más importante y la que más errores genera en el Bloque 2. Repásala junto con la Fase 1.
 
 ### Habilitar y configurar un adaptador de red
 > **Ruta:** Selecciona la VM (apagada) → `Configuración → Red` → pestañas `Adaptador 1`, `Adaptador 2`, etc.
@@ -54,14 +54,14 @@ Esta es la parte más importante y la que más errores genera en BoochanV1. Rep�
 >
 > *(En versiones más antiguas: `Archivo → Herramientas → Administrador de red del anfitrión`)*
 
-> [!example] Configuración de la red sólo-anfitrión en BoochanV1 (Fase 1.2)
+> [!example] Configuración de la red sólo-anfitrión en el Bloque 2 (Fase 1.2)
 > 1. Pestaña **Adaptador**:
 >    - Dirección IPv4: `10.10.10.1`
 >    - Máscara de subred: `255.255.255.0`
 > 2. Pestaña **Servidor DHCP**: **desmarcar** "Habilitar servidor" — la IP del servidor (`10.10.10.10`) y del cliente (`10.10.10.20`) se fijan a mano dentro de cada VM, no por DHCP.
 >
 > > [!important] 💡 Por qué evitamos el rango por defecto
-> > VirtualBox suele crear las redes sólo-anfitrión con el rango `192.168.56.0/24` de fábrica, y con máscara `255.255.0.0`. En BoochanV1 lo cambiamos deliberadamente a `10.10.10.0/24` para que nunca se confunda con una red Wi-Fi doméstica típica (`192.168.x.x`).
+> > VirtualBox suele crear las redes sólo-anfitrión con el rango `192.168.56.0/24` de fábrica, y con máscara `255.255.0.0`. En el Bloque 2 lo cambiamos deliberadamente a `10.10.10.0/24` para que nunca se confunda con una red Wi-Fi doméstica típica (`192.168.x.x`).
 
 ### Comprobar qué redes host-only existen y su estado
 > **Ruta:** Misma ventana que arriba (`Herramientas → Redes → Redes solo-anfitrión`). Muestra el nombre (el que sea en tu sistema), la IP del adaptador y si el DHCP está activo.
@@ -73,12 +73,12 @@ Esta es la parte más importante y la que más errores genera en BoochanV1. Rep�
 
 ## 📸 3. Snapshots (instantáneas)
 
-Los snapshots son la red de seguridad de BoochanV1: te permiten volver atrás si rompes algo en una fase, sin repetir toda la práctica desde cero. En la nube (V2/V3) esto lo resolvían los discos EBS/managed disks del proveedor; aquí lo resuelve VirtualBox directamente.
+Los snapshots son la red de seguridad del Bloque 2: te permiten volver atrás si rompes algo en una fase, sin repetir toda la práctica desde cero. En la nube (V2/V3) esto lo resolvían los discos EBS/managed disks del proveedor; aquí lo resuelve VirtualBox directamente.
 
 ### Crear un snapshot
 > **Ruta:** Selecciona la VM → `Máquina → Instantánea → Tomar...` (o el icono de cámara en la pestaña "Instantáneas" del panel derecho)
 
-> [!tip] 💡 Cuándo tomar un snapshot en BoochanV1
+> [!tip] 💡 Cuándo tomar un snapshot en el Bloque 2
 > - Justo después de terminar la **Fase 1** (VM instalada y con red verificada) — así nunca tienes que reinstalar Ubuntu desde cero.
 > - Justo después de terminar la **Fase 4** (dominio provisionado) — es el paso más largo y más propenso a fallos; si algo se rompe en la Fase 5 o 6, puedes volver aquí sin re-provisionar el AD.
 > - Antes de cualquier paso marcado como `⚠️ crítico` en las tablas de troubleshooting de las fases (por ejemplo, antes de editar `/etc/fstab` en la Fase 6).

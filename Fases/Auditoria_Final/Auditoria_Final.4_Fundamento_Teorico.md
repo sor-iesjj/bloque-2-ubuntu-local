@@ -9,7 +9,7 @@
 
 Para terminar el proyecto, debemos aplicar la filosofía **Zero Trust** (Confianza Cero). Hasta ahora, hemos priorizado que todo funcione: hemos dejado el servidor accesible desde cualquier interfaz de red para facilitar la configuración inicial. Un administrador profesional, una vez terminado el trabajo, debe "cerrar el castillo" y solo permitir el paso a quien esté dentro de la muralla — en este proyecto, eso significa la Red Solo Anfitrión del laboratorio (`10.10.10.0/24`) y el túnel VPN de administración (`10.20.20.0/24`).
 
-> [!info] Diferencia con BoochanV2/V3
+> [!info] Diferencia con el Bloque 4 (la nube)
 > En los proyectos en la nube (Azure/AWS), este hardening se hacía **fuera** del servidor, restringiendo el Grupo de Seguridad (NSG/Security Group) del proveedor cloud. Aquí no existe ese firewall externo: **VirtualBox no filtra el tráfico entre el host y las VMs de una misma Red Solo Anfitrión**, así que el filtrado tiene que hacerse **dentro** del propio Ubuntu Server, con su firewall local: **`ufw`** (*Uncomplicated Firewall*).
 
 ### 📖 Diccionario de Conceptos Clave

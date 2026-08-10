@@ -1,9 +1,9 @@
 # 📚 Diccionario de Comandos del Sistema
 
-Esta enciclopedia de bolsillo te servirá para entender "qué estás escribiendo" a lo largo de todas las fases del proyecto BoochanV1. Un administrador copia y pega; **un ingeniero entiende la sintaxis**.
+Esta enciclopedia de bolsillo te servirá para entender "qué estás escribiendo" a lo largo de todas las fases del proyecto el Bloque 2. Un administrador copia y pega; **un ingeniero entiende la sintaxis**.
 
 > [!info] Sobre este documento
-> Los comandos de Linux y Samba son exactamente los mismos que en BoochanV2 (Azure) y BoochanV3 (AWS) — `samba-tool`, `ufw`, `setfacl`, `wg`, etc. no cambian según dónde viva el servidor. Lo único adaptado aquí son los nombres de dominio y las IPs de ejemplo, que en BoochanV1 son `BOOCHANLAB.LOCAL` y `10.10.10.10` (en vez de `BOOCHAN.SPACE` y una IP pública/privada de nube). Para los comandos propios de la capa de virtualización local (crear VMs, redes host-only, snapshots), consulta [[Comandos_y_Atajos_VirtualBox]].
+> Los comandos de Linux y Samba son exactamente los mismos que en el Bloque 4 (Azure y AWS) — `samba-tool`, `ufw`, `setfacl`, `wg`, etc. no cambian según dónde viva el servidor. Lo único adaptado aquí son los nombres de dominio y las IPs de ejemplo, que en el Bloque 2 son `BOOCHANLAB.LOCAL` y `10.10.10.10` (en vez de `BOOCHAN.SPACE` y una IP pública/privada de nube). Para los comandos propios de la capa de virtualización local (crear VMs, redes host-only, snapshots), consulta [[Comandos_y_Atajos_VirtualBox]].
 
 ---
 
@@ -27,7 +27,7 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 
 > [!example] Ejemplos de uso:
 > - `hostname -f`: Muestra el FQDN "Fully Qualified Domain Name" (el nombre largo completo, ej: `UbuntuServer.BOOCHANLAB.LOCAL`).
-> - `hostname -I`: Muestra las Direcciones IP que tiene el servidor. En BoochanV1 verás **dos**: la de la Red Solo Anfitrión (`10.10.10.10`, fija) y la del adaptador NAT (dinámica, tipo `10.0.2.15`).
+> - `hostname -I`: Muestra las Direcciones IP que tiene el servidor. En el Bloque 2 verás **dos**: la de la Red Solo Anfitrión (`10.10.10.10`, fija) y la del adaptador NAT (dinámica, tipo `10.0.2.15`).
 
 ---
 
@@ -81,7 +81,7 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 > **Sintaxis:** `chattr [+|-atributo] [archivo]`
 
 > [!example] Ejemplo teórico y práctico (Fase 4):
-> - `sudo chattr +i /etc/resolv.conf`: Hace el archivo inmutable (`+i`), ni siquiera el administrador puede borrarlo. Para poder editarlo de nuevo se usa `sudo chattr -i`. En BoochanV1 esto es igual de necesario que en la nube: aunque no haya un proveedor cloud inyectando DNS, `systemd-resolved` puede reescribir el archivo igualmente en cada arranque de la VM.
+> - `sudo chattr +i /etc/resolv.conf`: Hace el archivo inmutable (`+i`), ni siquiera el administrador puede borrarlo. Para poder editarlo de nuevo se usa `sudo chattr -i`. En el Bloque 2 esto es igual de necesario que en la nube: aunque no haya un proveedor cloud inyectando DNS, `systemd-resolved` puede reescribir el archivo igualmente en cada arranque de la VM.
 
 ### Comando dd (Data Duplicator)
 > **Descripción:** Trabaja a un nivel muy bajo (ceros y unos). En nuestro proyecto lo usamos para "inflar" un archivo hasta que tiene el tamaño de un disco duro (Loop Device).
@@ -114,7 +114,7 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 > **Sintaxis:** `samba-tool [categoría] [acción] [parámetros]`
 
 > [!example] Ejemplos de uso de Provisiones y Usuarios (Fase 4 y 5):
-> - `sudo samba-tool domain provision --use-rfc2307 --realm=BOOCHANLAB.LOCAL --domain=BOOCHANLAB --interactive`: Este comando inicia un "wizard" (asistente interactivo) para convertir un pequeño servidor Linux en el Controlador Maestro del dominio `BOOCHANLAB.LOCAL`. En BoochanV1 se ejecuta automáticamente a través del script `provision_boochan.sh`.
+> - `sudo samba-tool domain provision --use-rfc2307 --realm=BOOCHANLAB.LOCAL --domain=BOOCHANLAB --interactive`: Este comando inicia un "wizard" (asistente interactivo) para convertir un pequeño servidor Linux en el Controlador Maestro del dominio `BOOCHANLAB.LOCAL`. En el Bloque 2 se ejecuta automáticamente a través del script `provision_boochan.sh`.
 > - `sudo samba-tool group add facturacion`: Da de alta el grupo "facturacion" en el dominio.
 > - `sudo samba-tool group addunixattrs facturacion 3001`: Inyecta la traducción (RFC2307) para que Linux asocie el grupo "facturacion" con el número **3001**. Indispensable.
 > - `sudo samba-tool user create hiroshi.nohara 'P@ssw0rd' --uid-number=10001 --gid-number=3001`: Crea un empleado y, a la vez, lo casa con el sistema numérico de seguridad interno del Kernel.
@@ -146,7 +146,7 @@ Systemd es el gestor central de Linux. Es el que arranca programas en segundo pl
 
 ## 🪟 6. Comandos Críticos Remotos (Windows CMD)
 
-Aunque Linux gobierna BoochanV1, comprobamos el éxito desde la VM cliente Windows 11 en la Fase 8 usando la CMD.
+Aunque Linux gobierna el Bloque 2, comprobamos el éxito desde la VM cliente Windows 11 en la Fase 8 usando la CMD.
 
 ### w32tm (Windows Time Service)
 > **Descripción:** Un protocolo criptográfico como Kerberos detesta las paradojas temporales. Si pasan 5 minutos diferentes entre un reloj y otro, los tickets de autenticación se rompen. Esto es especialmente fácil que ocurra en VirtualBox cuando una VM ha estado pausada o en estado "Guardado" varios días.

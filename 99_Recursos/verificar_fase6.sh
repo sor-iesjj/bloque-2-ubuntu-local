@@ -42,7 +42,7 @@ fi
 
 {
   echo "============================================================"
-  echo " VERIFICACION DE LA FASE 6 - BoochanV1"
+  echo " VERIFICACION DE LA FASE 6 - Bloque 2"
   echo " Escenario: Boochan S.L. - 6 carpetas de departamento + comun"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
   echo " Servidor: $(hostname)"

@@ -98,7 +98,7 @@ fi
 
 {
   echo "============================================================"
-  echo " VERIFICACION DE LA FASE 7 - BoochanV1"
+  echo " VERIFICACION DE LA FASE 7 - Bloque 2"
   echo " Escenario: Boochan S.L. - matriz de permisos por departamento"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
   echo " Servidor: $(hostname)"

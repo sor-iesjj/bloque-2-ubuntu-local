@@ -29,13 +29,13 @@
 
 ### 🔓 Firewall Local: por qué esta fase no tiene sección de puertos cloud
 
-> [!info] En BoochanV2/V3 aquí había 13 reglas que abrir en Azure/AWS — en local, cero
+> [!info] En el Bloque 4 (la nube) aquí había 13 reglas que abrir en Azure/AWS — en local, cero
 > Active Directory es un ecosistema de servicios que se hablan entre sí: Kerberos (88), DNS (53), LDAP (389/636), RPC (135 y el rango dinámico 49152-65535), SMB (445), cambio de contraseñas (464) y NTP (123). En las versiones cloud del proyecto, cada uno de esos puertos debía abrirse manualmente en el Security Group/NSG del proveedor, porque el tráfico entrante estaba bloqueado por defecto.
 >
 > **En tu Red Solo Anfitrión de VirtualBox no hay ningún firewall perimetral que bloquee ese tráfico entre VMs.** Todo el ecosistema de puertos de Active Directory funcionará entre el servidor (`10.10.10.10`) y la futura VM cliente Windows 11 sin que tengas que configurar nada adicional — el propio hecho de compartir el mismo segmento de Red Solo Anfitrión ya permite esa comunicación.
 >
 > > [!tip] 💡 ¿Merece la pena entender esos 13 puertos igualmente?
-> > Sí, y mucho. Aunque aquí no los "abras" en ningún portal, siguen siendo los mismos puertos que un Controlador de Dominio real usa en producción. Cuando en el futuro despliegues un dominio en una red corporativa con firewall perimetral, necesitarás saber exactamente qué puertos pedir que se abran. Consulta la tabla de referencia de BoochanV3 (`SOR/BoochanV3/Fases/Fase_4_Aprovisionamiento_del_Dominio.md`) si quieres repasar el propósito de cada uno — Kerberos (88), DNS (53), RPC (135), LDAP (389/636), SMB (445), RPC dinámico (49152-65535), cambio de contraseñas (464) y NTP (123).
+> > Sí, y mucho. Aunque aquí no los "abras" en ningún portal, siguen siendo los mismos puertos que un Controlador de Dominio real usa en producción. Cuando en el futuro despliegues un dominio en una red corporativa con firewall perimetral, necesitarás saber exactamente qué puertos pedir que se abran. Los tienes aquí: Kerberos (88), DNS (53), RPC (135), LDAP (389/636), SMB (445), RPC dinámico (49152-65535), cambio de contraseñas (464) y NTP (123).
 
 ---
 

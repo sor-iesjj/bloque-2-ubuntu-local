@@ -43,7 +43,7 @@ fi
 # Cabecera del informe. La fecha importa: permite saber CUANDO se verifico.
 {
   echo "============================================================"
-  echo " VERIFICACION DE LA FASE 3 - BoochanV1"
+  echo " VERIFICACION DE LA FASE 3 - Bloque 2"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
   echo " Servidor: $(hostname) / $(hostname -f 2>/dev/null)"
   echo "============================================================"

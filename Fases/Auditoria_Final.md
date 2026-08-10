@@ -37,4 +37,4 @@
 > - **El SSH directo se cierra** y se deja solo por el túnel WireGuard
 > - Auditoría de servicios: qué está escuchando y por qué
 
-**Siguiente:** nada. Has terminado BoochanV1. 🎉
+**Siguiente:** nada. Has terminado el Bloque 2. 🎉

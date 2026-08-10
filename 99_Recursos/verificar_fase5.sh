@@ -51,7 +51,7 @@ fi
 
 {
   echo "============================================================"
-  echo " VERIFICACION DE LA FASE 5 - BoochanV1"
+  echo " VERIFICACION DE LA FASE 5 - Bloque 2"
   echo " Escenario: Boochan S.L. - 6 departamentos, 12 trabajadores"
   echo " Fecha:    $(date '+%Y-%m-%d %H:%M:%S')"
   echo " Servidor: $(hostname) / $(hostname -f 2>/dev/null)"

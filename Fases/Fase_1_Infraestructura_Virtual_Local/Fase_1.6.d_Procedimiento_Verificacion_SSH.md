@@ -81,7 +81,7 @@
 > [!example] Paso 3: El dominio de todo el proyecto
 > No hay que ejecutar nada. Es información que debes **anotar en tu entrada**, porque la usarás en la Fase 2 (`/etc/hosts`) y sobre todo en la Fase 4 (creación del dominio):
 >
-> | Concepto | Valor en BoochanV1 |
+> | Concepto | Valor en el Bloque 2 |
 > | :--- | :--- |
 > | **Nombre NetBIOS** | `BOOCHANLAB` |
 > | **Realm (dominio completo)** | `BOOCHANLAB.LOCAL` |
@@ -90,7 +90,7 @@
 > | **Reservada para el futuro cliente Windows 11** | `10.10.10.20` |
 >
 > > [!info] ¿Por qué `.LOCAL` y no un dominio real de Internet?
-> > En BoochanV2/V3 se usa un dominio real (`BOOCHAN.SPACE`) porque el servidor tiene IP pública. Aquí no: tu servidor vive dentro de tu portátil, en una red invisible desde fuera. Un dominio de Active Directory privado **no necesita ser resoluble en Internet**, y usar terminaciones reservadas como `.LOCAL` es práctica estándar en redes internas de empresa — precisamente para dejar claro que ese nombre nunca debe salir a Internet.
+> > En el Bloque 4 (la nube) se usa un dominio real (`BOOCHAN.SPACE`) porque el servidor tiene IP pública. Aquí no: tu servidor vive dentro de tu portátil, en una red invisible desde fuera. Un dominio de Active Directory privado **no necesita ser resoluble en Internet**, y usar terminaciones reservadas como `.LOCAL` es práctica estándar en redes internas de empresa — precisamente para dejar claro que ese nombre nunca debe salir a Internet.
 
 > [!example] 🔌 Paso 4 — EJERCICIO: comprueba tu red desde fuera
 > Hasta aquí has comprobado tu red **con tus propias herramientas**. Ahora vas a contrastarla con fuentes **externas e independientes**, que es como se hace de verdad.

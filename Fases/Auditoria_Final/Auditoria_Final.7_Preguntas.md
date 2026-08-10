@@ -7,7 +7,7 @@
 
 ---
 
-1. ¿Por qué en este proyecto el hardening final se hace con `ufw` dentro del servidor, y no con un firewall externo como en BoochanV2/V3?
+1. ¿Por qué en este proyecto el hardening final se hace con `ufw` dentro del servidor, y no con un firewall externo como en el Bloque 4 (la nube)?
 2. ¿Qué diferencia de seguridad hay entre dejar el puerto `51820/udp` abierto "a cualquiera" y dejar el puerto `445` (SMB) abierto "a cualquiera"? ¿Por qué el primero es aceptable y el segundo no?
 3. Si después de activar `ufw` ya no puedes conectar por SSH al servidor, ¿qué es lo primero que deberías comprobar sobre tu propia conexión?
 4. ¿Qué significa que un servidor esté "bastionado" (*Hardened*)?

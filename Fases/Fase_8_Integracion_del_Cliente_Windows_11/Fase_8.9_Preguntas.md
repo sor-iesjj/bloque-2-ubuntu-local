@@ -8,7 +8,7 @@
 ---
 
 > [!help] Preguntas Críticas (Autoevaluación)
-> 1. ¿Por qué en este proyecto el cliente Windows no necesita el túnel WireGuard para unirse al dominio, a diferencia de BoochanV2/V3?
+> 1. ¿Por qué en este proyecto el cliente Windows no necesita el túnel WireGuard para unirse al dominio, a diferencia del Bloque 4 (la nube)?
 > 2. ¿Qué sucede técnica y exactamente si hay más de 5 minutos de diferencia horaria entre cliente y servidor?
 > 3. ¿Para qué sirven las herramientas **RSAT** en esta infraestructura híbrida, y por qué necesitas el adaptador NAT para instalarlas?
 > 4. ¿Qué riesgo de seguridad existiría si, en lugar de un segundo adaptador NAT, hubieras usado un único adaptador en modo "Adaptador Puente" (*Bridged*) conectado directamente a la red del centro?
