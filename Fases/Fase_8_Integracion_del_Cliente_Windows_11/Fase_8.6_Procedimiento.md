@@ -28,7 +28,7 @@
 > > ```cmd
 > > nslookup BOOCHANLAB.LOCAL
 > > ```
-> > Si devuelve la IP `10.10.10.10`, el DNS está funcionando. Si dice "no se encuentra el servidor", revisa que el adaptador de Red Solo Anfitrión esté bien configurado (Paso 0.1) y que el servidor esté encendido.
+> > Si devuelve la IP `10.10.10.10`, el DNS está funcionando. Si dice "no se encuentra el servidor", revisa que el adaptador de Red Solo Anfitrión esté bien configurado (Paso 0.c) y que el servidor esté encendido.
 
 > [!example] Paso 2: Sincronización de Tiempo
 > Ejecuta este comando en el **Símbolo del sistema (CMD) como Administrador**:
@@ -77,12 +77,12 @@
 > > La barra invertida se escribe con la tecla que tiene el símbolo `\` en tu teclado (normalmente junto al `Intro` o junto al `0`). Si usas la barra normal `/`, no funcionará.
 
 > [!example] Paso 5: Instalación de RSAT (Herramientas de Administración)
-> RSAT permite gestionar usuarios y grupos del dominio directamente desde Windows, con una interfaz gráfica. Requiere el adaptador NAT activo (Paso 0.1) para descargar el paquete desde Internet. Instálalo así:
+> RSAT permite gestionar usuarios y grupos del dominio directamente desde Windows, con una interfaz gráfica. Requiere el adaptador NAT activo (Paso 0.c) para descargar el paquete desde Internet. Instálalo así:
 >
 > 1. Ve a **Configuración** → **Aplicaciones** → **Características opcionales**.
 > 2. Haz clic en **"Ver características"**.
 > 3. Busca `RSAT` en el cuadro de búsqueda.
-> 4. Instala **"RSAT: Herramientas de Servicios de dominio de Active Directory y Lightweight Directory"**.
+> 4. Instala **"RSAT: Herramientas de Servicios de dominio de Active Directory y Lightweight Directory Services"**.
 > 5. Pulsa **"Instalar"** y espera a que termine.
 >
 > Una vez instalado, encontrarás las herramientas buscando **"Usuarios y equipos de Active Directory"** en el menú Inicio.

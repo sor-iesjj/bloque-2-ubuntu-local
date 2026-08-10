@@ -74,7 +74,7 @@
 ---
 
 > [!abstract] 📋 Qué se te evalúa (resumen)
-> **RA.02 · RA.04 · RA.06** — CE.02.c · CE.04.e · CE.06.a · CE.06.b · CE.06.c · CE.06.d · CE.06.e · CE.06.f · CE.06.g · CE.06.h · CE.06.i
+> **RA.02 · RA.04 · RA.06** — CE.02.c · CE.04.e · CE.06.a · CE.06.b · CE.06.c · CE.06.d · CE.06.e · CE.06.i
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_8.1_Que_Se_Evalua]]
 

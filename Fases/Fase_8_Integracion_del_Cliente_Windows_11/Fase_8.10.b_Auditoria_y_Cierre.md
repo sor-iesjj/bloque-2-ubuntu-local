@@ -78,7 +78,7 @@ Las **siete pruebas de la matriz**, cada una con el trabajador que le toca:
 
 ## **8 · LA ENTREGA**
 
-- [ ] Las **tres entradas** de apuntes, con sus **tres enlaces de vídeo**.
+- [ ] **La entrada** de apuntes (`b2-8-integracion-del-cliente.md`), con sus **tres enlaces de vídeo**.
 - [ ] Preguntas críticas contestadas.
 - [ ] `commit` y `push` hechos.
 

@@ -43,7 +43,7 @@
 > [!danger] 🛑 Paso 0 · ANTES DE NADA: la ISO tiene que ser **Windows 11 Pro**
 > **Windows 11 Home NO puede unirse a un dominio.** No es una limitación de este laboratorio: Microsoft **quita esa función** de la edición Home. La opción *"Unirse a un dominio"* sencillamente **no existe** en ella.
 >
-> Y el problema no es que falle: es **cuándo** falla. La instalación va perfecta, tardas una hora, y te estrellas en el **Paso 5**, con todo hecho, sin forma de arreglarlo salvo **reinstalar**.
+> Y el problema no es que falle: es **cuándo** falla. La instalación va perfecta, tardas una hora, y te estrellas en el **Paso 3** (la unión al dominio), con todo hecho, sin forma de arreglarlo salvo **reinstalar**.
 >
 > **Vale:** `Windows 11 Pro` · `Enterprise` · `Education`. **No vale:** `Home`.
 >
@@ -120,7 +120,7 @@
 > > Busca la opción de **cuenta sin conexión / cuenta local** durante la instalación. Si la pantalla no te la ofrece, **desconecta el Adaptador 2 (NAT)** un momento: sin internet, Windows acaba ofreciéndola.
 >
 > > [!tip] 💡 ¿Por qué añadimos un adaptador NAT si el proyecto es "todo local"?
-> > Decisión de diseño: sin salida a Internet, Windows 11 no puede activarse, no puede descargar actualizaciones ni instalar las **RSAT** (Paso 8, más abajo, requiere descargar un paquete desde los servidores de Microsoft). El adaptador NAT resuelve esto sin comprometer la seguridad del laboratorio: NAT es una salida *unidireccional* — nadie desde fuera puede entrar hacia la VM a través de él salvo que configures explícitamente un reenvío de puertos (Port Forwarding), cosa que no vamos a hacer en el cliente. El tráfico de dominio (DNS, Kerberos, SMB) sigue viajando exclusivamente por el Adaptador 1 (Red Solo Anfitrión), nunca por el NAT.
+> > Decisión de diseño: sin salida a Internet, Windows 11 no puede activarse, no puede descargar actualizaciones ni instalar las **RSAT** (Paso 5 del procedimiento, que requiere descargar un paquete desde los servidores de Microsoft). El adaptador NAT resuelve esto sin comprometer la seguridad del laboratorio: NAT es una salida *unidireccional* — nadie desde fuera puede entrar hacia la VM a través de él salvo que configures explícitamente un reenvío de puertos (Port Forwarding), cosa que no vamos a hacer en el cliente. El tráfico de dominio (DNS, Kerberos, SMB) sigue viajando exclusivamente por el Adaptador 1 (Red Solo Anfitrión), nunca por el NAT.
 
 ---
 

@@ -91,7 +91,7 @@ En el cliente:
 ```cmd
 whoami
 ping 10.10.10.10
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
+net use W: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
 klist
 ```
 
@@ -114,7 +114,7 @@ Un usuario diría *"puedo entrar pero no me funciona nada"*. Y tendría razón: 
 ### **4 · Reparar**
 Enciende el servidor, espera a que arranque **del todo**, y en el cliente:
 ```cmd
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /persistent:yes
+net use W: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /persistent:yes
 klist purge
 ```
 *(Cierra sesión y vuelve a entrar para obtener tickets nuevos.)*
@@ -210,7 +210,7 @@ Get-Date
 Cierra sesión e intenta entrar con `BOOCHANLAB\shinnosuke.nohara`, o desde una sesión abierta:
 ```cmd
 klist purge
-net use Y: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /user:BOOCHANLAB\masao.sato
+net use V: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
 w32tm /stripchart /computer:10.10.10.10 /samples:2 /dataonly
 ```
 

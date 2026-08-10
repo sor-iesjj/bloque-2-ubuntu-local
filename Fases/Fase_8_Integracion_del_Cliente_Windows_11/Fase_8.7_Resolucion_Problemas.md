@@ -158,7 +158,7 @@ net use
 
 **Arreglo.**
 ```cmd
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /user:BOOCHANLAB\masao.sato /persistent:yes
+net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial /persistent:yes
 ```
 
 > [!summary] Qué aprendes
@@ -248,7 +248,7 @@ id masao.sato
 | :--- | :--- |
 | `#effective:r--` en la línea del grupo | Fase 7 → [[Fase_7.7_Resolucion_Problemas#E6 · getfacl dice effective y el permiso no se aplica\|caso E6]] |
 | `masao.sato` no sale en `comercial` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E6 · El usuario no está en su grupo\|caso E6]] |
-| `id masao.sato` da un UID que no es `10001` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario\|caso E7]] |
+| `id masao.sato` da un UID que no es `10005` | Fase 5 → [[Fase_5.7_Resolucion_Problemas#E7 · Los UID no son los del escenario\|caso E7]] |
 
 > [!summary] Qué aprendes
 > Que **el cliente casi nunca es el culpable.** Windows te está informando fielmente de lo que el servidor le deja hacer.
@@ -266,7 +266,7 @@ id masao.sato
 
 **Comprobación.** Con el servidor apagado, entra y prueba a usar los recursos:
 ```cmd
-net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
+net use W: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
 ```
 - **Entrar en Windows:** funciona *(caché)*.
 - **Acceder a las carpetas del servidor:** falla. No hay servidor.

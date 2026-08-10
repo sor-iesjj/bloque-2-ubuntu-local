@@ -129,7 +129,7 @@ Con la misma sesión:
 del \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion\factura-001.txt
 ```
 - **✅ Bien:** **acceso denegado.**
-- **❌ Mal:** si la borra, comercial tiene `w` sobre facturación y **no debería** → revisa el `getfacl` en el servidor: tiene que poner `group:comercial:r-x`, sin la `w`.
+- **❌ Mal:** si la borra, comercial tiene `w` sobre facturación y **no debería** → revisa el `getfacl` en el servidor: tiene que poner `group:BOOCHANLAB\comercial:r-x`, sin la `w`.
 
 > [!success] 🎯 Esta es la prueba más importante del proyecto entero
 > **Ver y modificar son cosas distintas.** Un comercial necesita saber si su cliente ha pagado; **no puede tocar la factura**.

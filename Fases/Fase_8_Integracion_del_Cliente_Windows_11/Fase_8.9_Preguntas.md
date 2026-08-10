@@ -12,7 +12,7 @@
 > 2. ¿Qué sucede técnica y exactamente si hay más de 5 minutos de diferencia horaria entre cliente y servidor?
 > 3. ¿Para qué sirven las herramientas **RSAT** en esta infraestructura híbrida, y por qué necesitas el adaptador NAT para instalarlas?
 > 4. ¿Qué riesgo de seguridad existiría si, en lugar de un segundo adaptador NAT, hubieras usado un único adaptador en modo "Adaptador Puente" (*Bridged*) conectado directamente a la red del centro?
-> 5. 🔬 **Reto práctico:** Con `masao.sato` iniciado en Windows, crea un archivo de texto en la unidad `Z:` (por ejemplo `prueba_masao.txt`). Sin cerrar Windows, entra al servidor por SSH (puedes hacerlo desde el propio host a través del túnel WireGuard) y ejecuta `ls -la /srv/samba/departamentos/comercial/`. ¿Ves el archivo? ¿A qué usuario Linux pertenece según la columna de propietario? ¿Coincide con el UID que configuraste en la Fase 5?
+> 5. 🔬 **Reto práctico:** Con `masao.sato` iniciado en Windows, crea un archivo de texto en la unidad `Z:` (por ejemplo `prueba_masao.txt`). Sin cerrar Windows, entra al servidor por SSH desde tu propio ordenador (`ssh boochan@10.10.10.10`) y ejecuta `ls -la /srv/samba/departamentos/comercial/`. ¿Ves el archivo? ¿A qué usuario Linux pertenece según la columna de propietario? ¿Coincide con el UID que configuraste en la Fase 5?
 > 6. 🔬 **Reto práctico:** Con `masao.sato` logueado y la unidad `Z:` mapeada, **apaga el Adaptador 1 (Red Solo Anfitrión)** de la VM cliente desde VirtualBox (Dispositivos → Red → sin conectar), sin cerrar sesión de Windows. Intenta abrir un archivo de la unidad `Z:`. ¿Qué error aparece? ¿Qué diferencia hay con lo que le pasaría a un usuario real de empresa cuya "carpeta compartida desaparece" por caerse la VPN?
 
 ---
