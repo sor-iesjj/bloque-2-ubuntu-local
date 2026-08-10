@@ -312,6 +312,25 @@ for s in $DEPARTAMENTOS; do
     fi
 done
 
+# --- [comun] tambien lleva ABE, y hasta ago-2026 este bloque no la miraba ---
+# El D3 caza que le falte 'valid users', pero un [comun] sin ABE se colaba en verde.
+CONF_COMUN=$(testparm -s --section-name="comun" 2>/dev/null)
+
+if echo "$CONF_COMUN" | grep -qi "access based share enum *= *yes"; then
+    ok "F. [comun] con 'access based share enum = yes'"
+else
+    fallo "F. [comun] SIN 'access based share enum' - los becarios la veran en el listado"
+    info "     No podran entrar (lo impide valid users), pero sabran que existe."
+fi
+
+if ! echo "$CONF_COMUN" | grep -qi "hide unreadable *= *yes"; then
+    fallo "F. [comun] SIN 'hide unreadable'"
+fi
+
+if ! echo "$CONF_COMUN" | grep -qi "vfs objects.*acl_xattr"; then
+    fallo "F. [comun] SIN 'acl_xattr' - Windows machacara las ACL al copiar ficheros"
+fi
+
 # =============================================================================
 # BLOQUE G - EL DOMINIO SIGUE VIVO DESPUES DE TOCAR LA CONFIGURACION
 # =============================================================================
