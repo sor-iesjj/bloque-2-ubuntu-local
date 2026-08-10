@@ -21,7 +21,7 @@
 
 ---
 
-### 🧠 Por qué `ssh boochan@10.10.10.10` NO va a funcionar desde otro equipo
+### 🧠 Por qué ssh boochan@10.10.10.10 NO va a funcionar desde otro equipo
 
 Esto no es un fallo tuyo ni una configuración que falte. Es la definición misma de la red que montaste en la 1.2:
 

@@ -24,7 +24,7 @@
 | Lo que ves | Caso |
 | :--- | :--- |
 | **`samba-ad-dc` no arranca tras editar el `smb.conf`** | [[#E1 · samba-ad-dc no arranca tras editar el smb.conf\|E1]] 🔥 |
-| `setfacl: Operation not supported` | [[#E2 · setfacl Operation not supported\|E2]] |
+| `setfacl: Operation not supported` | [[#E2 · setfacl: Operation not supported\|E2]] |
 | El usuario ve la carpeta pero no puede entrar | [[#E3 · El usuario ve la carpeta pero no puede entrar\|E3]] |
 | Los ficheros nuevos no heredan los permisos | [[#E4 · Los ficheros nuevos no heredan los permisos\|E4]] |
 | **La carpeta protegida se ve desde Windows** | [[#E5 · Una carpeta protegida se ve desde Windows\|E5]] ⚠️ |
@@ -34,7 +34,7 @@
 
 ---
 
-### E1 · `samba-ad-dc` no arranca tras editar el `smb.conf`
+### E1 · samba-ad-dc no arranca tras editar el smb.conf
 
 > [!bug] Síntoma
 > Reinicias Samba y el servicio no vuelve:
@@ -82,7 +82,7 @@ sudo journalctl -u samba-ad-dc -n 30 --no-pager
 
 ---
 
-### E2 · `setfacl: Operation not supported`
+### E2 · setfacl: Operation not supported
 
 > [!bug] Síntoma
 > ```
@@ -215,7 +215,7 @@ sudo systemctl restart samba-ad-dc
 
 ---
 
-### E6 · `getfacl` dice `effective` y el permiso no se aplica
+### E6 · getfacl dice effective y el permiso no se aplica
 
 > [!bug] Síntoma
 > `getfacl` muestra el permiso perfectamente… con una coletilla al final:
@@ -251,7 +251,7 @@ getfacl -p /srv/samba/departamentos/facturacion
 
 ---
 
-### E7 · Secciones duplicadas en `smb.conf`
+### E7 · Secciones duplicadas en smb.conf
 
 > [!bug] Síntoma
 > Cambias algo en `[facturacion]`, reinicias, y **no pasa nada**. El cambio parece ignorarse.

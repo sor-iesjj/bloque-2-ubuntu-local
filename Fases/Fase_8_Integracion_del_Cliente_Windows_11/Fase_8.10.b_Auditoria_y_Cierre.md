@@ -49,7 +49,7 @@ Las **siete pruebas de la matriz**, cada una con el trabajador que le toca:
 >
 > Y fíjate en lo que demuestra cada pareja: **5.3 + 5.4** son *ver ≠ modificar*. **5.1 + 5.6** son *no puedes ni saber que existe*. **5.2 y 5.7** son *puedes mirar, no destruir*.
 >
-> Si la segunda falla, el fallo **está en la Fase 7**, no aquí → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]].
+> Si la segunda falla, el fallo **está en la Fase 7**, no aquí → [[Fase_8.7_Resolucion_Problemas#E6 · shinnosuke.nohara ve la carpeta que no debería ver|caso E6]].
 
 ## **4 · ACCESO A LOS RECURSOS**
 

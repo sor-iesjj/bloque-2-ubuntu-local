@@ -7,6 +7,28 @@
 
 ---
 
+> [!danger] 🧠 Paso 0 — SUBE LA RAM ANTES DE NADA. Con la VM **apagada**
+> Hasta ahora te ha bastado con **2048 MB**. A partir de aquí, no: provisionar un controlador de dominio levanta a la vez LDAP, Kerberos, DNS y el propio Samba, y con 2 GB el servidor **se arrastra o el script se queda a medias**.
+>
+> 1. **Apaga la VM del todo** (`sudo poweroff`). Esto no se puede hacer en caliente.
+> 2. VirtualBox → `UbuntuServer` → **Configuración → Sistema → Placa base**.
+> 3. Sube la **Memoria base** a **3072 MB**. Si tu equipo tiene **16 GB o más**, pon **4096 MB**.
+> 4. Arranca y compruébalo **dentro** del servidor:
+>
+> ```bash
+> free -h
+> ```
+>
+> - **✅ Bien:** la fila `Mem:` dice **`2,9Gi`** o **`3,8Gi`** *(nunca el número redondo: el sistema se queda una parte)*.
+> - **❌ Mal:** sigue diciendo `1,9Gi` → la VM no llegó a apagarse, o el cambio se guardó en otra máquina.
+>
+> > [!info] 🎓 Por qué ahora y no en la Fase 1
+> > Porque hasta la Fase 3 no hacía falta, y **la RAM que le das a una VM se la quitas a tu propio ordenador**. Se amplía cuando el trabajo lo pide, no "por si acaso". En la Fase 8 tendrás **dos** máquinas encendidas a la vez: ahí volverás a hacer esta cuenta.
+>
+> **Este paso va grabado también.** Enséñalo en el vídeo: es parte del trabajo.
+
+---
+
 > [!example] 🎬 Antes de empezar (todavía SIN grabar, y luego arranca)
 > Ya conoces el método desde los prerrequisitos, así que va solo el recordatorio:
 > 1. **Abre la entrada de apuntes** que llevas escribiendo desde el índice (`b2-4-aprovisionamiento-del-dominio.md`). Repasa lo que tienes: la teoría del apartado 5 la vas a necesitar ahora.
@@ -36,19 +58,19 @@
 > > sudo git clone https://github.com/sor-iesjj/bloque-2-ubuntu-local /opt/boochan
 > > cd /opt/boochan
 > > ```
-> > Te trae **el repositorio completo: 124 ficheros**, con todo el material del bloque. Para usar **uno**.
+> > Te trae **el repositorio completo: 140 ficheros**, con todo el material del bloque. Para usar **uno**.
 >
 > > [!question] 🤔 ¿Cuál elegirías tú? Contéstalo en tu entrada de apuntes
 > > | | **A · `curl`** | **B · `git clone`** |
 > > | :--- | :--- | :--- |
-> > | Qué trae | **1 fichero** (7 KB) | **124 ficheros** + el historial de Git |
+> > | Qué trae | **1 fichero** (7 KB) | **140 ficheros** + el historial de Git |
 > > | Instala algo | No. `curl` ya está | Sí, hay que instalar `git` |
 > > | Se actualiza solo | No | Sí, con `git pull` |
 > > | Para qué sirve | **Coger una herramienta y usarla** | **Trabajar sobre un proyecto** |
 > >
 > > **La respuesta correcta aquí es la A**, y el motivo no es que `git` sea peor: es que **estás usando la herramienta equivocada para lo que necesitas.** `git clone` sirve para trabajar sobre un proyecto —ver su historia, hacer cambios, sincronizarlos—. Tú solo quieres **ejecutar un script una vez**.
 > >
-> > **Y hay un motivo más serio:** en un servidor de producción, **cuanto menos haya, mejor**. Instalar `git` y dejar 124 ficheros del material del curso en `/opt` de un controlador de dominio es exactamente lo que un auditor te marcaría. Se llama **superficie de ataque**: cada programa y cada fichero que no necesitas es algo más que puede fallar o que alguien puede aprovechar.
+> > **Y hay un motivo más serio:** en un servidor de producción, **cuanto menos haya, mejor**. Instalar `git` y dejar 140 ficheros del material del curso en `/opt` de un controlador de dominio es exactamente lo que un auditor te marcaría. Se llama **superficie de ataque**: cada programa y cada fichero que no necesitas es algo más que puede fallar o que alguien puede aprovechar.
 > >
 > > **Entonces, ¿por qué te enseño la B?** Porque la vas a ver en mil tutoriales, y porque **saber cuándo NO usar una herramienta que dominas vale más que aprender otra nueva.** Además, si algún día quieres el material completo dentro del servidor, ya sabes cómo.
 >

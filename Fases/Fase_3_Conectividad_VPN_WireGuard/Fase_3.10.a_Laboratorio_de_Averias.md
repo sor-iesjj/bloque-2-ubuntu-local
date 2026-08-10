@@ -79,7 +79,7 @@
 > | **1** | [[#**AVERÍA 1 · BAJAR EL TÚNEL**\|BAJAR EL TÚNEL]] |
 > | **2** | [[#**AVERÍA 2 · QUITAR LA PERSISTENCIA**\|QUITAR LA PERSISTENCIA]] |
 > | **3** | [[#**AVERÍA 3 · ROMPER LA MÁSCARA DEL CLIENTE**\|ROMPER LA MÁSCARA DEL CLIENTE]] |
-> | **4** | [[#**AVERÍA 4 · METER UN `Endpoint` EN EL SERVIDOR**\|METER UN `Endpoint` EN EL SERVIDOR]] |
+> | **4** | [[#**AVERÍA 4 · METER UN Endpoint EN EL SERVIDOR**\|METER UN `Endpoint` EN EL SERVIDOR]] |
 > | **5** | [[#**AVERÍA 5 · ABRIR LOS PERMISOS DEL FICHERO**\|ABRIR LOS PERMISOS DEL FICHERO]] |
 > | **6** | [[#**AVERÍA 6 · DESCONECTAR EL CLIENTE**\|DESCONECTAR EL CLIENTE]] |
 >
@@ -323,7 +323,7 @@ Debe poner **`10.20.20.2/32`**.
 
 ---
 
-# **AVERÍA 4 · METER UN `Endpoint` EN EL SERVIDOR**
+# **AVERÍA 4 · METER UN Endpoint EN EL SERVIDOR**
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** fijar a mano en el servidor la dirección del cliente, en lugar de dejar que la aprenda.

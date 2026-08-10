@@ -25,7 +25,7 @@
 
 ---
 
-### 🔒 ¿Y cerrar el acceso directo por `10.10.10.10`?
+### 🔒 ¿Y cerrar el acceso directo por 10.10.10.10?
 
 > [!info] 👆 Ya te lo he contestado, en el Paso 4
 > **No se cierra en esta fase.** Los tres motivos y cuándo se hace los tienes arriba, en el aviso del Paso 4.

@@ -46,7 +46,7 @@
 > ```
 >
 > - **✅ Bien:** devuelve las líneas `user::`, `group::` y `other::`.
-> - **❌ Mal:** `Operation not supported` → [[Fase_7.7_Resolucion_Problemas#E2 · setfacl Operation not supported|caso E2]].
+> - **❌ Mal:** `Operation not supported` → [[Fase_7.7_Resolucion_Problemas#E2 · setfacl: Operation not supported|caso E2]].
 >
 > > [!info] 🎓 Lo que ves ahora son los permisos clásicos, traducidos
 > > `getfacl` enseña `rwx` para el dueño, `rwx` para el grupo y `---` para el resto. **Es lo mismo que el `2770` de la Fase 6**, contado de otra forma.

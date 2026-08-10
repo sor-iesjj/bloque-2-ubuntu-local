@@ -67,7 +67,7 @@ w32tm /stripchart /computer:10.10.10.10 /samples:3 /dataonly
 ```
 
 - **✅ Bien:** `klist` muestra tickets, incluido `krbtgt/BOOCHANLAB.LOCAL`, y el desfase es de **pocos segundos**.
-- **❌ Mal:** más de **300 segundos** → Kerberos rechazará la autenticación → [[Fase_8.7_Resolucion_Problemas#E3 · Relacion de confianza o credenciales incorrectas|caso E3]].
+- **❌ Mal:** más de **300 segundos** → Kerberos rechazará la autenticación → [[Fase_8.7_Resolucion_Problemas#E3 · Relación de confianza o credenciales incorrectas|caso E3]].
 
 > [!info] 🎓 `klist` te enseña la Fase 4 funcionando
 > Esos tickets son el **reino Kerberos** que aprovisionaste hace semanas, emitiendo credenciales de verdad. Y solo aparecen si te conectas **por nombre**, no por IP: por IP, Windows cae a NTLM.
@@ -81,14 +81,14 @@ w32tm /stripchart /computer:10.10.10.10 /samples:3 /dataonly
 > [!important] 🔁 La pertenencia a grupos se lee AL INICIAR SESIÓN
 > No basta con cambiar de usuario en un `net use`. **Cierra sesión de verdad** entre cada prueba, o arrastrarás los permisos del anterior.
 
-### **5.1 — `shinnosuke.nohara` (becario) NO ve contabilidad**
+### **5.1 — shinnosuke.nohara (becario) NO ve contabilidad**
 
 Inicia sesión como `BOOCHANLAB\shinnosuke.nohara`:
 ```cmd
 net view \\UbuntuServer.BOOCHANLAB.LOCAL
 ```
 - **✅ Bien:** aparece **`becarios` y nada más**. Ni `contabilidad`, ni `comun`, ni ninguna otra.
-- **❌ Mal:** si ve cualquier otra → [[Fase_8.7_Resolucion_Problemas#E6 · Un usuario ve una carpeta que no deberia ver|caso E6]], y el fallo está en la **Fase 7**.
+- **❌ Mal:** si ve cualquier otra → [[Fase_8.7_Resolucion_Problemas#E6 · shinnosuke.nohara ve la carpeta que no debería ver|caso E6]], y el fallo está en la **Fase 7**.
 
 ### **5.2 — El becario NO puede borrar nada de lo suyo**
 
@@ -103,7 +103,7 @@ echo prueba > \\UbuntuServer.BOOCHANLAB.LOCAL\becarios\intento.txt
 > [!info] 🎓 Leer sí, tocar no
 > Un becario llega la semana que viene y se va en tres meses. **Puede consultar y aprender; no puede destruir el material del que aprende.** Eso es mínimo privilegio, no desconfianza.
 
-### **5.3 — `masao.sato` (comercial) SÍ abre una factura**
+### **5.3 — masao.sato (comercial) SÍ abre una factura**
 
 > [!warning] ⚠️ Antes de esta prueba: asegúrate de que hay una factura que abrir
 > El fichero `factura-001.txt` puede que lo crearas en el laboratorio de la Fase 6, pero **era opcional**. Si no está, estas dos pruebas fallan por un fichero que no existe, no por un permiso.
@@ -136,7 +136,7 @@ del \\UbuntuServer.BOOCHANLAB.LOCAL\facturacion\factura-001.txt
 >
 > Si pudiera, **el mismo que cobra la comisión podría cambiar el importe facturado**. No es un detalle técnico: es control interno, y acabas de demostrarlo funcionando.
 
-### **5.5 — `misae.nohara` (contabilidad) SÍ escribe en facturación**
+### **5.5 — misae.nohara (contabilidad) SÍ escribe en facturación**
 
 Cierra sesión y entra como `BOOCHANLAB\misae.nohara`:
 ```cmd

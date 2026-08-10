@@ -16,7 +16,7 @@
 > | | Cuál | Cómo se manifiesta |
 > | :--- | :--- | :--- |
 > | **El ruidoso** | [[#E1 · El servidor no arranca tras editar el fstab\|E1]] | El servidor **no arranca**. Imposible no verlo |
-> | **El silencioso** | [[#E6 · Una carpeta pertenece a root y no a su departamento\|E6]] | Todo funciona. **La Fase 7 se cae** |
+> | **El silencioso** | [[#E6 · La carpeta contabilidad pertenece a root y no a contabilidad\|E6]] | Todo funciona. **La Fase 7 se cae** |
 >
 > El primero da miedo y se arregla en cinco minutos. El segundo no da miedo y cuesta una tarde. **Léete los dos.**
 
@@ -30,11 +30,11 @@
 | `df -h` no muestra los volúmenes montados | [[#E2 · df -h no muestra los discos\|E2]] |
 | `wrong fs type` al montar | [[#E3 · wrong fs type al montar\|E3]] |
 | `dd` falla: `No space left on device` | [[#E4 · dd falla por falta de espacio\|E4]] |
-| `chown: invalid group: 'contabilidad'` | [[#E5 · invalid group contabilidad\|E5]] |
-| **Todo va bien pero contabilidad es de `root`** | [[#E6 · Una carpeta pertenece a root y no a su departamento\|E6]] ⚠️ |
+| `chown: invalid group: 'contabilidad'` | [[#E5 · invalid group: 'contabilidad'\|E5]] |
+| **Todo va bien pero contabilidad es de `root`** | [[#E6 · La carpeta contabilidad pertenece a root y no a contabilidad\|E6]] ⚠️ |
 | Los ficheros nuevos no heredan el grupo | [[#E7 · Los ficheros nuevos no heredan el grupo\|E7]] |
-| Tras reiniciar, los discos no están montados | [[#E8 · Tras reiniciar los discos no estan montados\|E8]] |
-| `mount -a` me da un aviso sobre `systemd` | [[#E9 · mount -a avisa de que systemd usa la version vieja\|E9]] |
+| Tras reiniciar, los discos no están montados | [[#E8 · Tras reiniciar, los discos no están montados\|E8]] |
+| `mount -a` me da un aviso sobre `systemd` | [[#E9 · mount -a avisa de que systemd usa la versión vieja\|E9]] |
 
 ---
 
@@ -91,7 +91,7 @@
 
 ---
 
-### E2 · `df -h` no muestra los discos
+### E2 · df -h no muestra los discos
 
 > [!bug] Síntoma
 > Has hecho todos los pasos, pero `df -h` no enseña las líneas de **8,0G** y **2,0G** con `/srv/samba/…`.
@@ -118,7 +118,7 @@ df -h | grep srv
 
 ---
 
-### E3 · `wrong fs type` al montar
+### E3 · wrong fs type al montar
 
 > [!bug] Síntoma
 > ```
@@ -147,7 +147,7 @@ sudo mount -a
 
 ---
 
-### E4 · `dd` falla por falta de espacio
+### E4 · dd falla por falta de espacio
 
 > [!bug] Síntoma
 > ```
@@ -178,7 +178,7 @@ Si aun así no hay 11 GB libres, tienes dos caminos:
 
 ---
 
-### E5 · `invalid group: 'contabilidad'`
+### E5 · invalid group: 'contabilidad'
 
 > [!bug] Síntoma
 > ```
@@ -208,7 +208,7 @@ Si `getent` sigue sin devolver nada, el problema es de la Fase 5 → [[Fase_5.7_
 
 ---
 
-### E6 · La carpeta `contabilidad` pertenece a `root` y no a `contabilidad`
+### E6 · La carpeta contabilidad pertenece a root y no a contabilidad
 
 > [!bug] Síntoma
 > **Ninguno.** Los comandos pasaron, no hubo errores, la carpeta existe.
@@ -320,7 +320,7 @@ df -h | grep srv
 
 ---
 
-### E9 · `mount -a` avisa de que systemd usa la versión vieja
+### E9 · mount -a avisa de que systemd usa la versión vieja
 
 > [!bug] Síntoma
 > Ejecutas `sudo mount -a` esperando silencio y sale esto:

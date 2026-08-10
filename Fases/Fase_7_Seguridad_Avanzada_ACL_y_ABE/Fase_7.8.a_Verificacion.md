@@ -62,7 +62,7 @@ stat -c '%n %U:%G' /srv/samba/departamentos/*
 - **❌ Mal:**
   - Un GID **vacío** → el grupo no se resuelve → [[Fase_5.7_Resolucion_Problemas|Fase 5]].
   - **`is not a mountpoint`** → el volumen no está montado → [[Fase_6.7_Resolucion_Problemas|Fase 6]].
-  - Una carpeta con grupo **`root`** en vez del suyo → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6 de la Fase 6]].
+  - Una carpeta con grupo **`root`** en vez del suyo → [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta contabilidad pertenece a root y no a contabilidad|caso E6 de la Fase 6]].
 
 ### **2 · 🔴 LOS OCHO PERMISOS CRUZADOS ESTÁN PUESTOS**
 

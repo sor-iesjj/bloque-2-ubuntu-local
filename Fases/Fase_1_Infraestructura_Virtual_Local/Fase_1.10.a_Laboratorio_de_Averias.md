@@ -100,7 +100,7 @@
 > | :--- | :--- |
 > | **1** | [[#**AVERÍA 1 · TUMBAR LA TARJETA DEL LABORATORIO**\|TUMBAR LA TARJETA DEL LABORATORIO]] |
 > | **2** | [[#**AVERÍA 2 · DESCONECTAR EL CABLE VIRTUAL**\|DESCONECTAR EL CABLE VIRTUAL]] |
-> | **3** | [[#**AVERÍA 3 · BORRAR LA IP DEL `netplan` — EL FALLO SILENCIOSO**\|BORRAR LA IP DEL `netplan` — EL FALLO SILENCIOSO]] |
+> | **3** | [[#**AVERÍA 3 · BORRAR LA IP DEL netplan — EL FALLO SILENCIOSO**\|BORRAR LA IP DEL `netplan` — EL FALLO SILENCIOSO]] |
 > | **4** | [[#**AVERÍA 4 · ROMPER LA INDENTACIÓN — EL FALLO RUIDOSO**\|ROMPER LA INDENTACIÓN — EL FALLO RUIDOSO]] |
 > | **5** | [[#**AVERÍA 5 · PARAR SSH (Y LA SORPRESA DEL PUERTO ABIERTO)**\|PARAR SSH (Y LA SORPRESA DEL PUERTO ABIERTO)]] |
 > | **6** | [[#**AVERÍA 6 · BORRAR LAS CLAVES DE HOST**\|BORRAR LAS CLAVES DE HOST]] |
@@ -235,7 +235,7 @@ ip -brief addr show enp0s8
 
 ---
 
-# **AVERÍA 3 · BORRAR LA IP DEL `netplan` — EL FALLO SILENCIOSO**
+# **AVERÍA 3 · BORRAR LA IP DEL netplan — EL FALLO SILENCIOSO**
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** quitar la dirección del fichero de configuración y aplicarlo.

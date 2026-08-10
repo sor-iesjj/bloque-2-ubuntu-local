@@ -30,12 +30,12 @@
 | :--- | :--- |
 | `No se encuentra el dominio` y el ping falla | [[#E1 · No se encuentra el dominio y no hay red\|E1]] |
 | `No se encuentra el dominio` pero el ping va | [[#E2 · No se encuentra el dominio aunque hay red\|E2]] |
-| `Error de relación de confianza` / credenciales incorrectas | [[#E3 · Relacion de confianza o credenciales incorrectas\|E3]] 🕐 |
-| La unidad `Z:` desaparece al reiniciar | [[#E4 · La unidad Z desaparece al reiniciar\|E4]] |
+| `Error de relación de confianza` / credenciales incorrectas | [[#E3 · Relación de confianza o credenciales incorrectas\|E3]] 🕐 |
+| La unidad `Z:` desaparece al reiniciar | [[#E4 · La unidad Z: desaparece al reiniciar\|E4]] |
 | RSAT no se descarga | [[#E5 · RSAT no se descarga\|E5]] |
-| **`shinnosuke.nohara` VE la carpeta protegida** | [[#E6 · Un usuario ve una carpeta que no deberia ver\|E6]] ⚠️ |
+| **`shinnosuke.nohara` VE la carpeta protegida** | [[#E6 · shinnosuke.nohara ve la carpeta que no debería ver\|E6]] ⚠️ |
 | El usuario entra pero no puede escribir | [[#E7 · El usuario entra pero no puede escribir\|E7]] |
-| Puedo iniciar sesión con el servidor APAGADO | [[#E8 · Puedo iniciar sesion con el servidor apagado\|E8]] |
+| Puedo iniciar sesión con el servidor APAGADO | [[#E8 · Puedo iniciar sesión con el servidor apagado\|E8]] |
 
 ---
 
@@ -143,7 +143,7 @@ Y si el equipo no consigue sincronizar, ajusta la hora a mano y vuelve a intenta
 
 ---
 
-### E4 · La unidad `Z:` desaparece al reiniciar
+### E4 · La unidad Z: desaparece al reiniciar
 
 > [!bug] Síntoma
 > Mapeas la carpeta con `net use`, funciona, y al cerrar sesión o reiniciar ya no está.
@@ -190,7 +190,7 @@ nslookup www.microsoft.com
 
 ---
 
-### E6 · `shinnosuke.nohara` ve la carpeta que no debería ver
+### E6 · shinnosuke.nohara ve la carpeta que no debería ver
 
 > [!bug] Síntoma
 > Inicias sesión con `BOOCHANLAB\shinnosuke.nohara`, que **no** pertenece al grupo `comercial`, abres `\\UbuntuServer.BOOCHANLAB.LOCAL` y **`facturacion` aparece en la lista**.

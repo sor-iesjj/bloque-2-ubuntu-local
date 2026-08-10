@@ -44,7 +44,7 @@ stat -c '%n  %U:%G  %a' /srv/samba/departamentos/* /srv/samba/comun
 - [ ] La **`t`** del sticky bit visible en la común: `drwxrwxrwt`.
 
 > [!danger] ⚠️ Si alguna carpeta pertenece a `root` en vez de a su departamento, PARA AQUÍ
-> Es el fallo que hace fracasar la Fase 7 sin dar ninguna pista. Arréglalo con el [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]] y vuelve a tomar la instantánea.
+> Es el fallo que hace fracasar la Fase 7 sin dar ninguna pista. Arréglalo con el [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta contabilidad pertenece a root y no a contabilidad|caso E6]] y vuelve a tomar la instantánea.
 
 ## **4 · LOS LÍMITES FUNCIONAN**
 

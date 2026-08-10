@@ -96,7 +96,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 1.2 — No hay ping a `10.10.10.10` desde el ordenador (host)
+### Error 1.2 — No hay ping a 10.10.10.10 desde el ordenador (host)
 
 > [!bug] Cuándo se produce
 > Al ejecutar el Paso 7 de verificación de la Fase 1, tras instalar Ubuntu Server.
@@ -109,7 +109,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 1.3 — La VM no tiene Internet (`ping google.com` falla) pero sí tiene `10.10.10.10`
+### Error 1.3 — La VM no tiene Internet (ping google.com falla) pero sí tiene 10.10.10.10
 
 > [!bug] Cuándo se produce
 > Al verificar la conectividad en el Paso 7 de la Fase 1: la Red Solo Anfitrión funciona (responde a `10.10.10.10`) pero no hay salida a internet.
@@ -146,7 +146,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 2.1 — `apt purge` no encuentra Samba
+### Error 2.1 — apt purge no encuentra Samba
 
 > [!bug] Cuándo se produce
 > Al ejecutar el Paso 1 de limpieza, si Samba no venía preinstalado en esa ISO concreta de Ubuntu Server o ya se había purgado en un intento anterior.
@@ -160,7 +160,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 2.2 — El nombre del servidor es incorrecto (`hostname -f` no devuelve el FQDN esperado)
+### Error 2.2 — El nombre del servidor es incorrecto (hostname -f no devuelve el FQDN esperado)
 
 > [!bug] Cuándo se produce
 > Tras el Paso 3, al verificar la identidad del servidor.
@@ -197,7 +197,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 2.4 — `apt update` no descarga nada / sin internet
+### Error 2.4 — apt update no descarga nada / sin internet
 
 > [!bug] Cuándo se produce
 > Al ejecutar el Paso 2 de instalación de dependencias.
@@ -215,7 +215,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 2.5 — `hostname -I` no muestra `10.10.10.10`
+### Error 2.5 — hostname -I no muestra 10.10.10.10
 
 > [!bug] Cuándo se produce
 > Al comprobar la IP en el Paso 3, si la configuración estática de netplan de la Fase 1 no se aplicó correctamente o se perdió tras un reinicio.
@@ -240,7 +240,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 3.1 — `Address already in use` al levantar el túnel
+### Error 3.1 — Address already in use al levantar el túnel
 
 > [!bug] Cuándo se produce
 > Al ejecutar `sudo wg-quick up wg0` cuando ya hay una interfaz `wg0` activa de un intento anterior.
@@ -256,7 +256,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 3.2 — No hay ping entre `10.20.20.1` y `10.20.20.2`
+### Error 3.2 — No hay ping entre 10.20.20.1 y 10.20.20.2
 
 > [!bug] Cuándo se produce
 > El túnel arranca sin errores (`sudo wg-quick up wg0` no da error) pero el `ping 10.20.20.1` desde el cliente no responde.
@@ -287,7 +287,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 3.3 — La clave pública pegada en `wg0.conf` tiene caracteres invisibles
+### Error 3.3 — La clave pública pegada en wg0.conf tiene caracteres invisibles
 
 > [!bug] Cuándo se produce
 > Al copiar la clave pública desde la app WireGuard y pegarla en `nano` — especialmente si se hace desde la consola gráfica de VirtualBox en lugar de por SSH (ver nota en la [[Guía_Editor_Nano]]).
@@ -310,7 +310,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 3.4 — El cliente no encuentra el `Endpoint`
+### Error 3.4 — El cliente no encuentra el Endpoint
 
 > [!bug] Cuándo se produce
 > Al intentar levantar el túnel desde el cliente, si el `Endpoint` del fichero de configuración del cliente está mal escrito.
@@ -328,7 +328,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 4.1 — `git clone` falla porque la URL no fue sustituida
+### Error 4.1 — git clone falla porque la URL no fue sustituida
 
 > [!bug] Cuándo se produce
 > Al ejecutar el comando de descarga del repositorio en el Paso 1, sin sustituir `URL_DEL_REPOSITORIO` por la URL real proporcionada por el profesor.
@@ -344,7 +344,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 4.2 — El script `provision_boochan.sh` se detiene sin mostrar el mensaje de éxito
+### Error 4.2 — El script provision_boochan.sh se detiene sin mostrar el mensaje de éxito
 
 > [!bug] Cuándo se produce
 > Cuando el script falla antes de completarse. Nunca aparece la línea `Despliegue de BOOCHANLAB finalizado`.
@@ -369,7 +369,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 4.3 — `resolv.conf` no apunta a `127.0.0.1`
+### Error 4.3 — resolv.conf no apunta a 127.0.0.1
 
 > [!bug] Cuándo se produce
 > Tras ejecutar el script, al verificar el DNS con `cat /etc/resolv.conf`. El fichero muestra otra cosa (por ejemplo, la IP del DNS del adaptador NAT) en lugar de `nameserver 127.0.0.1`.
@@ -401,7 +401,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 4.4 — El script falla en `git clone` por falta de red
+### Error 4.4 — El script falla en git clone por falta de red
 
 > [!bug] Cuándo se produce
 > Al ejecutar el Paso 1 de la Fase 4, si el adaptador NAT no está activo o `git` intenta salir por la Red Solo Anfitrión (que no tiene salida a internet por diseño).
@@ -411,7 +411,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 4.5 — `nslookup: command not found`
+### Error 4.5 — nslookup: command not found
 
 > [!bug] Cuándo se produce
 > Al ejecutar la verificación del Punto de Control con `nslookup`. En Ubuntu Server mínimo esta herramienta no viene instalada.
@@ -431,7 +431,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 5.1 — `id hiroshi.nohara` no devuelve nada o dice "no such user"
+### Error 5.1 — id hiroshi.nohara no devuelve nada o dice "no such user"
 
 > [!bug] Cuándo se produce
 > Al verificar el Punto de Control, cuando el resultado esperado (`uid=10001`, `gid=3001`) no aparece.
@@ -495,7 +495,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 5.4 — Error de esquema LDAP al ejecutar `addunixattrs`
+### Error 5.4 — Error de esquema LDAP al ejecutar addunixattrs
 
 > [!bug] Cuándo se produce
 > Al ejecutar `sudo samba-tool group addunixattrs facturacion 3001`, el terminal devuelve un error con palabras como "no such attribute", "schema" o "LDAP".
@@ -525,7 +525,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 6.1 — El servidor no arranca tras editar el `fstab`
+### Error 6.1 — El servidor no arranca tras editar el fstab
 
 > [!bug] Cuándo se produce
 > Cuando se guarda `/etc/fstab` con un error de sintaxis (por ejemplo, olvidando la palabra `loop`) y se reinicia el servidor sin haber ejecutado `sudo mount -a` para verificarlo primero.
@@ -558,7 +558,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 6.2 — La conexión SSH se corta al ejecutar `sudo reboot`
+### Error 6.2 — La conexión SSH se corta al ejecutar sudo reboot
 
 > [!bug] Cuándo se produce
 > Al reiniciar el servidor para verificar que los discos se montan solos. El terminal muestra `Connection reset by peer` o `Broken pipe`.
@@ -574,7 +574,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 6.3 — `df -h` no muestra los discos de 5 GB
+### Error 6.3 — df -h no muestra los discos de 5 GB
 
 > [!bug] Cuándo se produce
 > Después de editar el `fstab`, si no se ha ejecutado el comando de montaje manual.
@@ -599,7 +599,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 6.5 — El comando `dd` falla con "No space left on device"
+### Error 6.5 — El comando dd falla con "No space left on device"
 
 > [!bug] Cuándo se produce
 > Al crear los archivos de disco virtual con `dd`, si el disco VDI de la VM no tiene espacio suficiente para dos archivos de 5 GB.
@@ -622,7 +622,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 6.6 — `chown root:facturacion` falla con "invalid group"
+### Error 6.6 — chown root:facturacion falla con "invalid group"
 
 > [!bug] Cuándo se produce
 > Al ejecutar `sudo chown root:facturacion /srv/samba/departamentos/facturacion` con el servicio `winbind` inactivo.
@@ -676,7 +676,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 7.3 — `samba-ad-dc` no arranca tras editar `smb.conf`
+### Error 7.3 — samba-ad-dc no arranca tras editar smb.conf
 
 > [!bug] Cuándo se produce
 > Después de añadir los bloques `[comercial]` y `[facturacion]`, al ejecutar `sudo systemctl restart samba-ad-dc` el servicio queda en estado `failed`.
@@ -698,7 +698,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 7.4 — Secciones `[comercial]` o `[facturacion]` duplicadas en `smb.conf`
+### Error 7.4 — Secciones [comercial] o [facturacion] duplicadas en smb.conf
 
 > [!bug] Cuándo se produce
 > Si el script de la Fase 4 ya había añadido esas secciones y se añaden de nuevo sin comprobarlo primero.
@@ -763,7 +763,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error 8.4 — La unidad de red `Z:` desaparece al reiniciar Windows
+### Error 8.4 — La unidad de red Z: desaparece al reiniciar Windows
 
 > [!bug] Cuándo se produce
 > El mapeo de la unidad no se marcó como persistente.
@@ -802,7 +802,7 @@ Estos tres problemas pueden aparecer en cualquier fase porque son de la capa de 
 
 ---
 
-### Error F.1 — Te quedas fuera del servidor al ejecutar `sudo ufw enable`
+### Error F.1 — Te quedas fuera del servidor al ejecutar sudo ufw enable
 
 > [!bug] Cuándo se produce
 > Si estás conectado por SSH desde una IP que no está dentro de `10.10.10.0/24` ni `10.20.20.0/24` (por ejemplo, si te conectaste directamente desde el host sin pasar por la Red Solo Anfitrión ni por el túnel) y activas `ufw` con la política `deny incoming`.

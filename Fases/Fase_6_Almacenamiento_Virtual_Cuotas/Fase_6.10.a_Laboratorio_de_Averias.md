@@ -286,7 +286,7 @@ df -h /srv/samba/comun
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** devolver la carpeta de `contabilidad` al grupo `root`, como si el `chown` hubiera fallado.
 >
-> **Por qué provocamos esta:** porque es **el fallo silencioso de la fase**, el [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]], provocado a propósito.
+> **Por qué provocamos esta:** porque es **el fallo silencioso de la fase**, el [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta contabilidad pertenece a root y no a contabilidad|caso E6]], provocado a propósito.
 >
 > No da ningún error. La carpeta se monta, se escribe y se lee igual. Y **rompe la Fase 7**.
 

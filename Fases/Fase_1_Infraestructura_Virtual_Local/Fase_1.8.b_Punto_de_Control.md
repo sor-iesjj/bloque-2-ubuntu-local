@@ -35,7 +35,7 @@ Es la única del bloque que lleva dos, y se toman en momentos distintos:
 
 ---
 
-## **2 · TOMA LA INSTANTÁNEA `Fase 1 terminada`**
+## **2 · TOMA LA INSTANTÁNEA Fase 1 terminada**
 
 Con la grabación todavía en marcha, apaga la máquina:
 

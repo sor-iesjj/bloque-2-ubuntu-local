@@ -86,7 +86,7 @@
 > | **2** | [[#**AVERÍA 2 · LA MÁSCARA QUE ANULA EL PERMISO**\|LA MÁSCARA QUE ANULA EL PERMISO]] |
 > | **3** | [[#**AVERÍA 3 · 🔴 QUITAR LA HERENCIA**\|🔴 QUITAR LA HERENCIA]] |
 > | **4** | [[#**AVERÍA 4 · 🔴 QUITAR LA INVISIBILIDAD (ABE)**\|🔴 QUITAR LA INVISIBILIDAD (ABE)]] |
-> | **5** | [[#**AVERÍA 5 · ROMPER EL `smb.conf`** *(la que tira el dominio)*\|ROMPER EL `smb.conf`]] |
+> | **5** | [[#**AVERÍA 5 · ROMPER EL smb.conf** *(la que tira el dominio)*\|ROMPER EL `smb.conf`]] |
 > | **6** | [[#**AVERÍA 6 · EL RECURSO DUPLICADO**\|EL RECURSO DUPLICADO]] |
 >
 > **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
@@ -426,7 +426,7 @@ sudo ./verificar_fase7.sh
 
 ---
 
-# **AVERÍA 5 · ROMPER EL `smb.conf`** *(la que tira el dominio)*
+# **AVERÍA 5 · ROMPER EL smb.conf** *(la que tira el dominio)*
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** dejar `smb.conf` con un error de sintaxis — y **detectarlo con `testparm` antes de reiniciar**.

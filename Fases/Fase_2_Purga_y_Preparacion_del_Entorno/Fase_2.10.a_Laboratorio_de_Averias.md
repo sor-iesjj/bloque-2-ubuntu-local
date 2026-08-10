@@ -82,17 +82,17 @@
 > [!abstract] 5 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
 > | # | Qué vas a romper |
 > | :--- | :--- |
-> | **1** | [[#**AVERÍA 1 · VACIAR `/etc/hosts`**\|VACIAR `/etc/hosts`]] |
+> | **1** | [[#**AVERÍA 1 · VACIAR /etc/hosts**\|VACIAR `/etc/hosts`]] |
 > | **2** | [[#**AVERÍA 2 · INVERTIR EL ORDEN DE LAS COLUMNAS**\|INVERTIR EL ORDEN DE LAS COLUMNAS]] |
-> | **3** | [[#**AVERÍA 3 · AÑADIR UNA LÍNEA `127.0.1.1`**\|AÑADIR UNA LÍNEA `127.0.1.1`]] |
-> | **4** | [[#**AVERÍA 4 · PARAR EL SERVICIO `smbd`**\|PARAR EL SERVICIO `smbd`]] |
-> | **5** | [[#**AVERÍA 5 · QUITAR EL ARRANQUE AUTOMÁTICO DE `smbd`**\|QUITAR EL ARRANQUE AUTOMÁTICO DE `smbd`]] |
+> | **3** | [[#**AVERÍA 3 · AÑADIR UNA LÍNEA 127.0.1.1**\|AÑADIR UNA LÍNEA `127.0.1.1`]] |
+> | **4** | [[#**AVERÍA 4 · PARAR EL SERVICIO smbd**\|PARAR EL SERVICIO `smbd`]] |
+> | **5** | [[#**AVERÍA 5 · QUITAR EL ARRANQUE AUTOMÁTICO DE smbd**\|QUITAR EL ARRANQUE AUTOMÁTICO DE `smbd`]] |
 >
 > **Hazlas en orden.** Y si vuelves aquí a buscar una concreta, esta tabla es tu atajo.
 
 ---
 
-# **AVERÍA 1 · VACIAR `/etc/hosts`**
+# **AVERÍA 1 · VACIAR /etc/hosts**
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** dejar el fichero de identidades de red completamente vacío — **exactamente el estado en que viene Ubuntu Server 26.04 de fábrica**.
@@ -223,7 +223,7 @@ hostname -f
 
 ---
 
-# **AVERÍA 3 · AÑADIR UNA LÍNEA `127.0.1.1`**
+# **AVERÍA 3 · AÑADIR UNA LÍNEA 127.0.1.1**
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** añadir la línea `127.0.1.1 UbuntuServer`, que **Ubuntu pone por defecto en muchas instalaciones** y que aquí sobra.
@@ -292,7 +292,7 @@ Debe devolver el FQDN y resolver a **`10.10.10.10`**.
 
 ---
 
-# **AVERÍA 4 · PARAR EL SERVICIO `smbd`**
+# **AVERÍA 4 · PARAR EL SERVICIO smbd**
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** detener el servicio de Samba **sin desinstalar nada**.
@@ -357,7 +357,7 @@ Debe decir `active` y volver a haber puertos en escucha.
 
 ---
 
-# **AVERÍA 5 · QUITAR EL ARRANQUE AUTOMÁTICO DE `smbd`**
+# **AVERÍA 5 · QUITAR EL ARRANQUE AUTOMÁTICO DE smbd**
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** quitarle al servicio el arranque automático, **sin detenerlo**.

@@ -14,7 +14,7 @@
 
 ---
 
-## **1 · TOMA LA INSTANTÁNEA `Fase 7 terminada`**
+## **1 · TOMA LA INSTANTÁNEA Fase 7 terminada**
 
 Con la grabación todavía en marcha, apaga la máquina:
 

@@ -59,7 +59,7 @@
 > | **1** | [[#**AVERÍA 1 · APAGAR EL SERVIDOR**\|APAGAR EL SERVIDOR]] |
 > | **2** | [[#**AVERÍA 2 · CAMBIAR EL DNS DEL CLIENTE**\|CAMBIAR EL DNS DEL CLIENTE]] |
 > | **3** | [[#**AVERÍA 3 · DESFASAR EL RELOJ**\|DESFASAR EL RELOJ]] |
-> | **4** | [[#**AVERÍA 4 · 🔴 SACAR A `masao.sato` DEL GRUPO** *(y ver el ABE en directo)*\|🔴 SACAR A `masao.sato` DEL GRUPO]] |
+> | **4** | [[#**AVERÍA 4 · 🔴 SACAR A masao.sato DEL GRUPO** *(y ver el ABE en directo)*\|🔴 SACAR A `masao.sato` DEL GRUPO]] |
 > | **5** | [[#**AVERÍA 5 · ROMPER LA RELACIÓN DE CONFIANZA**\|ROMPER LA RELACIÓN DE CONFIANZA]] |
 > | **6** | [[#**AVERÍA 6 · DESCONECTAR EL CABLE DEL LABORATORIO**\|DESCONECTAR EL CABLE DEL LABORATORIO]] |
 >
@@ -247,7 +247,7 @@ w32tm /stripchart /computer:10.10.10.10 /samples:2 /dataonly
 
 ---
 
-# **AVERÍA 4 · 🔴 SACAR A `masao.sato` DEL GRUPO** *(y ver el ABE en directo)*
+# **AVERÍA 4 · 🔴 SACAR A masao.sato DEL GRUPO** *(y ver el ABE en directo)*
 
 > [!abstract] 🎯 Objetivo de esta avería
 > **Qué vamos a provocar:** sacar a `masao.sato` del grupo `comercial` **desde el servidor**, y mirar qué le pasa a su vista de la red.

@@ -40,7 +40,7 @@ sudo poweroff
 >
 > **Por qué, y en esta fase es literal:** una instantánea con la máquina encendida guarda **el contenido de la RAM**, y con ella **el reloj congelado**. Al restaurarla dentro de un mes, la máquina despierta creyendo que sigue siendo hoy.
 >
-> Y **Kerberos rechaza cualquier autenticación con más de 5 minutos de desfase**. Restaurarías un dominio intacto, unas credenciales correctas, y ningún usuario podría entrar — con el mensaje *"El nombre de usuario o la contraseña son incorrectos"* que acabas de aprender a diagnosticar en el [[Fase_8.7_Resolucion_Problemas#E3 · Relacion de confianza o credenciales incorrectas|caso E3]].
+> Y **Kerberos rechaza cualquier autenticación con más de 5 minutos de desfase**. Restaurarías un dominio intacto, unas credenciales correctas, y ningún usuario podría entrar — con el mensaje *"El nombre de usuario o la contraseña son incorrectos"* que acabas de aprender a diagnosticar en el [[Fase_8.7_Resolucion_Problemas#E3 · Relación de confianza o credenciales incorrectas|caso E3]].
 >
 > **No es teoría: es exactamente el fallo que has estudiado en esta fase.** Compruébalo:
 > ```

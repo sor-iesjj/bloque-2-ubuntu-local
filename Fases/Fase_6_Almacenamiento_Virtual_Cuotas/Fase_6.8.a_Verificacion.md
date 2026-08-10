@@ -111,7 +111,7 @@ stat -c '%n  %U:%G  %a' /srv/samba/departamentos/*
 >
 > Es la misma idea que en Windows, donde los usuarios se escriben `BOOCHANLAB\usuario`.
 - **❌ Mal:**
-  - Alguna dice `root:root` → [[Fase_6.7_Resolucion_Problemas#E6 · Una carpeta pertenece a root y no a su departamento|caso E6]]
+  - Alguna dice `root:root` → [[Fase_6.7_Resolucion_Problemas#E6 · La carpeta contabilidad pertenece a root y no a contabilidad|caso E6]]
   - Alguna pone `770` en vez de `2770` → falta el setgid → [[Fase_6.7_Resolucion_Problemas#E7 · Los ficheros nuevos no heredan el grupo|caso E7]]
 
 Y que se vea la **`s`** en las seis:

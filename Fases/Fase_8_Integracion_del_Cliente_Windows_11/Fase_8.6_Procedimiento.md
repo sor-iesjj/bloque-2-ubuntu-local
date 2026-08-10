@@ -100,7 +100,7 @@
 > > [!warning] ⚠️ Fíjate en que NO lleva `/user:`
 > > Ya has iniciado sesión como `masao.sato`: **Windows usa tu identidad actual**, con su ticket de Kerberos. Poner `/user:` te pediría credenciales otra vez y podría acabar autenticando por NTLM.
 > >
-> > Y **el `/persistent:yes` no es opcional**: sin él, la unidad desaparece al cerrar sesión → [[Fase_8.7_Resolucion_Problemas#E4 · La unidad Z desaparece al reiniciar|caso E4]].
+> > Y **el `/persistent:yes` no es opcional**: sin él, la unidad desaparece al cerrar sesión → [[Fase_8.7_Resolucion_Problemas#E4 · La unidad Z: desaparece al reiniciar|caso E4]].
 >
 > > [!info] 🎓 Cada trabajador monta lo suyo
 > > `hiroshi.nohara` mapearía `facturacion`; `ume.matsuzaka`, `rrhh`. **La letra de unidad es local a cada persona**, y lo que hay detrás depende de quién ha iniciado sesión.

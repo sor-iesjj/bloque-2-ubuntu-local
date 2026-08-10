@@ -30,8 +30,8 @@
 | Error de esquema LDAP en `addunixattrs` | [[#E5 · addunixattrs da error de esquema LDAP\|E5]] |
 | El usuario no aparece en su grupo | [[#E6 · El usuario no está en su grupo\|E6]] |
 | **Todo funciona pero los UID no son los míos** | [[#E7 · Los UID no son los del escenario\|E7]] ⚠️ |
-| Funciona hoy; tras reiniciar, los usuarios desaparecen | [[#E8 · Tras reiniciar los usuarios han desaparecido\|E8]] |
-| El `gid=` primario es `users` y no su departamento | [[#E9 · El gid primario no es el de su departamento\|E9]] |
+| Funciona hoy; tras reiniciar, los usuarios desaparecen | [[#E8 · Tras reiniciar, los usuarios han desaparecido\|E8]] |
+| El `gid=` primario es `users` y no su departamento | [[#E9 · El gid= primario no es el de su departamento\|E9]] |
 
 ---
 
@@ -158,7 +158,7 @@ sudo samba-tool group addunixattrs facturacion 3001
 
 ---
 
-### E5 · `addunixattrs` da error de esquema LDAP
+### E5 · addunixattrs da error de esquema LDAP
 
 > [!bug] Síntoma
 > Al ejecutar `sudo samba-tool group addunixattrs facturacion 3001`:
@@ -234,7 +234,7 @@ id -nG hiroshi.nohara
 > ```
 > en lugar de `uid=10001`, que es el número que tú pusiste.
 >
-> *(El `gid=100(users)` sí es normal: mira el [[#E9 · El gid primario no es el de su departamento|caso E9]].)*
+> *(El `gid=100(users)` sí es normal: mira el [[#E9 · El gid= primario no es el de su departamento|caso E9]].)*
 
 **Hipótesis.** El usuario se creó **sin** `--uid-number` / `--gid-number`, y winbind le asignó un número automático del rango que tiene reservado.
 
@@ -307,7 +307,7 @@ id hiroshi.nohara
 
 ---
 
-### E9 · El `gid=` primario no es el de su departamento
+### E9 · El gid= primario no es el de su departamento
 
 > [!bug] Síntoma
 > ```
