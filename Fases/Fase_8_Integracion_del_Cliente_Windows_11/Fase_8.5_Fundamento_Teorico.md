@@ -60,6 +60,11 @@
 > 4. **Memoria RAM:** `4096 MB` · **Procesadores:** `2 CPU` *(Windows 11 no se instala con uno)*.
 > 5. **Disco duro:** nuevo, **VDI**, **reservado dinámicamente**, **40 GB**.
 >
+> > [!tip] 💡 ¿De dónde salen esos números?
+> > Microsoft pide para Windows 11 un mínimo de **4 GB de RAM, 2 núcleos y 64 GB de disco**. La RAM y los núcleos son los suyos; **el disco lo bajamos a 40 GB** porque aquí no vas a instalar nada pesado — solo el sistema, las RSAT y las herramientas de red.
+> >
+> > Y **dinámico** significa que esos 40 GB **no se ocupan de golpe**: el fichero crece según se usa. Lo comprobaste tú mismo en la **Fase 1.6.a** con el disco de Ubuntu.
+>
 > > [!danger] 🛑 Marca **«Omitir instalación desatendida»**. Es el atasco nº1 de esta fase
 > > Al detectar una ISO de Windows, **VirtualBox 7 activa por su cuenta la instalación desatendida** y te pide una **Clave de producto** que no tienes. **Sin ella el asistente no te deja continuar**, y no dice por qué.
 > >
