@@ -36,6 +36,7 @@
 | **`shinnosuke.nohara` VE la carpeta protegida** | [[#E6 · shinnosuke.nohara ve la carpeta que no debería ver\|E6]] ⚠️ |
 | El usuario entra pero no puede escribir | [[#E7 · El usuario entra pero no puede escribir\|E7]] |
 | Puedo iniciar sesión con el servidor APAGADO | [[#E8 · Puedo iniciar sesión con el servidor apagado\|E8]] |
+| 🔴 **La VM de Windows se cuelga instalando** · icono de **tortuga** · «ejecución nativa API» | [[#E9 · La VM de Windows se cuelga y VirtualBox muestra una tortuga\|E9]] 🛑 |
 
 ---
 
@@ -287,6 +288,74 @@ net use Z: \\UbuntuServer.BOOCHANLAB.LOCAL\comercial
 > 1. **Pasa el verificador** en el cliente: `.\verificar_fase8.ps1`.
 > 2. **Comprueba el servidor**, que es donde suele estar el problema: `sudo ./verificar_fase7.sh` y `sudo ./verificar_fase4.sh`.
 > 3. **Anota el mensaje literal** en tu entrada de apuntes, aunque lo resuelvas.
+
+---
+
+### E9 · La VM de Windows se cuelga y VirtualBox muestra una tortuga
+
+> [!danger] 🛑 Esto NO es un problema de la Fase 8. Es del ordenador anfitrión
+> Y es de los caros: aparece **en la última fase**, después de semanas de trabajo, porque las Fases 1-7 no lo destapan.
+
+**Síntoma.** La instalación de Windows 11 se queda parada, o la VM entra en bucle de reinicio. **El disco no hace nada** — no está trabajando lenta: está muerta. En la barra de estado de VirtualBox hay un **icono de tortuga 🐢** y, al pasar el ratón, dice **«ejecución nativa API»** *(«native API execution»)*.
+
+**Qué significa.** VirtualBox **no está usando VT-x**, la virtualización por hardware del procesador. Está corriendo **encima del hipervisor de Windows**, en un modo mucho más lento.
+
+**Por qué no lo viste antes.** Un Ubuntu Server sin escritorio aguanta esa capa razonablemente. **Windows 11 con escritorio, no.**
+
+**Quién te ha quitado el VT-x.** Windows, para **VBS** *(Virtualization-Based Security)*. Solo puede haber un hipervisor mandando, y si Windows lo arranca primero, VirtualBox se queda con las sobras.
+
+---
+
+**Paso 1 — Confírmalo.** `Windows + R` → `msinfo32` → busca **«Seguridad basada en virtualización»**:
+
+- **`No habilitada`** → el problema es otro. La tortuga no es esto.
+- **`En ejecución`** → es esto. Sigue.
+
+**Paso 2 — Apaga lo que la enciende.** Todo desde una ventana **elevada**, y **PowerShell como administrador**:
+
+```powershell
+bcdedit /set hypervisorlaunchtype off
+```
+
+> [!danger] 🛑 La trampa que cuesta media tarde
+> **En una ventana NO elevada, este comando falla sin decírtelo de forma clara.** No aplica nada, y la línea `hypervisorlaunchtype` **ni siquiera aparece** al comprobarlo. Se da por hecho que está puesto, y no lo está.
+>
+> **Ábrela como administrador.** Debe responder `The operation completed successfully.`
+
+**Paso 3 — Quita las características de Windows** que arrancan un hipervisor. `Windows + R` → `OptionalFeatures` → desmarca, si están:
+
+`Hyper-V` · `Plataforma de máquina virtual` · `Plataforma del hipervisor de Windows` · `Subsistema de Windows para Linux` · `Espacio aislado de Windows`
+
+**Paso 4 — Integridad de memoria fuera.** `Seguridad de Windows → Seguridad del dispositivo → Aislamiento del núcleo → Integridad de memoria` → **Desactivada**.
+
+**Paso 5 — 🔴 REINICIA.** Nada de lo anterior surte efecto sin reiniciar. **Es el fallo más tonto y el más frecuente:** se aplica todo, no se reinicia, se comprueba y sigue igual.
+
+**Paso 6 — Comprueba, en este orden:**
+
+```powershell
+bcdedit /enum '{current}'
+```
+
+> 💡 **Las comillas no son opcionales en PowerShell.** Sin ellas interpreta `{current}` como un bloque de código y no funciona.
+
+- Debe aparecer **`hypervisorlaunchtype    Off`**.
+- `msinfo32` → **«Seguridad basada en virtualización: No habilitada»**.
+- Y arranca `UbuntuServer`: **la tortuga tiene que haber desaparecido**.
+
+---
+
+> [!warning] ⚠️ Si VBS SIGUE «En ejecución» con todo lo anterior hecho y reiniciado
+> Mira en `msinfo32` la línea **«Directiva de App Control for Business»**. Si pone **`Enforced`**, hay una directiva de control de aplicaciones que está manteniendo VBS encendido, y **no se quita con los pasos de arriba**.
+>
+> **Si el equipo es del centro, ahí se acabó tu margen: no puedes tocarlo. Avísame en clase.**
+>
+> ⚠️ *Este último punto está diagnosticado pero **no resuelto**: el 10/08/2026 se llegó hasta aquí en un equipo real y quedó pendiente. Si te pasa, dímelo — nos sirve a los dos.*
+
+> [!danger] 💀 Y si ya se te colgó tres veces: **borra la VM y empieza de nuevo**
+> Una instalación de Windows interrumpida a la fuerza **queda corrupta**, y arrastrarás fallos raros toda la fase creyendo que es el dominio.
+>
+> Bórrala, rehazla con el VT-x ya funcionando, y **haz una instantánea `Windows11 limpio` nada más terminar la instalación**, antes de tocar el dominio.
+
 
 ---
 
