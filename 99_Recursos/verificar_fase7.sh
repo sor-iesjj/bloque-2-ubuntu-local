@@ -39,14 +39,33 @@ logistica:comercial:r-x
 becarios:rrhh:r-x"
 
 # --- Y lo que NO debe existir: RRHH y contabilidad son islas ----------------
-PROHIBIDOS="rrhh:contabilidad
+# Formato CARPETA:GRUPO. Son las 22 casillas vacias de la matriz que viven
+# dentro de $BASE. La 23a  --becarios sobre 'comun'--  NO cabe aqui porque
+# 'comun' cuelga de /srv/samba y no de /srv/samba/departamentos: la cubre el D3
+# comprobando que 'valid users' no incluya a los becarios.
+#   CARPETA : GRUPO_QUE_NO_DEBE_TENER_ACL
+PROHIBIDOS="facturacion:logistica
+facturacion:rrhh
+facturacion:becarios
+contabilidad:facturacion
+contabilidad:comercial
+contabilidad:logistica
+contabilidad:rrhh
+contabilidad:becarios
+comercial:rrhh
+comercial:becarios
+logistica:facturacion
+logistica:rrhh
+logistica:becarios
 rrhh:facturacion
+rrhh:contabilidad
 rrhh:comercial
 rrhh:logistica
 rrhh:becarios
-contabilidad:comercial
-contabilidad:logistica
-contabilidad:facturacion"
+becarios:facturacion
+becarios:contabilidad
+becarios:comercial
+becarios:logistica"
 
 V='\033[0;32m'; R='\033[0;31m'; A='\033[0;33m'; N='\033[0m'
 ok()    { echo -e "${V}[OK]   ${N} $1"; echo "[OK]    $1" >> "$INFORME"; }
@@ -133,6 +152,38 @@ if ! command -v getfacl >/dev/null 2>&1; then
     exit 1
 fi
 
+# --- A5. El MODO de las carpetas de departamento ----------------------------
+# La Fase 6 lo comprueba una vez, ANTES de esta fase, y nadie lo vuelve a mirar.
+# Un 'chmod 777' hecho durante la Fase 7 dejaria las ACL intactas y la carpeta
+# abierta a toda la empresa. Aqui se vuelve a mirar. (becarios va en D1: 2750)
+MODOS_MAL=""
+for d in facturacion contabilidad comercial logistica rrhh; do
+    P=$(stat -c %a "$BASE/$d" 2>/dev/null)
+    [ "$P" = "2770" ] || MODOS_MAL="$MODOS_MAL $d($P)"
+done
+if [ -z "$MODOS_MAL" ]; then
+    ok "A5. Las 5 carpetas de departamento siguen en 2770 (setgid y cerradas a otros)"
+else
+    fallo "A5. Estas carpetas NO estan en 2770:$MODOS_MAL"
+    info "     Las ACL pueden estar perfectas y la carpeta abierta igual."
+    info "     Arreglo: sudo chmod 2770 $BASE/<carpeta>"
+fi
+
+# --- A6. 'other' no entra en ninguna carpeta de departamento ----------------
+# Es la comprobacion que ninguna ACL hace: 'other' es quien no es el dueno ni
+# esta en ningun grupo con entrada. Si no es '---', sobra medio proyecto.
+OTHER_MAL=""
+for d in $DEPARTAMENTOS; do
+    getfacl -p "$BASE/$d" 2>/dev/null | grep -q "^other::---" || OTHER_MAL="$OTHER_MAL $d"
+done
+if [ -z "$OTHER_MAL" ]; then
+    ok "A6. En las 6 carpetas, quien no es del grupo no entra (other::---)"
+else
+    fallo "A6. Estas carpetas dejan entrar a 'otros':$OTHER_MAL"
+    info "     Cualquier usuario del dominio entra, tenga o no ACL. Los becarios tambien."
+fi
+
+
 # =============================================================================
 # BLOQUE B - LOS PERMISOS CRUZADOS DE LA MATRIZ
 # =============================================================================
@@ -213,7 +264,7 @@ while IFS= read -r LINEA; do
 done <<< "$PROHIBIDOS"
 
 if [ "$SOBRAN" -eq 0 ]; then
-    ok "C. Ningun grupo tiene acceso de mas (RRHH y contabilidad siguen siendo islas)"
+    ok "C. Ningun grupo tiene acceso de mas: las 22 casillas vacias de la matriz estan vacias"
 fi
 
 # =============================================================================
