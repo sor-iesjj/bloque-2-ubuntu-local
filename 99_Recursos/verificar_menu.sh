@@ -122,6 +122,13 @@ while true; do
   case "$opcion" in
     1|2|3|4|5|6|7) ejecuta_fase "$opcion"; espera ;;
     8)
+      echo ""
+      echo -e "${A}[AVISO]${N} Vas a encadenar las 7 fases sobre el estado ACTUAL."
+      echo -e "${A}[AVISO]${N} La Fase 6 exige 'becarios' a 2770; la Fase 7 (Paso 3.b)"
+      echo -e "${A}[AVISO]${N} lo baja a 2750. Si ya aplicaste la Fase 7, espera que la"
+      echo -e "${A}[AVISO]${N} Fase 6 falle en D6 (becarios). Es correcto y esperado:"
+      echo -e "${A}[AVISO]${N} las dos fases no son verificables a la vez."
+      echo ""
       echo "" | tee -a "$INFORME"
       echo "=== RESULTADO GLOBAL (fases 1-7) ===" | tee -a "$INFORME"
       for n in 1 2 3 4 5 6 7; do ejecuta_fase "$n"; done
