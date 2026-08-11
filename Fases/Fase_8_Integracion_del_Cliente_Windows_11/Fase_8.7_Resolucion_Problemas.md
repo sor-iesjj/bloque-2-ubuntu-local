@@ -37,6 +37,7 @@
 | El usuario entra pero no puede escribir | [[#E7 · El usuario entra pero no puede escribir\|E7]] |
 | Puedo iniciar sesión con el servidor APAGADO | [[#E8 · Puedo iniciar sesión con el servidor apagado\|E8]] |
 | 🔴 **La VM de Windows se cuelga instalando** · icono de **tortuga** · «ejecución nativa API» | [[#E9 · La VM de Windows se cuelga y VirtualBox muestra una tortuga\|E9]] 🛑 |
+| 🔴 **Hice todo el E9 y VBS sigue «En ejecución»** — `dism`, `citool`, Secure Boot, y la tortuga sigue | [[Fase_8.7.E9x_Diagnostico_VBS_Avanzado\|E9 bis · Diagnóstico avanzado]] 🔬 |
 
 ---
 
