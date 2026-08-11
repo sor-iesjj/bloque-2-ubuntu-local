@@ -347,9 +347,11 @@ bcdedit /enum '{current}'
 > [!warning] ⚠️ Si VBS SIGUE «En ejecución» con todo lo anterior hecho y reiniciado
 > Mira en `msinfo32` la línea **«Directiva de App Control for Business»**. Si pone **`Enforced`**, hay una directiva de control de aplicaciones que está manteniendo VBS encendido, y **no se quita con los pasos de arriba**.
 >
-> **Si el equipo es del centro, ahí se acabó tu margen: no puedes tocarlo. Avísame en clase.**
+> **No te rindas todavía.** Hay un diagnóstico más profundo que cubre el 20 % de casos que el E9 no alcanza: `dism` para quitar componentes que OptionalFeatures no ve, `citool` para leer las políticas que fuerzan VBS, y —lo más importante— **cuándo puedes ignorar la tortuga** si la VM ya funciona.
 >
-> ⚠️ *Este último punto está diagnosticado pero **no resuelto**: el 10/08/2026 se llegó hasta aquí en un equipo real y quedó pendiente. Si te pasa, dímelo — nos sirve a los dos.*
+> 👉 [[Fase_8.7.E9x_Diagnostico_VBS_Avanzado|E9 bis · Diagnóstico avanzado de VBS]]
+>
+> ⚠️ *El 11/08/2026 se completó el diagnóstico en un equipo real (Huawei MateBook, Windows 11 Pro). Tras los pasos del E9 bis, `msinfo32` seguía en `Running` pero la VM **arrancó y funciona**. La tortuga no desapareció; el hipervisor sí aflojó.*
 
 > [!danger] 💀 Y si ya se te colgó tres veces: **borra la VM y empieza de nuevo**
 > Una instalación de Windows interrumpida a la fuerza **queda corrupta**, y arrastrarás fallos raros toda la fase creyendo que es el dominio.
