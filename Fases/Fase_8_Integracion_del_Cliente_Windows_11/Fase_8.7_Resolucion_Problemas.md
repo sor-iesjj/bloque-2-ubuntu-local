@@ -16,7 +16,7 @@
 > | Lo que ves aquí | Dónde suele estar el fallo |
 > | :--- | :--- |
 > | No se encuentra el dominio | Fase 4 *(el dominio en la tarjeta NAT)* o el DNS del cliente |
-> | Usuario o contraseña incorrectos | El **reloj**, no la contraseña |
+> | Usuario o contraseña incorrectos | El **reloj** · o la **contraseña del sitio equivocado** (→ E3) |
 > | `shinnosuke.nohara` ve la carpeta protegida | **Fase 7** *(falta el ABE)* |
 > | El usuario no puede escribir | Fase 5 *(los UID)* o Fase 7 *(la máscara)* |
 >
@@ -120,6 +120,9 @@ ipconfig /all | findstr /i "DNS"
 **Hipótesis.** **El reloj.** Kerberos rechaza cualquier autenticación con más de **5 minutos** de desfase entre cliente y servidor, y el mensaje de error **no menciona la hora en ningún sitio**.
 
 Pasa siempre por lo mismo: dejaste una VM en pausa o con el estado guardado, y al reanudarla su reloj se quedó donde lo dejaste.
+
+> [!warning] ⚠️ Y otra causa: la contraseña **del sitio equivocado**
+> El servidor y el dominio son **dos listas de cuentas que no se mezclan**. La cuenta `boochan` de Ubuntu (la que usas por SSH) y el `root` del servidor **no existen en el dominio**: ahí las cuentas se llaman `BOOCHANLAB\...`, y `BOOCHANLAB\Administrator` **no es** el root de Ubuntu. Si escribes la contraseña que te funciona en el servidor, el dominio la rechaza **aunque la teclees perfecta** — porque esa contraseña pertenece a una cuenta que él no conoce.
 
 **Comprobación.** En el cliente, como Administrador:
 ```cmd
