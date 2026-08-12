@@ -23,30 +23,32 @@
 > 3. Arranca la grabación, **preséntate y muestra tu identidad**. Todo lo que sigue queda grabado.
 >
 > **Lo que ya tienes:** el servidor encendido con el dominio y las carpetas publicadas (Fases 1-7), y los clientes Windows y Ubuntu ya integrados (Fases 8-9). No toques nada del servidor.
-
+Vamos a ver, si estoy ejecutando el puto script de los cojones es porque estoy en el C7, ya he ejecutado el script y ahora se supone que debo devolver atrás en el paso 1, donde es prepara el instalador de Mac. Ya tengo instalado el espero que hayas hecho las rectificaciones oportunas relacionadas con toda esta mierda de que me has hecho pasar con la instalación del programita este para evitar hacer uso del WSL. Ya funciona. Lo que he hecho ha sido reinstalar, reinstalar y reinstalar y reinstalar sin ningún criteria, no clear. No needs no idea, so it's a very good one, so the ultimate we have to have the procedimiento, en el caso de que WSL de problemas porque da problemas con todo el rollo que has contado y hagamos la instalación del otro. Entonces yo ahora vuelvo. Si lo haces a mano, vale, entonces yo he ejecutado el script y ahora dice, arranca la máquina virtual desde el instalador, pero si no tengo el la puta ISO, me cago en tu puta madre. En tu puta madre me cago. Mataría por este vídeo. ¿Desde dónde descargo, tío? ¿Desde la punta de la polla o qué? O sea, ¿qué hace el script descarga, veis y el resto vale. O sea, me estáis diciendo que el script que acabo de hacer me ha generado un fichero de mg donde está el archivo ese.
 ---
 
 > [!example] Paso 1 — Crear la VM de macOS en VirtualBox *(el reto de la fase)*
 > Apple no soporta macOS en hardware ajeno y VirtualBox no lo soporta oficialmente. Para conseguirlo hay que **crear la VM con una configuración específica** — la que hace que macOS "crea" que está en hardware válido. **Se hace con `VBoxManage`, no solo con el asistente.**
 >
 > ### 1.1 · Prepara el instalador de macOS
-> **El sistema de Apple no se descarga como una ISO normal.** Aquí se usa el método de `myspaghetti/macos-virtualbox` (el script de referencia de la comunidad, 13k★): **baja el instalador desde los servidores de Apple** y lo deja listo.
+> **🛑 NO descargas ninguna ISO. El script la descarga él solo.** El sistema de Apple no se descarga como una ISO normal: el método de `myspaghetti/macos-virtualbox` (el script de referencia, 13k★) **baja el instalador desde los servidores de Apple** (`swcdn.apple.com`), crea la VM y la arranca. **Tú no descargas nada de ningún sitio** — solo ejecutas el script.
 >
 > > [!warning] 🛑 PRIMERO: necesitas un **entorno bash** (Cygwin o WSL1) para ejecutar el script
-> > El script es de **Linux**, y en Windows no se ejecuta en CMD/PowerShell. **Si no tienes Cygwin/WSL listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]** antes de seguir: ahí está cómo instalar Cygwin con su `wget` y cómo conseguir el script. *(Ojo: **WSL2** enciende el hipervisor y puede traer la tortuga — usa Cygwin o WSL1.)*
+> > El script es de **Linux**, y en Windows no se ejecuta en CMD/PowerShell. **Si no tienes Cygwin/WSL listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]** — pero ojo: **el C7 NO es un desvío opcional, es EL camino para hacer este paso.** Es la parte del Paso 1.1 que te consigue el entorno bash. *(Ojo: **WSL2** enciende el hipervisor y puede traer la tortuga — usa Cygwin o WSL1.)*
 >
 > **En Linux o macOS** (si tienes un Mac para prepararlo), desde la terminal:
 > ```bash
 > curl -O https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
 > ./macos-guest-virtualbox.sh
 > ```
-> **En Windows**, se hace **dentro de la Cygwin64 Terminal** (paso 5 del caso C7), con `wget` en vez de `curl`, y **dando permiso de ejecución** (sin `chmod`, te dará `Permission denied`):
+> **En Windows**, se hace **dentro de la Cygwin64 Terminal** (es donde el C7 te deja), con `wget` en vez de `curl`, y **dando permiso de ejecución** (sin `chmod`, te dará `Permission denied`):
 > ```bash
 > wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
 > chmod +x macos-guest-virtualbox.sh
 > ./macos-guest-virtualbox.sh
 > ```
-> *(Ambos bajan el instalador de Catalina/Mojave/High Sierra desde `swcdn.apple.com` y crean la VM ya configurada — los pasos 1.2 y 1.3 quedan hechos por el script.)*
+> *(Ambos bajan el instalador de Catalina/Mojave/High Sierra desde `swcdn.apple.com` y crean la VM ya configurada — los pasos 1.2 y 1.3 quedan hechos por el script. La descarga va a una carpeta temporal que el script gestiona; **no te deja una ISO que guardar**, la usa él y la limpia al terminar.)*
+>
+> **Mientras el script corre:** te irá pidiendo **Enter** según avance. Y cuando arranque la VM, **NO toques la ventana de la VM** mientras el script la configura ("The script interacts with the virtual machine twice…").
 >
 > > [!info] 📚 Qué hace el script
 > > Descarga `BaseSystem.dmg` y el resto del instalador desde los servidores de Apple, y crea la VM ya configurada (los pasos 1.2-1.3). Es lo que te ahorra montarla a mano.
