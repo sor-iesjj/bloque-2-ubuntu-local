@@ -12,15 +12,16 @@
 
 ---
 
-> [!example] 💾 Toma la instantánea del servidor
-> Con el **servidor apagado de verdad**:
+> [!example] 💾 Toma las instantáneas
+> Con las **dos VMs apagadas de verdad**:
 >
 > | Máquina | Nombre de la instantánea |
 > | :--- | :--- |
+> | `macOS` | **`Fase 10 terminada`** |
 > | `UbuntuServer` | **`Fase 10 terminada`** |
 
-> [!info] 💡 No hay instantánea de cliente
-> En las Fases 8 y 9 guardabas la instantánea de la VM cliente. Aquí **el cliente es tu Mac real** — no hay VM que guardar. Solo se guarda el servidor, que es lo que podría tocarse.
+> [!info] 💡 Esta fase SÍ tiene instantánea de cliente
+> El cliente es una **VM de macOS** en VirtualBox (como las de las Fases 8 y 9), así que se guarda su instantánea **y** se exporta su `.ova`.
 
 > [!warning] ⚠️ Apagado de verdad, no en pausa
 > Una instantánea con la máquina en pausa guarda la RAM y el reloj congelado — y ya sabes lo que le hace eso a Kerberos (Fase 8, caso E3).
@@ -29,8 +30,9 @@
 
 ### ✅ Comprueba que guardaste
 
+- [ ] Instantánea `Fase 10 terminada` en `macOS`.
 - [ ] Instantánea `Fase 10 terminada` en `UbuntuServer`.
-- [ ] *(El cliente macOS no se exporta: es un Mac real.)*
+- [ ] `.ova` del cliente macOS en el disco externo (ruta correcta).
 
 > [!success] ✅ Con la instantánea tomada, el trabajo de máquina está hecho. El 9 y el 10 son de mesa y de averías.
 

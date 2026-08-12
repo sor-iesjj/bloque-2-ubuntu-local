@@ -19,14 +19,120 @@
 
 | Lo que ves | Caso |
 | :--- | :--- |
-| "Nombre de usuario o contraseña incorrectos" | [[#C2 · La contraseña correcta falla\|C2]] |
-| No se conecta / no encuentra el servidor | [[#C1 · No llego al servidor\|C1]] |
-| Entro pero no veo carpetas (o no las que tocan) | [[#C3 · Entro pero no veo mis carpetas\|C3]] |
-| `smb://` se queda colgado o tarda | [[#C4 · La conexión tarda o se cuelga\|C4]] |
+| **La VM de macOS se queda en pantalla negra / "EXITBS"** | [[#C1 · La VM de macOS no arranca\|C1]] |
+| **La tortuga de VirtualBox aparece al arrancar la VM** | [[#C2 · La tortuga / VBS bloquea\|C2]] |
+| "Nombre de usuario o contraseña incorrectos" | [[#C4 · La contraseña correcta falla\|C4]] |
+| No se conecta / no encuentra el servidor | [[#C3 · No llego al servidor\|C3]] |
+| Entro pero no veo carpetas (o no las que tocan) | [[#C5 · Entro pero no veo mis carpetas\|C5]] |
+| `smb://` se queda colgado o tarda | [[#C6 · La conexión tarda o se cuelga\|C6]] |
 
 ---
 
-### C1 · No llego al servidor
+### C1 · La VM de macOS no arranca
+
+> [!bug] Síntoma
+> Al iniciar la VM de macOS, se queda en **pantalla negra** o en un mensaje como `EXITBS` / `EndRandomSeed`. No llega al instalador.
+
+**Hipótesis.** La VM no está "engañando" a macOS con el hardware que exige.
+
+**Comprobación.** ¿Aplicaste el `--cpuidset` (Paso 1.3)? ¿La memoria de vídeo es 128 MB? ¿El firmware es EFI?
+
+**Arreglo.** En orden:
+```bash
+# 1. CPU de Intel válida para macOS
+VBoxManage modifyvm "macOS" --cpuidset 00000001 000306a9 00020800 80000201 178bfbff
+# 2. Memoria de vídeo suficiente
+VBoxManage modifyvm "macOS" --vram 128
+# 3. Si sigue, prueba a marcar la ISO como Live CD en Almacenamiento
+```
+Si sigue en negro, revisa el caso C2 (la tortuga): macOS **no se instala** bajo VBS/NEM.
+
+> [!summary] Qué aprendes
+> Que macOS exige un hardware muy concreto, y VirtualBox tiene que **simularlo** con `--cpuidset`. Un "pantallazo negro" al arrancar suele ser eso — no un fallo tuyo.
+
+---
+
+### C2 · La tortuga / VBS bloquea
+
+> [!bug] Síntoma
+> Al arrancar la VM, en la barra de estado de VirtualBox aparece la **tortuga 🐢** («native API execution»), y macOS se cuelga o no instala.
+
+**Hipótesis.** El hipervisor de Windows (VBS) está activo y VirtualBox corre en modo NEM — **el instalador de macOS se corrompe bajo NEM**.
+
+**Comprobación.** `msinfo32` → "Seguridad basada en virtualización" → **"En ejecución"** = es esto.
+
+**Arreglo.** **No es esta fase la que lo resuelve.** Es el mismo diagnóstico que la Fase 8 (el E9 bis: `dism`, `bcdedit`, Secure Boot). Para esta fase, si la tortuga está, el host no puede correr macOS — **avisa al profesor y usa un host con VT-x real**.
+
+> [!summary] Qué aprendes
+> Que el muro de la Fase 8 (VBS) no era solo de Windows: **también bloquea macOS**. Es la misma raíz, y por eso el diagnóstico de la Fase 8 sirve para las dos.
+
+---
+
+### C3 · No llego al servidor
+
+> [!bug] Síntoma
+> El Finder no conecta, o `ping` al servidor falla desde la VM de macOS.
+
+**Hipótesis.** La VM no está en la red del laboratorio, o no resuelve el nombre.
+
+**Comprobación.** En Terminal (dentro de la VM):
+```bash
+ping -c 2 10.10.10.10
+ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
+```
+
+**Arreglo.** Si la IP responde pero el nombre no, usa la IP directa en el Finder (`smb://10.10.10.10`) o configura el DNS del dominio. Si ni la IP responde, la VM no está en la Red Solo Anfitrión → revisa el Adaptador 1.
+
+> [!summary] Qué aprendes
+> Que "llego por IP" y "resuelvo el nombre" son dos cosas distintas — la misma lección que en las Fases 8 y 9, desde el Mac.
+
+---
+
+### C4 · La contraseña correcta falla
+
+> [!bug] Síntoma
+> Entras con `masao.sato` y `P@ssw0rd`, que son correctos, y el Mac dice que el usuario o la contraseña son incorrectos.
+
+**Hipótesis.** **La hora de la VM de macOS.** Kerberos rechaza más de 5 minutos de desfase, y el error no lo dice.
+
+**Comprobación.** Ajustes → Fecha y hora: ¿la hora es correcta?
+
+**Arreglo.** Activa la hora automática o ajústala a mano. Vuelve a intentar.
+
+> [!summary] Qué aprendes
+> Que el error de credenciales no siempre es la contraseña — es la hora. Igual que en Windows (Fase 8) y en Ubuntu (Fase 9). **Es el fallo nº1 de esta fase.**
+
+---
+
+### C5 · Entro pero no veo mis carpetas
+
+> [!bug] Síntoma
+> Conectas y ves el servidor, pero no las carpetas que esperabas.
+
+**Hipótesis.** O bien estás entrando con el usuario equivocado, o bien la matriz/ABE no está como debe.
+
+**Comprobación.** ¿Con qué usuario entraste? ¿`masao.sato` (comercial)?
+
+**Arreglo.** Si entras con otro usuario (o con la cuenta local de la VM), las carpetas que veas son las de **ese** usuario. Desconecta y entra con el usuario del dominio que toca.
+
+> [!summary] Qué aprendes
+> Que lo que ves en una carpeta compartida depende de **quién eres**, no del sistema con el que entras. La matriz la decide el servidor.
+
+---
+
+### C6 · La conexión tarda o se cuelga
+
+> [!bug] Síntoma
+> `smb://…` tarda mucho en conectar, o se queda colgado.
+
+**Hipótesis.** El Mac intenta resolver el nombre por varios servidores DNS antes de dar con el correcto, o hay un problema de red.
+
+**Comprobación.** Espera; si no conecta, prueba con la IP directa.
+
+**Arreglo.** Usa `smb://10.10.10.10` en vez del nombre (funciona, aunque sin Kerberos). Si va por nombre pero lento, revisa el DNS.
+
+> [!summary] Qué aprendes
+> Que a veces lo pragmático (IP directa) desbloquea, aunque el ideal sea el nombre (que permite Kerberos).
 
 > [!bug] Síntoma
 > El Finder no conecta, o `ping` al servidor falla.

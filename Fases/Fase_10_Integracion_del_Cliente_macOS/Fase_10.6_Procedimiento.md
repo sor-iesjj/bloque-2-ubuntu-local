@@ -3,45 +3,110 @@
 > **[Módulo: SOR — Sistemas Operativos en Red]** · **Integración del Cliente (macOS)**
 > 🧭 Índice de la fase: [[Fase_10_Integracion_del_Cliente_macOS]]
 >
-> **📍 Cuándo se lee:** **Con el Mac delante.** Aquí está el trabajo.
+> **📍 Cuándo se lee:** **Con la VM delante.** Aquí está el trabajo.
+
+---
+
+> [!danger] 🛑 REQUISITO DEL HOST antes de empezar: VirtualBox con VT-x real, sin la tortuga
+> La VM de macOS **no se instala** si VirtualBox cae en modo NEM (la tortuga de la Fase 8) — es decir, si VBS/Hyper-V están activos en el host. **Comprueba antes de grabar:**
+>
+> 1. Arranca cualquier VM y mira la barra de estado: **si aparece la 🐢, macOS no va a funcionar.**
+> 2. En `msinfo32` (host): *"Seguridad basada en virtualización"* debe decir **"No habilitada"**.
+>
+> Si la tortuga está: **no es esta fase la que lo arregla** — es el diagnóstico de la Fase 8 (el E9 bis). Para esta fase necesitas un host con VT-x real.
 
 ---
 
 > [!example] Paso 0 — Prepárate y empieza a grabar
-> 1. Léete el procedimiento entero.
+> 1. Léete el procedimiento entero, sobre todo el **Paso 1** (crear la VM) — es el que más puede fallar.
 > 2. Ten OBS listo y comprueba pantalla y micrófono.
 > 3. Arranca la grabación, **preséntate y muestra tu identidad**. Todo lo que sigue queda grabado.
 >
 > **Lo que ya tienes:** el servidor encendido con el dominio y las carpetas publicadas (Fases 1-7), y los clientes Windows y Ubuntu ya integrados (Fases 8-9). No toques nada del servidor.
 
-> [!example] Paso 1 — Comprueba que el Mac llega al servidor
-> Abre **Terminal** (Aplicaciones → Utilidades) y comprueba la red:
+---
+
+> [!example] Paso 1 — Crear la VM de macOS en VirtualBox *(el reto de la fase)*
+> Apple no soporta macOS en hardware ajeno y VirtualBox no lo soporta oficialmente. Para conseguirlo hay que **crear la VM con una configuración específica** — la que hace que macOS "crea" que está en hardware válido. **Se hace con `VBoxManage`, no solo con el asistente.**
+>
+> ### 1.1 · Prepara el instalador de macOS
+> **El sistema de Apple no se descarga como una ISO normal.** Aquí se usa el método de `myspaghetti/macos-virtualbox` (el script de referencia de la comunidad, 13k★): **baja el instalador desde los servidores de Apple** y lo deja listo.
+>
+> ```bash
+> # En Windows: necesitas Cygwin o WSL para ejecutar el script
+> curl -O https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
+> # Ejecútalo; descargará el instalador de Catalina/Mojave/High Sierra desde swcdn.apple.com
+> ./macos-guest-virtualbox.sh
+> ```
+>
+> > [!info] 📚 Qué hace el script
+> > Descarga `BaseSystem.dmg` y el resto del instalador desde los servidores de Apple, y crea la VM ya configurada (los pasos 1.2-1.3). Es lo que te ahorra montarla a mano.
+>
+> ### 1.2 · Si lo haces a mano (configuración mínima que SÍ funciona)
+> La configuración que hace falta es esta — y **no es la que pone el asistente por defecto**:
+>
+> | Dónde | Qué poner | Por qué |
+> | :--- | :--- | :--- |
+> | **Nombre** | `macOS` | — |
+> | **Tipo** | `Mac OS X` · **Versión** | `macOS (64-bit)` | — |
+> | **Memoria RAM** | `4096 MB` | macOS necesita al menos 4 GB |
+> | **Disco** | nuevo, **VDI**, dinámico, **40-80 GB** | Big Sur exige ≥35,3 GB |
+> | **Sistema → Placa base** | marcar **EFI** (`--firmware efi`) | macOS exige EFI, no BIOS |
+> | **Sistema → Aceleración** | **desmarcar** "Habilitar VT-x/AMD-V anidado" **no aplica**; lo importante es tener VT-x real del host | — |
+> | **Pantalla → Memoria de vídeo** | **`128 MB`** | con menos, macOS **no arranca** o va pésimo |
+> | **Audio** | **desmarcar** "Habilitar audio" | el audio de VirtualBox no tiene driver en macOS |
+> | **Red → Adaptador 1** | **Red Solo Anfitrión** | la red del laboratorio `10.10.10.0/24` |
+>
+> ### 1.3 · El ajuste de CPU que macOS exige
+> macOS solo arranca en CPUs Intel concretas. Hay que **decirle a la VM que simule una**. En Terminal/CMD del host:
+> ```bash
+> VBoxManage modifyvm "macOS" --cpuidset 00000001 000306a9 00020800 80000201 178bfbff
+> ```
+> *(Ese es el "cpuid" de un procesador Intel válido para macOS. Sin él, el arranque se queda en una pantalla negra o en "EXITBS".)*
+>
+> ### 1.4 · Arranca la VM desde el instalador
+> - Con la VM creada, pulsa **Iniciar**.
+> - Cuando VirtualBox pida el medio de arranque, **elígelo** (el instalador que preparó el script, o la ISO).
+> - **Si se queda en pantalla negra:** prueba a marcar la ISO como "Live CD" en `Configuración → Almacenamiento`, o ajusta el `--cpuidset`.
+>
+> > [!danger] 🛑 Si se queda en pantalla negra o en "EXITBS", NO es que hayas hecho algo mal
+> > Es el síntoma clásico de que la VM no "engaña" lo suficiente a macOS. Lo primero a revisar: que el `--cpuidset` esté aplicado (Paso 1.3) y que la memoria de vídeo sea 128 MB. Y sobre todo: **que VirtualBox use VT-x real y no la tortuga** (requisito del principio).
+
+> [!example] Paso 2 — Instala macOS en la VM
+> Con el instalador arrancado:
+> 1. Elige el **idioma**.
+> 2. Abre **Utilidad de Discos** (`Utilidades → Utilidad de Discos`).
+> 3. Selecciona el **disco virtual de la VM** (no el de ningún otro), pulsa **Borrar** y formato **APFS** (para Catalina/más nuevas).
+> 4. Sal de Utilidad de Discos y elige **Instalar macOS**.
+> 5. Sigue el asistente hasta el escritorio.
+>
+> > [!warning] ⚠️ Si el disco no aparece en Utilidad de Discos
+> > En `Utilidad de Discos → Ver → Mostrar todos los dispositivos` y formatea el dispositivo recién visible. *(Truco documentado para High Sierra y posteriores.)*
+
+> [!example] Paso 3 — Comprueba que la VM de macOS ve el servidor
+> Ya en el escritorio de la VM de macOS, abre **Terminal** (Aplicaciones → Utilidades):
 > ```bash
 > ping -c 2 10.10.10.10
 > ```
-> - **✅ Bien:** el servidor responde.
-> - **❌ Mal:** el Mac no está en la red del laboratorio. El Mac tiene que poder llegar a `10.10.10.10` — igual que llegaban Windows y Ubuntu.
+> - **✅ Bien:** el servidor responde — la red host-only está bien.
+> - **❌ Mal:** la VM no está en la red del laboratorio → revisa el Adaptador 1 (Red Solo Anfitrión).
 
-> [!warning] ⚠️ ¿Y si el Mac está en otra red?
-> En un aula, el Mac y el servidor pueden no estar en la misma red física. Para esta fase, el Mac necesita **alcanzar** el servidor: por la red del laboratorio (si está en ella) o por el túnel WireGuard. Si no llega, avisa al profesor.
-
-> [!example] Paso 2 — Comprueba que resuelve el dominio
+> [!example] Paso 4 — Comprueba que resuelve el dominio
 > ```bash
 > ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
 > ```
 > - **✅ Bien:** responde con la IP del servidor.
-> - **❌ Mal:** el Mac no resuelve `BOOCHANLAB.LOCAL`. Prueba a usar la IP directa en el Paso 3, o avisa al profesor. *(La resolución de nombres del dominio la da el servidor DNS; un Mac de fuera puede no tenerla configurada.)*
+> - **❌ Mal:** no resuelve `BOOCHANLAB.LOCAL` → configura el DNS a `10.10.10.10` en la red de la VM, o usa la IP directa en el Paso 6.
 
-> [!example] Paso 3 — Comprueba la hora del Mac (el fallo nº1)
+> [!example] Paso 5 — Comprueba la hora de la VM de macOS (el fallo nº1)
 > **Ajustes del sistema → Fecha y hora** → comprueba que la hora es la correcta y que está **automática**.
->
-> - **✅ Bien:** la hora coincide con la de España y con la del servidor.
-> - **❌ Mal:** está desfasada → actívala automática o ajústala a mano. **Si no, Kerberos te rechazará el acceso con un error que no habla de la hora.**
+> - **✅ Bien:** la hora coincide con la del servidor.
+> - **❌ Mal:** desfasada → actívala automática. **Si no, Kerberos te rechazará el acceso con un error que no habla de la hora.**
 
-> [!example] Paso 4 — Accede a las carpetas del servidor desde el Finder
+> [!example] Paso 6 — Accede a las carpetas del servidor desde el Finder
 > 1. Abre el **Finder**.
 > 2. Menú **Ir → Conectarse al servidor…** (o `Cmd + K`).
-> 3. En el campo *Dirección del servidor*, escribe:
+> 3. En *Dirección del servidor*, escribe:
 > ```
 > smb://UbuntuServer.BOOCHANLAB.LOCAL
 > ```
@@ -51,12 +116,12 @@
 >    - **Contraseña:** `P@ssw0rd`
 > 6. Se abre una ventana con las carpetas compartidas.
 
-> [!example] Paso 5 — Verifica qué ves (la matriz)
+> [!example] Paso 7 — Verifica qué ves (la matriz)
 > Con `masao.sato`, debes ver **exactamente** las carpetas de su matriz:
 > - **✅ Bien:** `comercial`, `facturacion`, `logistica`, `comun` — y **no** `contabilidad` ni `rrhh`.
 > - **❌ Mal:** si ves lo ajeno, hay un permiso de más (pero no debería: el ABE lo oculta).
 
-> [!example] Paso 6 — Cierra la grabación y súbela
+> [!example] Paso 8 — Cierra la grabación y súbela
 > Detén OBS, nombra el vídeo **`B2 · F10 · Procedimiento`**, súbelo a `B2_Ubuntu_Local` como No listado y añade timestamps.
 
 ---

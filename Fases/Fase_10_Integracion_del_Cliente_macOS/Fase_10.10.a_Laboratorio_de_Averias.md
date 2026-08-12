@@ -26,13 +26,46 @@
 
 | **Avería** | **La frase del cliente que la resume** |
 | :--- | :--- |
-| **1** | [[#AVERÍA 1 · DESFASAR LA HORA DEL MAC\|"No me deja entrar"]] — la hora |
-| **2** | [[#AVERÍA 2 · 🔴 SACAR A masao.sato DEL GRUPO\|"Ya no veo mis carpetas"]] — ABE en directo |
-| **3** | [[#AVERÍA 3 · CAMBIAR EL DNS DEL CLIENTE\|"No encuentro el servidor"]] — DNS |
+| **1** | [[#AVERÍA 1 · QUITAR EL CPUID DE LA VM\|"La VM no arranca"]] — pantalla negra |
+| **2** | [[#AVERÍA 2 · DESFASAR LA HORA DEL MAC\|"No me deja entrar"]] — la hora |
+| **3** | [[#AVERÍA 3 · 🔴 SACAR A masao.sato DEL GRUPO\|"Ya no veo mis carpetas"]] — ABE en directo |
+| **4** | [[#AVERÍA 4 · CAMBIAR EL DNS DEL CLIENTE\|"No encuentro el servidor"]] — DNS |
 
 ---
 
-# **AVERÍA 1 · DESFASAR LA HORA DEL MAC**
+# **AVERÍA 1 · QUITAR EL CPUID DE LA VM**
+
+> [!abstract] 🎯 Objetivo
+> Reproducir el fallo más característico del hackintosh: qué le pasa a la VM de macOS cuando le quitas la simulación de CPU. **Es el ensayo de "se me ha roto y no arranca".**
+
+> [!question] 🤔 Predice antes de romper
+> Si quitas el `--cpuidset` (el ajuste de CPU que hace que macOS "crea" que está en hardware válido), ¿qué verás al arrancar la VM? ¿Una pantalla negra? ¿Un mensaje?
+
+### **1 · Romper**
+Quita el ajuste de CPU que hace arrancar a macOS:
+```bash
+VBoxManage modifyvm "macOS" --cpuidremoveall
+```
+
+### **2 · Comprobar**
+Arranca la VM de macOS.
+
+### **3 · Consecuencias**
+La VM **no arranca** — pantalla negra o se queda a mitad. Es exactamente el síntoma de "EXITBS / EndRandomSeed" que verías si montaras la VM mal.
+
+### **4 · Reparar**
+Vuelve a poner el `--cpuidset` de un Intel válido:
+```bash
+VBoxManage modifyvm "macOS" --cpuidset 00000001 000306a9 00020800 80000201 178bfbff
+```
+Arranca y comprueba que vuelve al escritorio.
+
+> [!summary] 🎓 La lección
+> **Sin la simulación de CPU, macOS se niega a arrancar.** Es el corazón de por qué montar una VM de macOS es delicado: no basta con crear la VM, hay que darle el hardware que el sistema exige.
+
+---
+
+# **AVERÍA 2 · DESFASAR LA HORA DEL MAC**
 
 > [!abstract] 🎯 Objetivo
 > Reproducir el fallo nº1: qué le hace a la autenticación un reloj del Mac desfasado.
@@ -57,7 +90,7 @@ Vuelve a activar la hora automática. Reconecta y comprueba que entra.
 
 ---
 
-# **AVERÍA 2 · 🔴 SACAR A `masao.sato` DEL GRUPO**
+# **AVERÍA 3 · 🔴 SACAR A `masao.sato` DEL GRUPO**
 
 > [!abstract] 🎯 Objetivo
 > Ver el **ABE** en directo desde el tercer sistema: qué ve el Mac cuando `masao.sato` deja de pertenecer a `comercial`.
@@ -89,7 +122,7 @@ Reconecta y comprueba que `comercial` aparece otra vez.
 
 ---
 
-# **AVERÍA 3 · CAMBIAR EL DNS DEL CLIENTE**
+# **AVERÍA 4 · CAMBIAR EL DNS DEL CLIENTE**
 
 > [!abstract] 🎯 Objetivo
 > Ver qué pasa cuando el Mac deja de resolver el dominio.
@@ -117,7 +150,8 @@ Vuelve a poner el DNS automático (o el del servidor). Comprueba que el nombre v
 ---
 
 > [!success] ✅ Al terminar: comprueba que dejaste todo como estaba
-> - [ ] Todas las averías reparadas: hora automática, `masao.sato` en `comercial`, DNS correcto.
+> - [ ] Todas las averías reparadas: `--cpuidset` aplicado, hora automática, `masao.sato` en `comercial`, DNS correcto.
+> - [ ] La VM de macOS arranca al escritorio.
 > - [ ] Reconecta al servidor y comprueba que ves la matriz completa.
 > - [ ] Añadido a la entrada de apuntes: el error de cada avería y cómo lo resolviste.
 

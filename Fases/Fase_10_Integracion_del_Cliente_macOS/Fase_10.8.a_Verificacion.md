@@ -11,13 +11,18 @@
 > No tomes la instantánea `Fase 10 terminada` del servidor hasta que todo lo de abajo esté en verde.
 
 > [!success] 🎯 Qué comprueba esta verificación
-> Que el **Mac accede al dominio** y que la **matriz se respeta desde el sistema de Apple** — el cierre del RA.06.
+> Que la **VM de macOS arranca**, accede al dominio y que la **matriz se respeta desde el sistema de Apple** — el cierre del RA.06.
 
 ---
 
-**Comandos en el Mac, salvo que se diga "en el servidor".**
+**Comandos en la VM de macOS, salvo que se diga "en el servidor".**
 
-### 1 · El Mac llega al servidor
+### 0 · La VM de macOS arranca y llega al escritorio
+
+- **✅ Bien:** la VM arranca sin pantalla negra, sin la tortuga, y llegas al escritorio de macOS.
+- **❌ Mal:** pantalla negra / EXITBS → caso C1. Tortuga → caso C2.
+
+### 1 · La VM llega al servidor
 
 ```bash
 ping -c 2 10.10.10.10
