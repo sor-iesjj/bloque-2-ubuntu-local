@@ -172,13 +172,15 @@ Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, as
 
 1. Descarga el instalador de `https://www.cygwin.com/` (`setup-x86_64.exe`).
 2. Ejecútalo y acepta los valores por defecto.
-3. Cuando te pida **elegir paquetes**, busca e instala:
-   - `curl` (en "Web")
-   - `wget` (en "Web")
-   - `unzip` (en "Archive")
-   - `coreutils` (en "Utils")
-   - `dmg2img` *(si no aparece, el script lo descarga solo)*
-4. Termina. Ahora tienes un icono **"Cygwin64 Terminal"** — ábrelo y ejecuta el script desde ahí.
+3. **Cuando te pida elegir paquetes, NO elijas ninguno** — deja todo en "Skip" y pulsa Siguiente hasta el final. Cygwin se instala con `bash` de serie, que es **lo único imprescindible**.
+4. Al terminar, abre la **"Cygwin64 Terminal"** (icono del escritorio). Ahí ya tienes bash: prueba con `echo hola` → debe responder `hola`.
+5. Ejecuta el script **desde esa terminal**:
+   ```bash
+   ./macos-guest-virtualbox.sh
+   ```
+
+> [!warning] ⚠️ ¿Y si el script te dice "comando no encontrado" (ej. `wget`)?
+> Entonces instala **solo ese** paquete — no "por si acaso" todos. Vuelve a ejecutar `setup-x86_64.exe`, elige **"mantener la instalación existente"**, y en la **búsqueda** escribe el nombre **exacto** del comando. En la lista, clic en el "Skip" del paquete que se llama **igual que el comando** (ej. `wget`, no `wget2` ni `wget-devel`) y elige la **última** versión. Los paquetes `curl`, `wget`, `unzip` y `coreutils` existen en Cygwin con esos nombres — pero **no los instales todos de entrada**: solo lo que el script te pida.
 
 **Arreglo — opción B: instalar WSL1 (con cuidado).**
 > [!danger] 🛑 Ojo: **WSL2 activa el hipervisor** y puede encender VBS → tortuga → macOS no instala. Si usas WSL, usa **WSL1**, no WSL2.
