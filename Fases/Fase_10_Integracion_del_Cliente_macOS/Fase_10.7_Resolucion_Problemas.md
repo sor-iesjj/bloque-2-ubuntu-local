@@ -175,7 +175,7 @@ Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, as
 3. **Cuando te pida elegir paquetes, busca e instala estos TRES** (los únicos que el script necesita de verdad). Cómo hacerlo sin liarte en la lista:
    - `wget` — lo usa para descargar los ficheros de macOS desde Apple.
    - `unzip` — para descomprimir los ficheros del instalador.
-   - `vim-common` — porque trae `xxd`, que el script necesita para procesar los ficheros de Apple. **Sin él, el script se detiene avisando "Please make sure a version of xxd…".**
+   - `vim-common` — porque trae `xxd`, que el script necesita para procesar los ficheros de Apple. **⚠️ IMPORTANTE: debe ser la versión 9.x** (la que trae `xxd` con la opción `-e`). Si te instala la 8.x, el script se detiene igual avisando *"Please make sure a version of xxd…"*. Comprueba que `xxd --help` muestra `-e`.
    Para cada uno: escribe el nombre en la **búsqueda** de arriba, busca la fila del paquete que se llama **exactamente así** (no `wget2`, no `vim`, no `vim-*-devel`), clic en su **"Skip"** → se cambia a la **última** versión.
    **Todo lo demás, déjalo en "Skip".** Pulsa Siguiente hasta el final.
 4. Al terminar, abre la **"Cygwin64 Terminal"** (icono del escritorio). Ahí ya tienes bash: prueba con `echo hola` → debe responder `hola`.
