@@ -21,7 +21,7 @@
 > | `CE.06.d` | Se han instalado y configurado servicios para compartir recursos en red. | Unir el Windows 11 al dominio y montar los recursos compartidos |
 > | `CE.06.e` | Se ha accedido a sistemas de archivos en red desde equipos con diferentes sistemas operativos. | Abrir desde el Explorador de Windows las carpetas que sirve el Samba de Ubuntu |
 > | `CE.06.i` | Se ha comprobado el funcionamiento de los servicios instalados. | Iniciar sesión como `masao.sato` del dominio y comprobar que ve lo suyo y no lo ajeno |
-> | `CE.02.c` | Se han configurado y gestionado cuentas de equipo. | **Unir el PC al dominio crea una cuenta de equipo**, no de usuario. Es el único sitio del itinerario donde se ve |
+> | `CE.02.c` | Se han configurado y gestionado cuentas de equipo. | **Unir el PC al dominio crea una cuenta de equipo**, no de usuario. Es el **primer** sitio del itinerario donde se ve *(el segundo es la Fase 9, Ubuntu Desktop)* |
 > | `CE.04.e` | Se ha utilizado el entorno gráfico para compartir recursos. | Toda la parte de Windows: el Explorador, no la consola |
 >
 > **Los 3 del RA.06 que NO se evalúan aquí:** `CE.06.f` (impresoras entre sistemas distintos) y `CE.06.g` (trabajo en grupo) no se trabajan en este itinerario; `CE.06.h` (niveles de seguridad de acceso) se demuestra en la **Fase 3** y en la **Auditoría Final**.

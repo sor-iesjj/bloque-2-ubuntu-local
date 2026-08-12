@@ -27,7 +27,7 @@
 > Con `UbuntuDesktop` apagada, expórtala a tu **disco externo**:
 >
 > ```
-> SOR/Bloque_2/Proyecto_Academia/FINAL/
+> SOR/Bloque_2/Fases/Fase_9_Integracion_del_Cliente_Ubuntu_Desktop/
 >     └── B2-F9-cliente-ubuntu-desktop.ova
 > ```
 >

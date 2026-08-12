@@ -73,6 +73,14 @@ Igual que en la Fase 8, **cerrando sesión entre cada una**:
 | **7.1** | `shinnosuke.nohara` (becario) | Entra y ve `smb://` | Ve **solo `becarios`** |
 | **7.2** | *(el mismo)* | Intenta escribir en `becarios` | **Denegado** (solo lectura) |
 | **7.3** | `masao.sato` (comercial) | Abre una factura | Ve sus 4 carpetas y **lee** la factura |
+
+> [!warning] ⚠️ Antes de esta prueba: asegúrate de que hay una factura que abrir
+> El fichero `factura-001.txt` puede que lo crearas en el laboratorio de la Fase 6, pero **era opcional**. Si no está, la prueba falla por un fichero que no existe, no por un permiso. **Compruébalo y créalo si hace falta**, desde el servidor:
+> ```bash
+> ls /srv/samba/departamentos/facturacion/factura-001.txt \
+>   || sudo -u '#10001' sh -c 'echo "Factura de prueba" > /srv/samba/departamentos/facturacion/factura-001.txt'
+> ```
+> *(`10001` es `hiroshi.nohara`, de facturación. Se crea con su identidad a propósito.)*
 | **7.4** | *(el mismo)* | Intenta borrar esa factura | **Denegado** (ver ≠ modificar) |
 | **7.5** | `misae.nohara` (contabilidad) | Escribe en `facturacion` | El fichero **se crea** |
 | **7.6** | *(el mismo)* | Ve `smb://` | Ve todo **menos `rrhh`** |

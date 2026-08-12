@@ -132,15 +132,20 @@ else
     info "     Kerberos rechaza el desfase. Ejecuta: sudo timedatectl set-timezone Europe/Madrid"
 fi
 
-if command -v chronyc >/dev/null 2>&1; then
-    if chronyc tracking 2>/dev/null | grep -qi "leap.*normal\|System clock"; then
-        ok "D2. Sincronizacion de hora funcionando (chrony)"
-    else
-        aviso "D2. chrony instalado pero no se puede confirmar la sincronizacion"
-    fi
-else
-    aviso "D2. No se encuentra 'chronyc' - puede que el sistema use otra sincronizacion"
-    info "     Lo importante es la zona horaria (D1) y el desfase real con el servidor."
+# Ubuntu Desktop sincroniza por defecto con systemd-timesyncd (no con chrony).
+# Se comprueba que HAY sincronizacion (con la herramienta que sea) y se avisa
+# solo si NO hay ninguna.
+SYNC_OK=0
+if command -v chronyc >/dev/null 2>&1 && chronyc tracking 2>/dev/null | grep -qi "leap.*normal\|System clock"; then
+    ok "D2. Sincronizacion de hora funcionando (chrony)"
+    SYNC_OK=1
+elif timedatectl 2>/dev/null | grep -qi "systemd-timesyncd.*active\|NTP service: active"; then
+    ok "D2. Sincronizacion de hora funcionando (systemd-timesyncd)"
+    SYNC_OK=1
+fi
+if [ "$SYNC_OK" -eq 0 ]; then
+    aviso "D2. No se detecta sincronizacion de hora activa"
+    info "     Comprueba 'timedatectl' - la zona horaria (D1) es lo critico."
 fi
 
 # =============================================================================

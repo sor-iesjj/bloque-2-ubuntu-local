@@ -28,7 +28,7 @@
 ping -c 2 10.10.10.10
 ```
 - **✅ Bien:** responde.
-- **❌ Mal:** → caso C1.
+- **❌ Mal:** → caso C3 (no llego al servidor).
 
 ### 2 · Resuelve el nombre
 
@@ -42,13 +42,13 @@ ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
 
 Ajustes → Fecha y hora.
 - **✅ Bien:** hora correcta, automática.
-- **❌ Mal:** → caso C2 (el fallo nº1).
+- **❌ Mal:** → caso C4 (la contraseña correcta falla — la hora).
 
 ### 4 · Acceso a las carpetas desde el Finder
 
 `Cmd + K` → `smb://UbuntuServer.BOOCHANLAB.LOCAL` → `masao.sato` / `P@ssw0rd`.
 - **✅ Bien:** se conecta y ves las carpetas.
-- **❌ Mal:** → casos C2 o C3.
+- **❌ Mal:** → casos C4 (contraseña/hora) o C5 (no ves tus carpetas).
 
 ### 5 · La matriz, desde el tercer sistema — las mismas pruebas que en las Fases 8 y 9
 
@@ -59,6 +59,14 @@ Con `masao.sato` conectado, y **cerrando la conexión entre cada usuario**:
 | **5.1** | `shinnosuke.nohara` (becario) | Ve **solo `becarios`** |
 | **5.2** | *(el mismo)* | No puede escribir en `becarios` |
 | **5.3** | `masao.sato` (comercial) | Ve sus 4 carpetas y **lee** la factura |
+
+> [!warning] ⚠️ Antes de esta prueba: asegúrate de que hay una factura que abrir
+> El fichero `factura-001.txt` puede que lo crearas en el laboratorio de la Fase 6, pero **era opcional**. Si no está, la prueba falla por un fichero que no existe, no por un permiso. **Compruébalo y créalo si hace falta**, desde el servidor:
+> ```bash
+> ls /srv/samba/departamentos/facturacion/factura-001.txt \
+>   || sudo -u '#10001' sh -c 'echo "Factura de prueba" > /srv/samba/departamentos/facturacion/factura-001.txt'
+> ```
+> *(`10001` es `hiroshi.nohara`, de facturación. Se crea con su identidad a propósito.)*
 | **5.4** | *(el mismo)* | No puede **borrar** la factura |
 | **5.5** | `misae.nohara` (contabilidad) | Puede **escribir** en `facturacion` |
 | **5.6** | *(el mismo)* | No ve `rrhh` |

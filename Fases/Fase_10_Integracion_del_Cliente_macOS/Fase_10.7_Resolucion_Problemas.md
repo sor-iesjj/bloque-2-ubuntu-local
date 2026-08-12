@@ -25,7 +25,7 @@
 | No se conecta / no encuentra el servidor | [[#C3 · No llego al servidor\|C3]] |
 | Entro pero no veo carpetas (o no las que tocan) | [[#C5 · Entro pero no veo mis carpetas\|C5]] |
 | `smb://` se queda colgado o tarda | [[#C6 · La conexión tarda o se cuelga\|C6]] |
-| "No tengo bash en Windows para ejecutar el script" | [[#C7 · No tengo bash en Windows (WSL o Cygwin)\|C7]] |
+| "No tengo bash en Windows para ejecutar el script" | [[#C7 · No tengo bash en Windows (WSL1)\|C7]] |
 
 ---
 
@@ -144,22 +144,6 @@ ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
 > [!summary] Qué aprendes
 > Que a veces lo pragmático (IP directa) desbloquea, aunque el ideal sea el nombre (que permite Kerberos).
 
-> [!bug] Síntoma
-> El Finder no conecta, o `ping` al servidor falla.
-
-**Hipótesis.** El Mac no está en la red del laboratorio, o no resuelve el nombre.
-
-**Comprobación.** En Terminal:
-```bash
-ping -c 2 10.10.10.10
-ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
-```
-
-**Arreglo.** Si la IP responde pero el nombre no, usa la IP directa en el Finder (`smb://10.10.10.10`) o configura el DNS del dominio. Si ni la IP responde, el Mac no está en la red del laboratorio → avisa al profesor (puede hacer falta WireGuard).
-
-> [!summary] Qué aprendes
-> Que "llego por IP" y "resuelvo el nombre" son dos cosas distintas — la misma lección que en las Fases 8 y 9, desde el Mac.
-
 ---
 
 ### C7 · No tengo bash en Windows (WSL1)
@@ -224,24 +208,7 @@ chmod +x macos-guest-virtualbox.sh
 > Que no es un fallo tuyo: el script está escrito para Linux, y solo **WSL1** le da un entorno compatible (ni Cygwin por el `xxd`, ni WSL2 por el hipervisor). Saber cuál de los tres entornos vale y por qué es parte de entender lo que ejecutas.
 
 > [!warning] ⚠️ ¿Y si el script te dice que falta OTRO comando (no `wget`)?
-> Entonces instala **solo ese** que te pide — no todos. Vuelve a ejecutar `setup-x86_64.exe`, elige **"mantener la instalación existente"**, busca el nombre **exacto** del comando, clic en su "Skip" → última versión. Los paquetes se llaman igual que el comando (`unzip`, `coreutils`…) — el que lleva un guion y algo más (`-devel`, `-lib`) no es el que buscas.
-
-**Arreglo — opción B: instalar WSL1 (con cuidado).**
-> [!danger] 🛑 Ojo: **WSL2 activa el hipervisor** y puede encender VBS → tortuga → macOS no instala. Si usas WSL, usa **WSL1**, no WSL2.
-> En CMD **como administrador**:
-> ```cmd
-> wsl --install -d Ubuntu --no-launch
-> wsl --set-version Ubuntu 1
-> ```
-> Reinicia si lo pide, abre "Ubuntu" desde el menú Inicio, y ejecuta el script ahí.
-
-> [!danger] 🛑 IMPORTANTE: Cygwin NO vale para este script — usa WSL1
-> El script comprueba el `xxd` con `xxd -e -p -l 16 /dev/urandom`. **El `xxd` de Cygwin NO acepta `-e` y `-p` juntos** (responde *"only one of -b, -e, -u, -p, -i can be used"*), así que el script **siempre** muestra el aviso de `xxd` y se detiene, **aunque instales `vim-common`**. No es un fallo de instalación: es una incompatibilidad del `xxd` de Cygwin con este script.
->
-> **La vía que funciona en Windows es WSL1** (el `xxd` de Linux sí acepta `-e -p` juntos). **No WSL2** (activa el hipervisor → tortuga → y macOS no instala).
-
-> [!summary] Qué aprendes
-> Que no es un fallo tuyo: el script está escrito para Linux, y su `xxd` en Cygwin no es compatible. Saber por qué Cygwin falla y WSL1 funciona —y por qué WSL2 es un problema— es parte de entender el entorno, no solo ejecutar.
+> En WSL1 se instala con `apt`, no con Cygwin: `sudo apt install -y <comando>`. Ejecuta el script otra vez y, si pide algo concreto, instálalo con ese comando.
 
 ---
 

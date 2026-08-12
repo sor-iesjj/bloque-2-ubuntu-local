@@ -10,8 +10,8 @@
 > [!danger] 🛑 REQUISITO: la instantánea `Fase 10 terminada` del servidor DEBE estar hecha
 > Aquí vas a romper el acceso. Sin la instantánea no hay red de seguridad. Si algo se rompe de verdad y no puedes arreglarlo: **restaura** y anota qué hiciste mal.
 
-> [!info] 🎯 El Mac NO es una VM — romper aquí no toca la máquina
-> A diferencia de las Fases 8 y 9, **no rompes el cliente** (es un Mac real, no lo tocas). Rompes cosas **del servidor o de la configuración** que hacen que el acceso falle — y las reparas. El Mac es solo el observador.
+> [!info] 🎯 El cliente ES una VM de macOS — romper aquí toca la VM y el servidor
+> Como en las Fases 8 y 9, el cliente es una **VM**. Las averías de abajo rompen cosas del **servidor o de la configuración de la VM** (nunca el host ni el servidor de producción). **Ten la instantánea de la VM macOS hecha** (8.b) antes de empezar — si algo se rompe de verdad, restaura.
 
 > [!warning] ⏱️ **Sigue siendo UN SOLO vídeo** `B2 · F10 · Averías`, con un timestamp por avería.
 
@@ -22,7 +22,7 @@
 
 ## 🗺️ **LAS AVERÍAS DE ESTE LABORATORIO**
 
-> [!abstract] 3 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
+> [!abstract] 4 averías, y todas siguen el mismo guion: **romper → comprobar → diagnosticar → reparar**
 
 | **Avería** | **La frase del cliente que la resume** |
 | :--- | :--- |

@@ -37,7 +37,7 @@
 > > - **Cygwin NO vale** para este script: su `xxd` no acepta el comando `-e -p` que el script usa, así que se detiene siempre con el aviso de `xxd`. *(Lo descubrimos probándolo en campo.)*
 > > - **WSL2 NO vale**: enciende el hipervisor de Windows (VBS) → tortuga → y el script se detiene con *"Virtualbox is not using hardware-supported virtualization"*.
 > >
-> > **Si no tienes WSL1 listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]** — es EL camino para hacer este paso, no un desvío. Ahí están los pasos para instalarlo y prepararlo.
+> > **Si no tienes WSL1 listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL1)\|caso C7 del apartado 7]]** — es EL camino para hacer este paso, no un desvío. Ahí están los pasos para instalarlo y prepararlo.
 >
 > **En Linux o macOS** (si tienes un Mac para prepararlo), desde la terminal:
 > ```bash

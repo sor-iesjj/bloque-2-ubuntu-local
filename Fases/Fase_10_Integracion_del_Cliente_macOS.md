@@ -41,7 +41,7 @@
 > | Mientras lees… | Anota |
 > | :--- | :--- |
 > | **1 · Qué se evalúa** | Los CE que toca esta fase |
-> | **2 · Entregables** | Lo particular de esta fase: nombres de vídeo, que NO hay VM que guardar |
+> | **2 · Entregables** | Lo particular de esta fase: nombres de vídeo, que SÍ hay VM (macOS) que guardar y exportar |
 > | **3 · Grabación** | Lo que hay que decir en voz alta |
 > | **4 · Dónde estamos** | De qué depende esta fase |
 > | **5 · Fundamento** | 🔴 Los conceptos y las preguntas |
