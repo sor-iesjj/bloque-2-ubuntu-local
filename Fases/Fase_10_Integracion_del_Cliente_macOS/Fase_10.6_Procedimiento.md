@@ -23,7 +23,7 @@
 > 3. Arranca la grabación, **preséntate y muestra tu identidad**. Todo lo que sigue queda grabado.
 >
 > **Lo que ya tienes:** el servidor encendido con el dominio y las carpetas publicadas (Fases 1-7), y los clientes Windows y Ubuntu ya integrados (Fases 8-9). No toques nada del servidor.
-Vamos a ver, si estoy ejecutando el puto script de los cojones es porque estoy en el C7, ya he ejecutado el script y ahora se supone que debo devolver atrás en el paso 1, donde es prepara el instalador de Mac. Ya tengo instalado el espero que hayas hecho las rectificaciones oportunas relacionadas con toda esta mierda de que me has hecho pasar con la instalación del programita este para evitar hacer uso del WSL. Ya funciona. Lo que he hecho ha sido reinstalar, reinstalar y reinstalar y reinstalar sin ningún criteria, no clear. No needs no idea, so it's a very good one, so the ultimate we have to have the procedimiento, en el caso de que WSL de problemas porque da problemas con todo el rollo que has contado y hagamos la instalación del otro. Entonces yo ahora vuelvo. Si lo haces a mano, vale, entonces yo he ejecutado el script y ahora dice, arranca la máquina virtual desde el instalador, pero si no tengo el la puta ISO, me cago en tu puta madre. En tu puta madre me cago. Mataría por este vídeo. ¿Desde dónde descargo, tío? ¿Desde la punta de la polla o qué? O sea, ¿qué hace el script descarga, veis y el resto vale. O sea, me estáis diciendo que el script que acabo de hacer me ha generado un fichero de mg donde está el archivo ese.
+
 ---
 
 > [!example] Paso 1 — Crear la VM de macOS en VirtualBox *(el reto de la fase)*
