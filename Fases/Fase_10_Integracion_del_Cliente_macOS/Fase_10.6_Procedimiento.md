@@ -40,9 +40,10 @@
 > curl -O https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
 > ./macos-guest-virtualbox.sh
 > ```
-> **En Windows**, se hace **dentro de la Cygwin64 Terminal** (paso 5 del caso C7), con `wget` en vez de `curl`:
+> **En Windows**, se hace **dentro de la Cygwin64 Terminal** (paso 5 del caso C7), con `wget` en vez de `curl`, y **dando permiso de ejecución** (sin `chmod`, te dará `Permission denied`):
 > ```bash
 > wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
+> chmod +x macos-guest-virtualbox.sh
 > ./macos-guest-virtualbox.sh
 > ```
 > *(Ambos bajan el instalador de Catalina/Mojave/High Sierra desde `swcdn.apple.com` y crean la VM ya configurada — los pasos 1.2 y 1.3 quedan hechos por el script.)*
