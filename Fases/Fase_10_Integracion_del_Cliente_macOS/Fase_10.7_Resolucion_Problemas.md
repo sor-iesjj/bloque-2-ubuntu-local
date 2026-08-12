@@ -25,6 +25,7 @@
 | No se conecta / no encuentra el servidor | [[#C3 · No llego al servidor\|C3]] |
 | Entro pero no veo carpetas (o no las que tocan) | [[#C5 · Entro pero no veo mis carpetas\|C5]] |
 | `smb://` se queda colgado o tarda | [[#C6 · La conexión tarda o se cuelga\|C6]] |
+| "No tengo bash en Windows para ejecutar el script" | [[#C7 · No tengo bash en Windows (WSL o Cygwin)\|C7]] |
 
 ---
 
@@ -152,51 +153,44 @@ ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
 
 ---
 
-### C2 · La contraseña correcta falla
+### C7 · No tengo bash en Windows (WSL o Cygwin)
 
 > [!bug] Síntoma
-> Entras con `masao.sato` y `P@ssw0rd`, que son correctos, y el Mac dice que el usuario o la contraseña son incorrectos.
+> Quieres ejecutar `macos-guest-virtualbox.sh` (Paso 1.1) pero en Windows: escribes `wsl` en CMD y no sabes si hay que hacer algo, o el comando no existe.
 
-**Hipótesis.** **La hora del Mac.** Kerberos rechaza más de 5 minutos de desfase, y el error no lo dice.
+**Hipótesis.** El script es de **Linux** (bash). En Windows no se ejecuta en CMD/PowerShell: necesitas un **entorno bash**. Eso es **Cygwin** o **WSL**.
 
-**Comprobación.** Ajustes → Fecha y hora: ¿la hora es correcta?
+**Comprobación.** ¿Tienes alguno? En **CMD**:
+```cmd
+wsl --version
+```
+- **✅ Bien:** responde con la versión → tienes WSL.
+- **❌ Mal:** *"WSL no está instalado"* o comando no reconocido → sigue.
 
-**Arreglo.** Activa la hora automática o ajústala a mano. Vuelve a intentar.
+**Arreglo — opción A: instalar Cygwin (recomendado para esta fase).**
+Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, así que **no rompe VirtualBox**. Es la opción segura aquí.
 
-> [!summary] Qué aprendes
-> Que el error de credenciales no siempre es la contraseña — es la hora. Igual que en Windows (Fase 8) y en Ubuntu (Fase 9). **Es el fallo nº1 de esta fase.**
+1. Descarga el instalador de `https://www.cygwin.com/` (`setup-x86_64.exe`).
+2. Ejecútalo y acepta los valores por defecto.
+3. Cuando te pida **elegir paquetes**, busca e instala:
+   - `curl` (en "Web")
+   - `wget` (en "Web")
+   - `unzip` (en "Archive")
+   - `coreutils` (en "Utils")
+   - `dmg2img` *(si no aparece, el script lo descarga solo)*
+4. Termina. Ahora tienes un icono **"Cygwin64 Terminal"** — ábrelo y ejecuta el script desde ahí.
 
----
-
-### C3 · Entro pero no veo mis carpetas
-
-> [!bug] Síntoma
-> Conectas y ves el servidor, pero no las carpetas que esperabas.
-
-**Hipótesis.** O bien estás entrando con el usuario equivocado, o bien la matriz/ABE no está como debe.
-
-**Comprobación.** ¿Con qué usuario entraste? ¿`masao.sato` (comercial)?
-
-**Arreglo.** Si entras con otro usuario (o con la cuenta local del Mac), las carpetas que veas son las de **ese** usuario. Cierra sesión de la conexión y entra con el usuario del dominio que toca.
-
-> [!summary] Qué aprendes
-> Que lo que ves en una carpeta compartida depende de **quién eres**, no del sistema con el que entras. La matriz la decide el servidor.
-
----
-
-### C4 · La conexión tarda o se cuelga
-
-> [!bug] Síntoma
-> `smb://…` tarda mucho en conectar, o se queda colgado.
-
-**Hipótesis.** El Mac intenta resolver el nombre por varios servidores DNS antes de dar con el correcto, o hay un problema de red.
-
-**Comprobación.** Espera; si no conecta, prueba con la IP directa.
-
-**Arreglo.** Usa `smb://10.10.10.10` en vez del nombre (funciona, aunque sin Kerberos). Si va por nombre pero lento, revisa el DNS.
+**Arreglo — opción B: instalar WSL1 (con cuidado).**
+> [!danger] 🛑 Ojo: **WSL2 activa el hipervisor** y puede encender VBS → tortuga → macOS no instala. Si usas WSL, usa **WSL1**, no WSL2.
+> En CMD **como administrador**:
+> ```cmd
+> wsl --install -d Ubuntu --no-launch
+> wsl --set-version Ubuntu 1
+> ```
+> Reinicia si lo pide, abre "Ubuntu" desde el menú Inicio, y ejecuta el script ahí.
 
 > [!summary] Qué aprendes
-> Que a veces lo pragmático (IP directa) desbloquea, aunque el ideal sea el nombre (que permite Kerberos).
+> Que no es un fallo tuyo: el script está escrito para un entorno bash, y Windows no lo tiene de serie. Saber cuándo necesitas Cygwin o WSL —y por qué WSL2 puede ser un problema aquí— es parte de entender qué hace el script, no solo ejecutarlo.
 
 ---
 

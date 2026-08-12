@@ -39,6 +39,14 @@
 > ./macos-guest-virtualbox.sh
 > ```
 >
+> > [!warning] ⚠️ ¿Sabes qué es WSL o Cygwin? ¿Y cómo comprobar que te funcionan?
+> > El script `macos-guest-virtualbox.sh` es un script de **Linux** (bash): en Windows no se ejecuta en la consola normal (CMD o PowerShell). Necesitas un **entorno bash**, y eso es **Cygwin** o **WSL**.
+> >
+> > **Si no sabes qué son, o si escribiste `wsl` en CMD y no sabes si hay que hacer algo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]**, donde se explica cómo verificarlo e instalarlo.
+> >
+> > > [!danger] 🛑 Ojo con WSL2: puede activar el hipervisor y romper VirtualBox
+> > > **WSL2** (el que instala Windows por defecto) activa la "Virtual Machine Platform" de Windows — que es **una de las cosas que encienden VBS** y hacen aparecer la tortuga. Esta fase necesita **VT-x real**, así que **lo recomendable es Cygwin** (no toca el hipervisor). Si usas WSL, usa **WSL1**, no WSL2.
+>
 > > [!info] 📚 Qué hace el script
 > > Descarga `BaseSystem.dmg` y el resto del instalador desde los servidores de Apple, y crea la VM ya configurada (los pasos 1.2-1.3). Es lo que te ahorra montarla a mano.
 >
