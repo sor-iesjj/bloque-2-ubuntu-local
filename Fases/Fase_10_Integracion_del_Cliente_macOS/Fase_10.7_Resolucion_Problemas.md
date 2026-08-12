@@ -162,46 +162,66 @@ ping -c 2 UbuntuServer.BOOCHANLAB.LOCAL
 
 ---
 
-### C7 · No tengo bash en Windows (WSL o Cygwin)
+### C7 · No tengo bash en Windows (WSL1)
 
 > [!bug] Síntoma
-> Quieres ejecutar `macos-guest-virtualbox.sh` (Paso 1.1) pero en Windows: escribes `wsl` en CMD y no sabes si hay que hacer algo, o el comando no existe.
+> Quieres ejecutar `macos-guest-virtualbox.sh` (Paso 1.1) pero en Windows: el script es de **Linux** y CMD/PowerShell no lo ejecutan. Necesitas **WSL1**.
 
-**Hipótesis.** El script es de **Linux** (bash). En Windows no se ejecuta en CMD/PowerShell: necesitas un **entorno bash**. Eso es **Cygwin** o **WSL**.
+> [!warning] 🛑 Solo WSL1 vale para este script
+> - **Cygwin NO sirve**: su `xxd` no acepta `-e -p` juntos, y el script se detiene siempre con el aviso de `xxd`. *(Probado en campo.)*
+> - **WSL2 NO sirve**: enciende el hipervisor (VBS) → tortuga → el script se detiene con *"Virtualbox is not using hardware-supported virtualization"*.
+> - **WSL1 sí sirve**: su `xxd` de Linux acepta `-e -p`, y no enciende el hipervisor.
 
-**Comprobación.** ¿Tienes alguno? En **CMD**:
+**Comprobación.** En **CMD**:
 ```cmd
-wsl --version
+wsl --list --verbose
 ```
-- **✅ Bien:** responde con la versión → tienes WSL.
-- **❌ Mal:** *"WSL no está instalado"* o comando no reconocido → sigue.
+- **✅ Bien:** `Ubuntu` con `VERSION 1` → ya tienes lo que necesitas. Salta al paso 3.
+- Si `Ubuntu` con `VERSION 2` → pasa al paso 1.
+- Si "no hay distribuciones" → pasa al paso 1.
 
-**Arreglo — opción A: instalar Cygwin (recomendado para esta fase).**
-Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, así que **no rompe VirtualBox**. Es la opción segura aquí.
+**Paso 1 — Instalar Ubuntu en WSL (si no lo tienes).** En CMD **como administrador**:
+```cmd
+wsl --install -d Ubuntu --no-launch
+```
 
-1. Descarga el instalador de `https://www.cygwin.com/` (`setup-x86_64.exe`).
-2. Ejecútalo y acepta los valores por defecto.
-3. **Cuando te pida elegir paquetes, busca e instala estos TRES** (los únicos que el script necesita de verdad). Cómo hacerlo sin liarte en la lista:
-   - `wget` — lo usa para descargar los ficheros de macOS desde Apple.
-   - `unzip` — para descomprimir los ficheros del instalador.
-   - `vim-common` — porque trae `xxd`, que el script necesita para procesar los ficheros de Apple. **⚠️ IMPORTANTE: debe ser la versión 9.x** (la que trae `xxd` con la opción `-e`). Si te instala la 8.x, el script se detiene igual avisando *"Please make sure a version of xxd…"*. Comprueba que `xxd --help` muestra `-e`.
-   Para cada uno: escribe el nombre en la **búsqueda** de arriba, busca la fila del paquete que se llama **exactamente así** (no `wget2`, no `vim`, no `vim-*-devel`), clic en su **"Skip"** → se cambia a la **última** versión.
-   **Todo lo demás, déjalo en "Skip".** Pulsa Siguiente hasta el final.
-4. Al terminar, abre la **"Cygwin64 Terminal"** (icono del escritorio). Ahí ya tienes bash: prueba con `echo hola` → debe responder `hola`.
-5. **Consigue el script dentro de esa terminal** — el `./macos-guest-virtualbox.sh` del Paso 1.1 no está en el escritorio: hay que descargarlo **en la carpeta de Cygwin**. Desde la Cygwin64 Terminal:
-   ```bash
-   wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
-   ```
-   Esto guarda el archivo en la carpeta de tu usuario de Cygwin (donde la terminal abre por defecto). Comprueba que está: `ls macos-guest-virtualbox.sh` debe mostrar el fichero.
-   > 💡 Si `wget` guarda el archivo con un `.1` al final (p. ej. `macos-guest-virtualbox.sh.1`), es que ya lo habías descargado antes y wget no sobrescribe. Bórralo y repite, o usa ese nombre: `rm macos-guest-virtualbox.sh.1 && wget …`
-6. **Dale permiso de ejecución** (los ficheros descargados no lo traen — sin esto te dará `Permission denied`):
-   ```bash
-   chmod +x macos-guest-virtualbox.sh
-   ```
-7. Ejecútalo:
-   ```bash
-   ./macos-guest-virtualbox.sh
-   ```
+**Paso 2 — Forzar WSL1 (NO WSL2).** En CMD **como administrador**:
+```cmd
+wsl --set-version Ubuntu 1
+```
+> Si da error de la característica "VirtualMachinePlatform", actívala y reinicia:
+> ```cmd
+> dism /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+> ```
+> *(Es un paso intermedio para poder instalar WSL1; WSL1 luego no usa ese hipervisor.)*
+
+**Paso 3 — Abrir Ubuntu y crear el usuario.** Pulsa `Windows`, escribe **`Ubuntu`**, ábrelo. La primera vez crea un **usuario y contraseña** (anótalos).
+
+**Paso 4 — Arreglar el DNS de WSL (sin esto no descarga nada).** Dentro de Ubuntu:
+```bash
+sudo nano /etc/resolv.conf
+```
+Deja **solo** esta línea (borra las `fec0:...`):
+```
+nameserver 8.8.8.8
+```
+Guarda (`Ctrl+X`, `Y`, `Enter`). Si WSL lo sobrescribe, crea `/etc/wsl.conf` con `[network]` y `generateResolvConf = false`, cierra y reabre Ubuntu. Comprueba: `ping -c 2 google.com`.
+
+**Paso 5 — Instalar las herramientas.** Dentro de Ubuntu:
+```bash
+sudo apt update && sudo apt install -y wget unzip xxd dmg2img
+```
+
+**Paso 6 — Descargar y ejecutar el script.** Dentro de Ubuntu:
+```bash
+wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
+chmod +x macos-guest-virtualbox.sh
+./macos-guest-virtualbox.sh
+```
+> 💡 Si `wget` guarda el fichero con `.1` al final, es que ya lo descargaste: `rm macos-guest-virtualbox.sh.* && wget …`
+
+> [!summary] Qué aprendes
+> Que no es un fallo tuyo: el script está escrito para Linux, y solo **WSL1** le da un entorno compatible (ni Cygwin por el `xxd`, ni WSL2 por el hipervisor). Saber cuál de los tres entornos vale y por qué es parte de entender lo que ejecutas.
 
 > [!warning] ⚠️ ¿Y si el script te dice que falta OTRO comando (no `wget`)?
 > Entonces instala **solo ese** que te pide — no todos. Vuelve a ejecutar `setup-x86_64.exe`, elige **"mantener la instalación existente"**, busca el nombre **exacto** del comando, clic en su "Skip" → última versión. Los paquetes se llaman igual que el comando (`unzip`, `coreutils`…) — el que lleva un guion y algo más (`-devel`, `-lib`) no es el que buscas.

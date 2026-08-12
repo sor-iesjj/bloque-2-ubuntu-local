@@ -32,20 +32,27 @@ Vamos a ver, si estoy ejecutando el puto script de los cojones es porque estoy e
 > ### 1.1 · Prepara el instalador de macOS
 > **🛑 NO descargas ninguna ISO. El script la descarga él solo.** El sistema de Apple no se descarga como una ISO normal: el método de `myspaghetti/macos-virtualbox` (el script de referencia, 13k★) **baja el instalador desde los servidores de Apple** (`swcdn.apple.com`), crea la VM y la arranca. **Tú no descargas nada de ningún sitio** — solo ejecutas el script.
 >
-> > [!warning] 🛑 PRIMERO: necesitas un **entorno bash** (Cygwin o WSL1) para ejecutar el script
-> > El script es de **Linux**, y en Windows no se ejecuta en CMD/PowerShell. **Si no tienes Cygwin/WSL listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]** — pero ojo: **el C7 NO es un desvío opcional, es EL camino para hacer este paso.** Es la parte del Paso 1.1 que te consigue el entorno bash. *(Ojo: **WSL2** enciende el hipervisor y puede traer la tortuga — usa Cygwin o WSL1.)*
+> > [!warning] 🛑 PRIMERO: necesitas **WSL1** (no Cygwin, no WSL2) para ejecutar el script
+> > El script es de **Linux**, y en Windows no se ejecuta en CMD/PowerShell. Necesitas **WSL1** — y solo WSL1, porque:
+> > - **Cygwin NO vale** para este script: su `xxd` no acepta el comando `-e -p` que el script usa, así que se detiene siempre con el aviso de `xxd`. *(Lo descubrimos probándolo en campo.)*
+> > - **WSL2 NO vale**: enciende el hipervisor de Windows (VBS) → tortuga → y el script se detiene con *"Virtualbox is not using hardware-supported virtualization"*.
+> >
+> > **Si no tienes WSL1 listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]** — es EL camino para hacer este paso, no un desvío. Ahí están los pasos para instalarlo y prepararlo.
 >
 > **En Linux o macOS** (si tienes un Mac para prepararlo), desde la terminal:
 > ```bash
 > curl -O https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
 > ./macos-guest-virtualbox.sh
 > ```
-> **En Windows**, se hace **dentro de la Cygwin64 Terminal** (es donde el C7 te deja), con `wget` en vez de `curl`, y **dando permiso de ejecución** (sin `chmod`, te dará `Permission denied`):
+> **En Windows**, se hace **dentro de WSL1 (Ubuntu)** — el C7 te deja ahí — con `wget` en vez de `curl`, y **dando permiso de ejecución** (sin `chmod`, te dará `Permission denied`):
 > ```bash
 > wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
 > chmod +x macos-guest-virtualbox.sh
 > ./macos-guest-virtualbox.sh
 > ```
+>
+> > [!danger] 🛑 Si el script se detiene con **"Virtualbox is not using hardware-supported virtualization"**
+> > Es la **VBS del host** (la tortuga de la Fase 8). No es que hayas hecho nada mal: **esta parte de la fase NO es viable en un equipo con VBS forzada.** Ni siquiera el script lo intenta. → caso [[Fase_10.7_Resolucion_Problemas#C2 · La tortuga / VBS bloquea\|C2]]. Solo funciona en un host con VT-x real.
 > *(Ambos bajan el instalador de Catalina/Mojave/High Sierra desde `swcdn.apple.com` y crean la VM ya configurada — los pasos 1.2 y 1.3 quedan hechos por el script. La descarga va a una carpeta temporal que el script gestiona; **no te deja una ISO que guardar**, la usa él y la limpia al terminar.)*
 >
 > **Mientras el script corre:** te irá pidiendo **Enter** según avance. Y cuando arranque la VM, **NO toques la ventana de la VM** mientras el script la configura ("The script interacts with the virtual machine twice…").
