@@ -56,13 +56,22 @@ Si sigue en negro, revisa el caso C2 (la tortuga): macOS **no se instala** bajo 
 ### C2 · La tortuga / VBS bloquea
 
 > [!bug] Síntoma
-> Al arrancar la VM, en la barra de estado de VirtualBox aparece la **tortuga 🐢** («native API execution»), y macOS se cuelga o no instala.
+> Al arrancar la VM, en la barra de estado de VirtualBox aparece la **tortuga 🐢** («native API execution»), y macOS se cuelga o no instala. **O el script de instalación se detiene al final con este mensaje literal:**
+>
+> ```
+> Virtualbox is not using hardware-supported virtualization features.
+> Check that software such as Hyper-V, Windows Sandbox, WSL2, memory integrity
+> protection, and other Windows features that lock virtualization are turned off.
+> Exiting.
+> ```
 
-**Hipótesis.** El hipervisor de Windows (VBS) está activo y VirtualBox corre en modo NEM — **el instalador de macOS se corrompe bajo NEM**.
+**Hipótesis.** El hipervisor de Windows (VBS) está activo y VirtualBox corre en modo NEM — **el instalador de macOS se corrompe bajo NEM**, y el script lo detecta y se niega a seguir.
 
 **Comprobación.** `msinfo32` → "Seguridad basada en virtualización" → **"En ejecución"** = es esto.
 
-**Arreglo.** **No es esta fase la que lo resuelve.** Es el mismo diagnóstico que la Fase 8 (el E9 bis: `dism`, `bcdedit`, Secure Boot). Para esta fase, si la tortuga está, el host no puede correr macOS — **avisa al profesor y usa un host con VT-x real**.
+**Arreglo.** **No es esta fase la que lo resuelve.** Es el mismo diagnóstico que la Fase 8 (el E9 bis: `dism`, `bcdedit`, Secure Boot). Para esta fase, si la tortuga está o el script muestra ese mensaje, **el host no puede correr macOS — ni siquiera el script lo intenta**. Hay dos salidas reales:
+- Usar un **host con VT-x libre** (donde VirtualBox no caiga en NEM).
+- Si el host no lo tiene (p. ej. un portátil con VBS forzada de fábrica), **esta parte de la fase no es viable en ese equipo** — el acceso desde un Mac real (si lo hay) sigue siendo la alternativa.
 
 > [!summary] Qué aprendes
 > Que el muro de la Fase 8 (VBS) no era solo de Windows: **también bloquea macOS**. Es la misma raíz, y por eso el diagnóstico de la Fase 8 sirve para las dos.
