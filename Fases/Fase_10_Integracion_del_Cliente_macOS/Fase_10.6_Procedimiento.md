@@ -32,20 +32,20 @@
 > ### 1.1 · Prepara el instalador de macOS
 > **El sistema de Apple no se descarga como una ISO normal.** Aquí se usa el método de `myspaghetti/macos-virtualbox` (el script de referencia de la comunidad, 13k★): **baja el instalador desde los servidores de Apple** y lo deja listo.
 >
+> > [!warning] 🛑 PRIMERO: necesitas un **entorno bash** (Cygwin o WSL1) para ejecutar el script
+> > El script es de **Linux**, y en Windows no se ejecuta en CMD/PowerShell. **Si no tienes Cygwin/WSL listo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]** antes de seguir: ahí está cómo instalar Cygwin con su `wget` y cómo conseguir el script. *(Ojo: **WSL2** enciende el hipervisor y puede traer la tortuga — usa Cygwin o WSL1.)*
+>
+> **En Linux o macOS** (si tienes un Mac para prepararlo), desde la terminal:
 > ```bash
-> # En Windows: necesitas Cygwin o WSL para ejecutar el script
 > curl -O https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
-> # Ejecútalo; descargará el instalador de Catalina/Mojave/High Sierra desde swcdn.apple.com
 > ./macos-guest-virtualbox.sh
 > ```
->
-> > [!warning] ⚠️ ¿Sabes qué es WSL o Cygwin? ¿Y cómo comprobar que te funcionan?
-> > El script `macos-guest-virtualbox.sh` es un script de **Linux** (bash): en Windows no se ejecuta en la consola normal (CMD o PowerShell). Necesitas un **entorno bash**, y eso es **Cygwin** o **WSL**.
-> >
-> > **Si no sabes qué son, o si escribiste `wsl` en CMD y no sabes si hay que hacer algo → [[Fase_10.7_Resolucion_Problemas#C7 · No tengo bash en Windows (WSL o Cygwin)\|caso C7 del apartado 7]]**, donde se explica cómo verificarlo e instalarlo.
-> >
-> > > [!danger] 🛑 Ojo con WSL2: puede activar el hipervisor y romper VirtualBox
-> > > **WSL2** (el que instala Windows por defecto) activa la "Virtual Machine Platform" de Windows — que es **una de las cosas que encienden VBS** y hacen aparecer la tortuga. Esta fase necesita **VT-x real**, así que **lo recomendable es Cygwin** (no toca el hipervisor). Si usas WSL, usa **WSL1**, no WSL2.
+> **En Windows**, se hace **dentro de la Cygwin64 Terminal** (paso 5 del caso C7), con `wget` en vez de `curl`:
+> ```bash
+> wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
+> ./macos-guest-virtualbox.sh
+> ```
+> *(Ambos bajan el instalador de Catalina/Mojave/High Sierra desde `swcdn.apple.com` y crean la VM ya configurada — los pasos 1.2 y 1.3 quedan hechos por el script.)*
 >
 > > [!info] 📚 Qué hace el script
 > > Descarga `BaseSystem.dmg` y el resto del instalador desde los servidores de Apple, y crea la VM ya configurada (los pasos 1.2-1.3). Es lo que te ahorra montarla a mano.
