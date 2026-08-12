@@ -206,8 +206,13 @@ Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, as
 > ```
 > Reinicia si lo pide, abre "Ubuntu" desde el menú Inicio, y ejecuta el script ahí.
 
+> [!danger] 🛑 IMPORTANTE: Cygwin NO vale para este script — usa WSL1
+> El script comprueba el `xxd` con `xxd -e -p -l 16 /dev/urandom`. **El `xxd` de Cygwin NO acepta `-e` y `-p` juntos** (responde *"only one of -b, -e, -u, -p, -i can be used"*), así que el script **siempre** muestra el aviso de `xxd` y se detiene, **aunque instales `vim-common`**. No es un fallo de instalación: es una incompatibilidad del `xxd` de Cygwin con este script.
+>
+> **La vía que funciona en Windows es WSL1** (el `xxd` de Linux sí acepta `-e -p` juntos). **No WSL2** (activa el hipervisor → tortuga → y macOS no instala).
+
 > [!summary] Qué aprendes
-> Que no es un fallo tuyo: el script está escrito para un entorno bash, y Windows no lo tiene de serie. Saber cuándo necesitas Cygwin o WSL —y por qué WSL2 puede ser un problema aquí— es parte de entender qué hace el script, no solo ejecutarlo.
+> Que no es un fallo tuyo: el script está escrito para Linux, y su `xxd` en Cygwin no es compatible. Saber por qué Cygwin falla y WSL1 funciona —y por qué WSL2 es un problema— es parte de entender el entorno, no solo ejecutar.
 
 ---
 
