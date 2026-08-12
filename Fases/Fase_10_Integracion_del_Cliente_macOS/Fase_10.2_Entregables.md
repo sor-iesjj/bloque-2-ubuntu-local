@@ -12,13 +12,13 @@
 > | :--- | :--- |
 > | 📝 **1 entrada de apuntes** | `b2-10-integracion-del-cliente-macos.md` en `00_Apuntes/Trimestre_N/B2_Ubuntu_Local/` |
 > | 📹 **3 vídeos** | `B2 · F10 · Procedimiento` / `B2 · F10 · Verificación` / `B2 · F10 · Averías`, en la playlist `B2_Ubuntu_Local` |
-> | 💾 **Instantánea** | `Fase 10 terminada` (servidor) |
+> | 💾 **Instantáneas** | `Fase 10 terminada` (cliente macOS **y** servidor) · copia `.ova` del cliente al disco externo |
 
 > [!warning] ⚠️ Los vídeos van en la **misma playlist** `B2_Ubuntu_Local` que todo el bloque
 > La playlist es una por bloque, no por fase. No crees `B2_Fase_10`.
 
-> [!info] 💡 Diferencia con las Fases 8 y 9: **no hay VM del cliente que guardar**
-> En las Fases 8 y 9 guardabas la instantánea de la VM cliente. Aquí **el cliente es tu Mac real** — no hay VM que exportar. La única instantánea es la del **servidor** (por si algo falla después).
+> [!info] 💡 Esta fase SÍ tiene VM de cliente que guardar
+> A diferencia de la versión anterior, aquí **el cliente es una VM de macOS** en VirtualBox — como las de las Fases 8 y 9. Se guarda su instantánea y se exporta su `.ova`.
 
 ---
 
@@ -36,19 +36,20 @@ Con la **estructura única de 7 apartados** de la **Bloque 0 · Fase 0.1** — l
 
 | # | Nombre | Contenido |
 | :--- | :--- | :--- |
-| 1 | `B2 · F10 · Procedimiento` | Conectar el Mac al servidor y acceder a las carpetas |
+| 1 | `B2 · F10 · Procedimiento` | Crear la VM de macOS, instalar el SO y conectar al servidor |
 | 2 | `B2 · F10 · Verificación` | Las pruebas de la matriz desde el Finder |
 | 3 | `B2 · F10 · Averías` | El laboratorio de averías |
 
 Cada uno **identificándote** y con **timestamps**.
 
-### 💾 Instantánea
+### 💾 Instantáneas y copias
 
+- **`Fase 10 terminada`** en el **cliente macOS**.
 - **`Fase 10 terminada`** en el **servidor**.
-- No hay `.ova` del cliente: es tu Mac.
+- **Copia `.ova` del cliente** → al **disco externo**. Nunca a GitHub.
 
-> [!danger] 🛑 Sin VM de macOS en un PC — no es una práctica de hackintosh
-> Esta fase **no** consiste en montar una VM de macOS en un equipo Windows (eso es un hackintosh, ilegal y frágil). Se hace desde un **Mac real**, o desde una VM de macOS **dentro de un Mac**. Si no tienes Mac, haz la práctica en el Mac del aula si lo hay, o pide la alternativa al profesor.
+> [!danger] 🛑 Aviso legal — esto es un hackintosh virtual, con fines SOLO educativos
+> Esta fase monta macOS en VirtualBox sobre un equipo **no-Apple**. Apple **no lo autoriza** (viola el EULA de macOS). Se hace **exclusivamente con fines educativos, en el laboratorio**, sin usarlo para nada real, y **cada alumno debe saberlo y decirlo en el vídeo**. Es una práctica de *ver cómo funciona*, no una vía para "instalar macOS de gratis".
 
 ---
 

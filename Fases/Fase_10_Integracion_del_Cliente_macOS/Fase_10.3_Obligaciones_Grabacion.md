@@ -15,10 +15,10 @@
 > 5. **Nombra cada vídeo con su nombre exacto** (`B2 · F10 · Procedimiento` / `Verificación` / `Averías`) y súbelo a `B2_Ubuntu_Local` como **No listado**.
 
 > [!tip] 💡 En el vídeo de **Procedimiento**, explica lo que haces y por qué
-> El mac tiene gestos y atajos propios del Finder. Di en voz alta qué haces — no es un tutorial mudo.
+> La parte difícil es **crear la VM de macOS**: los ajustes (`firmware efi`, CPU, VRAM) son lo que hace que arranque. Dilo en voz alta — no es un tutorial mudo.
 
-> [!warning] ⚠️ Si no tienes Mac, avisa ANTES de grabar
-> Esta fase necesita un Mac real. Si no tienes uno, **habla con el profesor antes** de arrancar OBS — hay alternativas (Mac del aula, o hacer solo la parte de 10A sin unión). No empieces a grabar un hackintosh en tu PC: no es lo que pide la fase.
+> [!warning] ⚠️ Antes de grabar el Paso 0 (crear la VM): comprueba el requisito del host
+> La VM de macOS **no arranca** si el hipervisor de Windows (VBS/NEM) está activo — el muro de la tortuga de la Fase 8. **Comprueba antes de grabar** que tu VirtualBox usa VT-x real (sin la tortuga). Si aparece la tortuga, es que VBS sigue activa: la VM de macOS **no va a instalar**. Para esta fase hace falta host con VT-x real.
 
 ---
 

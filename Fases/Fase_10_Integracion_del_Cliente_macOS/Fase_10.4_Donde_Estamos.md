@@ -17,7 +17,8 @@
 > | **Cliente** (hoy) | **macOS** | — | **Accede** al dominio, sin unirse |
 
 > [!success] 🎯 Lo que vas a conseguir
-> Que un **Mac** acceda a las carpetas del servidor como lo hacen los otros dos clientes — pero **sin unirse al dominio**. Es la forma de integración que se usa en la vida real cuando un portátil ajeno a la empresa (de un empleado, de un turista) necesita los datos sin "pertenecer" a la red.
+> 1. **Montar una VM de macOS en VirtualBox** y conseguir que arranque e instale el sistema *(el reto técnico de la fase)*.
+> 2. Que esa **VM de macOS** acceda a las carpetas del servidor como lo hacen los otros dos clientes — pero **sin unirse al dominio**. Es la forma de integración que se usa cuando un portátil ajeno a la empresa necesita los datos sin "pertenecer" a la red.
 
 > [!warning] ⚠️ La diferencia: acceso, no unión
 > - Windows y Ubuntu **se unieron** (tienen cuenta de equipo en el servidor).

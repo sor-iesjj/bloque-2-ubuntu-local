@@ -23,7 +23,7 @@
 > **Los que NO se evalúan aquí:** esta fase **no se une al dominio**, así que no toca `CE.02.c` (cuentas de equipo) — eso lo hiciste en las Fases 8 y 9. Y `CE.06.c`/`CE.06.d` (instalar servicios) se demostraron en la Fase 8.
 
 > [!success] ✅ La diferencia con las Fases 8 y 9, en una frase
-> Windows y Ubuntu se **unieron** al dominio (crearon cuenta de equipo). El macOS, en cambio, **accede** como cliente invitado — igual que un portátil ajeno a la empresa entra en sus carpetas sin estar unido. Las dos formas son integración real, y esta fase demuestra la segunda.
+> Windows y Ubuntu se **unieron** al dominio (crearon cuenta de equipo). El macOS, en cambio, se monta como **VM nueva en VirtualBox** y **accede** a las carpetas sin estar unido — igual que un portátil ajeno a la empresa entra en sus recursos. Las dos formas son integración real, y esta fase demuestra la segunda. **El reto técnico está en que la VM de macOS arranque; conectar es lo de siempre.**
 
 ---
 

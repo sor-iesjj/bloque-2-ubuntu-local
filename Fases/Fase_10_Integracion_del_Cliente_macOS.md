@@ -9,10 +9,10 @@
 > **Correo:** p.navarromiralles2@edu.gva.es
 > **Centro:** IES Jorge Juan (ALICANTE)
 >
-> **⏱️ Tiempo estimado:** ~1,5 horas (teoría + práctica + retos)
-> **Requisitos:** un **Mac real** (ver el aviso de abajo) | acceso a la red del laboratorio `10.10.10.0/24` | Samba completo (Fases 1-9)
+> **⏱️ Tiempo estimado:** ~2,5 horas (creación de la VM + instalación del SO + teoría + práctica + retos)
+> **Requisitos:** VirtualBox instalado | **CPU con VT-x/AMD-V y VBS desactivada** *(ver el aviso de abajo)* | ~4 GB RAM libres | 40-80 GB de disco libres | Samba completo (Fases 1-9)
 >
-> **📦 Entrega:** una entrada de apuntes + **tres vídeos** + instantánea `Fase 10 terminada` (servidor)
+> **📦 Entrega:** una entrada de apuntes + **tres vídeos** + **dos instantáneas** `Fase 10 terminada` (cliente macOS y servidor) + **una copia** `.ova` del cliente
 
 ---
 
@@ -24,12 +24,12 @@
 > **La fase son TRES entregas de vídeo** —procedimiento, verificación y laboratorio de averías— sobre **una sola entrada de apuntes**.
 
 > [!danger] 🛑 ANTES DE NADA — qué necesita esta fase, y qué NO sirve
-> **Esta fase necesita un Mac real.** No una VM de macOS en un PC Windows: eso es un *hackintosh* — viola la licencia de Apple, y en un PC con VBS activada choca con el mismo muro de la tortuga que ya viste en la Fase 8.
+> **Esta fase consiste en crear una VM de macOS en VirtualBox** y acceder con ella al dominio. Tiene dos duros requisitos que conviene saber **antes** de arrancar:
 >
-> - ✅ **Sí vale:** tu Mac (o una VM de macOS **dentro de tu Mac**, que Apple sí permite).
-> - ❌ **No vale:** una VM de macOS en un equipo Windows o Linux.
+> 1. **Un instalador de macOS.** El sistema de Apple no se descarga como una ISO normal. Aquí se usa el método de `myspaghetti/macos-virtualbox`, que **baja el instalador desde los servidores de Apple** y prepara la VM. *(En un aula, el profesor puede dejar el instalador listo para saltarse el paso de descarga.)*
+> 2. **Tu CPU y VirtualBox tienen que cooperar.** macOS en VirtualBox **no funciona si el hipervisor de Windows (VBS/NEM) está activo** — es el mismo muro de la tortuga que ya viste en la Fase 8, y es **bloqueante** para el instalador de macOS.
 >
-> **Y esta fase NO se une al dominio** (eso ya lo hiciste con Windows y Ubuntu). El macOS **accede** a las carpetas compartidas como un cliente, igual que accede un turista con su MacBook a una red de empresa. Es la vía legal y real.
+> **⚠️ Y esto es un hackintosh virtual** (macOS en hardware no-Apple): Apple no lo autoriza. Se hace **solo con fines educativos, en el laboratorio, sin usarlo para nada real**. Es exactamente la práctica que pediste, con sus límites documentados.
 
 > [!important] ✍️ PASO 0 — Abre tu entrada de apuntes AHORA, antes de leer nada
 > **No esperes al apartado 6.** Créala ya, vacía, y tenla abierta en una pestaña mientras lees:
@@ -55,7 +55,7 @@
 | **3** | [[Fase_10.3_Obligaciones_Grabacion]] | Antes de arrancar OBS |
 | **4** | [[Fase_10.4_Donde_Estamos]] | Antes de empezar — de dónde vienes |
 | **5** | [[Fase_10.5_Fundamento_Teorico]] | Antes de teclear — los conceptos |
-| **6** | [[Fase_10.6_Procedimiento]] | **Con el Mac delante — aquí está el trabajo** |
+| **6** | [[Fase_10.6_Procedimiento]] | **Con la VM delante — instalar el SO y conectar** (Paso 0 = crear la VM de macOS) |
 | **7** | [[Fase_10.7_Resolucion_Problemas]] | Cuando algo no salga |
 | **8.a** | [[Fase_10.8.a_Verificacion]] | 🔍 Al terminar — comprueba, después guarda |
 | **8.b** | [[Fase_10.8.b_Punto_de_Control]] | 💾 Instantánea del servidor |
@@ -70,6 +70,8 @@
 
 > [!success] 🎯 Esta fase cierra el RA.06
 > Windows (Fase 8), Ubuntu (Fase 9) y ahora **macOS** (Fase 10) — tres sistemas operativos distintos accediendo al mismo servidor y viendo lo mismo. Es la integración de sistemas operativos libres y propietarios en su forma más completa: **el mismo modelo de permisos, tres clientes.**
+>
+> **Y de paso:** el reto técnico de esta fase está en **montar la VM de macOS** — que arranque y funcione. Conectarse después al servidor es lo mismo que ya hiciste en las Fases 8 y 9.
 
 ---
 
