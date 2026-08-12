@@ -172,11 +172,12 @@ Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, as
 
 1. Descarga el instalador de `https://www.cygwin.com/` (`setup-x86_64.exe`).
 2. Ejecútalo y acepta los valores por defecto.
-3. **Cuando te pida elegir paquetes, busca e instala SOLO uno: `wget`.** Es el único que el script necesita de verdad (lo usa para descargar los ficheros de macOS desde los servidores de Apple). Cómo hacerlo sin liarte en la lista:
-   - En la **búsqueda** de arriba, escribe `wget`.
-   - En la lista, busca la fila del paquete que se llama **exactamente `wget`** (no `wget2`, no `wget-devel`, no `wget-*`).
-   - En esa fila, clic sobre el texto **"Skip"** → se cambia a un número de **versión** (la última). Listo.
-   - **Todo lo demás, déjalo en "Skip".** Pulsa Siguiente hasta el final.
+3. **Cuando te pida elegir paquetes, busca e instala estos TRES** (los únicos que el script necesita de verdad). Cómo hacerlo sin liarte en la lista:
+   - `wget` — lo usa para descargar los ficheros de macOS desde Apple.
+   - `unzip` — para descomprimir los ficheros del instalador.
+   - `vim-common` — porque trae `xxd`, que el script necesita para procesar los ficheros de Apple. **Sin él, el script se detiene avisando "Please make sure a version of xxd…".**
+   Para cada uno: escribe el nombre en la **búsqueda** de arriba, busca la fila del paquete que se llama **exactamente así** (no `wget2`, no `vim`, no `vim-*-devel`), clic en su **"Skip"** → se cambia a la **última** versión.
+   **Todo lo demás, déjalo en "Skip".** Pulsa Siguiente hasta el final.
 4. Al terminar, abre la **"Cygwin64 Terminal"** (icono del escritorio). Ahí ya tienes bash: prueba con `echo hola` → debe responder `hola`.
 5. **Consigue el script dentro de esa terminal** — el `./macos-guest-virtualbox.sh` del Paso 1.1 no está en el escritorio: hay que descargarlo **en la carpeta de Cygwin**. Desde la Cygwin64 Terminal:
    ```bash
