@@ -78,4 +78,4 @@
 >
 > El detalle, con dónde demuestras cada criterio: [[Fase_8.1_Que_Se_Evalua]]
 
-**Siguiente al terminar los doce apartados:** la Auditoría Final.
+**Siguiente al terminar los doce apartados:** la [[Fase_9_Integracion_del_Cliente_Ubuntu_Desktop|Fase 9 — Ubuntu Desktop]].

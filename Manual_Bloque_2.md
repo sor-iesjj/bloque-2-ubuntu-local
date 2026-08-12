@@ -49,6 +49,8 @@ Esto hace que el Bloque 2 sea la opción preferible cuando no hay presupuesto pa
 | [6](Fases/Fase_6_Almacenamiento_Virtual_Cuotas.md) | Almacenamiento Virtual (Cuotas) | Loop Devices, `fstab` con `loop`, cuota física infranqueable |
 | [7](Fases/Fase_7_Seguridad_Avanzada_ACL_y_ABE.md) | Seguridad Avanzada (ACLs y ABE) | Permisos granulares, carpetas invisibles (Access Based Enumeration) |
 | [8](Fases/Fase_8_Integracion_del_Cliente_Windows_11.md) | Integración del Cliente (Windows 11) | Segunda VM en la misma Red Solo Anfitrión, unión al dominio, RSAT, mapeo de unidades |
+| [9](Fases/Fase_9_Integracion_del_Cliente_Ubuntu_Desktop.md) | Integración del Cliente (Ubuntu Desktop) | Tercera VM en la Red Solo Anfitrión, `realm join` + SSSD, acceso a la matriz desde Linux (RA.06) |
+| [10](Fases/Fase_10_Integracion_del_Cliente_macOS.md) | Integración del Cliente (macOS) | Cliente Apple que accede al dominio y a la matriz (RA.06) |
 | [Final](Fases/Auditoria_Final.md) | Auditoría Final y Hardening | Zero Trust con `ufw` local (sin Security Group externo que restringir) |
 
 ### Resumen de cada fase
@@ -68,6 +70,8 @@ Esto hace que el Bloque 2 sea la opción preferible cuando no hay presupuesto pa
 **[Fase 7 — Seguridad Avanzada (ACLs y ABE)](Fases/Fase_7_Seguridad_Avanzada_ACL_y_ABE.md):** se aplican ACLs (`setfacl`) con herencia (`-d`) para los **cruces entre departamentos** de la matriz de permisos (contabilidad escribe en facturación, comercial solo la consulta…), y se activa Access Based Enumeration (`access based share enum = yes`, `hide unreadable = yes`) en `smb.conf`, de modo que un becario **ni siquiera ve** las carpetas a las que no tiene acceso.
 
 **[Fase 8 — Integración del Cliente (Windows 11)](Fases/Fase_8_Integracion_del_Cliente_Windows_11.md):** se crea una **segunda VM** en VirtualBox (`Windows11`, 4 GB RAM, 40 GB disco, TPM 2.0 y Secure Boot activados) conectada a la misma Red Solo Anfitrión del laboratorio (`10.10.10.0/24`) con IP fija `10.10.10.20`, se une al dominio `BOOCHANLAB.LOCAL`, se instala RSAT y se mapean las carpetas compartidas como unidades de red — demostrando que el modelo de permisos definido en Linux se respeta desde el cliente Windows.
+
+**[Fase 9 — Integración del Cliente (Ubuntu Desktop)](Fases/Fase_9_Integracion_del_Cliente_Ubuntu_Desktop.md):** se crea una **tercera VM** en VirtualBox (`UbuntuDesktop`, 2 GB RAM, 25 GB disco) en la misma Red Solo Anfitrión, y se une al dominio con **`realm join` + SSSD** — el equivalente Linux del asistente de Windows. Es la primera fase que trabaja el **RA.06** con un sistema **libre**: el mismo `masao.sato` ve las mismas carpetas desde Nautilus, demostrando que la matriz de permisos no depende del sistema del cliente.
 
 **[Auditoría Final — Hardening](Fases/Auditoria_Final.md):** cierre de seguridad con el principio Zero Trust aplicado mediante `ufw` **dentro** del propio servidor (política `deny incoming` por defecto, permitiendo solo `10.10.10.0/24`, `10.20.20.0/24` y el puerto WireGuard `51820/udp`), ya que en un laboratorio local no existe un firewall externo tipo Security Group que restringir.
 

@@ -6,7 +6,7 @@
 > **Profesor:** Pedro Navarro Miralles · IES Jorge Juan (ALICANTE)
 >
 > **⏱️ Tiempo estimado:** ~1,5 horas
-> **Requisitos:** las ocho fases terminadas · túnel WireGuard operativo · instantánea `Fase 8 terminada`
+> **Requisitos:** las diez fases terminadas · túnel WireGuard operativo · instantánea `Fase 10 terminada`
 >
 > **📦 Entrega:** una entrada de apuntes + un vídeo + la instantánea `Proyecto terminado`
 

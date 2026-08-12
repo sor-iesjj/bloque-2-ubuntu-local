@@ -98,12 +98,12 @@ Las **siete pruebas de la matriz**, cada una con el trabajador que le toca:
 >
 > Que **un equipo también tiene identidad en el dominio**, con su cuenta y su relación de confianza — y que romperla es tan fácil como restaurar una instantánea desincronizada.
 >
-> Y la más importante de las ocho fases: **el fallo aparece donde se ve, no donde está.** Te van a llamar desde el cliente y el problema estará en el servidor; te van a decir "no hay internet" y no habrá DNS; te van a decir "la contraseña falla" y será la hora. **Traducir eso es el oficio.**
+> Y la más importante de las diez fases: **el fallo aparece donde se ve, no donde está.** Te van a llamar desde el cliente y el problema estará en el servidor; te van a decir "no hay internet" y no habrá DNS; te van a decir "la contraseña falla" y será la hora. **Traducir eso es el oficio.**
 >
-> **Siguiente:** [[Auditoria_Final]] — cerrar el laboratorio como se cierra un proyecto de verdad.
+> **Siguiente:** [[Fase_9_Integracion_del_Cliente_Ubuntu_Desktop]] — el segundo cliente: Ubuntu Desktop.
 
 ---
 
 | ← Anterior | 🧭 Índice | Siguiente → |
 | :--- | :---: | ---: |
-| [[Fase_8.10.a_Laboratorio_de_Averias]] | [[Fase_8_Integracion_del_Cliente_Windows_11]] | [[Auditoria_Final]] |
+| [[Fase_8.10.a_Laboratorio_de_Averias]] | [[Fase_8_Integracion_del_Cliente_Windows_11]] | [[Fase_9_Integracion_del_Cliente_Ubuntu_Desktop]] |
