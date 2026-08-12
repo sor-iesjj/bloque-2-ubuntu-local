@@ -183,7 +183,12 @@ Cygwin es un "Linux en miniatura" para Windows que **no toca el hipervisor**, as
    wget https://raw.githubusercontent.com/myspaghetti/macos-virtualbox/master/macos-guest-virtualbox.sh
    ```
    Esto guarda el archivo en la carpeta de tu usuario de Cygwin (donde la terminal abre por defecto). Comprueba que está: `ls macos-guest-virtualbox.sh` debe mostrar el fichero.
-6. Ejecútalo:
+   > 💡 Si `wget` guarda el archivo con un `.1` al final (p. ej. `macos-guest-virtualbox.sh.1`), es que ya lo habías descargado antes y wget no sobrescribe. Bórralo y repite, o usa ese nombre: `rm macos-guest-virtualbox.sh.1 && wget …`
+6. **Dale permiso de ejecución** (los ficheros descargados no lo traen — sin esto te dará `Permission denied`):
+   ```bash
+   chmod +x macos-guest-virtualbox.sh
+   ```
+7. Ejecútalo:
    ```bash
    ./macos-guest-virtualbox.sh
    ```
