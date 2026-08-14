@@ -10,7 +10,7 @@
 > [!important] 🎬 Las 5 obligaciones — idénticas en TODAS las fases del Bloque 2
 > 1. **Identifícate al empezar cada vídeo**: muestra tu identidad (Teams o correo `@alu.edu.gva.es`).
 > 2. **Pon timestamps** en la descripción: `00:00 Presentación` y **uno por paso**.
-> 3. **La entrega va por la TAREA de Teams.** Ahí pegas el enlace de tu **repositorio de apuntes**.
+> 3. **La entrega va por la TAREA de Teams.** Abriré una tarea que cubrirá **esta fase y otras**; te llegará notificación con fecha límite. Ahí pegas **solo tres enlaces**: tu repositorio de **apuntes**, tu repositorio de la **práctica** y tu **playlist** `B2_Ubuntu_Local`. **Los enlaces de vídeo no se pegan aquí:** cada uno ya está dentro de su entrada de apuntes.
 > 4. **Se graba una sola vez** (no se duplica casa/centro).
 > 5. **Nombra cada vídeo con su nombre exacto** (`B2 · F10 · Procedimiento` / `Verificación` / `Averías`) y súbelo a `B2_Ubuntu_Local` como **No listado**.
 

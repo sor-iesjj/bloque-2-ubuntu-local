@@ -116,11 +116,12 @@ En la descripción de cada vídeo: `00:00 Presentación` y uno por cada paso o a
 > [!important] 📤 Cómo se entrega
 > **Por la TAREA de Teams.** Abriré una tarea que cubre esta fase y alguna más; te llegará notificación con fecha límite.
 >
-> En la tarea entregas, **en este orden**:
-> 1. El enlace a tu **repositorio**
-> 2. Los **siete enlaces de vídeo**, numerados
+> En la tarea pegas **solo tres enlaces**:
+> 1. Tu **repositorio de apuntes**
+> 2. Tu **repositorio de la práctica**
+> 3. Tu **playlist** `B2_Ubuntu_Local`
 >
-> Todo lo demás —apuntes, respuestas, predicciones— ya está dentro del repositorio.
+> **Los enlaces de vídeo NO se pegan aquí:** cada uno ya está dentro de su entrada de apuntes, con sus respuestas. Si falta una entrada, me falta una entrega — y eso lo veo abriendo tu repositorio.
 
 ---
 
